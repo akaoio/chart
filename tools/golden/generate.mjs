@@ -73,6 +73,10 @@ const collectDraws = element => {
     // GenericChartComponent mang sẵn hàm vẽ trong props — dừng ở đây
     if (typeof element.props?.canvasDraw === "function") return [element.props.canvasDraw]
 
+    // Component chỉ vẽ SVG (SVGComponent, dùng cho clipPath) không phát lệnh canvas nào.
+    // Dựng nó lên sẽ đòi context của React, mà ở đây không có và cũng không cần.
+    if (typeof element.props?.svgDraw === "function") return []
+
     const { type, props } = element
 
     if (typeof type === "function") {
@@ -110,6 +114,20 @@ const scatterSeries = await fromSeries("ScatterSeries.tsx")
 const circleMarker = await fromSeries("markers/CircleMarker.tsx")
 const squareMarker = await fromSeries("markers/SquareMarker.tsx")
 const triangleMarker = await fromSeries("markers/TriangleMarker.tsx")
+const alternatingFillArea = await fromSeries("AlternatingFillAreaSeries.tsx")
+const stackedBar = await fromSeries("StackedBarSeries.tsx")
+const groupedBar = await fromSeries("GroupedBarSeries.tsx")
+const overlayBar = await fromSeries("OverlayBarSeries.tsx")
+const bollinger = await fromSeries("BollingerSeries.tsx")
+const macd = await fromSeries("MACDSeries.tsx")
+const rsi = await fromSeries("RSISeries.tsx")
+const stochastic = await fromSeries("StochasticSeries.tsx")
+const elderRay = await fromSeries("ElderRaySeries.tsx")
+const sar = await fromSeries("SARSeries.tsx")
+const kagi = await fromSeries("KagiSeries.tsx")
+const renko = await fromSeries("RenkoSeries.tsx")
+const pointAndFigure = await fromSeries("PointAndFigureSeries.tsx")
+const volumeProfile = await fromSeries("VolumeProfileSeries.tsx")
 
 const drawApi = {
     drawAxis: drawVia(axes.Axis),
@@ -124,6 +142,20 @@ const drawApi = {
     CircleMarker: circleMarker.CircleMarker,
     Square: squareMarker.Square,
     Triangle: triangleMarker.Triangle,
+    drawAlternatingFillAreaSeries: drawVia(alternatingFillArea.AlternatingFillAreaSeries),
+    drawStackedBarSeries: drawVia(stackedBar.StackedBarSeries),
+    drawGroupedBarSeries: drawVia(groupedBar.GroupedBarSeries),
+    drawOverlayBarSeries: drawVia(overlayBar.OverlayBarSeries),
+    drawBollingerSeries: drawVia(bollinger.BollingerSeries),
+    drawMACDSeries: drawVia(macd.MACDSeries),
+    drawRSISeries: drawVia(rsi.RSISeries),
+    drawStochasticSeries: drawVia(stochastic.StochasticSeries),
+    drawElderRaySeries: drawVia(elderRay.ElderRaySeries),
+    drawSARSeries: drawVia(sar.SARSeries),
+    drawKagiSeries: drawVia(kagi.KagiSeries),
+    drawRenkoSeries: drawVia(renko.RenkoSeries),
+    drawPointAndFigureSeries: drawVia(pointAndFigure.PointAndFigureSeries),
+    drawVolumeProfileSeries: drawVia(volumeProfile.VolumeProfileSeries),
 }
 
 const suites = [

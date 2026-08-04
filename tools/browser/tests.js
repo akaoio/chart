@@ -1,5 +1,5 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
-import "../../src/series/index.js"
+import { CircleMarker } from "../../src/series/index.js"
 import "../../src/axes/index.js"
 import { discontinuousTimeScaleProviderBuilder } from "../../src/scales/index.js"
 
@@ -658,6 +658,106 @@ TESTS["kéo chart thì series và trục cùng đi theo"] = async () => {
     t.not("domain đã đổi", domainAfter[0], domainBefore[0])
     t.not("hình vẽ trên canvas cũng đổi theo", after, before)
     t.gt("vẫn còn thứ được vẽ sau khi kéo", after, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["cả 25 series dựng được như phần tử trong chart thật"] = async () => {
+    const t = makeChecker()
+
+    // Dữ liệu mang đủ trường cho mọi series, kể cả các series gắn chỉ báo
+    const raw = makeData(120).map((row, index) => {
+        const macd = Math.sin(index / 4) * 2
+        return {
+            ...row,
+            bb: { top: row.high + 2, middle: (row.high + row.low) / 2, bottom: row.low - 2 },
+            macd: { macd, signal: Math.sin((index - 2) / 4) * 2, divergence: macd - Math.sin((index - 2) / 4) * 2 },
+            rsi: 50 + Math.round(Math.cos(index / 3) * 30),
+            stochastic: { K: 50 + Math.round(Math.cos(index / 3) * 40), D: 50 + Math.round(Math.cos(index / 5) * 30) },
+            elderRay: { bullPower: (index % 5) - 2, bearPower: 2 - (index % 7) },
+            sar: index % 3 === 0 ? row.high + 1 : row.low - 1,
+            absoluteChange: row.close - row.open,
+            fullyFormed: index < 119,
+            startAs: "yang",
+            current: row.close,
+            reverseAt: row.close - 3,
+            direction: index % 2 === 0 ? 1 : -1,
+            boxes: [{ open: 100, close: 102 }, { open: 102, close: 104 }],
+        }
+    })
+
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(raw)
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "tất cả",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+
+    // Mỗi series một phần tử, đặt property đúng như người dùng sẽ làm
+    const wanted = [
+        ["chart-line-series", { yAccessor: d => d.close }],
+        ["chart-area-series", { yAccessor: d => d.close }],
+        ["chart-area-only-series", { yAccessor: d => d.close }],
+        ["chart-alternating-fill-area-series", { yAccessor: d => d.close, baseAt: 100 }],
+        ["chart-straight-line", { yValue: 100 }],
+        ["chart-bar-series", { yAccessor: d => d.volume }],
+        ["chart-stacked-bar-series", { yAccessor: [d => d.volume / 2, d => d.volume / 3] }],
+        ["chart-grouped-bar-series", { yAccessor: [d => d.volume / 2, d => d.volume / 3] }],
+        ["chart-overlay-bar-series", { yAccessor: [d => d.volume / 2, d => d.volume / 4] }],
+        ["chart-candlestick-series", {}],
+        ["chart-ohlc-series", {}],
+        ["chart-scatter-series", { yAccessor: d => d.close, marker: CircleMarker }],
+        ["chart-bollinger-series", { yAccessor: d => d.bb }],
+        ["chart-macd-series", { yAccessor: d => d.macd }],
+        ["chart-rsi-series", { yAccessor: d => d.rsi }],
+        ["chart-stochastic-series", { yAccessor: d => d.stochastic }],
+        ["chart-elder-ray-series", { yAccessor: d => d.elderRay }],
+        ["chart-sar-series", { yAccessor: d => d.sar }],
+        ["chart-renko-series", {}],
+        ["chart-kagi-series", {}],
+        ["chart-point-and-figure-series", {}],
+        ["chart-volume-profile-series", {}],
+        ["chart-x-axis", {}],
+        ["chart-y-axis", {}],
+    ]
+
+    const made = []
+    for (const [tag, props] of wanted) {
+        const element = document.createElement(tag)
+        t.ok(`${tag} đã đăng ký`, element.constructor !== HTMLElement)
+        Object.assign(element, props)
+        pane.append(element)
+        made.push(element)
+    }
+
+    canvas.append(pane)
+    stage.append(canvas)
+    await settle()
+
+    t.is("mọi phần tử đều tìm được pane", made.filter(e => e.chartId === 0).length, made.length)
+    t.gt("chart vẫn có dữ liệu sau khi vẽ tất cả", canvas.getState().plotData.length, 0)
+
+    // AlternateDataSeries: bọc một series bằng dữ liệu khác
+    const alternate = document.createElement("chart-alternate-data")
+    alternate.data = raw.map((row, i) => ({ ...row, idx: data[i].idx, close: row.close + 5 }))
+    const inner = document.createElement("chart-line-series")
+    inner.yAccessor = d => d.close
+    alternate.append(inner)
+    pane.append(alternate)
+    await settle()
+
+    t.is("series bên trong bám lớp dữ liệu thay thế", inner.canvas, alternate)
+    t.gt("lớp thay thế lọc ra được dữ liệu trong khung nhìn", alternate.contextValues.plotData.length, 0)
 
     cleanup()
     return t.checks

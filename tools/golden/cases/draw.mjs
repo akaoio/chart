@@ -67,6 +67,42 @@ const record = (draw, props, extra) => {
     return context.calls
 }
 
+/** Dữ liệu phái sinh cho các series gắn với chỉ báo. Cố định, không random. */
+const withIndicators = rows.map((row, index) => {
+    const macd = Math.sin(index / 4) * 2
+    const signal = Math.sin((index - 2) / 4) * 2
+    return {
+        ...row,
+        bb: { top: row.high + 2, middle: (row.high + row.low) / 2, bottom: row.low - 2 },
+        macd: { macd, signal, divergence: macd - signal },
+        rsi: 50 + Math.round(Math.cos(index / 3) * 30),
+        stochastic: { K: 50 + Math.round(Math.cos(index / 3) * 40), D: 50 + Math.round(Math.cos(index / 5) * 30) },
+        elderRay: { bullPower: (index % 5) - 2, bearPower: 2 - (index % 7) },
+        sar: index % 3 === 0 ? row.high + 1 : row.low - 1,
+        absoluteChange: row.close - row.open,
+    }
+})
+
+/** Renko/Kagi/PointAndFigure nhận dữ liệu đã qua chỉ báo, hình dạng rất riêng. */
+const renkoRows = rows.map((row, index) => ({ ...row, fullyFormed: index < rows.length - 1 }))
+
+const kagiRows = rows.map((row, index) => ({
+    ...row,
+    startAs: "yang",
+    current: row.close,
+    reverseAt: row.close - 3,
+    ...(index % 9 === 4 ? { changeTo: index % 18 === 4 ? "yin" : "yang", changePoint: row.close } : {}),
+}))
+
+const pointAndFigureRows = rows.map((row, index) => ({
+    ...row,
+    direction: index % 2 === 0 ? 1 : -1,
+    boxes: [
+        { open: 100, close: 102 },
+        { open: 102, close: 104 },
+    ],
+}))
+
 const close = datum => datum.close
 const volume = datum => datum.volume
 const ohlc = datum => ({ open: datum.open, high: datum.high, low: datum.low, close: datum.close })
@@ -118,6 +154,68 @@ export function run(api) {
         marker: api.Triangle,
         markerProps: { width: 8 },
     })
+
+    // ── series ghép và series gắn chỉ báo ─────────────────────────────────────────
+
+    const onIndicators = extra => ({ plotData: withIndicators, fullData: withIndicators, ...extra })
+
+    out.alternatingFillArea = record(api.drawAlternatingFillAreaSeries, { yAccessor: close, baseAt: 102 })
+
+    out.stackedBar = record(api.drawStackedBarSeries, { yAccessor: [d => d.volume / 2, d => d.volume / 3] })
+    out.stackedBarStroked = record(api.drawStackedBarSeries, {
+        yAccessor: [d => d.volume / 2, d => d.volume / 3],
+        stroke: true,
+        fillStyle: (d, i) => (i === 0 ? "#26a69a" : "#ef5350"),
+    })
+    // Dữ liệu dày tới mức mỗi cột chỉ còn 1 pixel — nhánh riêng trong cách tính offset,
+    // và là trạng thái bình thường của một chart nhiều năm dữ liệu.
+    const dense = Array.from({ length: 700 }, (_, index) => ({
+        index,
+        volume: 1000 + ((index * 37) % 500),
+        close: 100 + ((index * 13) % 20),
+        open: 100 + ((index * 7) % 20),
+    }))
+    out.stackedBarDense = record(
+        api.drawStackedBarSeries,
+        { yAccessor: [d => d.volume / 2, d => d.volume / 3] },
+        { plotData: dense, fullData: dense, xScale: scaleLinear().domain([0, 699]).range([0, 760]) },
+    )
+
+    out.groupedBar = record(api.drawGroupedBarSeries, { yAccessor: [d => d.volume / 2, d => d.volume / 3] })
+    out.groupedBarDense = record(
+        api.drawGroupedBarSeries,
+        { yAccessor: [d => d.volume / 2, d => d.volume / 3], spaceBetweenBar: 0 },
+        { plotData: dense, fullData: dense, xScale: scaleLinear().domain([0, 699]).range([0, 760]) },
+    )
+
+    out.overlayBar = record(api.drawOverlayBarSeries, { yAccessor: [d => d.volume / 2, d => d.volume / 4] })
+    out.barSwapScales = record(api.drawBarSeries, { yAccessor: volume, swapScales: true })
+
+    out.bollinger = record(api.drawBollingerSeries, { yAccessor: d => d.bb }, onIndicators())
+    out.macd = record(api.drawMACDSeries, { yAccessor: d => d.macd }, onIndicators())
+    out.rsi = record(api.drawRSISeries, { yAccessor: d => d.rsi }, onIndicators())
+    out.stochastic = record(api.drawStochasticSeries, { yAccessor: d => d.stochastic }, onIndicators())
+    out.elderRay = record(api.drawElderRaySeries, { yAccessor: d => d.elderRay }, onIndicators())
+    out.sar = record(api.drawSARSeries, { yAccessor: d => d.sar }, onIndicators())
+    out.sarStroked = record(
+        api.drawSARSeries,
+        { yAccessor: d => d.sar, strokeStyle: { falling: "#000", rising: "#111" } },
+        onIndicators(),
+    )
+
+    out.renko = record(api.drawRenkoSeries, {}, { plotData: renkoRows, fullData: renkoRows })
+    out.kagi = record(api.drawKagiSeries, {}, { plotData: kagiRows, fullData: kagiRows })
+    out.pointAndFigure = record(api.drawPointAndFigureSeries, {}, {
+        plotData: pointAndFigureRows,
+        fullData: pointAndFigureRows,
+    })
+
+    out.volumeProfile = record(api.drawVolumeProfileSeries, {}, onIndicators())
+    out.volumeProfileRight = record(
+        api.drawVolumeProfileSeries,
+        { orient: "right", showSessionBackground: true, bins: 10 },
+        onIndicators(),
+    )
 
     // ── axes ──────────────────────────────────────────────────────────────────────
 

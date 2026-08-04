@@ -4,7 +4,7 @@ Nguồn: `react-financial-charts@2.0.1` (`745c7c0`), `packages/series/src`. Port
 
 Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý bỏ (bắt buộc ghi lý do).
 
-## Export runtime (25) — đã làm 11
+## Export runtime (25) — đã làm **25**
 
 | export | file nguồn | tt | bằng chứng |
 |---|---|:--:|---|
@@ -12,31 +12,31 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 | `AreaOnlySeries` | `AreaOnlySeries.tsx` | ☑ | 2 bài: đáy mặc định và đáy chỉ định |
 | `AreaSeries` | `AreaSeries.tsx` | ☑ | 1 bài — và chính nó lộ ra lỗi `withDefaults`, xem dưới |
 | `StraightLine` | `StraightLine.tsx` | ☑ | 2 bài: ngang và dọc |
-| `BarSeries` | `BarSeries.tsx` | ☑ | 2 bài: mặc định và tô màu theo dữ liệu · **thiếu nhánh `swapScales`** |
+| `BarSeries` | `BarSeries.tsx` | ☑ | 3 bài: mặc định, tô màu theo dữ liệu, và nhánh `swapScales` |
 | `CandlestickSeries` | `CandlestickSeries.tsx` | ☑ | 2 bài, gồm cả nến doji thân dày 0 |
 | `OHLCSeries` | `OHLCSeries.tsx` | ☑ | 1 bài |
 | `ScatterSeries` | `ScatterSeries.tsx` | ☑ | 3 bài, một cho mỗi marker |
 | `CircleMarker` | `markers/CircleMarker.tsx` | ☑ | |
 | `Square` | `markers/SquareMarker.tsx` | ☑ | |
 | `Triangle` | `markers/TriangleMarker.tsx` | ☑ | giữ nguyên cả lỗi xoay của bản gốc, xem dưới |
-| `AlternateDataSeries` | `AlternateDataSeries.tsx` | ☐ | |
-| `AlternatingFillAreaSeries` | `AlternatingFillAreaSeries.tsx` | ☐ | |
-| `BollingerSeries` | `BollingerSeries.tsx` | ☐ | |
-| `ElderRaySeries` | `ElderRaySeries.tsx` | ☐ | |
-| `GroupedBarSeries` | `GroupedBarSeries.tsx` | ☐ | |
-| `KagiSeries` | `KagiSeries.tsx` | ☐ | |
-| `MACDSeries` | `MACDSeries.tsx` | ☐ | |
-| `PointAndFigureSeries` | `PointAndFigureSeries.tsx` | ☐ | |
-| `RSISeries` | `RSISeries.tsx` | ☐ | |
-| `RenkoSeries` | `RenkoSeries.tsx` | ☐ | |
-| `SARSeries` | `SARSeries.tsx` | ☐ | |
-| `StackedBarSeries` | `StackedBarSeries.tsx` | ☐ | |
-| `StochasticSeries` | `StochasticSeries.tsx` | ☐ | |
-| `VolumeProfileSeries` | `VolumeProfileSeries.tsx` | ☐ | |
+| `AlternateDataSeries` | `AlternateDataSeries.tsx` | ☑ | đứng trước chart, cấp plotData khác cho con · kiểm trong trình duyệt |
+| `AlternatingFillAreaSeries` | `AlternatingFillAreaSeries.tsx` | ☑ | 1 bài — hai lần vẽ dưới hai vùng cắt |
+| `BollingerSeries` | `BollingerSeries.tsx` | ☑ | 1 bài — ba đường cộng dải giữa |
+| `ElderRaySeries` | `ElderRaySeries.tsx` | ☑ | 1 bài — bốn accessor cho bar hai chiều |
+| `GroupedBarSeries` | `GroupedBarSeries.tsx` | ☑ | 2 bài, gồm dữ liệu dày tới mức cột còn 1px |
+| `KagiSeries` | `KagiSeries.tsx` | ☑ | 1 bài |
+| `MACDSeries` | `MACDSeries.tsx` | ☑ | 1 bài — cột quanh mốc 0, hai đường, đường 0 |
+| `PointAndFigureSeries` | `PointAndFigureSeries.tsx` | ☑ | 1 bài — cột X và cột O |
+| `RSISeries` | `RSISeries.tsx` | ☑ | 1 bài — đổi màu ở đúng ngưỡng nhờ vùng cắt |
+| `RenkoSeries` | `RenkoSeries.tsx` | ☑ | 1 bài, gồm viên chưa hoàn thành |
+| `SARSeries` | `SARSeries.tsx` | ☑ | 2 bài, có và không có viền |
+| `StackedBarSeries` | `StackedBarSeries.tsx` | ☑ | 3 bài, gồm dữ liệu dày và bản có viền |
+| `StochasticSeries` | `StochasticSeries.tsx` | ☑ | 1 bài |
+| `VolumeProfileSeries` | `VolumeProfileSeries.tsx` | ☑ | 2 bài, hai hướng, có nền phiên |
 
-**Bậc 3 chưa xong.** 11 trong 25 export đã port, và đó là 11 cái đủ để dựng một chart tài chính thật: nến, đường, vùng tô, cột khối lượng, OHLC, điểm rời, đường tham chiếu — cộng hai trục. 14 cái còn lại phần lớn là series gắn với một chỉ báo cụ thể (`MACD`, `RSI`, `Stochastic`, `ElderRay`, `Bollinger`) hoặc một cách vẽ riêng (`Kagi`, `Renko`, `PointAndFigure`, `VolumeProfile`).
+**25/25 xong.** Ngoài ra `SVGComponent` (không nằm trong danh sách export runtime vì bản gốc không export nó ra khỏi barrel) cũng đã port, dưới tên thẻ `<chart-svg>`.
 
-Khuôn chuyển đổi và bộ máy chứng minh đã dựng xong và dùng lại được nguyên vẹn cho cả 14 cái; phần còn lại là công việc lặp, không phải câu hỏi mở.
+Ngoài chuỗi lệnh canvas, cả 25 còn được dựng thật trong trình duyệt như phần tử HTML — `document.createElement("chart-candlestick-series")` rồi gắn vào `<chart-pane>` — và kiểm rằng chúng đăng ký được, tìm được pane, và chart vẫn vẽ ra hình sau khi có đủ 25 series cùng lúc.
 
 ## Bằng chứng: so từng lệnh canvas, không so ảnh
 
@@ -44,7 +44,9 @@ Một hình vẽ trên canvas **là** một chuỗi lệnh. Nên cả bản gố
 
 Bên bản gốc, hàm vẽ được lấy ra bằng cách dựng component React rồi nhặt prop `canvasDraw` mà nó truyền cho `GenericChartComponent` — không render, không cần DOM, không cần trình duyệt.
 
-**9.536 lệnh canvas khớp bản gốc.** Cộng 12 khẳng định trong trình duyệt thật, nơi các phần tử này được dựng trong một chart thật rồi soi pixel: nến xanh, nến đỏ, đường tím, trục đen.
+**9.465 lệnh canvas khớp bản gốc**, trên 54 bài vẽ. (Con số `npm test` in ra — 32.586 — là số *giá trị lá* được so, vì mỗi lệnh gồm tên lệnh cộng các tham số của nó. Số lệnh mới là con số đáng nói.)
+
+Cộng 40 khẳng định trong trình duyệt thật, nơi các phần tử này được dựng trong một chart thật rồi soi pixel: nến xanh, nến đỏ, đường tím, trục đen — và cả 25 series cùng gắn vào một pane một lúc.
 
 Đã kiểm rằng bộ này biết fail:
 
@@ -84,4 +86,10 @@ Lý do là để chứng minh được: hàm vẽ chạy trong Node và so đư�
 
 **Marker là object thuần, không phải component.** Bản gốc để mỗi marker là một React component *kèm* một static `drawOnCanvas`, nhưng không chỗ nào render chúng như component — `ScatterSeries` chỉ gọi static. Nên ở đây marker đúng là thứ nó vốn là: một bộ props mặc định và một cách vẽ.
 
-**`BarSeries` chưa có nhánh `swapScales`.** Nhánh đó gọi vào `StackedBarSeries` (chưa port). Đặt `swapScales: true` hiện sẽ vẽ như thường thay vì đổi trục — ghi ra đây vì nó im lặng chứ không báo lỗi.
+## Một nhánh không kiểm được, và vì sao
+
+`StackedBarSeries` có dòng `const offset = barWidth === 1 ? 0 : 0.5 * width`. Bỏ hẳn nhánh đặc biệt ấy đi thì **không bài kiểm nào bắt được**, kể cả với dữ liệu dày tới mức cột chỉ còn đúng 1 pixel.
+
+Không phải vì bộ kiểm yếu. `offset` chỉ đi vào `groupOffset` và `offset`, và cả hai đều qua `Math.round`; chênh lệch do nhánh này tạo ra luôn nhỏ hơn 0.5 nên không bao giờ sống sót qua phép làm tròn. Đây là một nhánh chết trong chính bản gốc.
+
+Giữ nguyên vì port trung thành là mặc định, nhưng ghi ra đây để không ai tưởng nó đã được chứng minh.

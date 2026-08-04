@@ -16,7 +16,7 @@ ghi ◐ kèm tỉ lệ, và file parity của nó phải liệt kê đích danh 
 | [`core`](core.md) | 45 | 2 | ☑ 41 port · 4 ⊘ |
 | [`utils`](utils.md) | 2 | 2 | ⊘ 2 — phần tử tự đo |
 | [`axes`](axes.md) | 3 | 3 | ☑ 3/3 |
-| [`series`](series.md) | 25 | 3 | ◐ 11/25 |
+| [`series`](series.md) | 25 | 3 | ☑ 25/25 |
 | [`coordinates`](coordinates.md) | 8 | 4 | ☐ |
 | [`tooltip`](tooltip.md) | 13 | 4 | ☐ |
 | [`annotations`](annotations.md) | 5 | 4 | ☐ |

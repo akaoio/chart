@@ -1,5 +1,6 @@
 import { group } from "d3-array"
 import { functor, head, plotDataLengthBarWidth, withDefaults } from "../core/utils/index.js"
+import { drawOnCanvasHelper, identityStack } from "./StackedBarSeries.js"
 import { Series } from "./Series.js"
 import { define } from "../core/element.js"
 
@@ -66,7 +67,16 @@ export const getBars = (moreProps, props) => {
  * fade to nothing under antialiasing.
  */
 export const drawBarSeries = (context, moreProps, props) => {
-    const { strokeStyle } = withDefaults(barSeriesDefaults, props)
+    const resolved = withDefaults(barSeriesDefaults, props)
+
+    // Bars along the x axis instead of up from it — the same layout code, with the two
+    // scales handed to it the other way round.
+    if (resolved.swapScales) {
+        drawOnCanvasHelper(context, resolved, moreProps, moreProps.xAccessor, identityStack)
+        return
+    }
+
+    const { strokeStyle } = resolved
     const bars = getBars(moreProps, props)
 
     group(bars, bar => bar.fillStyle).forEach((values, key) => {

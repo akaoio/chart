@@ -18,7 +18,7 @@ Tên thẻ: `<chart-x-axis>`, `<chart-y-axis>`. `Axis` không có thẻ riêng �
 
 Bậc 3 vẽ ra hình, mà hình trên canvas là một **chuỗi lệnh**. Nên thay vì chụp ảnh so pixel, cả bản gốc lẫn bản port cùng vẽ vào một canvas giả rồi so đúng từng lệnh — chính xác hơn so ảnh, và khi lệch thì chỉ ra ngay lệnh thứ mấy chứ không phải "có 37 pixel khác nhau".
 
-15 cấu hình trục được kiểm: trục x dưới, trục x trên, trục y phải, trục y trái, có lưới (cả hai hướng), không tick, `tickValues` chỉ định tay, `tickInterval`, `tickFormat` tuỳ biến, `outerTickSize`, và bốn mật độ tick khác nhau.
+15 cấu hình trục được kiểm (đếm theo lệnh canvas, không phải theo giá trị lá mà `npm test` in ra): trục x dưới, trục x trên, trục y phải, trục y trái, có lưới (cả hai hướng), không tick, `tickValues` chỉ định tay, `tickInterval`, `tickFormat` tuỳ biến, `outerTickSize`, và bốn mật độ tick khác nhau.
 
 Đã kiểm rằng bộ này **biết fail**:
 
