@@ -1,4 +1,6 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
+import "../../src/series/index.js"
+import "../../src/axes/index.js"
 import { discontinuousTimeScaleProviderBuilder } from "../../src/scales/index.js"
 
 /**
@@ -539,6 +541,126 @@ const TESTS = {
         cleanup()
         return t.checks
     },
+}
+
+TESTS["series và trục thật vẽ ra pixel trong chart thật"] = async () => {
+    const t = makeChecker()
+
+    // Không dùng ProbeSeries: đây là các phần tử thật người dùng sẽ viết trong HTML.
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(makeData(120))
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data,
+        xScale,
+        xAccessor,
+        displayXAccessor,
+        ratio: 1,
+        width: 800,
+        height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "thật",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: "price", yExtents: datum => [datum.high, datum.low] })
+
+    const candles = document.createElement("chart-candlestick-series")
+    const line = document.createElement("chart-line-series")
+    line.yAccessor = datum => datum.close
+    line.strokeStyle = "#9c27b0"
+    const xAxisElement = document.createElement("chart-x-axis")
+    const yAxisElement = document.createElement("chart-y-axis")
+
+    pane.append(candles, line, xAxisElement, yAxisElement)
+    canvas.append(pane)
+    stage.append(canvas)
+    await settle()
+
+    t.ok("candlestick tìm thấy pane", candles.chartId === "price")
+    t.ok("trục x tìm thấy pane", xAxisElement.chartId === "price")
+    t.ok("trục x tính được cấu hình", xAxisElement.axisProps !== null)
+    t.is("trục x đặt ở đáy pane", xAxisElement.axisProps.transform[1], canvas.getState().chartConfigs[0].height)
+    t.is("trục y đặt ở mép phải pane", yAxisElement.axisProps.transform[0], canvas.getState().chartConfigs[0].width)
+
+    const context = canvas.getCanvasContexts().axes
+    const { width: pixelWidth, height: pixelHeight } = context.canvas
+    const pixels = context.getImageData(0, 0, pixelWidth, pixelHeight).data
+
+    let purple = 0
+    let green = 0
+    let red = 0
+    let black = 0
+    for (let i = 0; i < pixels.length; i += 4) {
+        const [r, g, b, a] = [pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]]
+        if (a < 32) continue
+        if (r > 130 && r < 190 && b > 150 && g < 80) purple++
+        else if (g > 130 && r < 90 && b > 110 && b < 190) green++
+        else if (r > 200 && g < 110 && b < 110) red++
+        else if (r < 60 && g < 60 && b < 60) black++
+    }
+
+    t.gt("nến tăng vẽ ra pixel xanh", green, 50)
+    t.gt("nến giảm vẽ ra pixel đỏ", red, 50)
+    t.gt("đường giá vẽ ra pixel tím", purple, 50)
+    t.gt("trục vẽ ra pixel đen", black, 50)
+
+    // Nhãn trục: chỉ có nếu tickHelper chạy và fillText được gọi
+    const labelled = xAxisElement.axisProps.ticks
+    t.gt("trục x có tick", labelled, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kéo chart thì series và trục cùng đi theo"] = async () => {
+    const t = makeChecker()
+
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(makeData(200))
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "kéo",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+    pane.append(document.createElement("chart-candlestick-series"), document.createElement("chart-y-axis"))
+    canvas.append(pane)
+    stage.append(canvas)
+    await settle()
+
+    const context = canvas.getCanvasContexts().axes
+    const signature = () => {
+        const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+        let sum = 0
+        for (let i = 0; i < pixels.length; i += 4) sum += pixels[i + 3] ? pixels[i] + pixels[i + 1] * 3 : 0
+        return sum
+    }
+
+    const before = signature()
+    const domainBefore = canvas.getState().xScale.domain().map(Number)
+
+    await dragAcross(canvas, 600, 300)
+
+    const after = signature()
+    const domainAfter = canvas.getState().xScale.domain().map(Number)
+
+    t.not("domain đã đổi", domainAfter[0], domainBefore[0])
+    t.not("hình vẽ trên canvas cũng đổi theo", after, before)
+    t.gt("vẫn còn thứ được vẽ sau khi kéo", after, 0)
+
+    cleanup()
+    return t.checks
 }
 
 window.runChartTests = async () => {

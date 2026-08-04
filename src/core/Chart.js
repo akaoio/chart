@@ -1,4 +1,5 @@
 import { findContextEventually, serveContext } from "./context.js"
+import { define, ElementBase } from "./element.js"
 
 /**
  * One pane within a chart: `<chart-pane>`.
@@ -14,7 +15,7 @@ import { findContextEventually, serveContext } from "./context.js"
  * class keeps the original's name; only the tag reads differently, because a tag has to
  * be lived with in markup and "pane" is what the thing actually is.
  */
-export class Chart extends HTMLElement {
+export class Chart extends ElementBase {
     #props = { chartId: 0 }
     #canvas = null
     #cancelFind = () => {}
@@ -116,4 +117,4 @@ export class Chart extends HTMLElement {
     }
 }
 
-if (!customElements.get("chart-pane")) customElements.define("chart-pane", Chart)
+define("chart-pane", Chart)

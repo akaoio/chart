@@ -1,4 +1,5 @@
 import { findContextEventually } from "./context.js"
+import { ElementBase } from "./element.js"
 import { identity } from "./utils/index.js"
 
 const SVG = "http://www.w3.org/2000/svg"
@@ -35,7 +36,7 @@ const ALIASES = {
  * in later stages are mostly a matter of moving the original's `canvasDraw` body across
  * unchanged; the machinery it plugs into is this class.
  */
-export class GenericComponent extends HTMLElement {
+export class GenericComponent extends ElementBase {
     #canvas = null
     #cancelFind = () => {}
     #subscriberId = null
@@ -123,8 +124,15 @@ export class GenericComponent extends HTMLElement {
                 getPanConditions: this.getPanConditions,
             })
 
-            this.refreshFromContext()
-            this.draw({ force: true })
+            // Only draw once the chart knows what it is showing. Usually it does not yet:
+            // children connect before the canvas has computed anything, and its own first
+            // pass will call this component moments later. Drawing regardless would hand
+            // every series an empty chartConfig — which the original series do not expect
+            // and do not survive.
+            if (canvas.getState() !== null) {
+                this.refreshFromContext()
+                this.draw({ force: true })
+            }
         })
     }
 

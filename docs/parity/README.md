@@ -7,15 +7,16 @@ cách lần theo các file barrel — không phải chép tay, nên không sót.
 runtime** trên 10 package.
 
 Không có mục nào được phép biến mất trong im lặng. Một export chỉ có ba kết cục: đã port
-(☑, kèm bằng chứng), cố ý bỏ (⊘, kèm lý do), hoặc chưa làm (☐).
+(☑, kèm bằng chứng), cố ý bỏ (⊘, kèm lý do), hoặc chưa làm (☐). Một package làm dở thì
+ghi ◐ kèm tỉ lệ, và file parity của nó phải liệt kê đích danh phần còn thiếu.
 
 | package | export runtime | bậc | tiến độ |
 |---|---:|:--:|---|
 | [`scales`](scales.md) | 5 | 1 | ☑ 5/5 |
 | [`core`](core.md) | 45 | 2 | ☑ 41 port · 4 ⊘ |
 | [`utils`](utils.md) | 2 | 2 | ⊘ 2 — phần tử tự đo |
-| [`axes`](axes.md) | 3 | 3 | ☐ |
-| [`series`](series.md) | 25 | 3 | ☐ |
+| [`axes`](axes.md) | 3 | 3 | ☑ 3/3 |
+| [`series`](series.md) | 25 | 3 | ◐ 11/25 |
 | [`coordinates`](coordinates.md) | 8 | 4 | ☐ |
 | [`tooltip`](tooltip.md) | 13 | 4 | ☐ |
 | [`annotations`](annotations.md) | 5 | 4 | ☐ |

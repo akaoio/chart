@@ -13,4 +13,8 @@ export * from "./scales/index.js"
 export * from "./core/index.js"
 export * from "./utils/index.js"
 
+// bậc 3
+export * from "./axes/index.js"
+export * from "./series/index.js"
+
 export const version = "0.0.0"

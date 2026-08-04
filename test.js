@@ -30,6 +30,13 @@ const suites = [
             evaluator: (await import("./src/core/utils/evaluator.js")).default,
         },
     ],
+    [
+        await import("./tools/golden/cases/draw.mjs"),
+        {
+            ...(await import("./src/series/index.js")),
+            ...(await import("./src/axes/index.js")),
+        },
+    ],
 ]
 
 /** Mọi chỗ lệch, kèm đường dẫn tới đúng ô sai — không dừng ở chỗ đầu tiên. */

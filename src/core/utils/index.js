@@ -16,6 +16,26 @@ export * from "./closestItem.js"
 export * from "./barWidth.js"
 export * from "./strokeDasharray.js"
 
+/**
+ * Merge defaults the way React's `defaultProps` did, which is not the way object spread
+ * does it.
+ *
+ * `{ ...defaults, ...props }` lets a property that is explicitly `undefined` overwrite
+ * the default with nothing. React treated `undefined` as "not supplied" and substituted
+ * the default. That difference is invisible until one component forwards an optional
+ * prop it did not receive — `<AreaOnlySeries base={baseAt} />` with no `baseAt` — and
+ * then the default silently disappears.
+ */
+export const withDefaults = (defaults, props = {}) => {
+    const merged = { ...defaults }
+
+    for (const [key, value] of Object.entries(props)) {
+        if (value !== undefined) merged[key] = value
+    }
+
+    return merged
+}
+
 /** -1, 0 or 1. */
 export const sign = value => (value > 0) - (value < 0)
 

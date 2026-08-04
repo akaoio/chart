@@ -12,6 +12,7 @@ import evaluator from "./utils/evaluator.js"
 import { CanvasContainer } from "./CanvasContainer.js"
 import { EventCapture } from "./EventCapture.js"
 import { serveContext } from "./context.js"
+import { define, ElementBase } from "./element.js"
 
 const SVG = "http://www.w3.org/2000/svg"
 
@@ -96,7 +97,7 @@ const isInteractionEnabled = (xScale, xAccessor, data) =>
  * chart be scrubbed backwards and forwards in step with a narration rather than only
  * driven forwards by a live pointer.
  */
-export class ChartCanvas extends HTMLElement {
+export class ChartCanvas extends ElementBase {
     #props = { ...DEFAULTS }
     #state = null
     #connected = false
@@ -1072,4 +1073,4 @@ export class ChartCanvas extends HTMLElement {
     }
 }
 
-if (!customElements.get("chart-canvas")) customElements.define("chart-canvas", ChartCanvas)
+define("chart-canvas", ChartCanvas)
