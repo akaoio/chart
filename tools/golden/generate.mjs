@@ -256,12 +256,15 @@ const svgApi = {
     renderBarAnnotation: barAnnotation.BarAnnotation,
 }
 
+const indicators = await import(join(packages, "indicators/src/indicator/index.ts"))
+
 const suites = [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
     [await import("./cases/chartdata.mjs"), chartData],
     [await import("./cases/draw.mjs"), drawApi],
     [await import("./cases/svg.mjs"), svgApi],
+    [await import("./cases/indicators.mjs"), indicators],
 ]
 
 const { execSync } = await import("node:child_process")

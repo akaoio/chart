@@ -41,6 +41,10 @@ const suites = [
         },
     ],
     [
+        await import("./tools/golden/cases/indicators.mjs"),
+        await import("./src/indicators/index.js"),
+    ],
+    [
         await import("./tools/golden/cases/svg.mjs"),
         {
             ...(await import("./src/tooltip/index.js")),

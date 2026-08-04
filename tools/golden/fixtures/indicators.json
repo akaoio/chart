@@ -1,0 +1,5244 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "sma": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.861,
+    98.015,
+    98.956,
+    102.839,
+    100.604,
+    101.069,
+    101.813,
+    100.196,
+    106.527,
+    107.775,
+    108.204,
+    105.236,
+    97.382,
+    102.092
+   ]
+  },
+  "sma20": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    100.085,
+    99.0605,
+    97.4305,
+    101.2145,
+    101.7745,
+    100.4445,
+    102.023,
+    100.073,
+    104.2685,
+    106.945,
+    107.8445,
+    106.485,
+    98.597,
+    101.092
+   ]
+  },
+  "smaOpen": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.769,
+    98.208,
+    98.327,
+    102.393,
+    100.699,
+    100.852,
+    101.579,
+    99.587,
+    106.443,
+    107.923,
+    108.343,
+    105.422,
+    97.235,
+    101.617
+   ]
+  },
+  "smaUndefinedLength": 9,
+  "ema": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.171781039,
+    97.821742286,
+    98.896168677,
+    103.289200459,
+    101.033101095,
+    101.460448269,
+    101.936422127,
+    100.709295151,
+    105.79274796,
+    107.407487741,
+    108.200822042,
+    104.976662394,
+    97.78787895,
+    102.268855647
+   ]
+  },
+  "ema20": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    100.085,
+    98.521927907,
+    98.297188929,
+    101.774061348,
+    101.241759989,
+    101.017796574,
+    101.842635216,
+    100.433015364,
+    104.647643758,
+    106.942635329,
+    107.911219413,
+    105.844503843,
+    99.028310267,
+    101.438552949
+   ]
+  },
+  "emaOpen": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.033356169,
+    97.931346062,
+    98.489884927,
+    103.049056104,
+    101.155439577,
+    101.339450022,
+    101.67360338,
+    100.44896647,
+    106.02886129,
+    107.542483589,
+    108.144691648,
+    105.338052229,
+    97.447601936,
+    101.635273259
+   ]
+  },
+  "emaUndefinedLength": 9,
+  "wma": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.645636364,
+    97.392545455,
+    99.408545455,
+    103.898,
+    100.858909091,
+    101.696727273,
+    101.629636364,
+    100.921818182,
+    106.484909091,
+    107.496181818,
+    107.859454545,
+    104.834181818,
+    97.370727273,
+    102.518181818
+   ]
+  },
+  "wma20": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    100.984,
+    98.33447619,
+    98.17,
+    102.253095238,
+    101.045333333,
+    100.898809524,
+    102.03,
+    100.018380952,
+    105.433095238,
+    107.42852381,
+    108.123047619,
+    105.552333333,
+    97.784238095,
+    101.799095238
+   ]
+  },
+  "wmaOpen": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.583636364,
+    97.561272727,
+    98.971636364,
+    103.538545455,
+    100.864181818,
+    101.486181818,
+    101.313090909,
+    100.506727273,
+    106.796363636,
+    107.700363636,
+    107.9,
+    105.203636364,
+    96.991636364,
+    101.881272727
+   ]
+  },
+  "wmaUndefinedLength": 9,
+  "tma": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    102.029333333,
+    97.658666667,
+    99.211,
+    102.930666667,
+    100.609666667,
+    101.133,
+    101.173,
+    100.106,
+    106.938333333,
+    107.669666667,
+    106.780666667,
+    105.801333333,
+    96.997333333,
+    101.917666667
+   ]
+  },
+  "tma20": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    100.402090909,
+    99.247363636,
+    97.002909091,
+    100.661454545,
+    101.191636364,
+    100.116363636,
+    102.410636364,
+    99.131090909,
+    104.480727273,
+    107.392363636,
+    108.394,
+    106.241727273,
+    98.161181818,
+    101.106636364
+   ]
+  },
+  "tmaOpen": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    102.171,
+    98.030333333,
+    98.799666667,
+    102.196333333,
+    100.441333333,
+    100.698666667,
+    101.087333333,
+    99.595333333,
+    106.838,
+    107.870666667,
+    106.857333333,
+    105.986333333,
+    97.146333333,
+    101.73
+   ]
+  },
+  "tmaUndefinedLength": 9,
+  "smaMerged": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.861,
+    98.015,
+    98.956,
+    102.839,
+    100.604,
+    101.069,
+    101.813,
+    100.196,
+    106.527,
+    107.775,
+    108.204,
+    105.236,
+    97.382,
+    102.092
+   ]
+  },
+  "rsi": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    60.642249896,
+    48.530952395,
+    56.52617912,
+    61.723318831,
+    48.631406378,
+    53.708578311,
+    52.54091514,
+    54.057418343,
+    52.371599373,
+    51.190136428,
+    53.359799471,
+    43.059733083,
+    48.192541139,
+    63.029144387
+   ]
+  },
+  "rsi7": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    58.921208765,
+    48.5620667,
+    64.170176277,
+    63.592452875,
+    46.931334236,
+    56.375387564,
+    54.66514453,
+    58.906603546,
+    44.701037276,
+    46.033653281,
+    54.495586525,
+    37.818169232,
+    57.916733637,
+    73.085461136
+   ]
+  },
+  "atr": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    2.954576226,
+    4.387530379,
+    3.464122108,
+    3.14010201,
+    3.907455988,
+    3.134057631,
+    4.08457094,
+    3.477331666,
+    3.227549342,
+    2.739548848,
+    5.201389709,
+    3.718032854,
+    3.483702304,
+    3.259669111
+   ]
+  },
+  "macd": {
+   "length": 260,
+   "sample": [
+    {
+     "macd": "·undefined·",
+     "signal": "·undefined·",
+     "divergence": "·undefined·"
+    },
+    {
+     "macd": "·undefined·",
+     "signal": 15,
+     "divergence": "·undefined·"
+    },
+    {
+     "macd": -0.783203078,
+     "signal": 0.599390254,
+     "divergence": -1.382593332
+    },
+    {
+     "macd": 0.458409238,
+     "signal": 0.001879488,
+     "divergence": 0.45652975
+    },
+    {
+     "macd": 1.688937319,
+     "signal": 1.179724577,
+     "divergence": 0.509212742
+    },
+    {
+     "macd": -0.135581043,
+     "signal": -0.021023918,
+     "divergence": -0.114557125
+    },
+    {
+     "macd": 0.377043513,
+     "signal": 0.031254335,
+     "divergence": 0.345789178
+    },
+    {
+     "macd": 0.173900909,
+     "signal": 0.226142784,
+     "divergence": -0.052241875
+    },
+    {
+     "macd": 0.101796321,
+     "signal": -0.364179228,
+     "divergence": 0.465975549
+    },
+    {
+     "macd": 1.467484168,
+     "signal": 1.455991905,
+     "divergence": 0.011492263
+    },
+    {
+     "macd": 0.813546687,
+     "signal": 1.056731665,
+     "divergence": -0.243184978
+    },
+    {
+     "macd": 0.435096792,
+     "signal": 0.400623881,
+     "divergence": 0.034472911
+    },
+    {
+     "macd": -0.905023804,
+     "signal": -0.538001497,
+     "divergence": -0.367022306
+    },
+    {
+     "macd": -1.841981482,
+     "signal": -2.138235846,
+     "divergence": 0.296254364
+    },
+    {
+     "macd": 0.73283679,
+     "signal": 0.268587935,
+     "divergence": 0.464248855
+    }
+   ]
+  },
+  "macdFast": {
+   "length": 260,
+   "sample": [
+    {
+     "macd": "·undefined·",
+     "signal": "·undefined·",
+     "divergence": "·undefined·"
+    },
+    {
+     "macd": 0.247384025,
+     "signal": 0.404588405,
+     "divergence": -0.15720438
+    },
+    {
+     "macd": -0.526155604,
+     "signal": -0.645167571,
+     "divergence": 0.119011967
+    },
+    {
+     "macd": 0.668202705,
+     "signal": 0.634762176,
+     "divergence": 0.033440528
+    },
+    {
+     "macd": 1.174301345,
+     "signal": 1.182218387,
+     "divergence": -0.007917043
+    },
+    {
+     "macd": -0.029105161,
+     "signal": -0.085424595,
+     "divergence": 0.056319435
+    },
+    {
+     "macd": 0.547237974,
+     "signal": 0.542434103,
+     "divergence": 0.00480387
+    },
+    {
+     "macd": 0.126828464,
+     "signal": -0.096721518,
+     "divergence": 0.223549982
+    },
+    {
+     "macd": 0.755344544,
+     "signal": 0.560157297,
+     "divergence": 0.195187246
+    },
+    {
+     "macd": 0.17841141,
+     "signal": 0.602246138,
+     "divergence": -0.423834728
+    },
+    {
+     "macd": -0.050902293,
+     "signal": 0.043939761,
+     "divergence": -0.094842054
+    },
+    {
+     "macd": 0.467885338,
+     "signal": 0.034550759,
+     "divergence": 0.433334579
+    },
+    {
+     "macd": -0.827900541,
+     "signal": -0.622727194,
+     "divergence": -0.205173347
+    },
+    {
+     "macd": -0.022527129,
+     "signal": -0.420315175,
+     "divergence": 0.397788047
+    },
+    {
+     "macd": 0.827910835,
+     "signal": 0.562804508,
+     "divergence": 0.265106328
+    }
+   ]
+  },
+  "stochastic": {
+   "length": 260,
+   "sample": [
+    {
+     "K": "·undefined·",
+     "D": "·undefined·"
+    },
+    {
+     "K": 55.600822601,
+     "D": 55.363123152
+    },
+    {
+     "K": 47.383040936,
+     "D": 48.026315789
+    },
+    {
+     "K": 66.742424242,
+     "D": 65.416666667
+    },
+    {
+     "K": 77.903502789,
+     "D": 82.875769604
+    },
+    {
+     "K": 49.584095444,
+     "D": 55.851012332
+    },
+    {
+     "K": 66.901408451,
+     "D": 72.057277629
+    },
+    {
+     "K": 36.331149494,
+     "D": 31.381113096
+    },
+    {
+     "K": 81.630594451,
+     "D": 81.576196486
+    },
+    {
+     "K": 55.17756487,
+     "D": 68.393854485
+    },
+    {
+     "K": 43.840710284,
+     "D": 48.953520902
+    },
+    {
+     "K": 75.693080114,
+     "D": 68.907807611
+    },
+    {
+     "K": 21.206838261,
+     "D": 25.948513206
+    },
+    {
+     "K": 59.243759253,
+     "D": 44.223030417
+    },
+    {
+     "K": 82.134249718,
+     "D": 68.024839985
+    }
+   ]
+  },
+  "bollinger": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    {
+     "top": 104.426682914,
+     "middle": 100.085,
+     "bottom": 95.743317086
+    },
+    {
+     "top": 105.918375918,
+     "middle": 99.0605,
+     "bottom": 92.202624082
+    },
+    {
+     "top": 101.313458584,
+     "middle": 97.4305,
+     "bottom": 93.547541416
+    },
+    {
+     "top": 105.931660051,
+     "middle": 101.2145,
+     "bottom": 96.497339949
+    },
+    {
+     "top": 108.595750001,
+     "middle": 101.7745,
+     "bottom": 94.953249999
+    },
+    {
+     "top": 103.394814702,
+     "middle": 100.4445,
+     "bottom": 97.494185298
+    },
+    {
+     "top": 106.515820472,
+     "middle": 102.023,
+     "bottom": 97.530179528
+    },
+    {
+     "top": 104.168625908,
+     "middle": 100.073,
+     "bottom": 95.977374092
+    },
+    {
+     "top": 109.403233222,
+     "middle": 104.2685,
+     "bottom": 99.133766778
+    },
+    {
+     "top": 109.896770209,
+     "middle": 106.945,
+     "bottom": 103.993229791
+    },
+    {
+     "top": 115.849439199,
+     "middle": 107.8445,
+     "bottom": 99.839560801
+    },
+    {
+     "top": 110.793622933,
+     "middle": 106.485,
+     "bottom": 102.176377067
+    },
+    {
+     "top": 102.755188371,
+     "middle": 98.597,
+     "bottom": 94.438811629
+    },
+    {
+     "top": 104.349758997,
+     "middle": 101.092,
+     "bottom": 97.834241003
+    }
+   ]
+  },
+  "bollingerEma": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    {
+     "top": 105.512103643,
+     "middle": 100.085,
+     "bottom": 94.657896357
+    },
+    {
+     "top": 107.094272805,
+     "middle": 98.521927907,
+     "bottom": 89.94958301
+    },
+    {
+     "top": 103.15088716,
+     "middle": 98.297188929,
+     "bottom": 93.443490699
+    },
+    {
+     "top": 107.670511412,
+     "middle": 101.774061348,
+     "bottom": 95.877611284
+    },
+    {
+     "top": 109.768322491,
+     "middle": 101.241759989,
+     "bottom": 92.715197488
+    },
+    {
+     "top": 104.705689952,
+     "middle": 101.017796574,
+     "bottom": 97.329903197
+    },
+    {
+     "top": 107.458660805,
+     "middle": 101.842635216,
+     "bottom": 96.226609626
+    },
+    {
+     "top": 105.552547749,
+     "middle": 100.433015364,
+     "bottom": 95.313482979
+    },
+    {
+     "top": 111.066060286,
+     "middle": 104.647643758,
+     "bottom": 98.229227231
+    },
+    {
+     "top": 110.63234809,
+     "middle": 106.942635329,
+     "bottom": 103.252922567
+    },
+    {
+     "top": 117.917393411,
+     "middle": 107.911219413,
+     "bottom": 97.905045414
+    },
+    {
+     "top": 111.23028251,
+     "middle": 105.844503843,
+     "bottom": 100.458725177
+    },
+    {
+     "top": 104.226045731,
+     "middle": 99.028310267,
+     "bottom": 93.830574804
+    },
+    {
+     "top": 105.510751696,
+     "middle": 101.438552949,
+     "bottom": 97.366354203
+    }
+   ]
+  },
+  "elderRay": {
+   "length": 260,
+   "sample": [
+    {
+     "bullPower": "·undefined·",
+     "bearPower": "·undefined·"
+    },
+    {
+     "bullPower": 1.557692308,
+     "bearPower": -1.102307692
+    },
+    {
+     "bullPower": -0.458461538,
+     "bearPower": -1.688461538
+    },
+    {
+     "bullPower": 4.327692308,
+     "bearPower": 0.377692308
+    },
+    {
+     "bullPower": 5.759230769,
+     "bearPower": 0.499230769
+    },
+    {
+     "bullPower": 2.19,
+     "bearPower": -1.51
+    },
+    {
+     "bullPower": 2.362307692,
+     "bearPower": -0.027692308
+    },
+    {
+     "bullPower": 1.744615385,
+     "bearPower": -1.215384615
+    },
+    {
+     "bullPower": 4.753846154,
+     "bearPower": 1.463846154
+    },
+    {
+     "bullPower": 1.980769231,
+     "bearPower": -0.989230769
+    },
+    {
+     "bullPower": 0.766153846,
+     "bearPower": -2.403846154
+    },
+    {
+     "bullPower": 1.958461538,
+     "bearPower": 0.828461538
+    },
+    {
+     "bullPower": -0.147692308,
+     "bearPower": -2.727692308
+    },
+    {
+     "bullPower": 3.05,
+     "bearPower": -1.43
+    },
+    {
+     "bullPower": 4.220769231,
+     "bearPower": -0.129230769
+    }
+   ]
+  },
+  "elderRayEma": {
+   "length": 260,
+   "sample": [
+    {
+     "bullPower": "·undefined·",
+     "bearPower": "·undefined·"
+    },
+    {
+     "bullPower": 2.072181452,
+     "bearPower": -0.587818548
+    },
+    {
+     "bullPower": -0.176160498,
+     "bearPower": -1.406160498
+    },
+    {
+     "bullPower": 3.741611596,
+     "bearPower": -0.208388404
+    },
+    {
+     "bullPower": 5.037299321,
+     "bearPower": -0.222700679
+    },
+    {
+     "bullPower": 2.040709036,
+     "bearPower": -1.659290964
+    },
+    {
+     "bullPower": 2.056935292,
+     "bearPower": -0.333064708
+    },
+    {
+     "bullPower": 2.088399305,
+     "bearPower": -0.871600695
+    },
+    {
+     "bullPower": 3.702681208,
+     "bearPower": 0.412681208
+    },
+    {
+     "bullPower": 2.160511235,
+     "bearPower": -0.809488765
+    },
+    {
+     "bullPower": 1.269520741,
+     "bearPower": -1.900479259
+    },
+    {
+     "bullPower": 2.462890981,
+     "bearPower": 1.332890981
+    },
+    {
+     "bullPower": -0.199308918,
+     "bearPower": -2.779308918
+    },
+    {
+     "bullPower": 2.387306122,
+     "bearPower": -2.092693878
+    },
+    {
+     "bullPower": 4.131722558,
+     "bearPower": -0.218277442
+    }
+   ]
+  },
+  "forceIndex": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    1789346.160000001,
+    6618.24,
+    1157516.999999998,
+    -682076.88,
+    -279739.299999999,
+    -122753.399999993,
+    -299877.199999995,
+    -40724.64,
+    -418175.099999996,
+    -654904.109999999,
+    104167.029999999,
+    34401,
+    238380.559999998,
+    407456.280000001
+   ]
+  },
+  "sar": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    104.30126464,
+    100.621732701,
+    97.341928269,
+    100.872390788,
+    92.762676687,
+    100.825910065,
+    109.110402877,
+    99.226677065,
+    109.966576,
+    109.285952358,
+    92.542538726,
+    105.441733267,
+    94.44615584,
+    98.596
+   ]
+  },
+  "sarFast": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    103.3636225,
+    86.538,
+    96.78,
+    108.15,
+    103.286,
+    99.8967,
+    98.5585,
+    104.816,
+    109.4671,
+    105.42,
+    99.634044,
+    107.6076575,
+    94.156,
+    98.755
+   ]
+  },
+  "change": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    {
+     "absoluteChange": 1.89,
+     "percentChange": 1.885851128
+    },
+    {
+     "absoluteChange": 0.32,
+     "percentChange": 0.329015011
+    },
+    {
+     "absoluteChange": 1.8,
+     "percentChange": 1.819468311
+    },
+    {
+     "absoluteChange": -1.86,
+     "percentChange": -1.75091782
+    },
+    {
+     "absoluteChange": -0.94,
+     "percentChange": -0.925105797
+    },
+    {
+     "absoluteChange": -0.2,
+     "percentChange": -0.19567557
+    },
+    {
+     "absoluteChange": -0.35,
+     "percentChange": -0.339575046
+    },
+    {
+     "absoluteChange": -1.32,
+     "percentChange": -1.27919372
+    },
+    {
+     "absoluteChange": -0.9,
+     "percentChange": -0.852030673
+    },
+    {
+     "absoluteChange": -1.47,
+     "percentChange": -1.357716819
+    },
+    {
+     "absoluteChange": 0.11,
+     "percentChange": 0.100173026
+    },
+    {
+     "absoluteChange": 0.75,
+     "percentChange": 0.730709275
+    },
+    {
+     "absoluteChange": 1.64,
+     "percentChange": 1.678951679
+    },
+    {
+     "absoluteChange": 1.98,
+     "percentChange": 1.919720768
+    }
+   ]
+  },
+  "heikinAshi": {
+   "length": 260,
+   "sample": [
+    {
+     "open": 100,
+     "high": 101.14,
+     "low": 97.49,
+     "close": 99.1575
+    },
+    {
+     "date": "2023-01-27T00:00:00.000Z",
+     "open": 100.928668427,
+     "high": 102.85,
+     "low": 100.19,
+     "close": 101.3425,
+     "volume": 946744
+    },
+    {
+     "date": "2023-02-22T00:00:00.000Z",
+     "open": 96.782464127,
+     "high": 97.93,
+     "low": 96.7,
+     "close": 97.3675,
+     "volume": 20682
+    },
+    {
+     "date": "2023-03-21T00:00:00.000Z",
+     "open": 99.087454691,
+     "high": 102.36,
+     "low": 98.41,
+     "close": 100.1075,
+     "volume": 643065
+    },
+    {
+     "date": "2023-04-14T00:00:00.000Z",
+     "open": 104.930302181,
+     "high": 107.77,
+     "low": 102.51,
+     "close": 105.22,
+     "volume": 366708
+    },
+    {
+     "date": "2023-05-11T00:00:00.000Z",
+     "open": 101.174226027,
+     "high": 103.16,
+     "low": 99.46,
+     "close": 101.225,
+     "volume": 297595
+    },
+    {
+     "date": "2023-06-06T00:00:00.000Z",
+     "open": 102.666601521,
+     "high": 103.31,
+     "low": 100.92,
+     "close": 102.1125,
+     "volume": 613767
+    },
+    {
+     "date": "2023-07-03T00:00:00.000Z",
+     "open": 101.537728985,
+     "high": 104.01,
+     "low": 101.05,
+     "close": 102.7125,
+     "volume": 856792
+    },
+    {
+     "date": "2023-07-27T00:00:00.000Z",
+     "open": 101.457906457,
+     "high": 104.23,
+     "low": 100.94,
+     "close": 102.5575,
+     "volume": 30852
+    },
+    {
+     "date": "2023-08-23T00:00:00.000Z",
+     "open": 106.898415299,
+     "high": 107.61,
+     "low": 104.64,
+     "close": 105.6525,
+     "volume": 464639
+    },
+    {
+     "date": "2023-09-18T00:00:00.000Z",
+     "open": 107.441328529,
+     "high": 108.59,
+     "low": 105.42,
+     "close": 107.27,
+     "volume": 445513
+    },
+    {
+     "date": "2023-10-13T00:00:00.000Z",
+     "open": 109.027040208,
+     "high": 110.57,
+     "low": 109.027040208,
+     "close": 109.935,
+     "volume": 946973
+    },
+    {
+     "date": "2023-11-08T00:00:00.000Z",
+     "open": 104.397745064,
+     "high": 105.11,
+     "low": 102.53,
+     "close": 103.4175,
+     "volume": 45868
+    },
+    {
+     "date": "2023-12-05T00:00:00.000Z",
+     "open": 96.59883379,
+     "high": 100.48,
+     "low": 96,
+     "close": 98.37,
+     "volume": 145354
+    },
+    {
+     "date": "2023-12-29T00:00:00.000Z",
+     "open": 101.8351403,
+     "high": 106.06,
+     "low": 101.71,
+     "close": 104.0075,
+     "volume": 205786
+    }
+   ]
+  },
+  "compare": {
+   "length": 260,
+   "sample": [
+    {
+     "open": 0.020408163,
+     "close": 0
+    },
+    {
+     "open": 0.022653061,
+     "close": 0.041938776
+    },
+    {
+     "open": -0.00755102,
+     "close": -0.004285714
+    },
+    {
+     "open": 0.009489796,
+     "close": 0.027857143
+    },
+    {
+     "open": 0.083979592,
+     "close": 0.065
+    },
+    {
+     "open": 0.036836735,
+     "close": 0.027244898
+    },
+    {
+     "open": 0.042959184,
+     "close": 0.040918367
+    },
+    {
+     "open": 0.051734694,
+     "close": 0.048163265
+    },
+    {
+     "open": 0.052959184,
+     "close": 0.039489796
+    },
+    {
+     "open": 0.077857143,
+     "close": 0.068673469
+    },
+    {
+     "open": 0.104795918,
+     "close": 0.089795918
+    },
+    {
+     "open": 0.120510204,
+     "close": 0.121632653
+    },
+    {
+     "open": 0.047346939,
+     "close": 0.055
+    },
+    {
+     "open": -0.003265306,
+     "close": 0.013469388
+    },
+    {
+     "open": 0.05244898,
+     "close": 0.072653061
+    }
+   ]
+  },
+  "kagiAtr": {
+   "length": 24,
+   "sample": [
+    {
+     "date": "2023-01-02T00:00:00.000Z",
+     "from": "2023-01-02T00:00:00.000Z",
+     "open": 100,
+     "high": 104.13,
+     "low": 94.88,
+     "close": 96.6,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 6801692,
+     "to": "2023-01-20T00:00:00.000Z",
+     "current": 103.48,
+     "reverseAt": "NaN",
+     "startAs": "yin",
+     "added": true
+    },
+    {
+     "date": "2023-01-31T00:00:00.000Z",
+     "from": "2023-01-27T00:00:00.000Z",
+     "open": 103.21,
+     "high": 108.73,
+     "low": 96,
+     "close": 98.73,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 7976828,
+     "to": "2023-02-13T00:00:00.000Z",
+     "current": 98.73,
+     "reverseAt": 100.446640956,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-02-14T00:00:00.000Z",
+     "from": "2023-02-14T00:00:00.000Z",
+     "open": 98.73,
+     "high": 103.81,
+     "low": 85.93,
+     "close": 107.68,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "volume": 630028,
+     "to": "2023-02-14T00:00:00.000Z",
+     "current": 107.68,
+     "reverseAt": 104.20473803,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 103.21,
+     "changeTo": "yang"
+    },
+    {
+     "date": "2023-03-01T00:00:00.000Z",
+     "from": "2023-02-16T00:00:00.000Z",
+     "open": 88.77,
+     "high": 99.89,
+     "low": 94.09,
+     "close": 99.24,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 4091200,
+     "to": "2023-03-01T00:00:00.000Z",
+     "current": 95.65,
+     "reverseAt": 95.204901469,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-03-30T00:00:00.000Z",
+     "from": "2023-03-13T00:00:00.000Z",
+     "open": 94.44,
+     "high": 109.84,
+     "low": 87.33,
+     "close": 107.17,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 16939814,
+     "to": "2023-04-24T00:00:00.000Z",
+     "current": 104.83,
+     "reverseAt": 103.807407097,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": 99.24,
+     "changeTo": "yang"
+    },
+    {
+     "date": "2023-04-25T00:00:00.000Z",
+     "from": "2023-04-25T00:00:00.000Z",
+     "open": 107.17,
+     "high": 106.86,
+     "low": 103.22,
+     "close": 90.99,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "volume": 534630,
+     "to": "2023-04-25T00:00:00.000Z",
+     "current": 90.99,
+     "reverseAt": 102.439735161,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 94.44,
+     "changeTo": "yin"
+    },
+    {
+     "date": "2023-05-29T00:00:00.000Z",
+     "from": "2023-05-15T00:00:00.000Z",
+     "open": 103.26,
+     "high": 103.49,
+     "low": 96.9,
+     "close": 98.02,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 7000467,
+     "to": "2023-05-31T00:00:00.000Z",
+     "current": 100.62,
+     "reverseAt": 100.150912241,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-06-19T00:00:00.000Z",
+     "from": "2023-06-16T00:00:00.000Z",
+     "open": 103.58,
+     "high": 113.07,
+     "low": 96.28,
+     "close": 100.12,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 1330356,
+     "to": "2023-06-19T00:00:00.000Z",
+     "current": 101.82,
+     "reverseAt": 100.441582203,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-06-20T00:00:00.000Z",
+     "from": "2023-06-20T00:00:00.000Z",
+     "open": 100.12,
+     "high": 107.88,
+     "low": 97.31,
+     "close": 109.38,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "volume": 1596681,
+     "to": "2023-06-21T00:00:00.000Z",
+     "current": 106.24,
+     "reverseAt": 104.805292817,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 103.58,
+     "changeTo": "yang"
+    },
+    {
+     "date": "2023-07-26T00:00:00.000Z",
+     "from": "2023-07-19T00:00:00.000Z",
+     "open": 95.78,
+     "high": 110.31,
+     "low": 97.25,
+     "close": 108.52,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 12090355,
+     "to": "2023-08-23T00:00:00.000Z",
+     "current": 105.63,
+     "reverseAt": 105.27263917,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-08-24T00:00:00.000Z",
+     "from": "2023-08-24T00:00:00.000Z",
+     "open": 108.52,
+     "high": 107.54,
+     "low": 102.02,
+     "close": 103.88,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 3614736,
+     "to": "2023-08-31T00:00:00.000Z",
+     "current": 106.16,
+     "reverseAt": 105.496070168,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-09-22T00:00:00.000Z",
+     "from": "2023-09-20T00:00:00.000Z",
+     "open": 108.94,
+     "high": 109.15,
+     "low": 104.49,
+     "close": 105.55,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 2866358,
+     "to": "2023-09-27T00:00:00.000Z",
+     "current": 106.86,
+     "reverseAt": 106.28959414,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-10-09T00:00:00.000Z",
+     "from": "2023-10-05T00:00:00.000Z",
+     "open": 112.2,
+     "high": 117.39,
+     "low": 86.85,
+     "close": 92.9,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 1608074,
+     "to": "2023-10-10T00:00:00.000Z",
+     "current": 92.9,
+     "reverseAt": 107.321670563,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 105.55,
+     "changeTo": "yin"
+    },
+    {
+     "date": "2023-10-23T00:00:00.000Z",
+     "from": "2023-10-11T00:00:00.000Z",
+     "open": 92.9,
+     "high": 111.73,
+     "low": 103.12,
+     "close": 110.17,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 5560393,
+     "to": "2023-10-24T00:00:00.000Z",
+     "current": 106.19,
+     "reverseAt": 105.790093576,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-12-20T00:00:00.000Z",
+     "from": "2023-12-06T00:00:00.000Z",
+     "open": 95.49,
+     "high": 106.06,
+     "low": 96.98,
+     "close": 105.12,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 8945753,
+     "to": "2023-12-29T00:00:00.000Z",
+     "current": 105.12,
+     "reverseAt": 101.860330889,
+     "startAs": "yin",
+     "added": false,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    }
+   ]
+  },
+  "kagiFixed": {
+   "length": 28,
+   "sample": [
+    {
+     "date": "2023-01-02T00:00:00.000Z",
+     "from": "2023-01-02T00:00:00.000Z",
+     "open": 100,
+     "high": 102.91,
+     "low": 94.88,
+     "close": 96.6,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 4769900,
+     "to": "2023-01-13T00:00:00.000Z",
+     "current": 99.41,
+     "reverseAt": 97,
+     "startAs": "yin",
+     "added": true
+    },
+    {
+     "date": "2023-01-31T00:00:00.000Z",
+     "from": "2023-01-27T00:00:00.000Z",
+     "open": 103.48,
+     "high": 108.73,
+     "low": 96,
+     "close": 98.73,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 7976828,
+     "to": "2023-02-13T00:00:00.000Z",
+     "current": 98.73,
+     "reverseAt": 100.48,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-02-15T00:00:00.000Z",
+     "from": "2023-02-15T00:00:00.000Z",
+     "open": 107.68,
+     "high": 100.57,
+     "low": 96.54,
+     "close": 88.77,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "volume": 367152,
+     "to": "2023-02-15T00:00:00.000Z",
+     "current": 88.77,
+     "reverseAt": 104.68,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 98.73,
+     "changeTo": "yin"
+    },
+    {
+     "date": "2023-03-01T00:00:00.000Z",
+     "from": "2023-02-21T00:00:00.000Z",
+     "open": 99.24,
+     "high": 98.56,
+     "low": 93.57,
+     "close": 94.44,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 5887117,
+     "to": "2023-03-09T00:00:00.000Z",
+     "current": 96.22,
+     "reverseAt": 96.24,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-04-25T00:00:00.000Z",
+     "from": "2023-04-25T00:00:00.000Z",
+     "open": 107.17,
+     "high": 106.86,
+     "low": 103.22,
+     "close": 90.99,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "volume": 534630,
+     "to": "2023-04-25T00:00:00.000Z",
+     "current": 90.99,
+     "reverseAt": 104.17,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 94.44,
+     "changeTo": "yin"
+    },
+    {
+     "date": "2023-05-29T00:00:00.000Z",
+     "from": "2023-05-01T00:00:00.000Z",
+     "open": 103.26,
+     "high": 103.49,
+     "low": 96.9,
+     "close": 98.02,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 12673740,
+     "to": "2023-05-31T00:00:00.000Z",
+     "current": 100.62,
+     "reverseAt": 100.26,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-06-19T00:00:00.000Z",
+     "from": "2023-06-16T00:00:00.000Z",
+     "open": 103.58,
+     "high": 113.07,
+     "low": 96.28,
+     "close": 100.12,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 1330356,
+     "to": "2023-06-19T00:00:00.000Z",
+     "current": 101.82,
+     "reverseAt": 100.58,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-06-27T00:00:00.000Z",
+     "from": "2023-06-21T00:00:00.000Z",
+     "open": 109.38,
+     "high": 104.99,
+     "low": 98.22,
+     "close": 99.65,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 2967383,
+     "to": "2023-06-30T00:00:00.000Z",
+     "current": 101.35,
+     "reverseAt": 106.38,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 100.12,
+     "changeTo": "yin"
+    },
+    {
+     "date": "2023-07-03T00:00:00.000Z",
+     "from": "2023-07-03T00:00:00.000Z",
+     "open": 99.65,
+     "high": 104.01,
+     "low": 99.63,
+     "close": 103.07,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 2735161,
+     "to": "2023-07-06T00:00:00.000Z",
+     "current": 101.87,
+     "reverseAt": 100.07,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-07-26T00:00:00.000Z",
+     "from": "2023-07-18T00:00:00.000Z",
+     "open": 95.78,
+     "high": 110.31,
+     "low": 97.25,
+     "close": 108.52,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 12310121,
+     "to": "2023-08-23T00:00:00.000Z",
+     "current": 105.63,
+     "reverseAt": 105.52,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": 103.07,
+     "changeTo": "yang"
+    },
+    {
+     "date": "2023-09-22T00:00:00.000Z",
+     "from": "2023-09-01T00:00:00.000Z",
+     "open": 103.88,
+     "high": 110.08,
+     "low": 104.49,
+     "close": 108.94,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 10390619,
+     "to": "2023-09-22T00:00:00.000Z",
+     "current": 106.12,
+     "reverseAt": 105.94,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 108.52,
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-10-02T00:00:00.000Z",
+     "from": "2023-09-28T00:00:00.000Z",
+     "open": 105.55,
+     "high": 114.11,
+     "low": 107.4,
+     "close": 112.2,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 2913079,
+     "to": "2023-10-04T00:00:00.000Z",
+     "current": 110.92,
+     "reverseAt": 109.2,
+     "startAs": "yang",
+     "added": true,
+     "changePoint": 108.94,
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-10-23T00:00:00.000Z",
+     "from": "2023-10-11T00:00:00.000Z",
+     "open": 92.9,
+     "high": 111.73,
+     "low": 104.79,
+     "close": 110.17,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 4916804,
+     "to": "2023-10-23T00:00:00.000Z",
+     "current": 107.92,
+     "reverseAt": 107.17,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-11-06T00:00:00.000Z",
+     "from": "2023-11-02T00:00:00.000Z",
+     "open": 104.35,
+     "high": 109.7,
+     "low": 103.28,
+     "close": 107.82,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "volume": 1972001,
+     "to": "2023-11-06T00:00:00.000Z",
+     "current": 105.28,
+     "reverseAt": 104.82,
+     "startAs": "yin",
+     "added": true,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    },
+    {
+     "date": "2023-12-20T00:00:00.000Z",
+     "from": "2023-12-06T00:00:00.000Z",
+     "open": 95.49,
+     "high": 106.06,
+     "low": 96.98,
+     "close": 105.12,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "volume": 8945753,
+     "to": "2023-12-29T00:00:00.000Z",
+     "current": 105.12,
+     "reverseAt": 102.12,
+     "startAs": "yin",
+     "added": false,
+     "changePoint": "·undefined·",
+     "changeTo": "·undefined·"
+    }
+   ]
+  },
+  "renkoAtr": {
+   "length": 12,
+   "sample": [
+    {
+     "high": 108.73,
+     "low": 94.88,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 0,
+     "fromDate": "2023-01-02T00:00:00.000Z",
+     "date": "2023-01-02T00:00:00.000Z",
+     "volume": 16605104,
+     "open": 100,
+     "close": 103.47526197,
+     "direction": 1,
+     "to": 30,
+     "toDate": "2023-02-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 103.81,
+     "low": 85.93,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 31,
+     "fromDate": "2023-02-14T00:00:00.000Z",
+     "date": "2023-03-01T00:00:00.000Z",
+     "volume": 5088380,
+     "open": 100,
+     "close": 96.171694221,
+     "direction": -1,
+     "to": 42,
+     "toDate": "2023-03-01T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 104.93,
+     "low": 93.57,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 43,
+     "fromDate": "2023-03-02T00:00:00.000Z",
+     "date": "2023-03-30T00:00:00.000Z",
+     "volume": 15988167,
+     "open": 100,
+     "close": 102.810996775,
+     "direction": 1,
+     "to": 71,
+     "toDate": "2023-04-11T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 109.84,
+     "low": 87.33,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 72,
+     "fromDate": "2023-04-12T00:00:00.000Z",
+     "date": "2023-04-17T00:00:00.000Z",
+     "volume": 3891692,
+     "open": 102.810996775,
+     "close": 107.541261614,
+     "direction": 1,
+     "to": 80,
+     "toDate": "2023-04-24T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.86,
+     "low": 97.07,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 81,
+     "fromDate": "2023-04-25T00:00:00.000Z",
+     "date": "2023-04-28T00:00:00.000Z",
+     "volume": 8710012,
+     "open": 102.810996775,
+     "close": 99.342213683,
+     "direction": -1,
+     "to": 96,
+     "toDate": "2023-05-16T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 113.07,
+     "low": 93.84,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 97,
+     "fromDate": "2023-05-17T00:00:00.000Z",
+     "date": "2023-06-27T00:00:00.000Z",
+     "volume": 34667679,
+     "open": 102.810996775,
+     "close": 105.87728141,
+     "direction": 1,
+     "to": 161,
+     "toDate": "2023-08-15T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 112.45,
+     "low": 102.02,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 162,
+     "fromDate": "2023-08-16T00:00:00.000Z",
+     "date": "2023-09-22T00:00:00.000Z",
+     "volume": 18280721,
+     "open": 105.87728141,
+     "close": 108.511640621,
+     "direction": 1,
+     "to": 194,
+     "toDate": "2023-09-29T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 117.39,
+     "low": 86.85,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 195,
+     "fromDate": "2023-10-02T00:00:00.000Z",
+     "date": "2023-10-02T00:00:00.000Z",
+     "volume": 3006903,
+     "open": 108.511640621,
+     "close": 113.389970058,
+     "direction": 1,
+     "to": 200,
+     "toDate": "2023-10-09T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 111.9,
+     "low": 100.51,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 201,
+     "fromDate": "2023-10-10T00:00:00.000Z",
+     "date": "2023-10-23T00:00:00.000Z",
+     "volume": 11598190,
+     "open": 108.511640621,
+     "close": 104.827038686,
+     "direction": -1,
+     "to": 223,
+     "toDate": "2023-11-09T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 103.67,
+     "low": 97.52,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 224,
+     "fromDate": "2023-11-10T00:00:00.000Z",
+     "date": "2023-11-13T00:00:00.000Z",
+     "volume": 660069,
+     "open": 104.827038686,
+     "close": 101.155060486,
+     "direction": -1,
+     "to": 225,
+     "toDate": "2023-11-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 102.68,
+     "low": 93.91,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 226,
+     "fromDate": "2023-11-14T00:00:00.000Z",
+     "date": "2023-11-21T00:00:00.000Z",
+     "volume": 5536077,
+     "open": 101.155060486,
+     "close": 97.915090678,
+     "direction": -1,
+     "to": 237,
+     "toDate": "2023-11-29T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.06,
+     "low": 94.31,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 238,
+     "fromDate": "2023-11-30T00:00:00.000Z",
+     "date": "2023-12-29T00:00:00.000Z",
+     "volume": 10554658,
+     "open": 101.155060486,
+     "close": 101.71,
+     "to": 259,
+     "toDate": "2023-12-29T00:00:00.000Z",
+     "fullyFormed": false
+    }
+   ]
+  },
+  "renkoFixed": {
+   "length": 37,
+   "sample": [
+    {
+     "high": 101.14,
+     "low": 94.88,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 0,
+     "fromDate": "2023-01-02T00:00:00.000Z",
+     "date": "2023-01-02T00:00:00.000Z",
+     "volume": 2192330,
+     "open": 100,
+     "close": 98,
+     "direction": -1,
+     "to": 3,
+     "toDate": "2023-01-05T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 108.73,
+     "low": 96,
+     "open": 104,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 30,
+     "fromDate": "2023-02-13T00:00:00.000Z",
+     "date": "2023-02-13T00:00:00.000Z",
+     "volume": 562771,
+     "close": 106,
+     "direction": 1,
+     "to": 30,
+     "toDate": "2023-02-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 99.63,
+     "low": 96.96,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 33,
+     "fromDate": "2023-02-16T00:00:00.000Z",
+     "date": "2023-02-16T00:00:00.000Z",
+     "volume": 290381,
+     "open": 102,
+     "close": 100,
+     "direction": -1,
+     "to": 33,
+     "toDate": "2023-02-16T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 104.93,
+     "low": 93.57,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 43,
+     "fromDate": "2023-03-02T00:00:00.000Z",
+     "date": "2023-03-30T00:00:00.000Z",
+     "volume": 14679854,
+     "open": 98,
+     "close": 100,
+     "direction": 1,
+     "to": 69,
+     "toDate": "2023-04-07T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 109.15,
+     "low": 102.39,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 71,
+     "fromDate": "2023-04-11T00:00:00.000Z",
+     "date": "2023-04-17T00:00:00.000Z",
+     "volume": 3112038,
+     "open": 102,
+     "close": 104,
+     "direction": 1,
+     "to": 78,
+     "toDate": "2023-04-20T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.86,
+     "low": 99.78,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 81,
+     "fromDate": "2023-04-25T00:00:00.000Z",
+     "date": "2023-04-25T00:00:00.000Z",
+     "volume": 1999911,
+     "open": 106,
+     "close": 104,
+     "direction": -1,
+     "to": 83,
+     "toDate": "2023-04-27T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 103.42,
+     "low": 97.07,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 84,
+     "fromDate": "2023-04-28T00:00:00.000Z",
+     "date": "2023-04-28T00:00:00.000Z",
+     "volume": 5948307,
+     "open": 102,
+     "close": 100,
+     "direction": -1,
+     "to": 95,
+     "toDate": "2023-05-15T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 104.99,
+     "low": 93.93,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 122,
+     "fromDate": "2023-06-21T00:00:00.000Z",
+     "date": "2023-06-27T00:00:00.000Z",
+     "volume": 8566007,
+     "open": 102,
+     "close": 100,
+     "direction": -1,
+     "to": 138,
+     "toDate": "2023-07-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 108.04,
+     "low": 99.43,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 155,
+     "fromDate": "2023-08-07T00:00:00.000Z",
+     "date": "2023-08-07T00:00:00.000Z",
+     "volume": 2210801,
+     "open": 102,
+     "close": 104,
+     "direction": 1,
+     "to": 160,
+     "toDate": "2023-08-14T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 110.31,
+     "low": 102.02,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 162,
+     "fromDate": "2023-08-16T00:00:00.000Z",
+     "date": "2023-08-24T00:00:00.000Z",
+     "volume": 8917549,
+     "open": 106,
+     "close": 108,
+     "direction": 1,
+     "to": 177,
+     "toDate": "2023-09-06T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 117.39,
+     "low": 86.85,
+     "open": 112,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 200,
+     "fromDate": "2023-10-09T00:00:00.000Z",
+     "date": "2023-10-09T00:00:00.000Z",
+     "volume": 393239,
+     "close": 114,
+     "direction": 1,
+     "to": 200,
+     "toDate": "2023-10-09T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 111.9,
+     "low": 107.07,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 201,
+     "fromDate": "2023-10-10T00:00:00.000Z",
+     "date": "2023-10-10T00:00:00.000Z",
+     "volume": 223546,
+     "open": 114,
+     "close": 112,
+     "direction": -1,
+     "to": 201,
+     "toDate": "2023-10-10T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 105.75,
+     "low": 103.09,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 212,
+     "fromDate": "2023-10-25T00:00:00.000Z",
+     "date": "2023-10-25T00:00:00.000Z",
+     "volume": 3900,
+     "open": 108,
+     "close": 106,
+     "direction": -1,
+     "to": 212,
+     "toDate": "2023-10-25T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 103.67,
+     "low": 97.52,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 224,
+     "fromDate": "2023-11-10T00:00:00.000Z",
+     "date": "2023-11-13T00:00:00.000Z",
+     "volume": 660069,
+     "open": 104,
+     "close": 102,
+     "direction": -1,
+     "to": 225,
+     "toDate": "2023-11-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.06,
+     "low": 94.31,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 238,
+     "fromDate": "2023-11-30T00:00:00.000Z",
+     "date": "2023-12-29T00:00:00.000Z",
+     "volume": 10554658,
+     "open": 100,
+     "close": 101.71,
+     "to": 259,
+     "toDate": "2023-12-29T00:00:00.000Z",
+     "fullyFormed": false
+    }
+   ]
+  },
+  "renkoClose": {
+   "length": 112,
+   "sample": [
+    {
+     "high": 101.14,
+     "low": 97.49,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "from": 0,
+     "fromDate": "2023-01-02T00:00:00.000Z",
+     "date": "2023-01-02T00:00:00.000Z",
+     "volume": 447674,
+     "open": 100,
+     "close": 98.5,
+     "direction": -1,
+     "to": 0,
+     "toDate": "2023-01-02T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 108.73,
+     "low": 96,
+     "open": 104.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 30,
+     "fromDate": "2023-02-13T00:00:00.000Z",
+     "date": "2023-02-13T00:00:00.000Z",
+     "volume": 562771,
+     "close": 106,
+     "direction": 1,
+     "to": 30,
+     "toDate": "2023-02-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 103.81,
+     "low": 85.93,
+     "open": 97,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 31,
+     "fromDate": "2023-02-14T00:00:00.000Z",
+     "date": "2023-02-14T00:00:00.000Z",
+     "volume": 630028,
+     "close": 95.5,
+     "direction": -1,
+     "to": 31,
+     "toDate": "2023-02-14T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 100.57,
+     "low": 96.54,
+     "open": 95.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 32,
+     "fromDate": "2023-02-15T00:00:00.000Z",
+     "date": "2023-02-15T00:00:00.000Z",
+     "volume": 367152,
+     "close": 97,
+     "direction": 1,
+     "to": 32,
+     "toDate": "2023-02-15T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 108.15,
+     "low": 103.84,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 73,
+     "fromDate": "2023-04-13T00:00:00.000Z",
+     "date": "2023-04-13T00:00:00.000Z",
+     "volume": 924324,
+     "open": 104.5,
+     "close": 106,
+     "direction": 1,
+     "to": 73,
+     "toDate": "2023-04-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 109.84,
+     "low": 87.33,
+     "open": 94,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 80,
+     "fromDate": "2023-04-24T00:00:00.000Z",
+     "date": "2023-04-24T00:00:00.000Z",
+     "volume": 381535,
+     "close": 92.5,
+     "direction": -1,
+     "to": 80,
+     "toDate": "2023-04-24T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.86,
+     "low": 103.22,
+     "open": 101.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 81,
+     "fromDate": "2023-04-25T00:00:00.000Z",
+     "date": "2023-04-25T00:00:00.000Z",
+     "volume": 534630,
+     "close": 103,
+     "direction": 1,
+     "to": 81,
+     "toDate": "2023-04-25T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 113.07,
+     "low": 96.28,
+     "open": 107.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 120,
+     "fromDate": "2023-06-19T00:00:00.000Z",
+     "date": "2023-06-19T00:00:00.000Z",
+     "volume": 754624,
+     "close": 109,
+     "direction": 1,
+     "to": 120,
+     "toDate": "2023-06-19T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 104.01,
+     "low": 99.63,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 130,
+     "fromDate": "2023-07-03T00:00:00.000Z",
+     "date": "2023-07-03T00:00:00.000Z",
+     "volume": 2735161,
+     "open": 101.5,
+     "close": 100,
+     "direction": -1,
+     "to": 133,
+     "toDate": "2023-07-06T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 108.49,
+     "low": 106.58,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 161,
+     "fromDate": "2023-08-15T00:00:00.000Z",
+     "date": "2023-08-15T00:00:00.000Z",
+     "volume": 896489,
+     "open": 106,
+     "close": 107.5,
+     "direction": 1,
+     "to": 161,
+     "toDate": "2023-08-15T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 117.39,
+     "low": 86.85,
+     "open": 107.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 200,
+     "fromDate": "2023-10-09T00:00:00.000Z",
+     "date": "2023-10-09T00:00:00.000Z",
+     "volume": 393239,
+     "close": 106,
+     "direction": -1,
+     "to": 200,
+     "toDate": "2023-10-09T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 117.39,
+     "low": 86.85,
+     "open": 95.5,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 200,
+     "fromDate": "2023-10-09T00:00:00.000Z",
+     "date": "2023-10-09T00:00:00.000Z",
+     "volume": 393239,
+     "close": 94,
+     "direction": -1,
+     "to": 200,
+     "toDate": "2023-10-09T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 111.9,
+     "low": 107.07,
+     "open": 106,
+     "startOfYear": false,
+     "startOfMonth": false,
+     "startOfQuarter": false,
+     "startOfWeek": false,
+     "from": 201,
+     "fromDate": "2023-10-10T00:00:00.000Z",
+     "date": "2023-10-10T00:00:00.000Z",
+     "volume": 223546,
+     "close": 107.5,
+     "direction": 1,
+     "to": 201,
+     "toDate": "2023-10-10T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 100.67,
+     "low": 97.52,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "from": 225,
+     "fromDate": "2023-11-13T00:00:00.000Z",
+     "date": "2023-11-13T00:00:00.000Z",
+     "volume": 106894,
+     "open": 101.5,
+     "close": 100,
+     "direction": -1,
+     "to": 225,
+     "toDate": "2023-11-13T00:00:00.000Z",
+     "fullyFormed": true
+    },
+    {
+     "high": 106.06,
+     "low": 101.71,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "from": 259,
+     "fromDate": "2023-12-29T00:00:00.000Z",
+     "date": "2023-12-29T00:00:00.000Z",
+     "volume": 205786,
+     "open": 103,
+     "close": 104.5,
+     "direction": 1,
+     "to": 259,
+     "toDate": "2023-12-29T00:00:00.000Z",
+     "fullyFormed": true
+    }
+   ]
+  },
+  "pointAndFigure": {
+   "length": 125,
+   "sample": [
+    {
+     "boxes": [
+      {
+       "open": 100,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-13T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 101.5
+      },
+      {
+       "open": 101.5,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 102.5
+      }
+     ],
+     "open": 100,
+     "volume": 5256852,
+     "direction": 1,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "close": 102.5,
+     "high": 102.5,
+     "low": 100,
+     "fromDate": "2023-01-02T00:00:00.000Z",
+     "date": "2023-01-02T00:00:00.000Z",
+     "toDate": "2023-01-02T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 100.5,
+       "fromDate": "2023-02-02T00:00:00.000Z",
+       "toDate": "2023-02-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-03T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-02-03T00:00:00.000Z",
+       "toDate": "2023-02-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-03T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-02-03T00:00:00.000Z",
+       "toDate": "2023-02-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-03T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-02-03T00:00:00.000Z",
+       "toDate": "2023-02-06T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-02-06T00:00:00.000Z",
+       "close": 98.5
+      }
+     ],
+     "volume": 1725965,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 100.5,
+     "close": 98.5,
+     "high": 100.5,
+     "low": 98.5,
+     "fromDate": "2023-02-02T00:00:00.000Z",
+     "date": "2023-02-06T00:00:00.000Z",
+     "toDate": "2023-02-06T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 95,
+       "fromDate": "2023-02-21T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 95.5
+      },
+      {
+       "open": 95.5,
+       "fromDate": "2023-02-22T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-02-22T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 96.5
+      },
+      {
+       "open": 96.5,
+       "fromDate": "2023-02-22T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 97
+      },
+      {
+       "open": 97,
+       "fromDate": "2023-02-22T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 97.5
+      },
+      {
+       "open": 97.5,
+       "fromDate": "2023-02-22T00:00:00.000Z",
+       "toDate": "2023-02-22T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-22T00:00:00.000Z",
+       "close": 98
+      }
+     ],
+     "volume": 507123,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 95,
+     "close": 98,
+     "high": 98,
+     "low": 95,
+     "fromDate": "2023-02-21T00:00:00.000Z",
+     "date": "2023-02-22T00:00:00.000Z",
+     "toDate": "2023-02-22T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 100,
+       "fromDate": "2023-03-16T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 98.5
+      },
+      {
+       "open": 98.5,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 97.5
+      },
+      {
+       "open": 97.5,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 97
+      },
+      {
+       "open": 97,
+       "fromDate": "2023-03-17T00:00:00.000Z",
+       "toDate": "2023-03-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-17T00:00:00.000Z",
+       "close": 96.5
+      }
+     ],
+     "volume": 697271,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 100,
+     "close": 96.5,
+     "high": 100,
+     "low": 96.5,
+     "fromDate": "2023-03-16T00:00:00.000Z",
+     "date": "2023-03-17T00:00:00.000Z",
+     "toDate": "2023-03-17T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 100.5,
+       "fromDate": "2023-03-31T00:00:00.000Z",
+       "toDate": "2023-04-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-03T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-04-03T00:00:00.000Z",
+       "toDate": "2023-04-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-03T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-04-03T00:00:00.000Z",
+       "toDate": "2023-04-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-03T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-04-03T00:00:00.000Z",
+       "toDate": "2023-04-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-03T00:00:00.000Z",
+       "close": 98.5
+      },
+      {
+       "open": 98.5,
+       "fromDate": "2023-04-03T00:00:00.000Z",
+       "toDate": "2023-04-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-03T00:00:00.000Z",
+       "close": 98
+      }
+     ],
+     "volume": 687981,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 100.5,
+     "close": 98,
+     "high": 100.5,
+     "low": 98,
+     "fromDate": "2023-03-31T00:00:00.000Z",
+     "date": "2023-04-03T00:00:00.000Z",
+     "toDate": "2023-04-03T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 98.5,
+       "fromDate": "2023-05-29T00:00:00.000Z",
+       "toDate": "2023-05-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-05-30T00:00:00.000Z",
+       "toDate": "2023-05-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-05-30T00:00:00.000Z",
+       "toDate": "2023-05-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-05-30T00:00:00.000Z",
+       "toDate": "2023-05-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-05-30T00:00:00.000Z",
+       "toDate": "2023-05-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-05-30T00:00:00.000Z",
+       "toDate": "2023-05-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-30T00:00:00.000Z",
+       "close": 101.5
+      },
+      {
+       "open": 101.5,
+       "fromDate": "2023-05-31T00:00:00.000Z",
+       "toDate": "2023-06-01T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-31T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-06-01T00:00:00.000Z",
+       "toDate": "2023-06-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-06-01T00:00:00.000Z",
+       "close": 102.5
+      },
+      {
+       "open": 102.5,
+       "fromDate": "2023-06-02T00:00:00.000Z",
+       "toDate": "2023-06-05T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-05T00:00:00.000Z",
+       "close": 103
+      }
+     ],
+     "volume": 3465792,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "open": 98.5,
+     "close": 103,
+     "high": 103,
+     "low": 98.5,
+     "fromDate": "2023-05-29T00:00:00.000Z",
+     "date": "2023-05-30T00:00:00.000Z",
+     "toDate": "2023-06-05T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 103.5,
+       "fromDate": "2023-06-23T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 103
+      },
+      {
+       "open": 103,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 102.5
+      },
+      {
+       "open": 102.5,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 101.5
+      },
+      {
+       "open": 101.5,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-26T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-06-26T00:00:00.000Z",
+       "toDate": "2023-06-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": true,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-27T00:00:00.000Z",
+       "close": 98.5
+      }
+     ],
+     "volume": 827835,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 103.5,
+     "close": 98.5,
+     "high": 103.5,
+     "low": 98.5,
+     "fromDate": "2023-06-23T00:00:00.000Z",
+     "date": "2023-06-27T00:00:00.000Z",
+     "toDate": "2023-06-27T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 99,
+       "fromDate": "2023-07-24T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 101.5
+      },
+      {
+       "open": 101.5,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-25T00:00:00.000Z",
+       "close": 102.5
+      },
+      {
+       "open": 102.5,
+       "fromDate": "2023-07-25T00:00:00.000Z",
+       "toDate": "2023-07-26T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": false,
+       "date": "2023-07-26T00:00:00.000Z",
+       "close": 103
+      },
+      {
+       "open": 103,
+       "fromDate": "2023-07-26T00:00:00.000Z",
+       "toDate": "2023-07-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": false,
+       "date": "2023-07-26T00:00:00.000Z",
+       "close": 103.5
+      }
+     ],
+     "volume": 802341,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": false,
+     "open": 99,
+     "close": 103.5,
+     "high": 103.5,
+     "low": 99,
+     "fromDate": "2023-07-24T00:00:00.000Z",
+     "date": "2023-07-26T00:00:00.000Z",
+     "toDate": "2023-07-27T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 107,
+       "fromDate": "2023-08-10T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 106.5
+      },
+      {
+       "open": 106.5,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 105.5
+      },
+      {
+       "open": 105.5,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 105
+      },
+      {
+       "open": 105,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 104.5
+      },
+      {
+       "open": 104.5,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 103.5
+      },
+      {
+       "open": 103.5,
+       "fromDate": "2023-08-11T00:00:00.000Z",
+       "toDate": "2023-08-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-11T00:00:00.000Z",
+       "close": 103
+      }
+     ],
+     "volume": 28065,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 107,
+     "close": 103,
+     "high": 107,
+     "low": 103,
+     "fromDate": "2023-08-10T00:00:00.000Z",
+     "date": "2023-08-11T00:00:00.000Z",
+     "toDate": "2023-08-11T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 105.5,
+       "fromDate": "2023-08-30T00:00:00.000Z",
+       "toDate": "2023-08-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-08-31T00:00:00.000Z",
+       "toDate": "2023-08-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 106.5
+      },
+      {
+       "open": 106.5,
+       "fromDate": "2023-08-31T00:00:00.000Z",
+       "toDate": "2023-08-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 107
+      },
+      {
+       "open": 107,
+       "fromDate": "2023-08-31T00:00:00.000Z",
+       "toDate": "2023-08-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 107.5
+      },
+      {
+       "open": 107.5,
+       "fromDate": "2023-08-31T00:00:00.000Z",
+       "toDate": "2023-08-31T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-08-31T00:00:00.000Z",
+       "toDate": "2023-09-01T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-31T00:00:00.000Z",
+       "close": 108.5
+      }
+     ],
+     "volume": 1388391,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 105.5,
+     "close": 108.5,
+     "high": 108.5,
+     "low": 105.5,
+     "fromDate": "2023-08-30T00:00:00.000Z",
+     "date": "2023-08-31T00:00:00.000Z",
+     "toDate": "2023-09-01T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 108,
+       "fromDate": "2023-09-15T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 107.5
+      },
+      {
+       "open": 107.5,
+       "fromDate": "2023-09-18T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 107
+      },
+      {
+       "open": 107,
+       "fromDate": "2023-09-18T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 106.5
+      },
+      {
+       "open": 106.5,
+       "fromDate": "2023-09-18T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-09-18T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 105.5
+      },
+      {
+       "open": 105.5,
+       "fromDate": "2023-09-18T00:00:00.000Z",
+       "toDate": "2023-09-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-18T00:00:00.000Z",
+       "close": 105
+      }
+     ],
+     "volume": 494115,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 108,
+     "close": 105,
+     "high": 108,
+     "low": 105,
+     "fromDate": "2023-09-15T00:00:00.000Z",
+     "date": "2023-09-18T00:00:00.000Z",
+     "toDate": "2023-09-18T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 112,
+       "fromDate": "2023-10-03T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 111.5
+      },
+      {
+       "open": 111.5,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 111
+      },
+      {
+       "open": 111,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 110.5
+      },
+      {
+       "open": 110.5,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 110
+      },
+      {
+       "open": 110,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 109.5
+      },
+      {
+       "open": 109.5,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 109
+      },
+      {
+       "open": 109,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 108.5
+      },
+      {
+       "open": 108.5,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 107.5
+      },
+      {
+       "open": 107.5,
+       "fromDate": "2023-10-04T00:00:00.000Z",
+       "toDate": "2023-10-04T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-04T00:00:00.000Z",
+       "close": 107
+      }
+     ],
+     "volume": 141154,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 112,
+     "close": 107,
+     "high": 112,
+     "low": 107,
+     "fromDate": "2023-10-03T00:00:00.000Z",
+     "date": "2023-10-04T00:00:00.000Z",
+     "toDate": "2023-10-04T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 105,
+       "fromDate": "2023-11-01T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 105.5
+      },
+      {
+       "open": 105.5,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 106.5
+      },
+      {
+       "open": 106.5,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 107
+      },
+      {
+       "open": 107,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 107.5
+      },
+      {
+       "open": 107.5,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 108.5
+      },
+      {
+       "open": 108.5,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 109
+      },
+      {
+       "open": 109,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 109.5
+      },
+      {
+       "open": 109.5,
+       "fromDate": "2023-11-02T00:00:00.000Z",
+       "toDate": "2023-11-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-11-02T00:00:00.000Z",
+       "close": 110
+      }
+     ],
+     "volume": 549713,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 105,
+     "close": 110,
+     "high": 110,
+     "low": 105,
+     "fromDate": "2023-11-01T00:00:00.000Z",
+     "date": "2023-11-02T00:00:00.000Z",
+     "toDate": "2023-11-02T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 101.5,
+       "fromDate": "2023-12-12T00:00:00.000Z",
+       "toDate": "2023-12-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-13T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-12-13T00:00:00.000Z",
+       "toDate": "2023-12-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-13T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-12-13T00:00:00.000Z",
+       "toDate": "2023-12-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-13T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-12-13T00:00:00.000Z",
+       "toDate": "2023-12-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-13T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-12-13T00:00:00.000Z",
+       "toDate": "2023-12-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-13T00:00:00.000Z",
+       "close": 99
+      }
+     ],
+     "volume": 512566,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 101.5,
+     "close": 99,
+     "high": 101.5,
+     "low": 99,
+     "fromDate": "2023-12-12T00:00:00.000Z",
+     "date": "2023-12-13T00:00:00.000Z",
+     "toDate": "2023-12-13T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 98.5,
+       "fromDate": "2023-12-26T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 99
+      },
+      {
+       "open": 99,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 99.5
+      },
+      {
+       "open": 99.5,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 100.5
+      },
+      {
+       "open": 100.5,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 101
+      },
+      {
+       "open": 101,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 101.5
+      },
+      {
+       "open": 101.5,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 102.5
+      },
+      {
+       "open": 102.5,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-27T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 103
+      },
+      {
+       "open": 103,
+       "fromDate": "2023-12-27T00:00:00.000Z",
+       "toDate": "2023-12-28T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-27T00:00:00.000Z",
+       "close": 103.5
+      },
+      {
+       "open": 103.5,
+       "fromDate": "2023-12-28T00:00:00.000Z",
+       "toDate": "2023-12-29T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-28T00:00:00.000Z",
+       "close": 104
+      }
+     ],
+     "volume": 790961,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 98.5,
+     "close": 104,
+     "high": 104,
+     "low": 98.5,
+     "fromDate": "2023-12-26T00:00:00.000Z",
+     "date": "2023-12-27T00:00:00.000Z",
+     "toDate": "2023-12-29T00:00:00.000Z"
+    }
+   ]
+  },
+  "pointAndFigureBig": {
+   "length": 16,
+   "sample": [
+    {
+     "boxes": [
+      {
+       "open": 100,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-02-13T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-01-02T00:00:00.000Z",
+       "toDate": "2023-01-02T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-01-02T00:00:00.000Z",
+       "close": 94
+      },
+      {
+       "open": 94,
+       "fromDate": "2023-02-13T00:00:00.000Z",
+       "toDate": "2023-02-14T00:00:00.000Z",
+       "startOfYear": true,
+       "startOfQuarter": true,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-02-13T00:00:00.000Z",
+       "close": 92
+      }
+     ],
+     "open": 100,
+     "volume": 17602284,
+     "direction": -1,
+     "startOfYear": true,
+     "startOfQuarter": true,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "close": 92,
+     "high": 100,
+     "low": 92,
+     "fromDate": "2023-01-02T00:00:00.000Z",
+     "date": "2023-02-13T00:00:00.000Z",
+     "toDate": "2023-02-14T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 94,
+       "fromDate": "2023-02-14T00:00:00.000Z",
+       "toDate": "2023-02-15T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-15T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-02-15T00:00:00.000Z",
+       "toDate": "2023-02-15T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-15T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-02-15T00:00:00.000Z",
+       "toDate": "2023-02-15T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-02-15T00:00:00.000Z",
+       "close": 100
+      }
+     ],
+     "volume": 1076609,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": false,
+     "open": 94,
+     "close": 100,
+     "high": 100,
+     "low": 94,
+     "fromDate": "2023-02-14T00:00:00.000Z",
+     "date": "2023-02-15T00:00:00.000Z",
+     "toDate": "2023-02-15T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 98,
+       "fromDate": "2023-02-15T00:00:00.000Z",
+       "toDate": "2023-02-20T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-02-20T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-02-20T00:00:00.000Z",
+       "toDate": "2023-02-20T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-02-20T00:00:00.000Z",
+       "close": 94
+      }
+     ],
+     "volume": 5954636,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 98,
+     "close": 94,
+     "high": 98,
+     "low": 94,
+     "fromDate": "2023-02-15T00:00:00.000Z",
+     "date": "2023-02-20T00:00:00.000Z",
+     "toDate": "2023-02-20T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 96,
+       "fromDate": "2023-02-20T00:00:00.000Z",
+       "toDate": "2023-03-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-03-10T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-03-10T00:00:00.000Z",
+       "toDate": "2023-03-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-03-10T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-03-10T00:00:00.000Z",
+       "toDate": "2023-04-07T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": true,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-03-30T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-04-07T00:00:00.000Z",
+       "toDate": "2023-04-11T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-10T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-04-11T00:00:00.000Z",
+       "toDate": "2023-04-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-11T00:00:00.000Z",
+       "close": 106
+      }
+     ],
+     "volume": 16939814,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 96,
+     "close": 106,
+     "high": 106,
+     "low": 96,
+     "fromDate": "2023-02-20T00:00:00.000Z",
+     "date": "2023-03-30T00:00:00.000Z",
+     "toDate": "2023-04-13T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 104,
+       "fromDate": "2023-04-13T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 94
+      },
+      {
+       "open": 94,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 92
+      },
+      {
+       "open": 92,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-24T00:00:00.000Z",
+       "close": 90
+      }
+     ],
+     "volume": 534630,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 104,
+     "close": 90,
+     "high": 104,
+     "low": 90,
+     "fromDate": "2023-04-13T00:00:00.000Z",
+     "date": "2023-04-24T00:00:00.000Z",
+     "toDate": "2023-04-24T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 92,
+       "fromDate": "2023-04-24T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 94
+      },
+      {
+       "open": 94,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-04-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-04-25T00:00:00.000Z",
+       "close": 104
+      }
+     ],
+     "volume": 3428178,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 92,
+     "close": 104,
+     "high": 104,
+     "low": 92,
+     "fromDate": "2023-04-24T00:00:00.000Z",
+     "date": "2023-04-25T00:00:00.000Z",
+     "toDate": "2023-04-25T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 102,
+       "fromDate": "2023-04-25T00:00:00.000Z",
+       "toDate": "2023-05-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": false,
+       "date": "2023-05-03T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-05-03T00:00:00.000Z",
+       "toDate": "2023-05-03T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-05-03T00:00:00.000Z",
+       "close": 98
+      }
+     ],
+     "volume": 11747084,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": false,
+     "open": 102,
+     "close": 98,
+     "high": 102,
+     "low": 98,
+     "fromDate": "2023-04-25T00:00:00.000Z",
+     "date": "2023-05-03T00:00:00.000Z",
+     "toDate": "2023-05-03T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 104,
+       "fromDate": "2023-06-19T00:00:00.000Z",
+       "toDate": "2023-06-21T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-21T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-06-21T00:00:00.000Z",
+       "toDate": "2023-06-21T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-06-21T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-06-21T00:00:00.000Z",
+       "toDate": "2023-07-12T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": true,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-06-27T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-07-12T00:00:00.000Z",
+       "toDate": "2023-07-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-12T00:00:00.000Z",
+       "close": 96
+      }
+     ],
+     "volume": 10938967,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 104,
+     "close": 96,
+     "high": 104,
+     "low": 96,
+     "fromDate": "2023-06-19T00:00:00.000Z",
+     "date": "2023-06-27T00:00:00.000Z",
+     "toDate": "2023-07-13T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 98,
+       "fromDate": "2023-07-13T00:00:00.000Z",
+       "toDate": "2023-07-20T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-07-20T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-07-20T00:00:00.000Z",
+       "toDate": "2023-07-20T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-07-20T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-07-20T00:00:00.000Z",
+       "toDate": "2023-08-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-07-26T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-08-10T00:00:00.000Z",
+       "toDate": "2023-08-14T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-08-14T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-08-14T00:00:00.000Z",
+       "toDate": "2023-08-18T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-08-14T00:00:00.000Z",
+       "close": 108
+      }
+     ],
+     "volume": 12080868,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "open": 98,
+     "close": 108,
+     "high": 108,
+     "low": 98,
+     "fromDate": "2023-07-13T00:00:00.000Z",
+     "date": "2023-07-26T00:00:00.000Z",
+     "toDate": "2023-08-18T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 106,
+       "fromDate": "2023-08-18T00:00:00.000Z",
+       "toDate": "2023-08-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-08-25T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-08-25T00:00:00.000Z",
+       "toDate": "2023-08-25T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-25T00:00:00.000Z",
+       "close": 102
+      }
+     ],
+     "volume": 1636050,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "open": 106,
+     "close": 102,
+     "high": 106,
+     "low": 102,
+     "fromDate": "2023-08-18T00:00:00.000Z",
+     "date": "2023-08-25T00:00:00.000Z",
+     "toDate": "2023-08-25T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 104,
+       "fromDate": "2023-08-25T00:00:00.000Z",
+       "toDate": "2023-08-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-08-30T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-08-30T00:00:00.000Z",
+       "toDate": "2023-08-30T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-08-30T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-08-30T00:00:00.000Z",
+       "toDate": "2023-09-29T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": true,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-09-22T00:00:00.000Z",
+       "close": 110
+      },
+      {
+       "open": 110,
+       "fromDate": "2023-09-29T00:00:00.000Z",
+       "toDate": "2023-10-02T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-02T00:00:00.000Z",
+       "close": 112
+      }
+     ],
+     "volume": 15970448,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 104,
+     "close": 112,
+     "high": 112,
+     "low": 104,
+     "fromDate": "2023-08-25T00:00:00.000Z",
+     "date": "2023-09-22T00:00:00.000Z",
+     "toDate": "2023-10-02T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 110,
+       "fromDate": "2023-10-02T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 94
+      },
+      {
+       "open": 94,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-09T00:00:00.000Z",
+       "close": 92
+      }
+     ],
+     "volume": 223546,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 110,
+     "close": 92,
+     "high": 110,
+     "low": 92,
+     "fromDate": "2023-10-02T00:00:00.000Z",
+     "date": "2023-10-09T00:00:00.000Z",
+     "toDate": "2023-10-09T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 94,
+       "fromDate": "2023-10-09T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 96
+      },
+      {
+       "open": 96,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 108
+      },
+      {
+       "open": 108,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-10T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-10T00:00:00.000Z",
+       "close": 110
+      }
+     ],
+     "volume": 5560393,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 94,
+     "close": 110,
+     "high": 110,
+     "low": 94,
+     "fromDate": "2023-10-09T00:00:00.000Z",
+     "date": "2023-10-10T00:00:00.000Z",
+     "toDate": "2023-10-10T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 108,
+       "fromDate": "2023-10-10T00:00:00.000Z",
+       "toDate": "2023-10-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-10-24T00:00:00.000Z",
+       "close": 106
+      },
+      {
+       "open": 106,
+       "fromDate": "2023-10-24T00:00:00.000Z",
+       "toDate": "2023-10-24T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-10-24T00:00:00.000Z",
+       "close": 104
+      },
+      {
+       "open": 104,
+       "fromDate": "2023-10-24T00:00:00.000Z",
+       "toDate": "2023-11-09T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-10-30T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-11-09T00:00:00.000Z",
+       "toDate": "2023-11-13T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-11-13T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-11-13T00:00:00.000Z",
+       "toDate": "2023-11-17T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-11-13T00:00:00.000Z",
+       "close": 98
+      },
+      {
+       "open": 98,
+       "fromDate": "2023-11-17T00:00:00.000Z",
+       "toDate": "2023-11-28T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": true,
+       "startOfWeek": true,
+       "date": "2023-11-21T00:00:00.000Z",
+       "close": 96
+      }
+     ],
+     "volume": 14927943,
+     "direction": -1,
+     "startOfYear": false,
+     "startOfQuarter": false,
+     "startOfMonth": true,
+     "startOfWeek": true,
+     "open": 108,
+     "close": 96,
+     "high": 108,
+     "low": 96,
+     "fromDate": "2023-10-10T00:00:00.000Z",
+     "date": "2023-10-24T00:00:00.000Z",
+     "toDate": "2023-11-28T00:00:00.000Z"
+    },
+    {
+     "boxes": [
+      {
+       "open": 98,
+       "fromDate": "2023-11-28T00:00:00.000Z",
+       "toDate": "2023-12-07T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-12-07T00:00:00.000Z",
+       "close": 100
+      },
+      {
+       "open": 100,
+       "fromDate": "2023-12-07T00:00:00.000Z",
+       "toDate": "2023-12-07T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": false,
+       "startOfMonth": false,
+       "startOfWeek": false,
+       "date": "2023-12-07T00:00:00.000Z",
+       "close": 102
+      },
+      {
+       "open": 102,
+       "fromDate": "2023-12-07T00:00:00.000Z",
+       "toDate": "2023-12-29T00:00:00.000Z",
+       "startOfYear": false,
+       "startOfQuarter": true,
+       "startOfMonth": false,
+       "startOfWeek": true,
+       "date": "2023-12-20T00:00:00.000Z",
+       "close": 104
+      }
+     ],
+     "volume": 7637112,
+     "direction": 1,
+     "startOfYear": false,
+     "startOfQuarter": true,
+     "startOfMonth": false,
+     "startOfWeek": true,
+     "open": 98,
+     "close": 104,
+     "high": 104,
+     "low": 98,
+     "fromDate": "2023-11-28T00:00:00.000Z",
+     "date": "2023-12-20T00:00:00.000Z",
+     "toDate": "2023-12-29T00:00:00.000Z"
+    }
+   ]
+  },
+  "algo": {
+   "length": 260,
+   "sample": [
+    "·undefined·",
+    101.234,
+    97.338,
+    99.66,
+    104.714,
+    101.282,
+    102.294,
+    101.496,
+    101.276,
+    106.484,
+    107.18,
+    106.37,
+    104.424,
+    97.158,
+    102.438
+   ]
+  },
+  "defaultsForComputation": {
+   "ATR": {
+    "windowSize": 14
+   },
+   "BollingerBand": {
+    "windowSize": 20,
+    "sourcePath": "close",
+    "multiplier": 2,
+    "movingAverageType": "sma"
+   },
+   "Change": {
+    "sourcePath": "close",
+    "basePath": "close",
+    "mainKeys": [],
+    "compareKeys": []
+   },
+   "Compare": {
+    "basePath": "close",
+    "mainKeys": [
+     "open",
+     "high",
+     "low",
+     "close"
+    ],
+    "compareKeys": []
+   },
+   "EMA": {
+    "sourcePath": "close",
+    "windowSize": 10
+   },
+   "ElderImpulse": {
+    "sourcePath": "close"
+   },
+   "ElderRay": {
+    "windowSize": 13,
+    "sourcePath": "close",
+    "movingAverageType": "sma"
+   },
+   "ForceIndex": {
+    "sourcePath": "close",
+    "volumePath": "volume"
+   },
+   "FullStochasticOscillator": {
+    "windowSize": 12,
+    "kWindowSize": 3,
+    "dWindowSize": 3
+   },
+   "Kagi": {
+    "reversalType": "ATR",
+    "windowSize": 14,
+    "reversal": 2,
+    "sourcePath": "close"
+   },
+   "MACD": {
+    "fast": 12,
+    "slow": 26,
+    "signal": 9,
+    "sourcePath": "close"
+   },
+   "PointAndFigure": {
+    "boxSize": 0.5,
+    "reversal": 3,
+    "sourcePath": "high/low"
+   },
+   "RSI": {
+    "windowSize": 14,
+    "sourcePath": "close"
+   },
+   "Renko": {
+    "reversalType": "ATR",
+    "windowSize": 14,
+    "fixedBrickSize": 2,
+    "sourcePath": "high/low"
+   },
+   "SAR": {
+    "accelerationFactor": 0.02,
+    "maxAccelerationFactor": 0.2
+   },
+   "SMA": {
+    "sourcePath": "close",
+    "windowSize": 10
+   },
+   "SmoothedForceIndex": {
+    "sourcePath": "close",
+    "volumePath": "volume",
+    "smoothingType": "ema",
+    "smoothingWindow": 13
+   },
+   "TMA": {
+    "sourcePath": "close",
+    "windowSize": 10
+   },
+   "WMA": {
+    "sourcePath": "close",
+    "windowSize": 10
+   }
+  },
+  "defaultsForAppearance": {
+   "light": {
+    "BollingerBand": {
+     "stroke": {
+      "top": "#964B00",
+      "middle": "#000000",
+      "bottom": "#964B00"
+     },
+     "fill": "#4682B4"
+    },
+    "ElderImpulse": {
+     "stroke": {
+      "up": "#6BA583",
+      "down": "#FF0000",
+      "neutral": "#0000FF"
+     }
+    },
+    "MACD": {
+     "fill": {
+      "divergence": "#4682B4"
+     },
+     "stroke": {
+      "macd": "#FF0000",
+      "signal": "#00F300"
+     }
+    },
+    "FullStochasticOscillator": {
+     "stroke": {
+      "top": "#37a600",
+      "middle": "#b8ab00",
+      "bottom": "#37a600",
+      "dLine": "#17becf",
+      "kLine": "#ff7f0e"
+     }
+    }
+   },
+   "dark": {
+    "BollingerBand": {
+     "stroke": {
+      "top": "#964B00",
+      "middle": "#FF6600",
+      "bottom": "#964B00"
+     },
+     "fill": "#4682B4"
+    },
+    "ElderImpulse": {
+     "stroke": {
+      "up": "#6BA583",
+      "down": "#FF0000",
+      "neutral": "#0000FF"
+     }
+    },
+    "MACD": {
+     "fill": {
+      "divergence": "#FF6600"
+     },
+     "stroke": {
+      "macd": "#ea2bff",
+      "signal": "#74d400"
+     }
+    },
+    "FullStochasticOscillator": {
+     "stroke": {
+      "top": "#37a600",
+      "middle": "#b8ab00",
+      "bottom": "#37a600",
+      "dLine": "#ea2bff",
+      "kLine": "#74d400"
+     }
+    }
+   }
+  },
+  "types": {
+   "sma": "SMA",
+   "ema": "EMA",
+   "wma": "WMA",
+   "tma": "TMA",
+   "rsi": "RSI",
+   "atr": "ATR",
+   "macd": "MACD",
+   "bollingerBand": "BollingerBand",
+   "stochasticOscillator": "STO",
+   "elderRay": "ElderRay",
+   "forceIndex": "ForceIndex",
+   "change": "Change",
+   "compare": "Compare",
+   "heikinAshi": "HeikinAshi",
+   "kagi": "Kagi",
+   "renko": "Renko",
+   "pointAndFigure": "PointAndFigure",
+   "sar": "SMA"
+  }
+ }
+}
