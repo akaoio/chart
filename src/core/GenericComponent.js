@@ -388,13 +388,46 @@ export class GenericComponent extends ElementBase {
 
         this.#svgGroup.textContent = ""
         const content = this.svgDraw(this.getMoreProps())
-        if (content) this.#svgGroup.append(...(Array.isArray(content) ? content : [content]))
+        if (content) this.#svgGroup.append(...buildSvg(content))
     }
 
     /** Where SVG output goes. A pane-bound component overrides this with its pane's group. */
     svgParent() {
         return this.#canvas?.paneGroup(this.chartId) ?? null
     }
+}
+
+/**
+ * Turn an SVG description into real nodes.
+ *
+ * SVG components return `{ tag, attrs, children }` rather than elements, for the same
+ * reason series return drawing functions: a description can be produced and checked
+ * outside a browser, and the element is then a thin shell around it.
+ */
+export const buildSvg = description => {
+    if (description === null || description === undefined || description === false) return []
+    if (Array.isArray(description)) return description.flatMap(buildSvg)
+
+    if (typeof description === "string" || typeof description === "number") {
+        return [document.createTextNode(String(description))]
+    }
+
+    if (description instanceof Node) return [description]
+
+    const node = document.createElementNS(SVG, description.tag)
+
+    for (const [name, value] of Object.entries(description.attrs ?? {})) {
+        if (value === undefined || value === null || value === false) continue
+        if (typeof value === "function") {
+            node.addEventListener(name.replace(/^on/, "").toLowerCase(), value)
+            continue
+        }
+        node.setAttribute(name, String(value))
+    }
+
+    node.append(...buildSvg(description.children ?? []))
+
+    return [node]
 }
 
 export const getAxisCanvas = contexts => contexts.axes

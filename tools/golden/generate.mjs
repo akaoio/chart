@@ -158,11 +158,110 @@ const drawApi = {
     drawVolumeProfileSeries: drawVia(volumeProfile.VolumeProfileSeries),
 }
 
+const fromCoordinates = async file => import(join(packages, "coordinates/src", file))
+
+const crossHair = await fromCoordinates("CrossHairCursor.tsx")
+const cursor = await fromCoordinates("Cursor.tsx")
+const currentCoordinate = await fromCoordinates("CurrentCoordinate.tsx")
+const mouseX = await fromCoordinates("MouseCoordinateX.tsx")
+const mouseXV2 = await fromCoordinates("MouseCoordinateXV2.tsx")
+const mouseY = await fromCoordinates("MouseCoordinateY.tsx")
+const priceCoordinate = await fromCoordinates("PriceCoordinate.tsx")
+const edgeIndicator = await fromCoordinates("EdgeIndicator.tsx")
+
+/**
+ * Cursor và CrossHairCursor đọc margin/ratio từ ChartCanvasContext. Không render thì
+ * `this.context` rỗng, nên bơm thẳng vào instance — bản port nhận chúng qua props, và
+ * case truyền cùng giá trị cho cả hai phía.
+ */
+const drawViaWithContext = (Component, context) => (recordContext, moreProps, props) => {
+    const instance = new Component({ ...Component.defaultProps, ...props })
+    instance.context = context
+    for (const draw of collectDraws(instance.render())) draw(recordContext, moreProps)
+}
+
+const chartContext = { margin: { top: 10, right: 60, bottom: 30, left: 0 }, ratio: 1 }
+
+const hoverTooltip = await import(join(packages, "tooltip/src/HoverTooltip.tsx"))
+const labelAnnotationCanvas = await import(join(packages, "annotations/src/Label.tsx"))
+
+Object.assign(drawApi, {
+    drawHoverTooltip: drawViaWithContext(hoverTooltip.HoverTooltip, chartContext),
+    drawLabel: drawViaWithContext(labelAnnotationCanvas.Label, chartContext),
+    drawCrossHairCursor: drawViaWithContext(crossHair.CrossHairCursor, chartContext),
+    drawCursor: drawViaWithContext(cursor.Cursor, chartContext),
+    drawCurrentCoordinate: drawVia(currentCoordinate.CurrentCoordinate),
+    drawMouseCoordinateX: drawVia(mouseX.MouseCoordinateX),
+    drawMouseCoordinateXV2: drawVia(mouseXV2.MouseCoordinateXV2),
+    drawMouseCoordinateY: drawVia(mouseY.MouseCoordinateY),
+    drawPriceCoordinate: drawVia(priceCoordinate.PriceCoordinate),
+    drawEdgeIndicator: drawVia(edgeIndicator.EdgeIndicator),
+})
+
+// ── bậc 4: phần vẽ bằng SVG ──────────────────────────────────────────────────────
+//
+// Lấy hàm renderSVG ra khỏi component, y hệt cách lấy canvasDraw: dựng component rồi
+// nhặt prop `svgDraw` mà nó truyền cho GenericChartComponent.
+
+const collectSvgDraw = element => {
+    if (element === null || element === undefined || typeof element !== "object") return null
+    if (typeof element.props?.svgDraw === "function") return element.props.svgDraw
+
+    const { type, props } = element
+    if (typeof type === "function") {
+        const merged = { ...type.defaultProps, ...props }
+        return collectSvgDraw(type.prototype?.render ? new type(merged).render() : type(merged))
+    }
+
+    return collectSvgDraw(props?.children)
+}
+
+const renderVia = Component => (moreProps, props) => {
+    const draw = collectSvgDraw(React.createElement(Component, props))
+    return draw ? draw(moreProps) : null
+}
+
+const fromTooltip = async file => import(join(packages, "tooltip/src", file))
+
+const singleValueTooltip = await fromTooltip("SingleValueTooltip.tsx")
+const ohlcTooltip = await fromTooltip("OHLCTooltip.tsx")
+
+const rsiTooltip = await fromTooltip("RSITooltip.tsx")
+const bollingerTooltip = await fromTooltip("BollingerBandTooltip.tsx")
+const macdTooltip = await fromTooltip("MACDTooltip.tsx")
+const stochasticTooltip = await fromTooltip("StochasticTooltip.tsx")
+const movingAverageTooltip = await fromTooltip("MovingAverageTooltip.tsx")
+const groupTooltip = await fromTooltip("GroupTooltip.tsx")
+
+const fromAnnotations = async file => import(join(packages, "annotations/src", file))
+const annotate = await fromAnnotations("Annotate.tsx")
+const labelAnnotation = await fromAnnotations("LabelAnnotation.tsx")
+const svgPathAnnotation = await fromAnnotations("SvgPathAnnotation.tsx")
+const barAnnotation = await fromAnnotations("BarAnnotation.tsx")
+
+const svgApi = {
+    renderSingleValueTooltip: renderVia(singleValueTooltip.SingleValueTooltip),
+    renderOHLCTooltip: renderVia(ohlcTooltip.OHLCTooltip),
+    renderRSITooltip: renderVia(rsiTooltip.RSITooltip),
+    renderBollingerBandTooltip: renderVia(bollingerTooltip.BollingerBandTooltip),
+    renderMACDTooltip: renderVia(macdTooltip.MACDTooltip),
+    renderStochasticTooltip: renderVia(stochasticTooltip.StochasticTooltip),
+    renderMovingAverageTooltip: renderVia(movingAverageTooltip.MovingAverageTooltip),
+    renderGroupTooltip: renderVia(groupTooltip.GroupTooltip),
+    renderAnnotate: renderVia(annotate.Annotate),
+    // Annotate nhận một COMPONENT làm prop `with`; bản port nhận một HÀM dựng mô tả.
+    // Hai bên nhận đúng cùng vai trò, chỉ khác hình dạng của thứ được truyền.
+    renderLabelAnnotation: labelAnnotation.LabelAnnotation,
+    renderSvgPathAnnotation: svgPathAnnotation.SvgPathAnnotation,
+    renderBarAnnotation: barAnnotation.BarAnnotation,
+}
+
 const suites = [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
     [await import("./cases/chartdata.mjs"), chartData],
     [await import("./cases/draw.mjs"), drawApi],
+    [await import("./cases/svg.mjs"), svgApi],
 ]
 
 const { execSync } = await import("node:child_process")

@@ -17,9 +17,9 @@ ghi ◐ kèm tỉ lệ, và file parity của nó phải liệt kê đích danh 
 | [`utils`](utils.md) | 2 | 2 | ⊘ 2 — phần tử tự đo |
 | [`axes`](axes.md) | 3 | 3 | ☑ 3/3 |
 | [`series`](series.md) | 25 | 3 | ☑ 25/25 |
-| [`coordinates`](coordinates.md) | 8 | 4 | ☐ |
-| [`tooltip`](tooltip.md) | 13 | 4 | ☐ |
-| [`annotations`](annotations.md) | 5 | 4 | ☐ |
+| [`coordinates`](coordinates.md) | 8 | 4 | ☑ 8/8 |
+| [`tooltip`](tooltip.md) | 13 | 4 | ☑ 13/13 |
+| [`annotations`](annotations.md) | 5 | 4 | ☑ 5/5 |
 | [`indicators`](indicators.md) | 20 | 5 | ☐ |
 | [`interactive`](interactive.md) | 18 | 6 | ☐ |
 

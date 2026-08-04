@@ -1,0 +1,2436 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "singleValue": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Giá "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#000000"
+       },
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "singleValueWithX": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4",
+        "x": "0",
+        "dy": "5"
+       },
+       "children": [
+        {
+         "text": "Phiên: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#000000"
+       },
+       "children": [
+        {
+         "text": "20 "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Giá "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#000000"
+       },
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "singleValueStyled": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(10, 20)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "14",
+      "x": "0",
+      "y": "0",
+      "font-weight": "700"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#26a69a"
+       },
+       "children": [
+        {
+         "text": "Khối lượng "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#333333"
+       },
+       "children": [
+        {
+         "text": "566844.00"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "singleValueNoCursor": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Giá "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#000000"
+       },
+       "children": [
+        {
+         "text": "96.21"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "singleValueOriginFunction": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(660, 340)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Giá "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#000000"
+       },
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "ohlc": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip-hover",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "O: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "102.11"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " H: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "103.34"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " L: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "99.61"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " C: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": " −0.96 (−0.94%)"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "ohlcStyled": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip-hover",
+    "transform": "translate(8, 16)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "12",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Mở "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#111111"
+       },
+       "children": [
+        {
+         "text": "102.11"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " Cao "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#111111"
+       },
+       "children": [
+        {
+         "text": "103.34"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " Thấp "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#111111"
+       },
+       "children": [
+        {
+         "text": "99.61"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " Đóng "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#111111"
+       },
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#111111"
+       },
+       "children": [
+        {
+         "text": " −0.96 (−0.94%)"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "ohlcTextFillByItem": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip-hover",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "O: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#ef5350"
+       },
+       "children": [
+        {
+         "text": "102.11"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " H: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#ef5350"
+       },
+       "children": [
+        {
+         "text": "103.34"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " L: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#ef5350"
+       },
+       "children": [
+        {
+         "text": "99.61"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " C: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#ef5350"
+       },
+       "children": [
+        {
+         "text": "101.15"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#ef5350"
+       },
+       "children": [
+        {
+         "text": " −0.96 (−0.94%)"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "ohlcNoData": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip-hover",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "O: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "n/a"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " H: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "n/a"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " L: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "n/a"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " C: "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "n/a"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": " n/a"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "rsiTooltip": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "RSI (14): "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "60.00"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "rsiTooltipNoValue": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "RSI (14): "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "n/a"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bollingerTooltip": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(8, 8)",
+    "class": "chart-tooltip chart-bollingerband-tooltip"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "BB(close, 20, 2, sma): "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "text": "105.34, 101.47, 97.61"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "macdTooltip": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "MACD ("
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#0093FF"
+       },
+       "children": [
+        {
+         "text": "26"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": ","
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#0093FF"
+       },
+       "children": [
+        {
+         "text": "12"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "):"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#0093FF"
+       },
+       "children": [
+        {
+         "text": "2.00"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Signal ("
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#D84315"
+       },
+       "children": [
+        {
+         "text": "9"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "):"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#D84315"
+       },
+       "children": [
+        {
+         "text": "1.67"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "Divergence:"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "0.33"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "stochasticTooltip": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-tooltip",
+    "transform": "translate(0, 0)"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "STO %K("
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#74D400"
+       },
+       "children": [
+        {
+         "text": "14, 3"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "): "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#74D400"
+       },
+       "children": [
+        {
+         "text": "50.00"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": " %D ("
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#EA2BFF"
+       },
+       "children": [
+        {
+         "text": "3"
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "class": "chart-tooltip-label",
+        "fill": "#4682B4"
+       },
+       "children": [
+        {
+         "text": "): "
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {
+        "fill": "#EA2BFF"
+       },
+       "children": [
+        {
+         "text": "60.00"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "movingAverageTooltip": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 10)",
+    "class": "chart-tooltip chart-moving-average-tooltip"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "line",
+       "attrs": {
+        "x1": "0",
+        "y1": "2",
+        "x2": "0",
+        "y2": "28",
+        "stroke": "#1f77b4",
+        "stroke-width": "4"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "SMA (10)"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "rect",
+       "attrs": {
+        "x": "0",
+        "y": "0",
+        "width": "55",
+        "height": "30",
+        "fill": "none",
+        "stroke": "none"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(65, 0)"
+     },
+     "children": [
+      {
+       "tag": "line",
+       "attrs": {
+        "x1": "0",
+        "y1": "2",
+        "x2": "0",
+        "y2": "28",
+        "stroke": "#ff7f0e",
+        "stroke-width": "4"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "EMA (20)"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "rect",
+       "attrs": {
+        "x": "0",
+        "y": "0",
+        "width": "55",
+        "height": "30",
+        "fill": "none",
+        "stroke": "none"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltip_horizontal": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 0)",
+    "class": "chart-tooltip chart-group-tooltip"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "rect",
+       "attrs": {
+        "x": "0",
+        "y": "-6",
+        "width": "6",
+        "height": "6",
+        "fill": "#26a69a"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "8",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(60, 0)"
+     },
+     "children": [
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "0",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltip_horizontalRows": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 0)",
+    "class": "chart-tooltip chart-group-tooltip"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "line",
+       "attrs": {
+        "x1": "0",
+        "y1": "2",
+        "x2": "0",
+        "y2": "28",
+        "stroke": "#26a69a",
+        "stroke-width": "4px"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15",
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(60, 0)"
+     },
+     "children": [
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15",
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltip_horizontalInline": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 0)",
+    "class": "chart-tooltip chart-group-tooltip"
+   },
+   "children": [
+    {
+     "tag": "text",
+     "attrs": {
+      "class": "chart-tooltip",
+      "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+      "font-size": "11",
+      "x": "0",
+      "y": "0"
+     },
+     "children": [
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "tspan",
+       "attrs": {},
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltip_vertical": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 0)",
+    "class": "chart-tooltip chart-group-tooltip"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "rect",
+       "attrs": {
+        "x": "0",
+        "y": "-6",
+        "width": "6",
+        "height": "6",
+        "fill": "#26a69a"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "8",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 13)"
+     },
+     "children": [
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "0",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltip_verticalRows": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(0, 0)",
+    "class": "chart-tooltip chart-group-tooltip"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "line",
+       "attrs": {
+        "x1": "0",
+        "y1": "2",
+        "x2": "0",
+        "y2": "28",
+        "stroke": "#26a69a",
+        "stroke-width": "4px"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15",
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 29.9)"
+     },
+     "children": [
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "5",
+        "y": "11"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "x": "5",
+          "dy": "15",
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "groupTooltipCorner": {
+   "tag": "g",
+   "attrs": {
+    "transform": "translate(740, 320)",
+    "class": "chart-tooltip chart-group-tooltip",
+    "text-anchor": "end"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(0, 0)"
+     },
+     "children": [
+      {
+       "tag": "rect",
+       "attrs": {
+        "x": "0",
+        "y": "-6",
+        "width": "6",
+        "height": "6",
+        "fill": "#26a69a"
+       },
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "8",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Đóng"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#26a69a"
+         },
+         "children": [
+          {
+           "text": "101.15"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate(60, 0)"
+     },
+     "children": [
+      {
+       "tag": "text",
+       "attrs": {
+        "class": "chart-tooltip",
+        "font-family": "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "11",
+        "x": "0",
+        "y": "0"
+       },
+       "children": [
+        {
+         "tag": "tspan",
+         "attrs": {
+          "class": "chart-tooltip-label",
+          "fill": "#4682B4"
+         },
+         "children": [
+          {
+           "text": "Mở"
+          },
+          {
+           "text": ": "
+          }
+         ]
+        },
+        {
+         "tag": "tspan",
+         "attrs": {
+          "fill": "#ef5350"
+         },
+         "children": [
+          {
+           "text": "102.11"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "labelAnnotation": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-enable-interaction chart-annotate chart-default-cursor"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-label-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "0",
+        "y": "193.584",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "12",
+        "fill": "#26a69a",
+        "opacity": "1",
+        "transform": "rotate(0, 0, 193.584)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "▲"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-label-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "175.384615",
+        "y": "168.096",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "12",
+        "fill": "#26a69a",
+        "opacity": "1",
+        "transform": "rotate(0, 175.3846153846154, 168.09600000000006)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "▲"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-label-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "350.769231",
+        "y": "187.248",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "12",
+        "fill": "#26a69a",
+        "opacity": "1",
+        "transform": "rotate(0, 350.7692307692308, 187.24800000000002)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "▲"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-label-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "526.153846",
+        "y": "192.576",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "12",
+        "fill": "#26a69a",
+        "opacity": "1",
+        "transform": "rotate(0, 526.1538461538462, 192.5760000000001)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "▲"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-label-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "701.538462",
+        "y": "237.504",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "12",
+        "fill": "#26a69a",
+        "opacity": "1",
+        "transform": "rotate(0, 701.5384615384615, 237.50399999999996)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "▲"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "svgPathAnnotation": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-enable-interaction chart-annotate chart-default-cursor"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-svg-path-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "transform": "translate(-6,242)",
+        "d": "M0,0L6,10L-6,10Z",
+        "fill": "#ef5350",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-svg-path-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "transform": "translate(208,184)",
+        "d": "M0,0L6,10L-6,10Z",
+        "fill": "#ef5350",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-svg-path-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "transform": "translate(423,236)",
+        "d": "M0,0L6,10L-6,10Z",
+        "fill": "#ef5350",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-svg-path-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": []
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "transform": "translate(637,250)",
+        "d": "M0,0L6,10L-6,10Z",
+        "fill": "#ef5350",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  "barAnnotation": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-enable-interaction chart-annotate chart-default-cursor"
+   },
+   "children": [
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-bar-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": [
+        {
+         "text": "phiên 0"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "0",
+        "y": "199.584",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "10",
+        "fill": "#000000",
+        "opacity": "1",
+        "transform": "rotate(90, 0, 199.584)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "mua"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "0",
+        "y": "199.584",
+        "dx": "2",
+        "dy": "-4",
+        "font-size": "10",
+        "fill": "#000000",
+        "transform": "rotate(-45, 0, 199.584)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "★"
+        }
+       ]
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M0,199.584L4,207.584L-4,207.584Z",
+        "fill": "#000000",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-bar-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": [
+        {
+         "text": "phiên 13"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "253.333333",
+        "y": "156.528",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "10",
+        "fill": "#000000",
+        "opacity": "1",
+        "transform": "rotate(90, 253.33333333333331, 156.52800000000008)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "mua"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "253.333333",
+        "y": "156.528",
+        "dx": "2",
+        "dy": "-4",
+        "font-size": "10",
+        "fill": "#000000",
+        "transform": "rotate(-45, 253.33333333333331, 156.52800000000008)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "★"
+        }
+       ]
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M253.33333333333331,156.52800000000008L257.3333333333333,164.52800000000008L249.33333333333331,164.52800000000008Z",
+        "fill": "#000000",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-bar-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": [
+        {
+         "text": "phiên 26"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "506.666667",
+        "y": "191.664",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "10",
+        "fill": "#000000",
+        "opacity": "1",
+        "transform": "rotate(90, 506.66666666666663, 191.66400000000004)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "mua"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "506.666667",
+        "y": "191.664",
+        "dx": "2",
+        "dy": "-4",
+        "font-size": "10",
+        "fill": "#000000",
+        "transform": "rotate(-45, 506.66666666666663, 191.66400000000004)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "★"
+        }
+       ]
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M506.66666666666663,191.66400000000004L510.66666666666663,199.66400000000004L502.66666666666663,199.66400000000004Z",
+        "fill": "#000000",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "class": "chart-bar-annotation"
+     },
+     "children": [
+      {
+       "tag": "title",
+       "attrs": {},
+       "children": [
+        {
+         "text": "phiên 39"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "760",
+        "y": "236.736",
+        "font-family": "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        "font-size": "10",
+        "fill": "#000000",
+        "opacity": "1",
+        "transform": "rotate(90, 760, 236.736)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "mua"
+        }
+       ]
+      },
+      {
+       "tag": "text",
+       "attrs": {
+        "x": "760",
+        "y": "236.736",
+        "dx": "2",
+        "dy": "-4",
+        "font-size": "10",
+        "fill": "#000000",
+        "transform": "rotate(-45, 760, 236.736)",
+        "text-anchor": "middle"
+       },
+       "children": [
+        {
+         "text": "★"
+        }
+       ]
+      },
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M760,236.736L764,244.736L756,244.736Z",
+        "fill": "#000000",
+        "opacity": "1"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

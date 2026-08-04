@@ -44727,6 +44727,2013 @@
     "stroke"
    ]
   ],
+  "crossHairCursor": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "setLineDash",
+    [
+     4,
+     6
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    140.5
+   ],
+   [
+    "lineTo",
+    760,
+    140.5
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "setLineDash",
+    [
+     4,
+     6
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    390,
+    0
+   ],
+   [
+    "lineTo",
+    390,
+    360
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "crossHairCursorFree": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "setLineDash",
+    [
+     4,
+     6
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    140.5
+   ],
+   [
+    "lineTo",
+    760,
+    140.5
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "setLineDash",
+    [
+     4,
+     6
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    380.5,
+    0
+   ],
+   [
+    "lineTo",
+    380.5,
+    360
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "cursor": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    140.5
+   ],
+   [
+    "lineTo",
+    760,
+    140.5
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    390,
+    0
+   ],
+   [
+    "lineTo",
+    390,
+    360
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "cursorNoY": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    390,
+    0
+   ],
+   [
+    "lineTo",
+    390,
+    360
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "cursorShape": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    140.5
+   ],
+   [
+    "lineTo",
+    760,
+    140.5
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set fillStyle",
+    "rgba(0,0,0,0.1)"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillRect",
+    380,
+    0,
+    19.487179,
+    360
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "cursorShapeDashed": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set strokeStyle",
+    "rgba(55, 71, 79, 0.8)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    140.5
+   ],
+   [
+    "lineTo",
+    760,
+    140.5
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set strokeStyle",
+    "rgba(0, 0, 0, 0.5)"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    380,
+    0,
+    19.487179,
+    360
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "cursorHidden": [],
+  "currentCoordinate": [
+   [
+    "set fillStyle",
+    "#2196f3"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "arc",
+    390,
+    199,
+    3,
+    0,
+    6.283185,
+    false
+   ],
+   [
+    "fill"
+   ]
+  ],
+  "currentCoordinateStroked": [
+   [
+    "set fillStyle",
+    "#ef5350"
+   ],
+   [
+    "set strokeStyle",
+    "#000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "arc",
+    390,
+    199,
+    5,
+    0,
+    6.283185,
+    false
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "mouseCoordinateX": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "measureText",
+    "t20"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    363.24359,
+    360,
+    52,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "t20",
+    389.74359,
+    370
+   ]
+  ],
+  "mouseCoordinateXTop": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "measureText",
+    "t20"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    363.24359,
+    -20,
+    52,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "t20",
+    389.74359,
+    -10
+   ]
+  ],
+  "mouseCoordinateXFree": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "measureText",
+    "t19.5"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    353.5,
+    360,
+    52,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "t19.5",
+    380,
+    370
+   ]
+  ],
+  "mouseCoordinateXV2": [
+   [
+    "set font",
+    "  13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "measureText",
+    "t20"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "set strokeStyle",
+    "rgb(35, 35, 35)"
+   ],
+   [
+    "set fillStyle",
+    "rgb(255, 255, 255)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    390,
+    360
+   ],
+   [
+    "lineTo",
+    397,
+    367
+   ],
+   [
+    "lineTo",
+    418,
+    367
+   ],
+   [
+    "lineTo",
+    418,
+    388
+   ],
+   [
+    "lineTo",
+    362,
+    388
+   ],
+   [
+    "lineTo",
+    362,
+    367
+   ],
+   [
+    "lineTo",
+    383,
+    367
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set fillStyle",
+    "rgb(35, 35, 35)"
+   ],
+   [
+    "set textBaseline",
+    "hanging"
+   ],
+   [
+    "fillText",
+    "t20",
+    390,
+    373
+   ]
+  ],
+  "mouseCoordinateXV2Top": [
+   [
+    "set font",
+    "  13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "measureText",
+    "t20"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "set strokeStyle",
+    "rgb(35, 35, 35)"
+   ],
+   [
+    "set fillStyle",
+    "rgb(255, 255, 255)"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    390,
+    0
+   ],
+   [
+    "lineTo",
+    397,
+    -7
+   ],
+   [
+    "lineTo",
+    418,
+    -7
+   ],
+   [
+    "lineTo",
+    418,
+    -28
+   ],
+   [
+    "lineTo",
+    362,
+    -28
+   ],
+   [
+    "lineTo",
+    362,
+    -7
+   ],
+   [
+    "lineTo",
+    383,
+    -7
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set fillStyle",
+    "rgb(35, 35, 35)"
+   ],
+   [
+    "set textBaseline",
+    "alphabetic"
+   ],
+   [
+    "fillText",
+    "t20",
+    390,
+    -13
+   ]
+  ],
+  "mouseCoordinateY": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    760.5,
+    129,
+    50,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "105.28",
+    785,
+    140
+   ]
+  ],
+  "mouseCoordinateYLeft": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    -51,
+    129
+   ],
+   [
+    "lineTo",
+    -1,
+    129
+   ],
+   [
+    "lineTo",
+    5,
+    139.5
+   ],
+   [
+    "lineTo",
+    -1,
+    150
+   ],
+   [
+    "lineTo",
+    -51,
+    150
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "105.28",
+    -25,
+    140
+   ]
+  ],
+  "mouseCoordinateYFit": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "measureText",
+    "105.28"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#4C525E"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    760.5,
+    129,
+    52,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "105.28",
+    786,
+    140
+   ]
+  ],
+  "mouseCoordinateYOtherPane": [],
+  "priceCoordinate": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    158.4
+   ],
+   [
+    "lineTo",
+    760,
+    158.4
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#BAB8b8"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    -51.5,
+    147.4,
+    50,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "104.00",
+    -25,
+    158.4
+   ]
+  ],
+  "priceCoordinateRight": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    244.8
+   ],
+   [
+    "lineTo",
+    760,
+    244.8
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#BAB8b8"
+   ],
+   [
+    "set strokeStyle",
+    "#333"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    753,
+    244.3
+   ],
+   [
+    "lineTo",
+    761,
+    233.8
+   ],
+   [
+    "lineTo",
+    811,
+    233.8
+   ],
+   [
+    "lineTo",
+    811,
+    254.8
+   ],
+   [
+    "lineTo",
+    761,
+    254.8
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "98.00",
+    785,
+    244.8
+   ]
+  ],
+  "priceCoordinateOutside": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ]
+  ],
+  "edgeIndicator": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    [
+     2,
+     2
+    ]
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    760,
+    271
+   ],
+   [
+    "lineTo",
+    760,
+    271
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#8a8a8a"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    760.5,
+    260,
+    50,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "96.21",
+    785,
+    271
+   ]
+  ],
+  "edgeIndicatorFirst": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    [
+     2,
+     2
+    ]
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    245
+   ],
+   [
+    "lineTo",
+    760,
+    245
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#8a8a8a"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    -51.5,
+    234,
+    50,
+    21
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "98.00",
+    -25,
+    245
+   ]
+  ],
+  "edgeIndicatorFull": [
+   [
+    "set font",
+    "13px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    [
+     2,
+     2
+    ]
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    271
+   ],
+   [
+    "lineTo",
+    760,
+    271
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#ef5350"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    755,
+    270.5
+   ],
+   [
+    "lineTo",
+    761,
+    260
+   ],
+   [
+    "lineTo",
+    811,
+    260
+   ],
+   [
+    "lineTo",
+    811,
+    281
+   ],
+   [
+    "lineTo",
+    761,
+    281
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "96.21",
+    785,
+    271
+   ]
+  ],
+  "hoverTooltip": [
+   [
+    "set font",
+    "bold 14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "set textAlign",
+    "left"
+   ],
+   [
+    "measureText",
+    "Mở  102.11"
+   ],
+   [
+    "measureText",
+    "Đóng  101.15"
+   ],
+   [
+    "measureText",
+    "phiên 20"
+   ],
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set fillStyle",
+    "rgba(33, 148, 243, 0.1)"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    380,
+    0,
+    19.487179,
+    360
+   ],
+   [
+    "fill"
+   ],
+   [
+    "translate",
+    318.25641,
+    66
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    4,
+    0
+   ],
+   [
+    "lineTo",
+    54,
+    0
+   ],
+   [
+    "quadraticCurveTo",
+    58,
+    0,
+    58,
+    4
+   ],
+   [
+    "lineTo",
+    58,
+    66
+   ],
+   [
+    "quadraticCurveTo",
+    58,
+    70,
+    54,
+    70
+   ],
+   [
+    "lineTo",
+    4,
+    70
+   ],
+   [
+    "quadraticCurveTo",
+    0,
+    70,
+    0,
+    66
+   ],
+   [
+    "lineTo",
+    0,
+    4
+   ],
+   [
+    "quadraticCurveTo",
+    0,
+    0,
+    4,
+    0
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "set fillStyle",
+    "rgba(250, 250, 250, 1)"
+   ],
+   [
+    "set shadowColor",
+    "#898"
+   ],
+   [
+    "set shadowBlur",
+    4
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set shadowBlur",
+    0
+   ],
+   [
+    "set strokeStyle",
+    "rgba(33, 148, 243)"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set font",
+    "bold 14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "set textAlign",
+    "left"
+   ],
+   [
+    "fillText",
+    "phiên 20",
+    8,
+    20.6
+   ],
+   [
+    "measureText",
+    "Mở"
+   ],
+   [
+    "measureText",
+    "Đóng"
+   ],
+   [
+    "set font",
+    "14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#26a69a"
+   ],
+   [
+    "fillText",
+    "Mở",
+    8,
+    38.6
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "fillText",
+    "102.11",
+    58,
+    38.6
+   ],
+   [
+    "set font",
+    "14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "fillText",
+    "Đóng",
+    8,
+    56.6
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "fillText",
+    "101.15",
+    58,
+    56.6
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "hoverTooltipLeft": [
+   [
+    "set font",
+    "bold 14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "set textAlign",
+    "left"
+   ],
+   [
+    "measureText",
+    "Giá  96.79"
+   ],
+   [
+    "measureText",
+    "x"
+   ],
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "set fillStyle",
+    "rgba(33, 148, 243, 0.1)"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "rect",
+    29.230769,
+    0,
+    19.487179,
+    360
+   ],
+   [
+    "fill"
+   ],
+   [
+    "translate",
+    52.74359,
+    244
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    4,
+    0
+   ],
+   [
+    "lineTo",
+    54,
+    0
+   ],
+   [
+    "quadraticCurveTo",
+    58,
+    0,
+    58,
+    4
+   ],
+   [
+    "lineTo",
+    58,
+    48
+   ],
+   [
+    "quadraticCurveTo",
+    58,
+    52,
+    54,
+    52
+   ],
+   [
+    "lineTo",
+    4,
+    52
+   ],
+   [
+    "quadraticCurveTo",
+    0,
+    52,
+    0,
+    48
+   ],
+   [
+    "lineTo",
+    0,
+    4
+   ],
+   [
+    "quadraticCurveTo",
+    0,
+    0,
+    4,
+    0
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "set fillStyle",
+    "rgba(250, 250, 250, 1)"
+   ],
+   [
+    "set shadowColor",
+    "#898"
+   ],
+   [
+    "set shadowBlur",
+    4
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set shadowBlur",
+    0
+   ],
+   [
+    "set strokeStyle",
+    "rgba(33, 148, 243)"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set font",
+    "bold 14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "set textAlign",
+    "left"
+   ],
+   [
+    "fillText",
+    "x",
+    8,
+    20.6
+   ],
+   [
+    "measureText",
+    "Giá"
+   ],
+   [
+    "set font",
+    "14px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "fillText",
+    "Giá",
+    8,
+    38.6
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "fillText",
+    "96.79",
+    58,
+    38.6
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "label": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "save"
+   ],
+   [
+    "translate",
+    380,
+    180
+   ],
+   [
+    "rotate",
+    0
+   ],
+   [
+    "set font",
+    "bold 64px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#dcdcdc"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "AKAO",
+    0,
+    0
+   ],
+   [
+    "restore"
+   ]
+  ],
+  "labelRotated": [
+   [
+    "save"
+   ],
+   [
+    "setTransform",
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    "scale",
+    1,
+    1
+   ],
+   [
+    "translate",
+    0.5,
+    10.5
+   ],
+   [
+    "save"
+   ],
+   [
+    "translate",
+    380,
+    180
+   ],
+   [
+    "rotate",
+    -0.523599
+   ],
+   [
+    "set font",
+    "bold 40px -apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#eeeeee"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "AKAO",
+    0,
+    0
+   ],
+   [
+    "restore"
+   ]
+  ],
   "axisX": [
    [
     "save"

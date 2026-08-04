@@ -17,4 +17,9 @@ export * from "./utils/index.js"
 export * from "./axes/index.js"
 export * from "./series/index.js"
 
+// bậc 4
+export * from "./coordinates/index.js"
+export * from "./tooltip/index.js"
+export * from "./annotations/index.js"
+
 export const version = "0.0.0"

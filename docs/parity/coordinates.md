@@ -4,35 +4,35 @@ Nguồn: `react-financial-charts@2.0.1` (`745c7c0`), `packages/coordinates/src`.
 
 Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý bỏ (bắt buộc ghi lý do).
 
-Một dòng chỉ được đánh ☑ khi đã có bằng chứng kèm theo — test số học, hoặc ảnh so sánh với story tương ứng của bản gốc. Đánh dấu xong mà không có bằng chứng là nói dối.
+## Export runtime (8) — đã làm **8**
 
-## Export runtime (8)
+| export | file nguồn | tt | bằng chứng |
+|---|---|:--:|---|
+| `CrossHairCursor` | `CrossHairCursor.tsx` | ☑ | 2 bài chuỗi lệnh: bám điểm và tự do |
+| `Cursor` | `Cursor.tsx` | ☑ | 5 bài: đầy đủ, bỏ trục y, dạng dải, dải có nét đứt, và khi con trỏ ra ngoài |
+| `CurrentCoordinate` | `CurrentCoordinate.tsx` | ☑ | 2 bài |
+| `MouseCoordinateX` | `MouseCoordinateX.tsx` | ☑ | 3 bài: dưới, trên, không bám điểm |
+| `MouseCoordinateXV2` | `MouseCoordinateXV2.tsx` | ☑ | 2 bài |
+| `MouseCoordinateY` | `MouseCoordinateY.tsx` | ☑ | 4 bài, gồm cả khi con trỏ ở pane khác |
+| `PriceCoordinate` | `PriceCoordinate.tsx` | ☑ | 3 bài, gồm cả giá nằm ngoài khung nhìn |
+| `EdgeIndicator` | `EdgeIndicator.tsx` | ☑ | 3 bài: cuối, đầu, và trải hết bề ngang |
 
-| export | loại | file nguồn | tt | ghi chú |
-|---|---|---|:--:|---|
-| `CrossHairCursor` | class | `CrossHairCursor.tsx` | ☐ | |
-| `CurrentCoordinate` | class | `CurrentCoordinate.tsx` | ☐ | |
-| `Cursor` | class | `Cursor.tsx` | ☐ | |
-| `EdgeIndicator` | class | `EdgeIndicator.tsx` | ☐ | |
-| `MouseCoordinateX` | class | `MouseCoordinateX.tsx` | ☐ | |
-| `MouseCoordinateXV2` | class | `MouseCoordinateXV2.tsx` | ☐ | |
-| `MouseCoordinateY` | class | `MouseCoordinateY.tsx` | ☐ | |
-| `PriceCoordinate` | class | `PriceCoordinate.tsx` | ☐ | |
+Nội bộ: `EdgeCoordinateV3` (phần vẽ dùng chung) đã port thành `edgeGeometry` + `drawEdgeCoordinate`. `EdgeCoordinate` và `EdgeCoordinateV2` — hai bản cũ hơn còn sót trong repo gốc nhưng **không được export và không nơi nào dùng** — ⊘ bỏ.
 
-## Export chỉ-kiểu (5)
+## Bằng chứng
 
-Không tồn tại khi chạy nên không cần port. Liệt kê vì chúng định nghĩa **hợp đồng props** của bản gốc — dùng làm nguồn tra cứu khi đặt tên attribute/property cho web component, rồi ghi lại chỗ nào cố ý đặt khác.
+Cùng cách của bậc 3: chuỗi lệnh canvas so từng lệnh một. Nhóm này chỉ vẽ khi con trỏ đang ở đâu đó, nên dữ liệu kiểm mang theo trạng thái chuột thật (`show`, `mouseXY`, `currentItem`, `currentCharts`) — kể cả các trạng thái mà **đúng ra phải không vẽ gì**: con trỏ rời chart, con trỏ ở pane khác, giá vượt khỏi khung nhìn.
 
-<details><summary>Danh sách</summary>
+Đã kiểm rằng bộ này biết fail:
 
-- `CrossHairCursorProps`
-- `CurrentCoordinateProps`
-- `CursorProps`
-- `EdgeIndicatorProps`
-- `MouseCoordinateXProps`
-
-</details>
+| sửa hỏng chỗ nào | số giá trị lệch |
+|---|---:|
+| bỏ bù `strokeWidth` khi canh dọc hộp nhãn | 20 |
+| `PriceCoordinate` luôn hiện dù ngoài khung nhìn | 16 |
+| `MouseCoordinateY` bỏ lọc theo pane | 11 |
+| bỏ đệm 10px của hộp co theo chữ | 8 |
+| `Cursor` bỏ nửa pixel của đường ngang | 3 |
 
 ## Lệch có chủ ý so với bản gốc
 
-_Chưa có._ Mỗi khác biệt so với bản gốc phải ghi vào đây kèm lý do, ngay khi tạo ra nó.
+`Cursor`, `CrossHairCursor` và `HoverTooltip` của bản gốc đọc `margin`/`ratio` từ `ChartCanvasContext`. Ở đây chúng nhận qua props (phần tử lấy sẵn từ canvas) **hoặc** qua `moreProps` — vì margin và tỉ lệ màn hình là chuyện của cả chart, không của riêng con trỏ.

@@ -1,5 +1,8 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
 import { CircleMarker } from "../../src/series/index.js"
+import "../../src/coordinates/index.js"
+import "../../src/tooltip/index.js"
+import "../../src/annotations/index.js"
 import "../../src/axes/index.js"
 import { discontinuousTimeScaleProviderBuilder } from "../../src/scales/index.js"
 
@@ -758,6 +761,89 @@ TESTS["cả 25 series dựng được như phần tử trong chart thật"] = as
 
     t.is("series bên trong bám lớp dữ liệu thay thế", inner.canvas, alternate)
     t.gt("lớp thay thế lọc ra được dữ liệu trong khung nhìn", alternate.contextValues.plotData.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["coordinates, tooltip và annotation dựng được và vẽ ra pixel"] = async () => {
+    const t = makeChecker()
+
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(makeData(120))
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "bậc4",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+
+    const wanted = [
+        ["chart-cross-hair-cursor", {}],
+        ["chart-cursor", {}],
+        ["chart-current-coordinate", { yAccessor: d => d.close }],
+        ["chart-mouse-coordinate-x", { displayFormat: v => `t${v}` }],
+        ["chart-mouse-coordinate-x-v2", { displayFormat: v => `t${v}` }],
+        ["chart-mouse-coordinate-y", { displayFormat: v => v.toFixed(2) }],
+        ["chart-price-coordinate", { price: 100 }],
+        ["chart-edge-indicator", { yAccessor: d => d.close }],
+        ["chart-ohlc-tooltip", {}],
+        ["chart-single-value-tooltip", { yLabel: "Giá", yAccessor: d => d.close }],
+        ["chart-hover-tooltip", {
+            tooltip: { content: ({ currentItem }) => ({ x: "x", y: [{ label: "C", value: String(currentItem.close) }] }) },
+        }],
+        ["chart-label", { text: "AKAO", x: () => 400, y: () => 200 }],
+        ["chart-annotate", {
+            with: props => ({ tag: "circle", attrs: { cx: props.xScale(props.xAccessor(props.datum)), cy: 20, r: 3, fill: "#ff00ff" } }),
+            when: (d, i) => i % 20 === 0,
+        }],
+    ]
+
+    const made = []
+    for (const [tag, props] of wanted) {
+        const element = document.createElement(tag)
+        t.ok(`${tag} đã đăng ký`, element.constructor !== HTMLElement)
+        Object.assign(element, props)
+        pane.append(element)
+        made.push(element)
+    }
+
+    // một series để có gì đó dưới các lớp trên
+    const candles = document.createElement("chart-candlestick-series")
+    pane.insertBefore(candles, pane.firstChild)
+
+    canvas.append(pane)
+    stage.append(canvas)
+    await settle()
+
+    // đưa chuột vào để các lớp phụ thuộc con trỏ có việc mà làm
+    await moveMouse(canvas, 400, 150)
+
+    const mouseContext = canvas.getCanvasContexts().mouseCoord
+    const mousePixels = mouseContext.getImageData(0, 0, mouseContext.canvas.width, mouseContext.canvas.height).data
+    let painted = 0
+    for (let i = 3; i < mousePixels.length; i += 4) if (mousePixels[i] > 0) painted++
+
+    t.gt("lớp chuột có được vẽ", painted, 500)
+
+    // annotation vẽ bằng SVG nên phải có node thật trong pane
+    const annotate = made.find(e => e.localName === "chart-annotate")
+    const circles = annotate.canvas.paneGroup(0).querySelectorAll("circle")
+    t.gt("annotation sinh ra node SVG thật", circles.length, 0)
+    t.is("và nó là circle như đã mô tả", circles[0].getAttribute("fill"), "#ff00ff")
+
+    // tooltip SVG cũng vậy
+    const ohlcTooltip = made.find(e => e.localName === "chart-ohlc-tooltip")
+    const texts = ohlcTooltip.canvas.paneGroup(0).querySelectorAll("text")
+    t.gt("tooltip sinh ra chữ thật, không phải pixel", texts.length, 0)
+    t.ok("chữ trong tooltip đọc được", texts[0].textContent.includes("O"))
 
     cleanup()
     return t.checks

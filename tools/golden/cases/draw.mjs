@@ -217,6 +217,141 @@ export function run(api) {
         onIndicators(),
     )
 
+    // ── coordinates ───────────────────────────────────────────────────────────────
+    //
+    // Nhóm này chỉ vẽ khi con trỏ đang ở đâu đó, nên moreProps phải mang theo trạng thái
+    // chuột thật: show, mouseXY, currentItem, currentCharts.
+
+    const timeFormat = value => `t${value}`
+    const priceFormat = value => value.toFixed(2)
+
+    const hovering = extra => ({
+        show: true,
+        mouseXY: [380, 140],
+        currentItem: rows[20],
+        currentCharts: [0],
+        displayXAccessor: xAccessor,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        ratio: 1,
+        ...extra,
+    })
+
+    out.crossHairCursor = record(api.drawCrossHairCursor, {}, hovering())
+    out.crossHairCursorFree = record(api.drawCrossHairCursor, { snapX: false }, hovering())
+    out.cursor = record(api.drawCursor, {}, hovering())
+    out.cursorNoY = record(api.drawCursor, { disableYCursor: true }, hovering())
+    out.cursorShape = record(
+        api.drawCursor,
+        { useXCursorShape: true, xCursorShapeFillStyle: "rgba(0,0,0,0.1)" },
+        hovering(),
+    )
+    out.cursorShapeDashed = record(
+        api.drawCursor,
+        { useXCursorShape: true, xCursorShapeStrokeDasharray: "ShortDash" },
+        hovering(),
+    )
+    // con trỏ ra ngoài chart: phải không vẽ gì
+    out.cursorHidden = record(api.drawCursor, {}, hovering({ show: false }))
+
+    out.currentCoordinate = record(api.drawCurrentCoordinate, { yAccessor: close }, hovering())
+    out.currentCoordinateStroked = record(
+        api.drawCurrentCoordinate,
+        { yAccessor: close, r: 5, strokeStyle: "#000", fillStyle: d => (d.close > d.open ? "#26a69a" : "#ef5350") },
+        hovering(),
+    )
+
+    out.mouseCoordinateX = record(api.drawMouseCoordinateX, { displayFormat: timeFormat }, hovering())
+    out.mouseCoordinateXTop = record(
+        api.drawMouseCoordinateX,
+        { displayFormat: timeFormat, at: "top", orient: "top" },
+        hovering(),
+    )
+    out.mouseCoordinateXFree = record(
+        api.drawMouseCoordinateX,
+        { displayFormat: timeFormat, snapX: false },
+        hovering(),
+    )
+    out.mouseCoordinateXV2 = record(api.drawMouseCoordinateXV2, { displayFormat: timeFormat }, hovering())
+    out.mouseCoordinateXV2Top = record(
+        api.drawMouseCoordinateXV2,
+        { displayFormat: timeFormat, at: "top", orient: "top" },
+        hovering(),
+    )
+
+    out.mouseCoordinateY = record(api.drawMouseCoordinateY, { displayFormat: priceFormat }, hovering())
+    out.mouseCoordinateYLeft = record(
+        api.drawMouseCoordinateY,
+        { displayFormat: priceFormat, at: "left", orient: "left", arrowWidth: 6 },
+        hovering(),
+    )
+    out.mouseCoordinateYFit = record(
+        api.drawMouseCoordinateY,
+        { displayFormat: priceFormat, fitToText: true },
+        hovering(),
+    )
+    // chuột ở pane khác: phải im lặng
+    out.mouseCoordinateYOtherPane = record(
+        api.drawMouseCoordinateY,
+        { displayFormat: priceFormat },
+        hovering({ currentCharts: ["khác"] }),
+    )
+
+    out.priceCoordinate = record(api.drawPriceCoordinate, { price: 104 }, hovering())
+    out.priceCoordinateRight = record(
+        api.drawPriceCoordinate,
+        { price: 98, at: "right", orient: "right", arrowWidth: 8, stroke: "#333" },
+        hovering(),
+    )
+    // giá nằm ngoài khung nhìn: phải không vẽ gì
+    out.priceCoordinateOutside = record(api.drawPriceCoordinate, { price: 500 }, hovering())
+
+    out.edgeIndicator = record(api.drawEdgeIndicator, { yAccessor: close }, hovering())
+    out.edgeIndicatorFirst = record(
+        api.drawEdgeIndicator,
+        { yAccessor: close, itemType: "first", edgeAt: "left", orient: "left" },
+        hovering(),
+    )
+    out.edgeIndicatorFull = record(
+        api.drawEdgeIndicator,
+        { yAccessor: close, fullWidth: true, hideLine: false, arrowWidth: 6, fill: d => (d.close > d.open ? "#26a69a" : "#ef5350") },
+        hovering(),
+    )
+
+    // ── tooltip và annotation vẽ lên canvas ───────────────────────────────────────
+
+    out.hoverTooltip = record(
+        api.drawHoverTooltip,
+        {
+            tooltip: {
+                content: ({ currentItem }) => ({
+                    x: `phiên ${currentItem.index}`,
+                    y: [
+                        { label: "Mở", value: currentItem.open.toFixed(2), stroke: "#26a69a" },
+                        { label: "Đóng", value: currentItem.close.toFixed(2) },
+                    ],
+                }),
+            },
+        },
+        hovering(),
+    )
+    // con trỏ ở nửa trái: hộp lật sang phải thay vì tràn ra ngoài
+    out.hoverTooltipLeft = record(
+        api.drawHoverTooltip,
+        {
+            tooltip: {
+                content: ({ currentItem }) => ({ x: "x", y: [{ label: "Giá", value: currentItem.close.toFixed(2) }] }),
+            },
+        },
+        hovering({ mouseXY: [40, 300], currentItem: rows[2] }),
+    )
+
+    out.label = record(api.drawLabel, { text: "AKAO", x: () => 380, y: () => 180 }, hovering())
+    out.labelRotated = record(
+        api.drawLabel,
+        { text: "AKAO", x: () => 380, y: () => 180, rotate: -30, fontSize: 40, fillStyle: "#eeeeee" },
+        hovering(),
+    )
+
     // ── axes ──────────────────────────────────────────────────────────────────────
 
     const axisBase = {

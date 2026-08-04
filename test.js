@@ -35,6 +35,16 @@ const suites = [
         {
             ...(await import("./src/series/index.js")),
             ...(await import("./src/axes/index.js")),
+            ...(await import("./src/coordinates/index.js")),
+            ...(await import("./src/tooltip/index.js")),
+            ...(await import("./src/annotations/index.js")),
+        },
+    ],
+    [
+        await import("./tools/golden/cases/svg.mjs"),
+        {
+            ...(await import("./src/tooltip/index.js")),
+            ...(await import("./src/annotations/index.js")),
         },
     ],
 ]
