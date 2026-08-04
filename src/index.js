@@ -3,7 +3,10 @@
  * re-export không chứa logic.
  *
  * Mỗi vùng được thêm vào đây khi bậc tương ứng hoàn tất và có bằng chứng parity.
- * Danh sách trống nghĩa là chưa có gì dùng được — xem docs/parity/.
+ * Xem docs/parity/ để biết chính xác chỗ nào đã xong.
  */
+
+// bậc 1
+export * from "./scales/index.js"
 
 export const version = "0.0.0"

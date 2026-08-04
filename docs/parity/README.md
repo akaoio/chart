@@ -11,7 +11,7 @@ Không có mục nào được phép biến mất trong im lặng. Một export 
 
 | package | export runtime | bậc | tiến độ |
 |---|---:|:--:|---|
-| [`scales`](scales.md) | 5 | 1 | ☐ |
+| [`scales`](scales.md) | 5 | 1 | ☑ 5/5 |
 | [`core`](core.md) | 45 | 2 | ☐ |
 | [`utils`](utils.md) | 2 | 2 | ☐ |
 | [`axes`](axes.md) | 3 | 3 | ☐ |
@@ -40,6 +40,33 @@ Chúng giải quyết hai việc mà web component xử lý theo cách khác h�
 chart, không tách rời được.
 
 Các hàm thuần thực sự nằm ở `packages/core/src/utils/` (nội bộ, không export ra ngoài):
-`d3Window`, `ChartDataUtil`, `zipper`, `shallowEqual`… Đây mới là thứ test-được-tuyệt-đối ở
-bậc 1 cùng với `scales`. Không có mặt ở bảng parity vì bản gốc không coi chúng là API công
-khai, nhưng vẫn phải port đủ.
+`zipper`, `slidingWindow`, `shallowEqual`, `path`… Đây mới là thứ test-được-tuyệt-đối ở
+bậc 1 cùng với `scales`. Không có mặt ở bảng trên vì bản gốc không coi chúng là API công
+khai, nhưng vẫn phải port đủ — theo dõi ở [`core-utils.md`](core-utils.md).
+
+## Bằng chứng đến từ đâu
+
+Không ai đọc bản gốc rồi tự khẳng định port đúng. Cách làm là chạy **chính mã nguồn bản
+gốc** trong Node, ghi kết quả xuống `tools/golden/fixtures/`, rồi bắt bản port trả lời đúng
+những câu hỏi đó.
+
+Điểm mấu chốt: bài kiểm nằm ở `tools/golden/cases/`, và **cùng một file đó chạy cho cả hai
+phía** — một lần với mã nguồn gốc, một lần với bản port. Không có đường nào để hai bên lệch
+nhau về *cách* kiểm; chỉ còn lệch về *kết quả*.
+
+Bản gốc là TypeScript nhưng không cần build: `tools/golden/resolve-source.mjs` là một loader
+hook dịch `.ts`/`.tsx` ngay lúc nạp, bằng đúng bản TypeScript trong `node_modules` của repo
+gốc. Fixture đã commit nên `npm test` không cần repo gốc; chỉ khi sinh lại mới cần:
+
+```sh
+npm test                                          # so bản port với fixture
+CHART_SOURCE=~/react-financial-charts npm run golden   # sinh lại fixture
+```
+
+Múi giờ bị ép về `UTC` ở cả hai đầu. Không phải chuyện vặt: bản gốc chia mốc thời gian bằng
+`getHours`/`getDay`/`getMonth` — toàn giờ địa phương — nên cùng dữ liệu ở Hà Nội và ở London
+ra chỉ số khác nhau. Đó là chủ ý của bản gốc (một phiên giao dịch là chuyện địa phương), nên
+port giữ nguyên và cố định múi giờ khi kiểm.
+
+Một bộ test luôn xanh thì vô dụng, nên nó được kiểm ngược lại bằng cách sửa hỏng bản port
+rồi xem có bắt được không — kết quả ghi trong từng file parity.

@@ -11,6 +11,13 @@ Copyright (c) 2016 Julien Renaux
 Copyright (c) 2019 Reactive Markets
 Copyright (c) 2026 akaoio
 
+Parts of the original work were themselves taken from d3fc
+(https://github.com/ScottLogic/d3fc), also under the MIT License, and are
+carried into this port. Those parts keep their own notice, both here and in
+the file headers where they appear:
+
+Copyright (c) 2014-2015 Scott Logic Ltd.
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights

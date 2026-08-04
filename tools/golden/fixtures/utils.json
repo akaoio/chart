@@ -1,0 +1,369 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "identity": [
+   1,
+   "a",
+   null
+  ],
+  "noop": true,
+  "sign": [
+   -1,
+   -1,
+   0,
+   1,
+   1
+  ],
+  "functor": {
+   "wrapsValue": 7,
+   "passesFunctionThrough": 42
+  },
+  "path": {
+   "empty": true,
+   "emptyWithDefault": "fallback",
+   "deep": 42,
+   "missing": "fallback",
+   "singleKeyNotArray": 42,
+   "throughArray": 2,
+   "nullMidway": "·undefined·"
+  },
+  "isDefined": [
+   true,
+   true,
+   true,
+   false,
+   false,
+   true
+  ],
+  "isNotDefined": [
+   false,
+   true,
+   true
+  ],
+  "isObject": [
+   true,
+   false,
+   false,
+   false,
+   false,
+   true
+  ],
+  "headLast": {
+   "head": 3,
+   "first": 3,
+   "firstIsHead": true,
+   "last": 1,
+   "headEmpty": "·undefined·",
+   "lastEmpty": "·undefined·",
+   "headUndefinedArray": "·undefined·",
+   "lastUndefinedArray": "·undefined·",
+   "headWithAccessor": {
+    "v": 9
+   },
+   "lastWithAccessor": {
+    "v": 1
+   },
+   "headAccessorAllUndefined": "·undefined·"
+  },
+  "getClosestValue": {
+   "scalar": 10,
+   "array": 5,
+   "negative": -10
+  },
+  "mapObject": {
+   "values": [
+    1,
+    2
+   ],
+   "doubled": [
+    2,
+    4
+   ],
+   "withKeys": [
+    "a=1",
+    "b=2"
+   ],
+   "empty": []
+  },
+  "shallowEqual": [
+   true,
+   true,
+   false,
+   false,
+   false,
+   false,
+   true,
+   true,
+   false
+  ],
+  "zipper": {
+   "plain": [
+    1,
+    2,
+    3
+   ],
+   "combined": [
+    "a1",
+    "b2",
+    "c3"
+   ],
+   "ragged": [
+    11,
+    22
+   ],
+   "noArguments": [],
+   "threeWay": [
+    111,
+    222
+   ],
+   "combineGetter": true,
+   "chainsToSelf": true
+  },
+  "slidingWindow": {
+   "simple": [
+    "·undefined·",
+    "·undefined·",
+    "·undefined·",
+    "·undefined·",
+    97.576,
+    97.532,
+    97.656,
+    97.816,
+    98.378,
+    99.042,
+    99.802,
+    100.414
+   ],
+   "overRows": [
+    "·undefined·",
+    "·undefined·",
+    97.803333,
+    97.336667,
+    97.086667,
+    97.416667,
+    98.296667,
+    98.203333
+   ],
+   "undefinedValue": [
+    "—",
+    "—",
+    "1+2+3",
+    "2+3+4",
+    "3+4+5"
+   ],
+   "skipInitial": [
+    "·undefined·",
+    "·undefined·",
+    "·undefined·",
+    "3+4",
+    "4+5",
+    "5+6"
+   ],
+   "functorWindowSize": [
+    "·undefined·",
+    "1+2",
+    "2+3"
+   ],
+   "misc": [
+    "·undefined·",
+    "m1:0",
+    "m2:1",
+    "m3:2"
+   ],
+   "sourcePath": [
+    "·undefined·",
+    2,
+    2,
+    2,
+    2
+   ],
+   "defaultWindowSize": 10,
+   "getters": {
+    "skipInitial": 0,
+    "undefinedValue": true,
+    "sourceUndefined": true,
+    "accumulatorIsFunction": true
+   }
+  },
+  "accumulatingWindow": {
+   "groupsOfThree": [
+    "123",
+    "456",
+    "7"
+   ],
+   "discardTillStart": [
+    "345",
+    "67"
+   ],
+   "discardTillEnd": [
+    "12",
+    "345"
+   ],
+   "withValue": [
+    "10+20",
+    "30+40",
+    "50"
+   ],
+   "getters": {
+    "discardTillStart": false,
+    "discardTillEnd": false,
+    "accumulateTillIsFunction": true,
+    "valueIsFunction": true
+   }
+  },
+  "closestItem": {
+   "indexes": [
+    {
+     "left": 0,
+     "right": 0
+    },
+    {
+     "left": 0,
+     "right": 0
+    },
+    {
+     "left": 1,
+     "right": 2
+    },
+    {
+     "left": 2,
+     "right": 2
+    },
+    {
+     "left": 3,
+     "right": 4
+    },
+    {
+     "left": 4,
+     "right": 4
+    },
+    {
+     "left": 4,
+     "right": 4
+    }
+   ],
+   "items": [
+    10,
+    10,
+    20,
+    30,
+    30,
+    50
+   ],
+   "dates": [
+    "2023-01-01T00:00:00.000Z",
+    "2023-01-03T00:00:00.000Z",
+    "2023-01-04T00:00:00.000Z"
+   ]
+  },
+  "strokeDasharray": {
+   "undefined": {
+    "svg": "none",
+    "canvas": []
+   },
+   "Solid": {
+    "svg": "none",
+    "canvas": []
+   },
+   "ShortDash": {
+    "svg": "6, 2",
+    "canvas": [
+     6,
+     2
+    ]
+   },
+   "ShortDash2": {
+    "svg": "6, 3",
+    "canvas": [
+     6,
+     3
+    ]
+   },
+   "ShortDot": {
+    "svg": "2, 2",
+    "canvas": [
+     2,
+     2
+    ]
+   },
+   "ShortDashDot": {
+    "svg": "6, 2, 2, 2",
+    "canvas": [
+     6,
+     2,
+     2,
+     2
+    ]
+   },
+   "ShortDashDotDot": {
+    "svg": "6, 2, 2, 2, 2, 2",
+    "canvas": [
+     6,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
+   },
+   "Dot": {
+    "svg": "2, 6",
+    "canvas": [
+     2,
+     6
+    ]
+   },
+   "Dash": {
+    "svg": "4, 6",
+    "canvas": [
+     4,
+     6
+    ]
+   },
+   "LongDash": {
+    "svg": "16, 6",
+    "canvas": [
+     16,
+     6
+    ]
+   },
+   "DashDot": {
+    "svg": "8, 6, 2, 6",
+    "canvas": [
+     8,
+     6,
+     2,
+     6
+    ]
+   },
+   "LongDashDot": {
+    "svg": "16, 6, 2, 6",
+    "canvas": [
+     16,
+     6,
+     2,
+     6
+    ]
+   },
+   "LongDashDotDot": {
+    "svg": "16, 6, 2, 6, 2, 6",
+    "canvas": [
+     16,
+     6,
+     2,
+     6,
+     2,
+     6
+    ]
+   }
+  },
+  "barWidth": {
+   "numericDomain": 6.4,
+   "dateDomain": 28,
+   "ordinalScale": 90
+  }
+ }
+}
