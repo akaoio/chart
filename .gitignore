@@ -1,0 +1,8 @@
+node_modules/
+package-lock.json
+
+# Ảnh chụp sinh ra khi so parity hình ảnh — kết quả so sánh mới được commit, ảnh thì không
+docs/parity/shots/
+
+.DS_Store
+*.log
