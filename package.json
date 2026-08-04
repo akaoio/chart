@@ -32,8 +32,10 @@
         "README.md"
     ],
     "scripts": {
-        "test": "TZ=UTC node test.js",
-        "golden": "TZ=UTC node --import ./tools/golden/resolve-source.mjs tools/golden/generate.mjs"
+        "test": "npm run test:golden && npm run test:browser",
+        "golden": "TZ=UTC node --import ./tools/golden/resolve-source.mjs tools/golden/generate.mjs",
+        "test:browser": "node test.browser.js",
+        "test:golden": "TZ=UTC node test.js"
     },
     "dependencies": {
         "d3-array": "^3.2.4",
@@ -45,5 +47,8 @@
         "d3-shape": "^3.2.0",
         "d3-time": "^3.1.0",
         "d3-time-format": "^4.1.0"
+    },
+    "devDependencies": {
+        "playwright": "^1.60.0"
     }
 }

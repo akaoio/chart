@@ -9,4 +9,8 @@
 // bậc 1
 export * from "./scales/index.js"
 
+// bậc 2
+export * from "./core/index.js"
+export * from "./utils/index.js"
+
 export const version = "0.0.0"

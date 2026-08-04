@@ -22,6 +22,14 @@ const here = dirname(fileURLToPath(import.meta.url))
 const suites = [
     [await import("./tools/golden/cases/scales.mjs"), await import("./src/scales/index.js")],
     [await import("./tools/golden/cases/utils.mjs"), await import("./src/core/utils/index.js")],
+    [
+        await import("./tools/golden/cases/chartdata.mjs"),
+        {
+            ...(await import("./src/core/utils/ChartDataUtil.js")),
+            ...(await import("./src/core/zoom/zoomBehavior.js")),
+            evaluator: (await import("./src/core/utils/evaluator.js")).default,
+        },
+    ],
 ]
 
 /** Mọi chỗ lệch, kèm đường dẫn tới đúng ô sai — không dừng ở chỗ đầu tiên. */

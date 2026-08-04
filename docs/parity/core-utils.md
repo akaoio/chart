@@ -33,20 +33,41 @@ thuộc bậc 2.
 
 **211 giá trị** khớp bản gốc (`tools/golden/fixtures/utils.json`).
 
-## Hoãn sang bậc 2 — cần DOM hoặc canvas
+## Đã port ở bậc 2 — đường dữ liệu của chart
 
-| hàm | vì sao |
-|---|---|
-| `d3Window` | trả về `window` của một node; thuộc phần gắn sự kiện |
-| `clearCanvas` | thao tác `CanvasRenderingContext2D` |
-| `mousePosition` / `touchPosition` | nhận `React.MouseEvent` / `React.TouchEvent`; phải thiết kế lại theo sự kiện DOM thuần |
-| `getTouchProps` | đi kèm nhóm chạm ở trên |
-| `PureComponent` | là React |
+Thuần về mặt hàm, nên vẫn chứng minh được bằng golden data: **359 giá trị** khớp bản gốc
+(`tools/golden/fixtures/chartdata.json`).
 
-## Hoãn sang bậc 2 — thuộc đường dữ liệu của chart
+| hàm | file nguồn | tt |
+|---|---|:--:|
+| `getChartOrigin` · `getDimensions` | `ChartDataUtil.ts` | ☑ |
+| `getNewChartConfig` | `ChartDataUtil.ts` | ☑ |
+| `getCurrentCharts` · `getCurrentItem` · `getXValue` | `ChartDataUtil.ts` | ☑ |
+| `getChartConfigWithUpdatedYScales` | `ChartDataUtil.ts` | ☑ |
+| `ChartDefaultConfig` | `ChartDataUtil.ts` | ☑ |
+| `evaluator` (mặc định) | `evaluator.ts` | ☑ |
 
-`ChartDataUtil.ts` (297 dòng) và `evaluator.ts` (163 dòng) thuần về mặt hàm nhưng gắn chặt
-vào cấu hình chart, nên đi cùng `core`.
+**Lệch có chủ ý:** `getNewChartConfig` của bản gốc nhận React children rồi đọc
+`each.props`; ở đây nó nhận thẳng mảng props, vì custom element không có lớp bọc ấy. Đây
+là khớp nối duy nhất trong cả bộ golden — bên sinh dữ liệu bọc props lại thành React
+element, ba dòng trong `tools/golden/generate.mjs`, không chứa logic chart nào.
+
+## Đã port ở bậc 2 — phần cần DOM
+
+Không golden-test được nên chúng được chứng minh gián tiếp, qua bộ kiểm trình duyệt: mọi
+thao tác chuột trong `npm run test:browser` đều đi qua nhóm này.
+
+| hàm | file nguồn | tt | ghi chú |
+|---|---|:--:|---|
+| `d3Window` | `utils/index.ts` | ☑ | |
+| `clearCanvas` | `utils/index.ts` | ☑ | |
+| `mousePosition` · `touchPosition` · `getTouchProps` | `utils/index.ts` | ☑ | nhận sự kiện DOM thuần thay cho `React.MouseEvent` |
+| `pointerPosition` · `pointersPosition` | — | ☑ | **mới**: bản port của `pointer`/`pointers` trong d3-selection, để bỏ được cả gói đó |
+| `PureComponent` | `utils/PureComponent.tsx` | ⊘ | là React |
+
+`pointerPosition` không có trong bản gốc vì bản gốc gọi thẳng `d3-selection`. Nó phải quy
+toạ độ qua ma trận `getScreenCTM().inverse()` chứ không dùng hộp bao: hộp bao bỏ qua
+`viewBox` và mọi `transform` phía trên, mà chart thì luôn có một `translate` nửa pixel.
 
 ## Chỗ bản gốc kỳ lạ, cố ý giữ nguyên
 

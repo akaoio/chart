@@ -12,8 +12,8 @@ Không có mục nào được phép biến mất trong im lặng. Một export 
 | package | export runtime | bậc | tiến độ |
 |---|---:|:--:|---|
 | [`scales`](scales.md) | 5 | 1 | ☑ 5/5 |
-| [`core`](core.md) | 45 | 2 | ☐ |
-| [`utils`](utils.md) | 2 | 2 | ☐ |
+| [`core`](core.md) | 45 | 2 | ☑ 41 port · 4 ⊘ |
+| [`utils`](utils.md) | 2 | 2 | ⊘ 2 — phần tử tự đo |
 | [`axes`](axes.md) | 3 | 3 | ☐ |
 | [`series`](series.md) | 25 | 3 | ☐ |
 | [`coordinates`](coordinates.md) | 8 | 4 | ☐ |
@@ -59,9 +59,16 @@ hook dịch `.ts`/`.tsx` ngay lúc nạp, bằng đúng bản TypeScript trong `
 gốc. Fixture đã commit nên `npm test` không cần repo gốc; chỉ khi sinh lại mới cần:
 
 ```sh
-npm test                                          # so bản port với fixture
+npm test                                               # cả hai bộ dưới đây
+npm run test:golden                                    # so bản port với fixture
+npm run test:browser                                   # DOM, canvas, chuột trong Chromium thật
 CHART_SOURCE=~/react-financial-charts npm run golden   # sinh lại fixture
 ```
+
+Không phải thứ gì cũng golden-test được. Từ bậc 2 trở đi có DOM, canvas và con trỏ, nên
+phần đó được chứng minh trong trình duyệt thật (`test.browser.js`) bằng thao tác thật —
+bấm, kéo, di, gỡ phần tử giữa chừng — và soi tới tận pixel khi vị trí là thứ cần khẳng
+định.
 
 Múi giờ bị ép về `UTC` ở cả hai đầu. Không phải chuyện vặt: bản gốc chia mốc thời gian bằng
 `getHours`/`getDay`/`getMonth` — toàn giờ địa phương — nên cùng dữ liệu ở Hà Nội và ở London

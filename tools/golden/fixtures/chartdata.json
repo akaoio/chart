@@ -1,0 +1,680 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "getChartOrigin": {
+   "fixed": [
+    10,
+    20
+   ],
+   "computed": [
+    400,
+    350
+   ]
+  },
+  "getDimensions": {
+   "inherits": {
+    "availableHeight": 400,
+    "width": 800,
+    "height": 400
+   },
+   "overrides": {
+    "availableHeight": 400,
+    "width": 800,
+    "height": 120
+   }
+  },
+  "getNewChartConfig": {
+   "single": [
+    {
+     "id": 0,
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 400,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       1
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "stacked": [
+    {
+     "id": "price",
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 300,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       1
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    },
+    {
+     "id": "volume",
+     "origin": [
+      0,
+      300
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 100,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       1
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      486952
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "skipsInvalid": [
+    7
+   ],
+   "fixedExtents": [
+    {
+     "id": 0,
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 400,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       100
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 2,
+     "yExtentsApplied": [
+      0,
+      100
+     ],
+     "originalYExtentsProp": [
+      0,
+      100
+     ]
+    }
+   ],
+   "keepsPannedDomain": [
+    {
+     "id": 0,
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 400,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": true,
+     "yScale": {
+      "domain": [
+       25,
+       75
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 2,
+     "yExtentsApplied": [
+      0,
+      100
+     ],
+     "originalYExtentsProp": [
+      0,
+      100
+     ]
+    }
+   ],
+   "fixedExtentsBeatPan": [
+    {
+     "id": 0,
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 400,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       100
+      ],
+      "range": [
+       0,
+       1
+      ]
+     },
+     "realYDomain": "·undefined·",
+     "yExtentsCount": 2,
+     "yExtentsApplied": [
+      0,
+      100
+     ],
+     "originalYExtentsProp": [
+      0,
+      100
+     ]
+    }
+   ]
+  },
+  "getChartConfigWithUpdatedYScales": {
+   "plain": [
+    {
+     "id": "price",
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 300,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       93.57,
+       104.98
+      ],
+      "range": [
+       300,
+       0
+      ]
+     },
+     "realYDomain": [
+      93.57,
+      104.98
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    },
+    {
+     "id": "volume",
+     "origin": [
+      0,
+      300
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 100,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       20682,
+       952999
+      ],
+      "range": [
+       100,
+       0
+      ]
+     },
+     "realYDomain": [
+      20682,
+      952999
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      486952
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "draggedWithoutPanEnabled": [
+    {
+     "id": "price",
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 300,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       93.57,
+       104.98
+      ],
+      "range": [
+       300,
+       0
+      ]
+     },
+     "realYDomain": [
+      93.57,
+      104.98
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    },
+    {
+     "id": "volume",
+     "origin": [
+      0,
+      300
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 100,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       20682,
+       952999
+      ],
+      "range": [
+       100,
+       0
+      ]
+     },
+     "realYDomain": [
+      20682,
+      952999
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      486952
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "draggedWithPanEnabled": [
+    {
+     "id": "price",
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 300,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": true,
+     "yScale": {
+      "domain": [
+       -40,
+       -39
+      ],
+      "range": [
+       300,
+       0
+      ]
+     },
+     "realYDomain": [
+      93.57,
+      104.98
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    },
+    {
+     "id": "volume",
+     "origin": [
+      0,
+      300
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 100,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": true,
+     "yScale": {
+      "domain": [
+       -40,
+       -39
+      ],
+      "range": [
+       100,
+       0
+      ]
+     },
+     "realYDomain": [
+      20682,
+      952999
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      486952
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "onlyChartsToPan": [
+    {
+     "id": "price",
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 300,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": true,
+     "yScale": {
+      "domain": [
+       -40,
+       -39
+      ],
+      "range": [
+       300,
+       0
+      ]
+     },
+     "realYDomain": [
+      93.57,
+      104.98
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      [
+       101.89,
+       100.83
+      ]
+     ],
+     "originalYExtentsProp": null
+    },
+    {
+     "id": "volume",
+     "origin": [
+      0,
+      300
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 100,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": true,
+     "yScale": {
+      "domain": [
+       0,
+       1
+      ],
+      "range": [
+       100,
+       0
+      ]
+     },
+     "realYDomain": [
+      20682,
+      952999
+     ],
+     "yExtentsCount": 1,
+     "yExtentsApplied": [
+      486952
+     ],
+     "originalYExtentsProp": null
+    }
+   ],
+   "withCalculator": [
+    {
+     "id": 0,
+     "origin": [
+      0,
+      0
+     ],
+     "padding": 0,
+     "width": 800,
+     "height": 400,
+     "flipYScale": false,
+     "yPan": true,
+     "yPanEnabled": false,
+     "yScale": {
+      "domain": [
+       0,
+       60
+      ],
+      "range": [
+       400,
+       0
+      ]
+     },
+     "realYDomain": [
+      0,
+      60
+     ],
+     "yExtentsCount": null,
+     "yExtentsApplied": null,
+     "originalYExtentsProp": null
+    }
+   ]
+  },
+  "getCurrentCharts": [
+   [
+    "price"
+   ],
+   [
+    "price"
+   ],
+   [
+    "volume"
+   ],
+   []
+  ],
+  "getCurrentItem": [
+   0,
+   10,
+   30,
+   59,
+   59
+  ],
+  "getCurrentItemOrdinal": 1,
+  "getXValue": [
+   0,
+   10,
+   30,
+   59,
+   148
+  ],
+  "zoomAnchors": {
+   "mouse": 30,
+   "lastVisible": 59,
+   "rightDomain": 59
+  },
+  "evaluator": {
+   "wholeRange": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     0,
+     259
+    ]
+   },
+   "zoomedIn": {
+    "count": 41,
+    "firstIndex": 100,
+    "lastIndex": 140,
+    "domain": [
+     100,
+     140
+    ]
+   },
+   "beyondBothEnds": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     -50,
+     400
+    ]
+   },
+   "clampBoth": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     0,
+     259
+    ]
+   },
+   "clampLeft": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     0,
+     400
+    ]
+   },
+   "clampRight": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     -50,
+     259
+    ]
+   },
+   "clampFunction": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     0,
+     400
+    ]
+   },
+   "useWholeData": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     10,
+     20
+    ]
+   },
+   "tooDense": {
+    "count": 48,
+    "firstIndex": 212,
+    "lastIndex": 259,
+    "domain": [
+     212,
+     259
+    ]
+   },
+   "ignoreThresholds": {
+    "count": 260,
+    "firstIndex": 0,
+    "lastIndex": 259,
+    "domain": [
+     0,
+     259
+    ]
+   },
+   "flipXScale": {
+    "count": 41,
+    "firstIndex": 100,
+    "lastIndex": 140,
+    "domain": [
+     100,
+     140
+    ]
+   }
+  }
+ }
+}

@@ -34,10 +34,32 @@ const packages = join(source, "packages")
 
 const scales = await import(join(packages, "scales/src/index.ts"))
 const utils = await import(join(packages, "core/src/utils/index.ts"))
+const chartDataUtil = await import(join(packages, "core/src/utils/ChartDataUtil.ts"))
+const evaluator = await import(join(packages, "core/src/utils/evaluator.ts"))
+const zoomBehavior = await import(join(packages, "core/src/zoom/zoomBehavior.ts"))
+// react chỉ có trong node_modules của repo gốc, không có ở repo này
+const { createRequire } = await import("node:module")
+const React = createRequire(join(source, "package.json"))("react")
+
+const chartData = {
+    ...chartDataUtil,
+    ...zoomBehavior,
+    evaluator: evaluator.default,
+    // Khớp nối duy nhất trong cả bộ golden: bản gốc nhận React children rồi đọc
+    // `each.props`, bản port nhận thẳng props. Ba dòng này chỉ bọc lại, không có logic
+    // chart nào — nếu chúng sai thì mọi bài kiểm getNewChartConfig đều đổ, không im lặng.
+    getNewChartConfig: (innerDimension, chartPropsList, existing) =>
+        chartDataUtil.getNewChartConfig(
+            innerDimension,
+            chartPropsList.map(props => (props == null ? props : React.createElement("div", props))),
+            existing,
+        ),
+}
 
 const suites = [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
+    [await import("./cases/chartdata.mjs"), chartData],
 ]
 
 const { execSync } = await import("node:child_process")
