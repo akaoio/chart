@@ -2473,6 +2473,42 @@ TESTS["onDoubleClick của mình đặt thì thắng phép mặc định"] = asy
 }
 
 /**
+ * `onContextMenu` đặt lên trục thì phải có chỗ nhận.
+ *
+ * Bản gốc truyền prop này từ `XAxis`/`YAxis` xuống dải bắt chuột của trục. Ở đây dải ấy do
+ * chính trục dựng ra bên trong, nên người dùng không với tới — `AxisZoomCapture` có đọc
+ * `onContextMenu`, mà không ai đặt được vào. Prop tồn tại trên giấy, không tồn tại thật.
+ */
+TESTS["bấm chuột phải trên dải trục thì gọi onContextMenu của trục"] = async () => {
+    const t = makeChecker()
+
+    const seen = []
+    const { canvas } = mountWithAxes({
+        y: { onContextMenu: (event, position) => seen.push(position) },
+    })
+    await settle(4)
+
+    const rect = zoomRectFor(canvas, "chart-y-axis")
+    const box = rect.getBoundingClientRect()
+    rect.dispatchEvent(
+        new MouseEvent("contextmenu", {
+            clientX: box.left + 20,
+            clientY: box.top + 180,
+            bubbles: true,
+            composed: true,
+            cancelable: true,
+        }),
+    )
+    await settle(2)
+
+    t.is("hàm của mình được gọi đúng một lần", seen.length, 1)
+    t.ok("kèm toạ độ trong dải trục", Array.isArray(seen[0]) && Number.isFinite(seen[0][1]))
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Rê chuột lên dải trục thì con trỏ nói được là kéo được.
  *
  * Bản gốc đặt mũi trỏ thường lúc nghỉ và chỉ đổi con trỏ **trong lúc đang kéo** — mà

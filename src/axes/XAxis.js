@@ -38,6 +38,7 @@ export const xAxisDefaults = {
     zoomEnabled: true,
     edgeClip: false,
     onDoubleClick: undefined,
+    onContextMenu: undefined,
     zoomCursorClassName: "chart-ew-resize-cursor",
 }
 

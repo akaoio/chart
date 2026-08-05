@@ -229,6 +229,17 @@ export class AxisZoomCapture extends GenericChartComponent {
         return this.#props.onDoubleClick ?? this.#props.axis?.axisDoubleClick?.bind(this.#props.axis)
     }
 
+    /**
+     * Ai lo cú bấm chuột phải: hỏi chính mình trước, rồi hỏi trục.
+     *
+     * Bản gốc truyền `onContextMenu` từ `XAxis`/`YAxis` xuống dải này, còn ở đây dải được
+     * chính trục dựng ra nên người dùng không chạm tới nó được — đặt `onContextMenu` lên
+     * `<chart-x-axis>` thì trước đây không có gì nhận.
+     */
+    #contextMenu() {
+        return this.#props.onContextMenu ?? this.#props.axis?.seriesProps?.onContextMenu
+    }
+
     #handleDragEnd = event => {
         if (this.#rect !== null && !this.#dragHappened) {
             if (this.#clicked) {
@@ -251,14 +262,15 @@ export class AxisZoomCapture extends GenericChartComponent {
         event.stopPropagation()
         event.preventDefault()
 
-        if (this.#props.onContextMenu === undefined) return
+        const onContextMenu = this.#contextMenu()
+        if (onContextMenu === undefined) return
 
         const mouseXY = mousePosition(event, this.#rect.getBoundingClientRect())
 
         this.#endGesture()
         this.#startPosition = null
 
-        this.#props.onContextMenu(event, mouseXY)
+        onContextMenu(event, mouseXY)
     }
 }
 

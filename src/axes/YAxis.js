@@ -37,6 +37,7 @@ export const yAxisDefaults = {
     yZoomWidth: 40,
     zoomEnabled: true,
     onDoubleClick: undefined,
+    onContextMenu: undefined,
     zoomCursorClassName: "chart-ns-resize-cursor",
 }
 

@@ -126,3 +126,13 @@ Trục giá chỉ kéo được khi pane cho phép (`yPan`). Nếu không, kéo 
 | lớp CSS mặc định | `react-financial-charts-x-axis`… | không đặt | tên nhắc tới React trong một bản không có React; lớp con trỏ đã đổi thành `chart-*` từ bậc 2 |
 | `tickHelper` | hàm nội bộ, không export | export | nó là thứ duy nhất tính ra vị trí tick, đáng để chạm tới được |
 | `Axis` | là component | là hàm `drawAxis` cộng phần tử riêng | tách phần vẽ khỏi phần tử để kiểm được ngoài trình duyệt — xem [`series.md`](series.md) |
+| `tickSize` | khai báo trong props | không có | **prop chết trong chính bản gốc**: `Axis.tsx` chỉ có một biến cục bộ trùng tên (`const tickSize = sign * outerTickSize`, dòng 322), không chỗ nào đọc prop ra. Độ dài vạch do `innerTickSize`/`outerTickSize` quyết định, và cả hai đều có |
+| `domainClassName` | lớp CSS cho đường bao trục | không có | trục được vẽ lên canvas, không có node nào để gắn lớp vào |
+
+## Một prop tồn tại trên giấy, không tồn tại thật — đã sửa
+
+`onContextMenu` của `XAxis`/`YAxis`: bản gốc truyền nó từ trục xuống `AxisZoomCapture`. Ở đây dải bắt chuột do chính trục dựng ra bên trong, nên người dùng không với tới được — `AxisZoomCapture` vẫn đọc `onContextMenu`, mà không ai đặt được vào. Prop có mặt trong bảng, gọi mãi không chạy.
+
+Giờ `AxisZoomCapture` hỏi chính mình trước rồi hỏi trục, đúng lối `#doubleClick()` đã làm. Có bài kiểm bấm chuột phải thật trên dải trục.
+
+Đây là loại lỗ mà đếm export không bao giờ thấy: `XAxis` có đủ, `AxisZoomCapture` có đủ, chỉ thiếu sợi dây giữa hai cái.

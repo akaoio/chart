@@ -96,6 +96,16 @@ Lý do là để chứng minh được: hàm vẽ chạy trong Node và so đư�
 
 **Marker là object thuần, không phải component.** Bản gốc để mỗi marker là một React component *kèm* một static `drawOnCanvas`, nhưng không chỗ nào render chúng như component — `ScatterSeries` chỉ gọi static. Nên ở đây marker đúng là thứ nó vốn là: một bộ props mặc định và một cách vẽ.
 
+**Ba prop của bản gốc không được mang sang, vì mang sang cũng không làm gì:**
+
+| prop | ở đâu | vì sao bỏ |
+|---|---|---|
+| `zeroLineStroke` | `MACDSeries` | khai báo ở dòng 21 rồi không chỗ nào đọc — đường zero lấy màu từ `strokeStyle.zero`, và cái đó có |
+| `zeroLineOpacity` | `MACDSeries` | dòng 22, cũng chưa từng được đọc |
+| `areaClassName` | `BollingerSeries` | lớp CSS cho vùng tô, mà vùng tô nằm trên canvas — không có node nào để gắn vào |
+
+Hai cái đầu là prop chết trong chính bản gốc: một người đọc bảng props sẽ tưởng mình đổi được màu đường zero bằng `zeroLineStroke`, và sẽ không hiểu vì sao không có gì xảy ra. Bỏ đi thì bảng props nói thật.
+
 ## Một nhánh không kiểm được, và vì sao
 
 `StackedBarSeries` có dòng `const offset = barWidth === 1 ? 0 : 0.5 * width`. Bỏ hẳn nhánh đặc biệt ấy đi thì **không bài kiểm nào bắt được**, kể cả với dữ liệu dày tới mức cột chỉ còn đúng 1 pixel.
