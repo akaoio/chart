@@ -110,6 +110,7 @@ The time axis.
 | `gridLinesStrokeStyle` | `"#E2E4EC"` |
 | `gridLinesStrokeWidth` | `1` |
 | `innerTickSize` | `4` |
+| `onDoubleClick` | — |
 | `orient` | `"bottom"` |
 | `outerTickSize` | `0` |
 | `showDomain` | `true` |
@@ -148,6 +149,7 @@ The price axis.
 | `gridLinesStrokeStyle` | `"#E2E4EC"` |
 | `gridLinesStrokeWidth` | `1` |
 | `innerTickSize` | `4` |
+| `onDoubleClick` | — |
 | `orient` | `"right"` |
 | `outerTickSize` | `0` |
 | `showDomain` | `true` |

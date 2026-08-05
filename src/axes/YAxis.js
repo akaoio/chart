@@ -36,6 +36,7 @@ export const yAxisDefaults = {
     ticks: undefined,
     yZoomWidth: 40,
     zoomEnabled: true,
+    onDoubleClick: undefined,
 }
 
 /**
@@ -74,6 +75,20 @@ export class YAxis extends Series {
 
     axisZoomCallback(domain) {
         this.canvas?.yAxisZoom(this.chartId, domain)
+    }
+
+    /**
+     * Nhấp đúp lên cột giá: về tự-vừa-khung.
+     *
+     * `resetYDomain` đưa thang giá của pane này về `realYDomain` và tắt `yPanEnabled` —
+     * nên nó cũng là đường ra khỏi chế độ kéo dọc. Không có cử chỉ này thì chạm vào cột
+     * giá một lần là kẹt ở chế độ thủ công mãi.
+     */
+    axisDoubleClick(event, position) {
+        const { onDoubleClick } = this.seriesProps
+        if (onDoubleClick !== undefined) return onDoubleClick(event, position)
+
+        this.canvas?.resetYDomain(this.chartId)
     }
 
     get edgeClip() {

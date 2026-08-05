@@ -195,10 +195,19 @@ export class AxisZoomCapture extends GenericChartComponent {
      * Bấm hai lần trong 300ms là nhấp đúp — nhưng chỉ khi giữa hai lần ấy không có kéo.
      * Kéo xong nhả tay không phải là một cú bấm.
      */
+    /**
+     * Ai lo cú nhấp đúp: `onDoubleClick` đặt riêng thì theo cái ấy, không thì theo phép
+     * mặc định của chính trục — cột giá về tự-vừa-khung, trục thời gian về mức zoom mặc
+     * định. Bản gốc để trống cả hai, nên cú nhấp đúp lên trục tính ra rồi bị ném đi.
+     */
+    #doubleClick() {
+        return this.#props.onDoubleClick ?? this.#props.axis?.axisDoubleClick?.bind(this.#props.axis)
+    }
+
     #handleDragEnd = event => {
         if (this.#rect !== null && !this.#dragHappened) {
             if (this.#clicked) {
-                this.#props.onDoubleClick?.(event, pointerPosition(event, this.#rect))
+                this.#doubleClick()?.(event, pointerPosition(event, this.#rect))
                 this.#clicked = false
             } else {
                 this.#clicked = true

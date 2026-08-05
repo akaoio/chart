@@ -71,6 +71,25 @@ Bên bản gốc phép toán nằm trong `handleDrag`, một thuộc tính riên
 | không nhớ là đã kéo | trình duyệt |
 | trục giá dùng nhầm thang x | trình duyệt |
 
+### Nhấp đúp lên trục: đường về, mà bản gốc bỏ trống
+
+`AxisZoomCapture` nhận diện được cú nhấp đúp — bấm rồi nhả tại chỗ hai lần trong 300ms, và **không** tính nếu giữa hai lần có kéo — rồi gọi `onDoubleClick`. Bản gốc truyền prop ấy xuống nhưng không ai đưa gì vào, kể cả câu chuyện mẫu của chính nó. Phép nhận diện tính ra rồi bị ném đi.
+
+Hậu quả không nhỏ: thang giá mặc định **tự vừa khung** theo dữ liệu đang hiển thị, và chỉ khi người dùng tự đặt khung giá (`yAxisZoom`) thì cờ `yPanEnabled` mới bật, mở ra kéo dọc. Không có đường về nghĩa là chạm vào cột giá **một lần** là kẹt ở chế độ thủ công mãi mãi.
+
+Bản port nối vào, mỗi trục một phép mặc định:
+
+| cử chỉ | làm gì |
+|---|---|
+| nhấp đúp cột giá | về tự-vừa-khung (`resetYDomain`), và kéo dọc tắt trở lại |
+| nhấp đúp trục thời gian | về mức zoom mặc định (`resetXDomain`), giữ nguyên chỗ đang xem |
+
+`resetXDomain` là phép mới: nó lấy lại **bề rộng khung nhìn** mà `xExtents` yêu cầu — bao nhiêu phiên trên màn hình lúc chart mới mở — và giữ nguyên tâm khung nhìn. Chỉ kích cỡ nến trở lại như cũ, còn đang xem quãng nào thì vẫn ở quãng ấy. Muốn về hẳn hình lúc mở, cả zoom lẫn chỗ xem, thì đó là `reset()` — thứ nút reset của `ZoomButtons` gọi.
+
+Đặt `onDoubleClick` của riêng mình lên trục thì phép mặc định không chạy.
+
+13 khẳng định canh ba chuyện này: cột giá về tự-vừa-khung rồi kéo dọc thôi ăn, trục thời gian về mặc định từ cả hai phía (đã phóng to và đã thu nhỏ), và hàm của người dùng thắng phép mặc định. Bỏ phép nối đi thì cả ba bài đổ.
+
 ### Một chỗ cố ý khác bản gốc: kéo bằng ngón tay
 
 Bản gốc đưa thẳng `TouchEvent` vào `pointer()` của d3, mà hàm ấy đọc `event.clientX` — một TouchEvent không có thuộc tính đó, nên toạ độ ra `NaN` và **kéo trục bằng ngón tay không bao giờ chạy**. Bản port lấy `event.touches[0]`. Một dòng, và nó là khác biệt duy nhất về hành vi.

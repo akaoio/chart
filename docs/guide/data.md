@@ -121,6 +121,31 @@ then treats the correction as a resize, so it ends up showing a different stretc
 `xExtents` asked for. If you build charts into a layout you are still assembling, finish
 the layout first.
 
+## Two modes for the price scale
+
+By default a pane's y scale **fits the data on screen**, recomputed every frame from
+`yExtents`. That is why dragging the chart up and down does nothing at first: the next
+frame would recompute the domain and undo it.
+
+Dragging the price axis hands the y domain over to the user — the pane switches to manual,
+and from then on the chart pans vertically too. Double-clicking the price axis gives it
+back to auto-fit, and vertical panning switches off again.
+
+The time axis works the same way in miniature: drag it to stretch or squash the scale,
+double-click it to return to the default zoom level, keeping the stretch of history you
+are looking at.
+
+```js
+// per pane, if you want to forbid the manual mode entirely
+pane.yPan = false
+
+// or replace what a double-click does
+yAxis.onDoubleClick = (event, position) => rememberAndReset(position)
+```
+
+The same two gestures on both axes — drag to take control, double-click to give it back —
+is what a trading screen conditions people to expect.
+
 ## Data that keeps arriving
 
 Assign `data` again:

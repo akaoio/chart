@@ -37,6 +37,7 @@ export const xAxisDefaults = {
     xZoomHeight: 25,
     zoomEnabled: true,
     edgeClip: false,
+    onDoubleClick: undefined,
 }
 
 /**
@@ -72,6 +73,14 @@ export class XAxis extends Series {
 
     axisZoomCallback(domain) {
         this.canvas?.xAxisZoom(domain)
+    }
+
+    /** Nhấp đúp lên trục thời gian: về mức zoom mặc định, giữ nguyên chỗ đang xem. */
+    axisDoubleClick(event, position) {
+        const { onDoubleClick } = this.seriesProps
+        if (onDoubleClick !== undefined) return onDoubleClick(event, position)
+
+        this.canvas?.resetXDomain()
     }
 
     get axisProps() {

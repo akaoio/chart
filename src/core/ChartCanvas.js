@@ -278,15 +278,21 @@ export class ChartCanvas extends ElementBase {
         }
     }
 
+    /** Khung nhìn x mà `xExtents` yêu cầu — tức hình lúc chart mới mở. */
+    #initialXExtent() {
+        const { xAccessor: inputXAccessor, xExtents: xExtentsProp, data } = this.#props
+
+        return typeof xExtentsProp === "function"
+            ? xExtentsProp(data)
+            : d3Extent(xExtentsProp.map(functor).map(each => each(data, inputXAccessor)))
+    }
+
     #calculateState() {
-        const { xAccessor: inputXAccessor, xExtents: xExtentsProp, data, padding, flipXScale } = this.#props
+        const { xAccessor: inputXAccessor, padding, flipXScale } = this.#props
 
         const dimensions = this.#dimensions()
 
-        const extent =
-            typeof xExtentsProp === "function"
-                ? xExtentsProp(data)
-                : d3Extent(xExtentsProp.map(functor).map(each => each(data, inputXAccessor)))
+        const extent = this.#initialXExtent()
 
         const { xAccessor, displayXAccessor, xScale, fullData, filterData } = this.#calculateFullData()
 
@@ -817,6 +823,24 @@ export class ChartCanvas extends ElementBase {
         this.setState(this.#resetChart())
 
         this.#reportEdges(this.#state.xScale)
+    }
+
+    /**
+     * Về đúng mức zoom mặc định, giữ nguyên chỗ đang xem.
+     *
+     * "Mặc định" là bề rộng khung nhìn mà `xExtents` yêu cầu — bao nhiêu phiên trên màn
+     * hình lúc chart mới mở. Tâm khung nhìn không đổi: chỉ có kích cỡ nến trở lại như cũ,
+     * còn đang xem quãng nào thì vẫn ở quãng ấy. Muốn về hẳn hình lúc mở, cả zoom lẫn chỗ
+     * xem, thì đó là `reset()`.
+     */
+    resetXDomain = () => {
+        const [from, to] = this.#state.xScale.domain()
+        const [initialFrom, initialTo] = this.#initialXExtent()
+
+        const span = initialTo.valueOf() - initialFrom.valueOf()
+        const centre = (from.valueOf() + to.valueOf()) / 2
+
+        this.xAxisZoom([centre - span / 2, centre + span / 2])
     }
 
     resetYDomain = chartId => {

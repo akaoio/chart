@@ -2259,6 +2259,130 @@ TESTS["ngón tay kéo đi đâu thì chart đi theo đấy"] = async () => {
     return t.checks
 }
 
+/** Bấm rồi nhả tại chỗ, hai lần trong 300ms — cửa sổ nhấp đúp của dải trên trục. */
+const doubleClickAxis = async (rect, x, y) => {
+    const box = rect.getBoundingClientRect()
+    const at = (type, target) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + x, clientY: box.top + y, bubbles: true, button: 0 }),
+        )
+
+    for (const round of [1, 2]) {
+        at("mousedown", rect)
+        await settle(1)
+        at("mouseup", window)
+        await settle(1)
+    }
+    await settle(2)
+}
+
+/**
+ * Nhấp đúp lên trục là đường về — thứ mà cả bản gốc lẫn bản port trước đây không có.
+ *
+ * `AxisZoomCapture` vốn đã nhận diện được cú nhấp đúp và gọi `onDoubleClick`, nhưng không
+ * ai đưa gì vào, nên phép ấy tính ra rồi bị ném đi. Chạm vào cột giá một lần là kẹt ở chế
+ * độ thủ công mãi — không cử chỉ nào đưa lại về tự-vừa-khung.
+ */
+TESTS["nhấp đúp lên cột giá thì về tự-vừa-khung"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const config = () => canvas.getState().chartConfigs[0]
+    const auto = config().realYDomain.join()
+
+    // người dùng tự đặt khung giá: đúng thao tác bật chế độ thủ công
+    canvas.yAxisZoom(0, [50, 60])
+    await settle(2)
+
+    t.is("đã sang chế độ thủ công", config().yPanEnabled, true)
+    t.not("và khung giá không còn vừa dữ liệu", config().yScale.domain().join(), auto)
+
+    await doubleClickAxis(zoomRectFor(canvas, "chart-y-axis"), 20, 200)
+
+    t.is("nhấp đúp thì khung giá vừa lại dữ liệu", config().yScale.domain().join(), auto)
+    t.is("và chế độ thủ công tắt", config().yPanEnabled, false)
+
+    // nên kéo dọc cũng thôi ăn — đúng như trước khi chạm vào cột giá
+    const before = config().yScale.domain().join()
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    const at = (type, target, y, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + 400, clientY: box.top + y, bubbles: true, ...extra }),
+        )
+
+    at("mouseenter", rect, 200)
+    at("mousedown", rect, 200, { buttons: 1 })
+    at("mousemove", window, 320, { buttons: 1 })
+    await settle(2)
+    at("mouseup", window, 320, { buttons: 0 })
+    await settle(3)
+
+    t.is("và kéo dọc thôi ăn", config().yScale.domain().join(), before)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["nhấp đúp lên trục thời gian thì về mức zoom mặc định"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const domain = () => canvas.getState().xScale.domain()
+    const span = () => domain()[1] - domain()[0]
+    const centre = () => (domain()[0] + domain()[1]) / 2
+
+    const defaultSpan = span()
+
+    // phóng to hẳn vào, rồi kéo đi chỗ khác
+    canvas.xAxisZoom([domain()[0] + defaultSpan * 0.4, domain()[1] - defaultSpan * 0.4])
+    await settle(2)
+
+    t.ok("đã phóng to", span() < defaultSpan * 0.5)
+    const zoomedCentre = centre()
+
+    await doubleClickAxis(zoomRectFor(canvas, "chart-x-axis"), 400, 12)
+
+    t.near("nhấp đúp thì nến về kích cỡ mặc định", span(), defaultSpan, 1)
+    t.near("và vẫn đang xem đúng quãng ấy", centre(), zoomedCentre, defaultSpan * 0.02)
+
+    // thu nhỏ quá mức cũng về đúng chỗ ấy
+    canvas.xAxisZoom([domain()[0] - defaultSpan, domain()[1] + defaultSpan])
+    await settle(2)
+    t.ok("đã thu nhỏ", span() > defaultSpan * 1.5)
+
+    await doubleClickAxis(zoomRectFor(canvas, "chart-x-axis"), 400, 12)
+    t.near("nhấp đúp lần nữa cũng về mặc định", span(), defaultSpan, 1)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["onDoubleClick của mình đặt thì thắng phép mặc định"] = async () => {
+    const t = makeChecker()
+
+    const seen = []
+    const { canvas, yAxis } = mountWithAxes({ y: { onDoubleClick: (event, position) => seen.push(position) } })
+    await settle(4)
+
+    canvas.yAxisZoom(0, [50, 60])
+    await settle(2)
+    const manual = canvas.getState().chartConfigs[0].yScale.domain().join()
+
+    await doubleClickAxis(zoomRectFor(canvas, "chart-y-axis"), 20, 200)
+
+    t.is("hàm của mình được gọi", seen.length, 1)
+    t.ok("kèm toạ độ trong dải trục", Array.isArray(seen[0]) && Number.isFinite(seen[0][1]))
+    t.is("và phép mặc định không chạy", canvas.getState().chartConfigs[0].yScale.domain().join(), manual)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
