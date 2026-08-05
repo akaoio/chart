@@ -1817,6 +1817,42 @@ TESTS["bấm nút zoom thì chart phóng to thật"] = async () => {
     return t.checks
 }
 
+/**
+ * Cử chỉ ngón tay: ai được nhận cái gì.
+ *
+ * `touch-action` là chỗ DUY NHẤT nói được điều này với trình duyệt, và nó phải nói trước
+ * khi ngón tay chạm xuống — không có API nào giành lại sau. Bài này khẳng định giá trị
+ * đã khai báo; phần thực thi là hợp đồng của nền tảng.
+ *
+ * Bản thân cú cuộn thì bộ kiểm không dựng lại được: cuộn bằng chạm do compositor lo,
+ * mà Chromium chạy nền không cho sự kiện chạm tổng hợp đi tới đó. Vuốt trên chữ cũng
+ * không cuộn — nên "không cuộn" ở đây không nói lên điều gì, và không được dùng làm
+ * bằng chứng.
+ */
+TESTS["cử chỉ ngón tay được chia đúng chỗ"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const capture = canvas.shadowRoot.querySelector("[data-event-capture]")
+    t.is(
+        "vùng chart: cuộn dọc để cho trang, kéo ngang và bấu để cho chart",
+        getComputedStyle(capture).touchAction,
+        "pan-y",
+    )
+
+    const axis = zoomRectFor(canvas, "chart-y-axis")
+    t.is(
+        "dải trên trục giá: giữ cả cử chỉ dọc, vì kéo dọc ở đó là giãn thang giá",
+        axis === null ? "" : getComputedStyle(axis).touchAction,
+        "none",
+    )
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

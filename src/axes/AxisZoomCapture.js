@@ -104,6 +104,9 @@ export class AxisZoomCapture extends GenericChartComponent {
             this.#rect.addEventListener("mousedown", this.#handleDragStartMouse)
             this.#rect.addEventListener("touchstart", this.#handleDragStartTouch, { passive: false })
             this.#rect.addEventListener("contextmenu", this.#handleRightClick)
+            // Kéo DỌC trên trục giá là để giãn thang giá, nên dải hẹp này giữ lại cả cử
+            // chỉ dọc — khác vùng bắt sự kiện chính, nơi cuộn dọc vẫn thuộc về trang.
+            this.#rect.style.touchAction = "none"
             // Chỗ bám cho bài kiểm trong trình duyệt, như `data-event-capture` của
             // EventCapture. Không thuộc phần được so với bản gốc.
             this.#rect.setAttribute("data-axis-zoom", axis.localName)

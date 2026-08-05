@@ -1,6 +1,6 @@
 import { discontinuousTimeScaleProviderBuilder } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, page } from "./showcase.js"
+import { demo, opening, page } from "./showcase.js"
 
 page({
     title: "Interaction",
@@ -24,6 +24,7 @@ const chart = (host, rows, { height = 360, ...rest } = {}) => {
         displayXAccessor,
         seriesName: "DEMO",
         margin: { left: 0, right: 56, top: 8, bottom: 24 },
+        xExtents: opening(data, xAccessor),
         ...rest,
     })
     canvas.style.height = `${height}px`

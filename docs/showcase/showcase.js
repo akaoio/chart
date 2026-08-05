@@ -91,6 +91,17 @@ export const demo = ({ title, about, build }) => {
     return api
 }
 
+/**
+ * Which slice of the data to open on.
+ *
+ * Fewer bars on a narrow screen — 160 candles across 350 pixels is one pixel each, and
+ * a chart you are meant to click on has to have something clickable in it.
+ */
+export const opening = (data, xAccessor, { wide = 160, narrow = 55 } = {}) => {
+    const count = Math.min(data.length, window.innerWidth < 640 ? narrow : wide)
+    return [xAccessor(data[data.length - count]), xAccessor(data[data.length - 1])]
+}
+
 /** A row of small charts inside one demo, for galleries. */
 export const grid = (stage, entries, build) => {
     const container = element("div", { class: "grid" })

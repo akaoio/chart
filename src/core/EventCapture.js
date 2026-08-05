@@ -58,10 +58,15 @@ export class EventCapture {
         this.#element = document.createElementNS("http://www.w3.org/2000/svg", "rect")
         this.#element.style.opacity = 0
 
-        // A finger on the chart is there to drag the chart and to pinch the chart — not
-        // to scroll or zoom the page. Say so, or the browser claims both gestures for
-        // itself and the chart's own `touchmove` never runs.
-        this.#element.style.touchAction = "none"
+        // A finger on the chart is there to drag the chart sideways and to pinch it —
+        // not to zoom the page. Say so, or the browser claims those gestures and the
+        // chart's own `touchmove` never runs.
+        //
+        // `pan-y` and not `none`: vertical scrolling stays with the page. A chart is
+        // usually inside a document, and a reader who cannot scroll past it is stuck.
+        // Panning is horizontal anyway, and excluding `pinch-zoom` from the list is what
+        // hands the pinch to us.
+        this.#element.style.touchAction = "pan-y"
 
         // The class attribute carries the cursor and gets rewritten, so identity lives
         // on a separate attribute that nothing overwrites.

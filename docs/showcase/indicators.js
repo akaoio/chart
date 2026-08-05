@@ -32,7 +32,7 @@ page({
 const price = datum => [datum.high, datum.low]
 
 /** Canvas, pane, axes. Every demo below differs only in what goes inside. */
-const chart = (host, rows, { height = 320, extents = price } = {}) => {
+const chart = (host, rows, { height = 320, extents = price, tickFormat, window: bars } = {}) => {
     const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
     const { data, xScale, xAccessor, displayXAccessor } = provider(rows)
 
@@ -50,7 +50,7 @@ const chart = (host, rows, { height = 320, extents = price } = {}) => {
     pane.yExtents = extents
 
     const yAxis = document.createElement("chart-y-axis")
-    Object.assign(yAxis, { ticks: 5, fontSize: 11 })
+    Object.assign(yAxis, { ticks: 5, fontSize: 11, tickFormat })
 
     const xAxis = document.createElement("chart-x-axis")
     Object.assign(xAxis, { fontSize: 11 })
@@ -308,6 +308,8 @@ demo({
                     })
                     .accessor(datum => datum.force),
                 extents: datum => datum.force,
+                // triệu, viết gọn — "3,000,000" không lọt vào lề 56px
+                tickFormat: value => `${(value / 1e6).toFixed(1)}M`,
                 build: pane => {
                     const series = document.createElement("chart-alternating-fill-area-series")
                     Object.assign(series, { yAccessor: datum => datum.force, baseAt: 0 })
@@ -320,6 +322,7 @@ demo({
             const { pane } = chart(host, setup.indicator(daily(200)), {
                 height: 180,
                 extents: setup.extents,
+                tickFormat: setup.tickFormat,
             })
             setup.build(pane)
         })

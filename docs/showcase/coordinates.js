@@ -6,7 +6,7 @@ import {
     sma,
 } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, grid, page } from "./showcase.js"
+import { demo, opening, grid, page } from "./showcase.js"
 
 page({
     title: "Cursors & tooltips",
@@ -39,6 +39,7 @@ const chart = (host, { height = 320 } = {}) => {
         displayXAccessor,
         seriesName: "DEMO",
         margin: { left: 0, right: 56, top: 8, bottom: 24 },
+        xExtents: opening(data, xAccessor),
     })
     canvas.style.height = `${height}px`
 

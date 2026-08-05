@@ -4,7 +4,7 @@ import {
     ema,
 } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, page } from "./showcase.js"
+import { demo, opening, page } from "./showcase.js"
 
 page({
     title: "Overview",
@@ -50,12 +50,8 @@ demo({
             displayXAccessor,
             seriesName: "DEMO",
             margin: { left: 0, right: 64, top: 8, bottom: 28 },
-            // Open on the last N bars; the rest is there to scroll back into. Fewer of
-            // them on a narrow screen, or every candle is one pixel wide.
-            xExtents: (visible =>
-                [xAccessor(data[data.length - visible]), xAccessor(data[data.length - 1])])(
-                window.innerWidth < 640 ? 60 : 120,
-            ),
+            // open on the most recent stretch; the rest is there to scroll back into
+            xExtents: opening(data, xAccessor, { wide: 120, narrow: 55 }),
         })
 
         // No height: the price pane fills whatever the canvas turns out to be, so the
