@@ -44,24 +44,58 @@ export class AlternateDataSeries extends ElementBase {
         this.#canvas = null
     }
 
+    /** Our rows inside the window that `plotData` of the chart's spans. */
+    #narrow(plotData, xAccessor) {
+        if (!plotData?.length || !xAccessor) return []
+
+        const start = xAccessor(plotData[0])
+        const end = xAccessor(plotData[plotData.length - 1])
+
+        return this.#data.filter(datum => {
+            const at = xAccessor(datum)
+            return at > start && at < end
+        })
+    }
+
     /** Only the rows falling inside the window the chart is showing. */
     get contextValues() {
         const values = this.#canvas?.contextValues
         if (!values) return values
 
-        const { plotData, xAccessor } = values
-        if (!plotData?.length || !xAccessor) return { ...values, plotData: [] }
+        return { ...values, plotData: this.#narrow(values.plotData, values.xAccessor) }
+    }
 
-        const start = xAccessor(plotData[0])
-        const end = xAccessor(plotData[plotData.length - 1])
+    /**
+     * Stand in front of the chart for events too, not just for context.
+     *
+     * Pan and zoom are the hot path: nothing re-renders, the chart computes a new state and
+     * hands it straight to every subscriber — and that state carries the chart's own
+     * `plotData`. A component keeps what it was handed and lets it outrank its context, so
+     * a child of ours would spend the whole drag drawing the host's rows and snap back to
+     * the guest's on release. Visibly: a sparse guest line welds itself to the candles the
+     * moment you touch them.
+     *
+     * The original has this too — its `getMoreProps` spreads `this.moreProps` last just the
+     * same. Not kept: which dataset a series draws is the one thing this element is for, and
+     * there is no reading under which "the host's, but only while the mouse is down" is it.
+     */
+    subscribe(id, rest) {
+        const { listener } = rest
 
-        return {
-            ...values,
-            plotData: this.#data.filter(datum => {
-                const at = xAccessor(datum)
-                return at > start && at < end
-            }),
-        }
+        this.#canvas?.subscribe(id, {
+            ...rest,
+            listener:
+                listener === undefined
+                    ? undefined
+                    : (type, props, state, event) => listener(type, this.#rewrite(props), state, event),
+        })
+    }
+
+    /** Any broadcast carrying `plotData` gets the guest's rows in its place. */
+    #rewrite(props) {
+        if (props?.plotData === undefined) return props
+
+        return { ...props, plotData: this.#narrow(props.plotData, this.#canvas?.contextValues?.xAccessor) }
     }
 
     // Everything else is the real chart's job
@@ -76,9 +110,6 @@ export class AlternateDataSeries extends ElementBase {
     }
     generateSubscriptionId() {
         return this.#canvas?.generateSubscriptionId()
-    }
-    subscribe(id, rest) {
-        this.#canvas?.subscribe(id, rest)
     }
     unsubscribe(id) {
         this.#canvas?.unsubscribe(id)

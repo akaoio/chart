@@ -2186,6 +2186,95 @@ TESTS["kéo dọc đi đúng quãng đường của con trỏ, và đi ngay lúc
     return t.checks
 }
 
+/**
+ * Dữ liệu khách phải là dữ liệu khách **trong lúc kéo**, không chỉ lúc đứng yên.
+ *
+ * Người dùng thấy: đường của dữ liệu khách thưa, nhưng vừa đặt tay kéo là nó khớp khít
+ * từng cây nến, thả tay ra thì lại thưa như cũ. Lý do nằm ở đường dẫn nóng: `pan` không
+ * dựng lại gì cả, nó phát thẳng state mới tới từng phần tử đã đăng ký, và trong gói ấy có
+ * `plotData` của **chart**. `getMoreProps()` trải `this.moreProps` sau cùng, nên cái vừa
+ * phát vào đè lên `plotData` mà lớp dữ liệu thay thế cấp — series con vẽ closes của chính
+ * bộ nến. Thả tay thì `refreshFromContext()` đặt lại từ context, nên nó tự khỏi.
+ *
+ * Bài này canh đúng cái nhìn thấy: số hàng mà series con NHÌN THẤY mỗi lần được vẽ.
+ */
+TESTS["dữ liệu khách vẫn là của khách trong lúc kéo"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, pane } = mountWithAxes()
+    const { data, xAccessor } = canvas
+
+    // Khách thưa hẳn: một hàng mỗi năm hàng của chart. Dữ liệu khách khớp một-đối-một thì
+    // bài này không thể đỏ, vì hai con số bằng nhau — đó chính là chỗ bài cũ mù.
+    const guest = []
+    for (let index = 0; index < data.length; index += 5) {
+        guest.push({ idx: data[index].idx, close: 500 + index })
+    }
+
+    const alternate = document.createElement("chart-alternate-data")
+    alternate.data = guest
+
+    const seen = []
+    class GuestProbe extends GenericChartComponent {
+        get drawOn() {
+            return ["pan", "mousemove", "drag"]
+        }
+        canvasToDraw(contexts) {
+            return getAxisCanvas(contexts)
+        }
+        canvasDraw(context, moreProps) {
+            seen.push(moreProps.plotData.length)
+        }
+    }
+    if (!customElements.get("guest-probe")) customElements.define("guest-probe", GuestProbe)
+
+    alternate.append(document.createElement("guest-probe"))
+    pane.append(alternate)
+    await settle(4)
+
+    const host = canvas.getState().plotData.length
+    const narrowed = alternate.contextValues.plotData.length
+
+    t.gt("khách có hàng trong khung nhìn", narrowed, 0)
+    t.ok("khách thưa hơn chart hẳn một bậc", narrowed < host / 3)
+
+    // Kéo ngang thật, và đọc lại từng lần vẽ TRONG lúc tay còn đặt xuống.
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    const at = (type, target, x, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + x, clientY: box.top + 200, bubbles: true, ...extra }),
+        )
+
+    at("mouseenter", rect, 400)
+    at("mousedown", rect, 400, { buttons: 1 })
+
+    seen.length = 0
+    for (const step of [20, 40, 60, 80]) {
+        at("mousemove", window, 400 - step, { buttons: 1 })
+        await settle(2)
+    }
+
+    const duringPan = [...seen]
+
+    at("mouseup", window, 320, { buttons: 0 })
+    await settle(3)
+
+    t.gt("có vẽ lại trong lúc kéo", duringPan.length, 0)
+    t.ok(
+        "trong lúc kéo, series con vẫn chỉ thấy hàng của khách",
+        duringPan.every(count => count > 0 && count < host / 3),
+    )
+    t.is(
+        "không lần vẽ nào thấy đúng số hàng của chart",
+        duringPan.filter(count => count === host).length,
+        0,
+    )
+
+    cleanup()
+    return t.checks
+}
+
 /** Một cú vuốt bằng ngón tay, dựng bằng TouchEvent thật của trình duyệt. */
 const swipeTouch = async (canvas, from, to, steps = 5) => {
     const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
