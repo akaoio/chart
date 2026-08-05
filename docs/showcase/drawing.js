@@ -81,9 +81,14 @@ demo({
         // can decide which object a click landed on.
         const selector = document.createElement("chart-drawing-object-selector")
         Object.assign(selector, {
+            // `chartId` phải là id của pane công cụ đang nằm trong, vì đó là thứ được dùng
+            // để thu `moreProps` về đúng pane ấy. Trước đây chỗ này truyền `undefined`, và
+            // vì pane mặc định có id là 0 nên không khớp: mọi cú bấm sau khi đã vẽ được một
+            // đối tượng đều nổ, và cú nổ cắt ngang việc phát sự kiện cho những công cụ đăng
+            // ký sau — bấm gì cũng không ăn. Phần tử tự biết pane của mình, nên hỏi nó.
             getInteractiveNodes: () =>
                 Object.fromEntries(
-                    tools.map(tool => [tool.tag, { type: tool.tag, chartId: undefined, node: tool.node }]),
+                    tools.map(tool => [tool.tag, { type: tool.tag, chartId: tool.node.chartId, node: tool.node }]),
                 ),
             drawingObjectMap: Object.fromEntries(tools.map(tool => [tool.tag, tool.list])),
             // `onSelect` nhận một MẢNG, theo thứ tự của `getInteractiveNodes` — không

@@ -136,8 +136,111 @@ const runShowcaseTests = async (page, origin) => {
     results.push(await showcaseDrawing(page, origin))
     results.push(await showcaseBrush(page, origin))
     results.push(await showcaseAlternateData(page, origin))
+    results.push(await showcaseKeepsWorkingAfterDrawing(page, origin))
 
     return results
+}
+
+/**
+ * Vẽ xong rồi bấm tiếp thì biểu đồ phải còn sống.
+ *
+ * Đây là chỗ bài kiểm cũ mù, và người dùng phải phát hiện hộ: "sau khi add text là đơ
+ * ngay". `chart-drawing-object-selector` được trang đăng ký với `chartId: undefined` còn
+ * pane thì mang id 0, nên `getMorePropsForChart` không tìm thấy pane và nổ. Nó nổ từ trong
+ * vòng phát sự kiện của `ChartCanvas`, nên cú nổ cắt luôn việc phát cho những phần tử đăng
+ * ký sau nó — bấm gì cũng không ăn nữa.
+ *
+ * Bài cũ vẽ một trendline bằng hai cú bấm rồi dừng. Cú bấm thứ hai xảy ra khi danh sách
+ * còn rỗng, nên `getMorePropsForChart` chưa được gọi tới. Chỉ cần bấm thêm một lần nữa là
+ * thấy. Nên bài này bấm thêm — đặt một text, rồi bấm tiếp hai lần vào chỗ trống.
+ */
+const showcaseKeepsWorkingAfterDrawing = async (page, origin) => {
+    const checks = []
+    const problems = []
+
+    const onError = error => problems.push(error.stack ?? error.message)
+    const onConsole = message => {
+        if (message.type() === "error") problems.push("console: " + message.text())
+    }
+
+    page.on("pageerror", onError)
+    page.on("console", onConsole)
+
+    await page.goto(`${origin}/docs/showcase/drawing.html`)
+    await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+    await page.waitForTimeout(600)
+
+    const readout = () => document.querySelector("section.demo .readout").textContent
+
+    // Chọn công cụ TRƯỚC khi đo toạ độ: Playwright cuộn trang để bấm được cái nút, nên một
+    // hình chữ nhật đo trước cú bấm ấy là hình chữ nhật của chỗ khác.
+    await page.click("section.demo .controls button:nth-child(6)")
+
+    const box = await page.evaluate(() => {
+        const canvas = document.querySelector("chart-canvas")
+        canvas.scrollIntoView({ block: "center" })
+        const { left, top, width, height } = canvas.shadowRoot
+            .querySelector("[data-event-capture]")
+            .getBoundingClientRect()
+        return { left, top, width, height }
+    })
+    await page.waitForTimeout(200)
+    const at = (fx, fy) => [Math.round(box.left + box.width * fx), Math.round(box.top + box.height * fy)]
+
+    // Text: một cú bấm là xong một nhãn.
+    const [tx, ty] = at(0.45, 0.35)
+    await page.mouse.move(tx, ty)
+    await page.mouse.click(tx, ty)
+    await page.waitForTimeout(400)
+
+    checks.push({
+        label: "một cú bấm đặt được một text",
+        pass: (await page.evaluate(readout)) === "Text: 1",
+        expected: "Text: 1",
+        actual: await page.evaluate(readout),
+    })
+
+    // Tắt công cụ đi, để hai cú bấm sau là bấm-để-chọn thuần: đúng cảnh đã nổ, mà không
+    // thêm nhãn nào vào danh sách.
+    await page.click("section.demo .controls button:nth-child(6)")
+
+    // Và đây là cú bấm mà bài cũ không bao giờ thực hiện.
+    for (const spot of [at(0.7, 0.6), at(0.25, 0.7)]) {
+        await page.mouse.move(spot[0], spot[1])
+        await page.mouse.click(spot[0], spot[1])
+        await page.waitForTimeout(250)
+    }
+
+    checks.push({
+        label: "bấm tiếp sau khi đã vẽ thì không có lỗi nào",
+        pass: problems.length === 0,
+        expected: "0",
+        actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+    })
+
+    // Còn sống nghĩa là công cụ khác vẫn dùng được: vẽ thêm một trendline.
+    await page.click("section.demo .controls button:first-child")
+    const [ax, ay] = at(0.3, 0.5)
+    const [bx, by] = at(0.6, 0.3)
+    await page.mouse.move(ax, ay)
+    await page.mouse.click(ax, ay)
+    await page.waitForTimeout(300)
+    await page.mouse.move(bx, by)
+    await page.mouse.click(bx, by)
+    await page.waitForTimeout(400)
+
+    const after = await page.evaluate(readout)
+    checks.push({
+        label: "công cụ khác vẫn vẽ được sau đó",
+        pass: after.includes("Trend line: 1") && after.includes("Text: 1"),
+        expected: "có cả Trend line: 1 và Text: 1",
+        actual: after,
+    })
+
+    page.off("pageerror", onError)
+    page.off("console", onConsole)
+
+    return { name: "trưng bày: vẽ xong rồi bấm tiếp thì biểu đồ còn sống", checks }
 }
 
 /**

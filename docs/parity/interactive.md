@@ -91,6 +91,19 @@ Một cái nút bấm không ăn thì không phải là "trung thành", là hỏ
 
 Phép ấy là `canvas.reset()`, một phương thức mới của `<chart-canvas>` — xem [`core.md`](core.md).
 
+## Một chỗ CỐ Ý khác bản gốc: công cụ vẽ tự biết pane của nó
+
+Đăng ký một công cụ với `<DrawingObjectSelector>` buộc phải kèm `chartId`, và bản gốc để người dùng tự nhớ — trong ví dụ của nó, `chartId` được viết tay cho khớp với `<Chart id={…}>`. Nhớ sai thì `getMorePropsForChart` không tìm ra pane và đọc `undefined.origin`.
+
+Cái giá của việc nhớ sai cao hơn nhiều so với vẻ ngoài của nó, vì chỗ ấy được gọi từ trong vòng phát sự kiện của `ChartCanvas`: cú nổ cắt luôn việc phát cho mọi phần tử đăng ký sau selector. Người dùng thấy "vẽ xong một cái là bấm gì cũng không ăn" — và đó đúng là chuyện đã xảy ra trên trang trưng bày công cụ vẽ, nơi chính tôi viết `chartId: undefined` còn pane mang id 0.
+
+Hai phép sửa:
+
+- Bảy công cụ vẽ giờ có getter `chartId`, trả về id của pane chứa nó — hỏi phần tử thì không nhớ sai được. Công cụ vẽ không phải `GenericChartComponent` nên trước đây nó không có sẵn thứ này; getter dùng đúng cơ chế context mà các series đang dùng, nên nó đúng cả khi pane bị bọc trong `<div>`.
+- `getMorePropsForChart` nói ra chuyện gì đã xảy ra: `chartId` nào được hỏi, và những pane nào đang có. Vẫn ném chứ không âm thầm bỏ qua — `chartId` sai là lỗi của ứng dụng, và cái giá của việc im lặng là "chọn không được mà không hiểu vì sao".
+
+3 khẳng định trên trang trưng bày: đặt được một nhãn, bấm tiếp thì không lỗi nào, và công cụ khác vẫn vẽ được sau đó. Trả `chartId: undefined` về thì bài đổ. Bài kiểm cũ mù chỗ này vì nó vẽ một trendline bằng hai cú bấm rồi dừng — cú bấm thứ hai xảy ra khi danh sách còn rỗng, nên `getMorePropsForChart` chưa được gọi tới.
+
 ## Chỗ đáng nói: `LINE`, `RAY`, `XLINE`
 
 Một trendline vẽ trên hai cây nến thường có ý kéo dài. Nên đường thẳng có ba kiểu: `LINE` dừng ở hai điểm, `RAY` chạy từ điểm đầu tới mép chart, `XLINE` cắt ngang cả hai chiều.

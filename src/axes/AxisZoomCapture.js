@@ -2,6 +2,7 @@ import { mean } from "d3-array"
 import { first, last, sign } from "../core/utils/index.js"
 import { mousePosition, pointerPosition, touchPosition, getTouchProps } from "../core/utils/dom.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
+import { DOUBLE_CLICK_SLOP } from "../core/EventCapture.js"
 import { define, defineProperties } from "../core/element.js"
 
 export const axisZoomCaptureDefaults = {
@@ -80,6 +81,7 @@ export class AxisZoomCapture extends GenericChartComponent {
     #startPosition = null
     #gesture = null
     #clicked = false
+    #clickedAt = null
     #clickTimer = null
     #dragHappened = false
 
@@ -242,13 +244,26 @@ export class AxisZoomCapture extends GenericChartComponent {
 
     #handleDragEnd = event => {
         if (this.#rect !== null && !this.#dragHappened) {
-            if (this.#clicked) {
-                this.#doubleClick()?.(event, pointerPosition(event, this.#rect))
+            const position = pointerPosition(event, this.#rect)
+
+            // Cùng phép đo khoảng cách như `EventCapture`: nhấp đúp là hai cú bấm vào cùng
+            // một chỗ, không phải hai cú bấm gần nhau về thời gian ở hai đầu dải trục.
+            const nearFirst =
+                this.#clickedAt !== null &&
+                Math.abs(position[0] - this.#clickedAt[0]) <= DOUBLE_CLICK_SLOP &&
+                Math.abs(position[1] - this.#clickedAt[1]) <= DOUBLE_CLICK_SLOP
+
+            if (this.#clicked && nearFirst) {
+                this.#doubleClick()?.(event, position)
                 this.#clicked = false
+                this.#clickedAt = null
             } else {
                 this.#clicked = true
+                this.#clickedAt = position
+                window.clearTimeout(this.#clickTimer)
                 this.#clickTimer = setTimeout(() => {
                     this.#clicked = false
+                    this.#clickedAt = null
                 }, 300)
             }
         }

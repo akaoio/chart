@@ -1,7 +1,7 @@
 import { format } from "d3-format"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
-import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate } from "./utils.js"
+import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
 export const interactiveYCoordinateToolDefaults = {
     enabled: true,
@@ -74,6 +74,11 @@ export class InteractiveYCoordinate extends ElementBase {
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
         this.getSelectionState = isHoverForInteractiveType("yCoordinateList").bind(this)
+    }
+
+    /** Pane nào chứa công cụ này — thứ `chart-drawing-object-selector` cần khi đăng ký. */
+    get chartId() {
+        return toolChartId.call(this)
     }
 
     get interactiveProps() {

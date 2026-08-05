@@ -915,8 +915,10 @@ const clickAt = async (canvas, x, y) => {
 /**
  * Chờ qua cửa sổ nhấp đúp.
  *
- * Hai lần bấm trong vòng 400ms là một cú NHẤP ĐÚP, không phải hai cú bấm — đúng như bản
- * gốc quy định. Vẽ trendline cần hai cú bấm rời nhau, nên bài kiểm phải chờ thật.
+ * Hai lần bấm trong vòng 400ms **vào cùng một chỗ** là một cú NHẤP ĐÚP, không phải hai cú
+ * bấm. Bản gốc không đo khoảng cách, nên với nó hai cú bấm ở đâu cũng vậy; ở đây có đo —
+ * xem `DOUBLE_CLICK_SLOP`. Vài bài dưới đây bấm hai lần gần nhau về toạ độ, nên vẫn phải
+ * chờ thật.
  */
 const pastDoubleClickWindow = () => new Promise(resolve => setTimeout(resolve, 450))
 
@@ -2467,6 +2469,60 @@ TESTS["onDoubleClick của mình đặt thì thắng phép mặc định"] = asy
     t.is("hàm của mình được gọi", seen.length, 1)
     t.ok("kèm toạ độ trong dải trục", Array.isArray(seen[0]) && Number.isFinite(seen[0][1]))
     t.is("và phép mặc định không chạy", canvas.getState().chartConfigs[0].yScale.domain().join(), manual)
+
+    cleanup()
+    return t.checks
+}
+
+/**
+ * Hai cú bấm nhanh ở HAI CHỖ KHÁC NHAU là hai cú bấm, không phải một cú nhấp đúp.
+ *
+ * Bản gốc chỉ hỏi thời gian: cú bấm thứ hai trong 400ms ở bất kỳ đâu cũng thành nhấp đúp,
+ * và cú bấm ấy bị ăn mất. Hậu quả nhìn thấy được: chọn công cụ Text rồi gõ hai nhãn ở hai
+ * đầu biểu đồ, nhanh tay một chút, thì cái thứ hai không xuất hiện — không lỗi, không dấu
+ * vết. Trên điện thoại thì gần như luôn xảy ra.
+ *
+ * Bài này bấm hai lần cách nhau 100ms: một cặp cùng chỗ (phải ra nhấp đúp) và một cặp cách
+ * nhau 200px (phải ra hai cú bấm).
+ */
+TESTS["hai cú bấm nhanh ở hai chỗ khác nhau là hai cú bấm"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mount()
+    const pane = canvas.querySelector("chart-pane")
+
+    const clicks = []
+    const doubles = []
+    const listener = document.createElement("chart-click-callback")
+    listener.onClick = (event, moreProps) => clicks.push(moreProps.mouseXY[0])
+    listener.onDoubleClick = () => doubles.push(true)
+    pane.append(listener)
+    await settle(4)
+
+    // Không có `pastDoubleClickWindow()` ở giữa: cả bài này là về chuyện bấm nhanh.
+    // Hai chỗ khác nhau: phải là hai cú bấm.
+    await clickAt(canvas, 150, 120)
+    await clickAt(canvas, 350, 200)
+
+    t.is("hai chỗ khác nhau → hai cú bấm", clicks.length, 2)
+    t.is("hai chỗ khác nhau → không có nhấp đúp", doubles.length, 0)
+
+    // Cùng một chỗ, nhanh: phải là một cú nhấp đúp.
+    clicks.length = 0
+    doubles.length = 0
+    await clickAt(canvas, 500, 150)
+    await clickAt(canvas, 500, 150)
+
+    t.is("cùng một chỗ → có nhấp đúp", doubles.length, 1)
+    t.is("cùng một chỗ → chỉ tính một cú bấm", clicks.length, 1)
+
+    // Lệch vài pixel vẫn là nhấp đúp — ngón tay không đặt lại đúng một pixel.
+    clicks.length = 0
+    doubles.length = 0
+    await clickAt(canvas, 600, 150)
+    await clickAt(canvas, 604, 153)
+
+    t.is("lệch 4px vẫn là nhấp đúp", doubles.length, 1)
 
     cleanup()
     return t.checks

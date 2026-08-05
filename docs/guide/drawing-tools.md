@@ -59,8 +59,8 @@ that can see all of them can decide which one a click landed on:
 const selector = document.createElement("chart-drawing-object-selector")
 Object.assign(selector, {
     getInteractiveNodes: () => ({
-        trendline: { type: "trendline", chartId: "price", node: trendTool },
-        fib: { type: "fib", chartId: "price", node: fibTool },
+        trendline: { type: "trendline", chartId: trendTool.chartId, node: trendTool },
+        fib: { type: "fib", chartId: fibTool.chartId, node: fibTool },
     }),
     drawingObjectMap: { trendline: "trends", fib: "retracements" },
     onSelect: (event, interactives) => {
@@ -81,7 +81,11 @@ Three details, each of which will bite if you assume otherwise:
 
 - `drawingObjectMap` tells it which property on each tool holds the list.
 - `chartId` must be a real pane id. The selector narrows the pointer position into that
-  pane's coordinates, and there is nothing to narrow into if the id matches no pane.
+  pane's coordinates, and there is nothing to narrow into if the id matches no pane — you
+  get a thrown error on the first click after anything is drawn, and because that throw
+  happens inside the chart's event dispatch, every element registered after the selector
+  stops receiving events too. The chart looks dead. Read it off the tool instead of writing
+  it out, as above: every tool answers `chartId` with the pane it is in.
 - **`onSelect` receives an array, not an object** — one entry per node you listed, in that
   order, each `{ type, chartId, objects }`. And `objects` is the list of drawn objects,
   every one carrying a fresh `selected`; it is not an array of booleans.

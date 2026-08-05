@@ -1,6 +1,6 @@
 import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
-import { isHoverForInteractiveType, saveNodeType, terminate } from "./utils.js"
+import { isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 import { getSlope, getYIntercept } from "./components/InteractiveStraightLine.js"
 
 export const equidistantChannelDefaults = {
@@ -54,6 +54,11 @@ export class EquidistantChannel extends ElementBase {
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
         this.getSelectionState = isHoverForInteractiveType("channels").bind(this)
+    }
+
+    /** Pane nào chứa công cụ này — thứ `chart-drawing-object-selector` cần khi đăng ký. */
+    get chartId() {
+        return toolChartId.call(this)
     }
 
     get interactiveProps() {

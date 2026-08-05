@@ -2,6 +2,15 @@ import { getCurrentCharts } from "./utils/ChartDataUtil.js"
 import { getTouchProps, mousePosition, pointerPosition, pointersPosition, touchPosition } from "./utils/dom.js"
 
 /**
+ * Hai cú bấm cách nhau bao nhiêu pixel thì vẫn còn là một cú nhấp đúp.
+ *
+ * Ngón tay không đặt lại đúng một pixel, nên số này phải rộng hơn con chuột — mà rộng quá
+ * thì hai lần gõ có ý là hai lần lại bị gộp. Trình duyệt trên máy tính lấy khoảng 2–4 pixel;
+ * lấy 8 để ngón tay còn đủ chỗ.
+ */
+export const DOUBLE_CLICK_SLOP = 8
+
+/**
  * One invisible rectangle over the whole chart, turning raw pointer events into the
  * chart's own vocabulary: pan, drag, zoom, pinch, hover.
  *
@@ -37,6 +46,8 @@ export class EventCapture {
     #mouseInside = false
     #mouseInteraction = true
     #clicked = false
+    #clickedAt = null
+    #clickTimer = null
     #dragHappened = false
     #panHappened = false
     #panEndTimeout
@@ -147,6 +158,7 @@ export class EventCapture {
         this.#gesture?.abort()
         this.#lifetime = this.#hover = this.#gesture = null
         window.clearTimeout(this.#panEndTimeout)
+        window.clearTimeout(this.#clickTimer)
     }
 
     resize(width, height) {
@@ -256,8 +268,18 @@ export class EventCapture {
     }
 
     /**
-     * A second click within 400ms is a double click. Neither fires if the pointer was
-     * panning or dragging — otherwise letting go of a pan would register as a click.
+     * A second click within 400ms **and within a few pixels** is a double click. Neither
+     * fires if the pointer was panning or dragging — otherwise letting go of a pan would
+     * register as a click.
+     *
+     * Bản gốc chỉ hỏi thời gian: cú bấm thứ hai trong 400ms ở **bất kỳ đâu** cũng thành
+     * nhấp đúp, và cú bấm ấy bị ăn mất. Đặt hai nhãn chữ cách nhau nửa biểu đồ, nhanh tay
+     * một chút, thì cái thứ hai không xuất hiện — không báo lỗi, không dấu vết, chỉ là
+     * không có gì xảy ra. Trên điện thoại thì gần như luôn xảy ra, vì gõ hai lần thì nhanh.
+     *
+     * Nhấp đúp vốn là hai cú bấm **vào cùng một chỗ**; chính trình duyệt cũng đo khoảng
+     * cách khi phát `dblclick`. Nên ở đây hỏi cả khoảng cách, và một cú bấm ra ngoài bán
+     * kính ấy được tính là một cú bấm mới — mở lại cửa sổ nhấp đúp tại chỗ mới.
      */
     #handleClick = event => {
         const mouseXY = mousePosition(event)
@@ -265,16 +287,32 @@ export class EventCapture {
 
         if (this.#panHappened || this.#dragHappened) return
 
-        if (this.#clicked && onDoubleClick !== undefined) {
+        const nearFirst =
+            this.#clickedAt !== null &&
+            Math.abs(mouseXY[0] - this.#clickedAt[0]) <= DOUBLE_CLICK_SLOP &&
+            Math.abs(mouseXY[1] - this.#clickedAt[1]) <= DOUBLE_CLICK_SLOP
+
+        if (this.#clicked && nearFirst && onDoubleClick !== undefined) {
             onDoubleClick(mouseXY, event)
-            this.#clicked = false
+            this.#forgetClick()
         } else if (onClick !== undefined) {
             onClick(mouseXY, event)
             this.#clicked = true
-            setTimeout(() => {
-                this.#clicked = false
-            }, 400)
+            this.#clickedAt = mouseXY
+
+            // Huỷ hẹn giờ của cú bấm trước. Bản gốc để chúng chồng lên nhau, nên hẹn giờ
+            // của một cú bấm cũ đóng cửa sổ nhấp đúp của cú bấm mới: bấm ba lần rời rạc
+            // rồi bấm đúp thì cú đúp ấy có thể bị tính thành hai cú bấm lẻ.
+            window.clearTimeout(this.#clickTimer)
+            this.#clickTimer = setTimeout(() => this.#forgetClick(), 400)
         }
+    }
+
+    #forgetClick() {
+        window.clearTimeout(this.#clickTimer)
+        this.#clickTimer = null
+        this.#clicked = false
+        this.#clickedAt = null
     }
 
     #handleRightClick = event => {

@@ -150,6 +150,25 @@ Bản port bỏ phép đảo dấu: một công thức cho cả hai, vì "nội 
 
 4 khẳng định canh chỗ này, dựng bằng `TouchEvent` thật của trình duyệt, đo cả bốn chiều vuốt. Trả lại phép đảo dấu thì bài đổ.
 
+## Nhấp đúp: bản gốc chỉ đo thời gian, không đo khoảng cách
+
+`EventCapture` của bản gốc coi **mọi** cú bấm thứ hai trong vòng 400ms là một cú nhấp đúp, dù nó ở đâu trên biểu đồ:
+
+```js
+if (this.clicked && onDoubleClick !== undefined) { onDoubleClick(mouseXY, e); this.clicked = false }
+else { onClick(mouseXY, e); this.clicked = true; setTimeout(() => { … }, 400) }
+```
+
+Hậu quả nhìn thấy được: chọn công cụ Text rồi đặt hai nhãn ở hai đầu biểu đồ, nhanh tay một chút, thì cái thứ hai **không xuất hiện** — không lỗi, không dấu vết, chỉ là không có gì xảy ra. Trên điện thoại thì gần như luôn xảy ra, vì gõ hai lần thì nhanh. Bộ kiểm ở đây từng phải có hẳn một hàm `pastDoubleClickWindow()` chờ 450ms giữa hai cú bấm để đi qua chỗ này — một cái vòng phải lách chứ không phải một hành vi.
+
+Nhấp đúp vốn là hai cú bấm **vào cùng một chỗ**; chính trình duyệt cũng đo khoảng cách khi phát `dblclick`. Nên ở đây hỏi cả khoảng cách (`DOUBLE_CLICK_SLOP`, 8px — rộng hơn con chuột để ngón tay còn chỗ), và một cú bấm ra ngoài bán kính ấy được tính là một cú bấm mới, mở lại cửa sổ nhấp đúp tại chỗ mới.
+
+Cùng chỗ ấy còn một lỗi thứ hai của bản gốc: mỗi cú bấm hẹn một `setTimeout` riêng mà không ai huỷ cái cũ, nên hẹn giờ của một cú bấm cũ đóng cửa sổ nhấp đúp của cú bấm mới. Bản port huỷ cái cũ trước khi hẹn cái mới. Lỗi này lộ ra vì bài kiểm mới bấm ba cặp liên tiếp và cặp thứ ba đổ.
+
+`AxisZoomCapture` mang y nguyên hai phép sửa ấy, với cửa sổ 300ms của riêng nó.
+
+5 khẳng định: hai chỗ khác nhau → hai cú bấm; cùng chỗ → một cú nhấp đúp; lệch 4px → vẫn nhấp đúp. Bỏ phép đo khoảng cách thì bài đổ.
+
 ## Bằng chứng biết fail
 
 Bậc 2 không chứng minh được bằng golden data — nó là DOM, canvas và chuột. Bộ kiểm chạy trong Chromium thật (`npm run test:browser`, 59 khẳng định). Để chắc nó không xanh vô nghĩa, sửa hỏng bản port 6 chỗ:
