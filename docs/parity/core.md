@@ -86,6 +86,7 @@ Ràng buộc này đến từ tính năng khoá học TTS nêu trong #1, và đ�
 | `getNewChartConfig` | nhận React children, đọc `each.props` | nhận thẳng mảng props | custom element không có lớp bọc `props` |
 | `withSize` / `withDeviceRatio` | HOC bọc ngoài | phần tử tự đo | xem [`utils.md`](utils.md) |
 | lớp CSS con trỏ | `react-financial-charts-*` | `chart-*` | tên cũ nhắc tới React trong một bản không có React |
+| — | không có | `reset()` | bản gốc không có phép đưa chart về hình lúc mở, nên nút reset của `ZoomButtons` không có gì để gọi |
 | `strokeDashTypes` | một **kiểu** TypeScript | mảng các tên | kiểu không tồn tại lúc chạy; cái mảng chính là thứ kiểu ấy mô tả |
 
 ## Chỗ bản gốc kỳ lạ, cố ý giữ nguyên

@@ -802,6 +802,23 @@ export class ChartCanvas extends ElementBase {
         })
     }
 
+    /**
+     * Về đúng hình lúc mở: khung nhìn x quay lại `xExtents`, và mọi pane bỏ khung giá
+     * người dùng tự đặt.
+     *
+     * Bản gốc không có phép này — `<ZoomButtons>` của nó có nút reset nhưng nút ấy chỉ
+     * gọi `onReset`, mà ngay câu chuyện mẫu của chính bản gốc cũng không truyền gì vào.
+     * Nghĩa là cái nút vẽ ra rồi nằm đó, bấm không ăn. Ở đây nó có việc để làm; ứng dụng
+     * vẫn đặt `onReset` của riêng mình được và khi ấy phép này không chạy.
+     */
+    reset = () => {
+        this.clearThreeCanvas()
+
+        this.setState(this.#resetChart())
+
+        this.#reportEdges(this.#state.xScale)
+    }
+
     resetYDomain = chartId => {
         let changed = false
 

@@ -17,7 +17,7 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 | `terminate` | `utils.ts` | ☑ | |
 | `ClickCallback` | `ClickCallback.tsx` | ☑ | 6 khẳng định: báo đúng cây nến dưới con trỏ, không phải pixel |
 | `DrawingObjectSelector` | `DrawingObjectSelector.tsx` | ☑ | 6 khẳng định: bấm đúng đường nào thì chọn đường ấy, bấm chỗ trống thì bỏ chọn |
-| `ZoomButtons` | `ZoomButtons.tsx` | ☑ | cây SVG khớp từng node, cộng 6 bước nội suy |
+| `ZoomButtons` | `ZoomButtons.tsx` | ☑ | cây SVG khớp từng node, 6 bước nội suy, và 6 khẳng định bấm thật |
 | `TrendLine` | `TrendLine.tsx` | ☑ | 22 khẳng định trong trình duyệt: vẽ, cửa chặn, kéo cả đường |
 | `Brush` | `Brush.tsx` | ☑ | 6 khẳng định: kéo ra khoảng chọn, bấm suông thì không |
 | `EquidistantChannel` | `EquidistantChannel.tsx` | ☑ | 18 lệnh canvas × 3 dáng, cộng 4 khẳng định ba-lần-bấm |
@@ -82,6 +82,14 @@ Hai bài kiểm hover cũng từng vô nghĩa mà nhìn thì tưởng đúng: b�
 Bản port bỏ lần nhân thang thừa. Hai phía vì thế không thể khớp ở đây, nên mấy điểm "trúng" **không nằm trong bộ so**; chúng được đo trong chart thật, ở `test.browser.js`. Chỗ nào hai bên vẫn đồng ý — ra xa thì không trúng, không ai nghe thì không tính — vẫn so bình thường.
 
 Ba chỗ khác vẫn giữ nguyên hành vi bản gốc vì chúng có lý: cửa chặn `onHover === undefined`, hộp bao của tia quạt Gann, và việc nhãn cảnh báo trôi khỏi khung thì không vẽ gì cả thay vì dán vào mép.
+
+## Một chỗ CỐ Ý khác bản gốc: nút reset có việc để làm
+
+`<ZoomButtons>` của bản gốc vẽ ba nút, và nút thứ ba chỉ gọi `onReset`. Không ai truyền gì vào thì nó không làm gì — kể cả câu chuyện mẫu `StockChart` của chính bản gốc cũng để trống, nên ở đó nút reset vẽ ra rồi nằm im.
+
+Một cái nút bấm không ăn thì không phải là "trung thành", là hỏng. Ở đây không đặt `onReset` thì nút đưa chart về **đúng hình lúc mở**: khung nhìn x quay lại `xExtents`, và mọi pane bỏ khung giá người dùng tự kéo. Ứng dụng vẫn đặt `onReset` của riêng mình được, và khi ấy phép mặc định không chạy.
+
+Phép ấy là `canvas.reset()`, một phương thức mới của `<chart-canvas>` — xem [`core.md`](core.md).
 
 ## Chỗ đáng nói: `LINE`, `RAY`, `XLINE`
 

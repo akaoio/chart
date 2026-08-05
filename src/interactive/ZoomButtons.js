@@ -133,6 +133,9 @@ export class ZoomButtons extends GenericChartComponent {
             ...this.#props,
             onZoomIn: () => this.#zoom(-1),
             onZoomOut: () => this.#zoom(1),
+            // Không đặt `onReset` thì nút reset đưa chart về đúng hình lúc mở. Bản gốc
+            // để trống, nên nút ấy vẽ ra rồi nằm đó — bấm không ăn gì cả.
+            onReset: this.#props.onReset ?? (() => this.canvas?.reset()),
         })
     }
 }

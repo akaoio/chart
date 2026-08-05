@@ -1813,6 +1813,32 @@ TESTS["bấm nút zoom thì chart phóng to thật"] = async () => {
 
     t.gt("bấm − thì nhìn được nhiều hơn lúc vừa phóng", span(canvas.getState().xScale.domain()), span(zoomedIn))
 
+    // ── nút reset ─────────────────────────────────────────────────────────────────
+    //
+    // Bản gốc để `onReset` trống, nên nút này vẽ ra rồi nằm đó. Ở đây không đặt gì thì
+    // nó đưa chart về đúng hình lúc mở — cả khung nhìn x lẫn khung giá người dùng đã kéo.
+
+    button("in").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
+    await new Promise(resolve => setTimeout(resolve, 200))
+    canvas.yAxisZoom(0, [50, 60])
+    await settle(2)
+
+    const disturbed = {
+        x: span(canvas.getState().xScale.domain()),
+        y: canvas.getState().chartConfigs[0].yScale.domain().join(),
+    }
+    t.not("đã làm cho chart khác hẳn lúc mở", String(disturbed.x), String(span(before)))
+
+    button("reset").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
+    await settle(4)
+
+    t.near("bấm reset thì khung nhìn x về như cũ", span(canvas.getState().xScale.domain()), span(before), 0.001)
+    t.not(
+        "và khung giá cũng thôi bị ghim",
+        canvas.getState().chartConfigs[0].yScale.domain().join(),
+        disturbed.y,
+    )
+
     cleanup()
     return t.checks
 }
