@@ -2359,6 +2359,96 @@ TESTS["ngón tay kéo được đối tượng đã chọn, và chart không pan
 }
 
 /**
+ * Ngón tay được trỏ trúng rộng hơn con chuột.
+ *
+ * Mọi phép dò trúng trong thư viện đặt theo con chuột: công cụ tương tác lấy `tolerance: 4`,
+ * chốt kéo lấy bán kính cộng 7. Đầu ngón tay rộng cỡ 30 pixel CSS, nên với 4px thì phải đặt
+ * ngón tay đúng vào một đường mảnh — điều không ai làm được.
+ *
+ * Bài này đo đúng chỗ chênh: một điểm cách đường 8 pixel. Con chuột ở đó phải **trượt** (giữ
+ * nguyên độ chính xác của chuột, không nới bừa cho cả hai), còn ngón tay ở đó phải **trúng**.
+ */
+TESTS["ngón tay trỏ trúng rộng hơn chuột, và chuột không bị nới theo"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 100], selected: true, type: "LINE" }],
+    })
+    await settle(4)
+
+    const state = canvas.getState()
+    const line = canvas.querySelector("chart-interactive-straight-line")
+    const midX = (state.xScale(20) + state.xScale(60)) / 2
+    const onLine = state.chartConfigs[0].yScale(100)
+
+    // 8 pixel: ngoài `tolerance` 4 của chuột, trong 4 + 12 của ngón tay.
+    const nearY = onLine + 8
+
+    await hoverAt(canvas, midX, nearY)
+    const mouseHit = line.moreProps.hovering
+
+    // Cùng một điểm, nhưng bằng ngón tay: touchstart tự thiết lập `hovering`.
+    await swipeTouch(canvas, [midX, nearY], [midX, nearY])
+    const touchHit = line.moreProps.hovering
+
+    t.is("chuột cách 8px thì trượt", mouseHit, false)
+    t.is("ngón tay cách 8px thì trúng", touchHit, true)
+
+    cleanup()
+    return t.checks
+}
+
+/**
+ * Cú chạm ngay sau một lần rê chuột vẫn phải quyết định đúng.
+ *
+ * `ChartCanvas.handleMouseMove` chỉ nhận một lần mỗi khung hình — đúng cho việc rê chuột, vì
+ * con trỏ sinh ra hàng trăm sự kiện mỗi giây. Nhưng `EventCapture` cũng dùng chính lời gọi
+ * ấy để thiết lập `hovering` ngay trước khi quyết định "cú này là pan hay là kéo một đối
+ * tượng". Nếu khung hình trước còn đang chờ thì lời gọi bị bỏ, phép quyết định đọc trạng
+ * thái cũ, và cú chạm quyết định sai.
+ *
+ * Không thấy được bằng mắt, nên phải dựng đúng cái bẫy: rê chuột ra chỗ trống cho `hovering`
+ * thành false, rồi phát thêm một `mousemove` mà KHÔNG chờ khung hình nào — cái đó bật cờ
+ * chặn và cờ còn đang bật — rồi chạm ngay vào đối tượng.
+ */
+TESTS["cú chạm ngay sau một lần rê chuột vẫn quyết định đúng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 105], selected: true, type: "LINE" }],
+        onComplete: (event, trends) => completed.push(trends),
+    })
+    await settle(4)
+
+    const state = canvas.getState()
+    const midX = (state.xScale(20) + state.xScale(60)) / 2
+    const midY = (state.chartConfigs[0].yScale(100) + state.chartConfigs[0].yScale(105)) / 2
+
+    // Rê chuột ra chỗ trống, chờ hẳn: `hovering` của đường thành false.
+    await hoverAt(canvas, midX, midY + 120)
+
+    // Rồi một `mousemove` nữa, KHÔNG chờ khung hình — cờ chặn bật lên và còn đang bật.
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    window.dispatchEvent(
+        new MouseEvent("mousemove", { clientX: box.left + midX, clientY: box.top + midY + 120, bubbles: true }),
+    )
+
+    // Chạm ngay vào đường, trong cùng khung hình ấy.
+    await swipeTouch(canvas, [midX, midY], [midX + 60, midY + 40])
+
+    t.is("cú chạm vẫn nhận ra đối tượng dưới ngón tay", completed.length, 1)
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Ngược lại: ngón tay đặt vào chỗ TRỐNG thì vẫn phải pan, và không đối tượng nào đi theo.
  *
  * Nửa này canh chỗ dễ hỏng nhất của phép sửa trên: nếu phép quyết định trả "drag" quá rộng

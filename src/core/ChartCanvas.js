@@ -987,7 +987,17 @@ export class ChartCanvas extends ElementBase {
 
         this.triggerEvent(
             "mousemove",
-            { show: true, mouseXY, prevMouseXY: this.#prevMouseXY, currentItem, currentCharts },
+            {
+                show: true,
+                mouseXY,
+                prevMouseXY: this.#prevMouseXY,
+                currentItem,
+                currentCharts,
+                // Thiết bị nào đang chạm vào chart. Bản gốc nhận `eventType` ở đây rồi không
+                // dùng vào việc gì, nên không phần tử nào biết nó đang bị ngón tay trỏ vào —
+                // mà phép dò trúng thì phải biết, vì ngón tay to hơn con trỏ. Xem `hitSlop`.
+                inputType: eventType,
+            },
             event,
         )
 

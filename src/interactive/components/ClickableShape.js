@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
 import { defineProperties, define } from "../../core/element.js"
@@ -104,7 +105,21 @@ export class ClickableShape extends GenericChartComponent {
 
     isHoverTest(moreProps) {
         if (!this.#props.show) return false
-        return isCloseIconHover(this.#cache.closeIcon, this.#props.textBox, moreProps.mouseXY)
+        // Dấu ✕ đo bằng nửa bề rộng của chính nó, nên nới bề rộng ấy. Cũng chỉ dùng cho
+        // phép dò trúng — phần vẽ đọc `textBox` gốc.
+        const slop = hitSlop(moreProps)
+        const textBox =
+            slop === 0
+                ? this.#props.textBox
+                : {
+                      ...this.#props.textBox,
+                      closeIcon: {
+                          ...this.#props.textBox.closeIcon,
+                          width: this.#props.textBox.closeIcon.width + 2 * slop,
+                      },
+                  }
+
+        return isCloseIconHover(this.#cache.closeIcon, textBox, moreProps.mouseXY)
     }
 
     onClickWhenHover(event, moreProps) {

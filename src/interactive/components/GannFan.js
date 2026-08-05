@@ -1,4 +1,5 @@
 import { pairs } from "d3-array"
+import { hitSlop } from "../../core/utils/dom.js"
 import { isDefined, isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -160,7 +161,7 @@ export class GannFan extends GenericChartComponent {
     }
 
     isHoverTest(moreProps) {
-        return isGannFanHover(moreProps, this.#props)
+        return isGannFanHover(moreProps, { ...this.#props, tolerance: this.#props.tolerance + hitSlop(moreProps) })
     }
 
     onHover(event, moreProps) {

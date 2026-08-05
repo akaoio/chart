@@ -1,4 +1,5 @@
 import { deviation, sum, zip } from "d3-array"
+import { hitSlop } from "../../core/utils/dom.js"
 import { getClosestItemIndexes } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -156,7 +157,7 @@ export class LinearRegressionChannelWithArea extends GenericChartComponent {
     }
 
     isHoverTest(moreProps) {
-        return isRegressionHover(moreProps, this.#props)
+        return isRegressionHover(moreProps, { ...this.#props, tolerance: this.#props.tolerance + hitSlop(moreProps) })
     }
 
     onHover(event, moreProps) {

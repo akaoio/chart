@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
 import { defineProperties, define } from "../../core/element.js"
@@ -130,7 +131,11 @@ export class InteractiveText extends GenericChartComponent {
 
     isHoverTest(moreProps) {
         if (this.#props.onHover === undefined) return false
-        return isTextHover(this.#props, moreProps, this.#cache.textWidth)
+        return isTextHover(
+            { ...this.#props, tolerance: this.#props.tolerance + hitSlop(moreProps) },
+            moreProps,
+            this.#cache.textWidth,
+        )
     }
 
     onHover(event, moreProps) {

@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { isDefined, isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -158,7 +159,12 @@ export class ChannelWithArea extends GenericChartComponent {
     }
 
     isHoverTest(moreProps) {
-        return isChannelHover(moreProps, this.#props)
+        return isChannelHover(moreProps, this.#hitProps(moreProps))
+    }
+
+    /** Cùng props, chỉ nới `tolerance` khi thứ đang trỏ vào là ngón tay. */
+    #hitProps(moreProps) {
+        return { ...this.#props, tolerance: this.#props.tolerance + hitSlop(moreProps) }
     }
 
     onHover(event, moreProps) {

@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
 import { defineProperties, define } from "../../core/element.js"
@@ -83,7 +84,11 @@ export class ClickableCircle extends GenericChartComponent {
     }
 
     isHoverTest(moreProps) {
-        return this.#props.show ? isClickableCircleHover(moreProps, this.#props) : false
+        // Chốt kéo đo bằng bán kính, nên nới bán kính. `r` chỉ đi vào phép dò trúng ở đây;
+        // phần vẽ đọc `r` riêng, nên chốt không to ra trên màn hình.
+        return this.#props.show
+            ? isClickableCircleHover(moreProps, { ...this.#props, r: this.#props.r + hitSlop(moreProps) })
+            : false
     }
 
     onDragStart(event, moreProps) {
