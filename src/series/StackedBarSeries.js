@@ -187,6 +187,7 @@ export const drawStackedBarSeries = (context, moreProps, props) => {
     drawOnCanvasHelper(context, withDefaults(stackedBarSeriesDefaults, props), moreProps, moreProps.xAccessor, d3Stack)
 }
 
+/** Several bars per x, each starting where the one before ended. */
 export class StackedBarSeries extends Series {
     static defaults = stackedBarSeriesDefaults
 

@@ -54,6 +54,7 @@ export const axisZoomCaptureRect = ({ bg, className, zoomCursorClassName = "", d
     },
 })
 
+/** The invisible strip over an axis that you drag to stretch or squash that scale. */
 export class AxisZoomCapture extends GenericChartComponent {
     #props
     #rect = null

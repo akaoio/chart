@@ -199,6 +199,7 @@ export const drawVolumeProfileSeries = (context, moreProps, props) => {
     })
 }
 
+/** How much was traded at each price, rather than at each moment. */
 export class VolumeProfileSeries extends Series {
     static defaults = volumeProfileSeriesDefaults
 

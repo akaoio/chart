@@ -104,6 +104,7 @@ export const drawMouseCoordinateXV2 = (context, moreProps, props) => {
     )
 }
 
+/** The date under the pointer, drawn as a pointed callout rather than a plain box. */
 export class MouseCoordinateXV2 extends Series {
     static defaults = mouseCoordinateXV2Defaults
 

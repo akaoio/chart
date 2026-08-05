@@ -60,6 +60,7 @@ export const isClickableCircleHover = (moreProps, props) => {
     return x - reach < mouseX && mouseX < x + reach && y - reach < mouseY && mouseY < y + reach
 }
 
+/** A grab handle at the end of a drawn object. */
 export class ClickableCircle extends GenericChartComponent {
     #props
 

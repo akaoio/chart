@@ -1,7 +1,7 @@
 {
     "name": "@akaoio/chart",
     "version": "0.0.0",
-    "description": "Financial charts as plain Web Components — a port of react-financial-charts",
+    "description": "Financial charts as plain Web Components \u2014 a port of react-financial-charts",
     "license": "MIT",
     "type": "module",
     "repository": {
@@ -34,6 +34,8 @@
     "scripts": {
         "test": "npm run test:golden && npm run test:browser",
         "golden": "TZ=UTC node --import ./tools/golden/resolve-source.mjs tools/golden/generate.mjs",
+        "docs": "node tools/docs/serve.mjs",
+        "docs:reference": "node tools/docs/elements.mjs",
         "test:browser": "node test.browser.js",
         "test:golden": "TZ=UTC node test.js"
     },

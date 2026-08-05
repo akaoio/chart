@@ -132,6 +132,7 @@ export const isChannelHover = (moreProps, props) => {
     return near(lines.line1) || near(lines.line2)
 }
 
+/** Two parallel lines with the space between them filled. */
 export class ChannelWithArea extends GenericChartComponent {
     #props
 

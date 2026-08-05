@@ -130,6 +130,7 @@ export const edge2Provider = props => moreProps => {
     return [x2, y2]
 }
 
+/** A least-squares fit through the closes between two x values, with a band either side. */
 export class LinearRegressionChannelWithArea extends GenericChartComponent {
     #props
 

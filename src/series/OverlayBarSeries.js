@@ -76,6 +76,7 @@ export const drawOverlayBarSeries = (context, moreProps, props) => {
     drawOnCanvas2(withDefaults(overlayBarSeriesDefaults, props), context, getOverlayBars(moreProps, props))
 }
 
+/** Several bars sharing one x, drawn over one another from the last accessor backwards. */
 export class OverlayBarSeries extends Series {
     static defaults = overlayBarSeriesDefaults
 

@@ -134,6 +134,7 @@ export const isGannFanHover = (moreProps, props) => {
     return false
 }
 
+/** The nine rays of a Gann fan, spreading from one point. */
 export class GannFan extends GenericChartComponent {
     #props
 

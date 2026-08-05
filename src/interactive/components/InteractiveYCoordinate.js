@@ -128,6 +128,7 @@ export const isInteractiveYCoordinateHover = (props, moreProps, width) => {
     return x1 <= mouseX && x2 >= mouseX && Math.abs(mouseY - y) < 4
 }
 
+/** A price alert: a line across the pane with a label at the left and a ✕ to remove it. */
 export class InteractiveYCoordinate extends GenericChartComponent {
     #props
     #cache = { width: 0 }

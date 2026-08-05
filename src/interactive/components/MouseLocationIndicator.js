@@ -45,6 +45,7 @@ export const locationFromEvent = (event, moreProps, props) => {
     return { xValue, yValue, x: xScale(xValue), y: yScale(yValue) }
 }
 
+/** Turns pointer position into a data value, and reports it to whichever tool is drawing. */
 export class MouseLocationIndicator extends GenericChartComponent {
     #props
     #position = {}

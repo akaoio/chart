@@ -24,6 +24,7 @@ export const drawGroupedBarSeries = (context, moreProps, props) => {
     )
 }
 
+/** Several bars per x, side by side in their own slots. */
 export class GroupedBarSeries extends Series {
     static defaults = groupedBarSeriesDefaults
 

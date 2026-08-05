@@ -79,6 +79,7 @@ export const renderHoverTextNearMouse = (moreProps, props) => {
     }
 }
 
+/** The hint that follows the cursor while a drawn object can be grabbed. */
 export class HoverTextNearMouse extends GenericChartComponent {
     #props
     #measured = {}

@@ -36,6 +36,7 @@ export const getInteraction = (moreProps, props) => {
     })
 }
 
+/** Decides which drawn object a click belongs to, across every tool at once. */
 export class DrawingObjectSelector extends GenericComponent {
     #props
 

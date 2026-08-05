@@ -161,6 +161,25 @@ for (const [suite, port] of suites) {
     if (wrong.length > 25) console.error(`    … còn ${wrong.length - 25} chỗ nữa`)
 }
 
+/**
+ * Tài liệu tham chiếu phải khớp mã.
+ *
+ * `docs/reference/elements.md` được sinh ra từ `src/`. Nếu ai đổi một mặc định mà quên
+ * chạy lại, bảng ấy nói sai — mà một bảng nói sai còn tệ hơn không có bảng, vì người đọc
+ * tin nó. Nên chỗ này sinh lại rồi so với file đã commit.
+ */
+const { reference } = await import("./tools/docs/elements.mjs")
+const referencePath = join(here, "docs/reference/elements.md")
+const committed = readFileSync(referencePath, "utf8")
+const current = await reference()
+
+if (committed === current) {
+    console.log(`✓ docs/reference/elements.md khớp mã nguồn`)
+} else {
+    failed++
+    console.error(`✗ docs/reference/elements.md đã cũ — chạy \`npm run docs:reference\``)
+}
+
 if (failed > 0) {
     console.error(`\n${failed} bộ lệch so với bản gốc.`)
     process.exit(1)

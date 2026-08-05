@@ -75,6 +75,7 @@ export const drawOHLCSeries = (context, moreProps, props) => {
     })
 }
 
+/** The open-high-low-close bar: high to low, with open ticking left and close right. */
 export class OHLCSeries extends Series {
     static defaults = ohlcSeriesDefaults
 

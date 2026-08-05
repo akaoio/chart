@@ -60,6 +60,7 @@ export const drawRenkoSeries = (context, moreProps, props) => {
     })
 }
 
+/** Renko bricks: one fixed-size block per price move, time ignored. */
 export class RenkoSeries extends Series {
     static defaults = renkoSeriesDefaults
 

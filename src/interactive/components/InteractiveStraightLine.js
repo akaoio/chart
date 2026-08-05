@@ -149,6 +149,7 @@ export const drawInteractiveStraightLine = (context, moreProps, props) => {
     context.stroke()
 }
 
+/** A straight line the user drew — bounded, one-ended or crossing the whole pane. */
 export class InteractiveStraightLine extends GenericChartComponent {
     #props
 

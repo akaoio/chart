@@ -30,7 +30,7 @@ const CURSOR_STYLES = `
 .chart-ew-resize-cursor { cursor: ew-resize; }
 `
 
-const DEFAULTS = {
+export const chartCanvasDefaults = {
     clamp: false,
     disablePan: false,
     disableInteraction: false,
@@ -98,7 +98,7 @@ const isInteractionEnabled = (xScale, xAccessor, data) =>
  * driven forwards by a live pointer.
  */
 export class ChartCanvas extends ElementBase {
-    #props = { ...DEFAULTS }
+    #props = { ...chartCanvasDefaults }
     #state = null
     #connected = false
     #updateQueued = false
