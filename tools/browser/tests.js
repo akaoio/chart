@@ -2359,6 +2359,71 @@ TESTS["ngón tay kéo được đối tượng đã chọn, và chart không pan
 }
 
 /**
+ * Cú kéo đã thuộc về một đối tượng thì trang không được cuộn theo — còn cú pan thì được.
+ *
+ * Vùng bắt sự kiện khai `touch-action: pan-y`, cố ý, để người đọc cuộn được qua biểu đồ.
+ * Nhưng khi một đối tượng đã nhận cú kéo thì kéo nó xuống dưới không được biến thành cuộn
+ * trang. Cách duy nhất nói điều ấy với trình duyệt là `preventDefault` trên `touchmove`, và
+ * nó chỉ có tác dụng nếu listener không passive — mà `touchmove` trên `window` thì trình
+ * duyệt mặc định coi là passive.
+ *
+ * Bài này đọc thẳng `defaultPrevented` của chính sự kiện được phát ra, vì đó là thứ trình
+ * duyệt thật sẽ đọc. Đo bằng "đối tượng có đi không" thì không phân biệt được: chạm tổng hợp
+ * qua CDP có thể không kích hoạt cơ chế cuộn của thiết bị thật, nên nhìn thì vẫn đúng.
+ */
+TESTS["cú kéo của đối tượng chặn cuộn trang, cú pan thì không"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 105], selected: true, type: "LINE" }],
+    })
+    await settle(4)
+
+    const state = canvas.getState()
+    const midX = (state.xScale(20) + state.xScale(60)) / 2
+    const midY = (state.chartConfigs[0].yScale(100) + state.chartConfigs[0].yScale(105)) / 2
+
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    /** Một cú chạm rồi một cú di, trả về `defaultPrevented` của cú di ấy. */
+    const dragFrom = async (x, y) => {
+        const touchAt = (atX, atY) =>
+            new Touch({ identifier: 1, target: rect, clientX: box.left + atX, clientY: box.top + atY })
+        const make = (type, atX, atY, active = true) =>
+            new TouchEvent(type, {
+                touches: active ? [touchAt(atX, atY)] : [],
+                targetTouches: active ? [touchAt(atX, atY)] : [],
+                changedTouches: [touchAt(atX, atY)],
+                bubbles: true,
+                cancelable: true,
+            })
+
+        rect.dispatchEvent(make("touchstart", x, y))
+        await settle(1)
+
+        const move = make("touchmove", x, y + 40)
+        window.dispatchEvent(move)
+        await settle(2)
+
+        const end = make("touchend", x, y + 40, false)
+        window.dispatchEvent(end)
+        rect.dispatchEvent(end)
+        await settle(2)
+
+        return move.defaultPrevented
+    }
+
+    t.is("kéo trên đối tượng đã chọn thì chặn cuộn", await dragFrom(midX, midY), true)
+    t.is("kéo trên chỗ trống thì để trang cuộn", await dragFrom(600, midY + 120), false)
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Ngón tay được trỏ trúng rộng hơn con chuột.
  *
  * Mọi phép dò trúng trong thư viện đặt theo con chuột: công cụ tương tác lấy `tolerance: 4`,

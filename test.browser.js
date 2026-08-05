@@ -691,6 +691,76 @@ const touchToolTests = async (browser, origin) => {
         results.push({ name: "ngón tay thật: chart-brush", checks })
     }
 
+    /**
+     * Chụm hai ngón để zoom KHÔNG phải một cú bấm.
+     *
+     * Bài này canh chỗ mà chính phép sửa ở trên có thể phá. Cú bấm tự phát ở `touchend` được
+     * thêm vào để brush chốt được cú quét; mà đường pinch không đặt `#panHappened`, nên nếu
+     * chỉ hỏi "ngón tay có đi không" thì một cú chụm hai ngón cũng thành một cú bấm. Đo được
+     * trước khi sửa: pinch khi đang bật công cụ Text đặt oan một nhãn — người dùng zoom một
+     * cái là có thêm rác trên biểu đồ.
+     *
+     * Nên điều kiện là "một ngón từ đầu đến cuối, và mọi ngón đã rời ra".
+     */
+    {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        await page.click(`section.demo .controls button:text-is("Text")`)
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+        const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
+
+        const first = at(0.35, 0.4)
+        const second = at(0.6, 0.6)
+
+        await touch("touchStart", [first])
+        await page.waitForTimeout(30)
+        await touch("touchStart", [first, second])
+        for (let step = 1; step <= 5; step++) {
+            await touch("touchMove", [
+                { x: first.x - step * 6, y: first.y },
+                { x: second.x + step * 6, y: second.y },
+            ])
+            await page.waitForTimeout(20)
+        }
+        await touch("touchEnd", [])
+        await page.waitForTimeout(600)
+
+        const placed = await page.evaluate(
+            () => document.querySelector("chart-interactive-text-tool").textList.length,
+        )
+
+        checks.push({
+            label: "pinch khi đang bật công cụ thì KHÔNG đặt ra đối tượng nào",
+            pass: placed === 0,
+            expected: "0",
+            actual: placed,
+        })
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: "ngón tay thật: pinch không phải một cú bấm", checks })
+    }
+
     await context.close()
     return results
 }

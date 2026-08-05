@@ -50,6 +50,7 @@ export class EventCapture {
     #clickTimer = null
     #touchOrigin = null
     #touchMoved = false
+    #touchFingers = 0
     #dragHappened = false
     #panHappened = false
     #panEndTimeout
@@ -371,6 +372,8 @@ export class EventCapture {
         if (onDrag === undefined || this.#dragStartPosition === undefined) return
 
         this.#dragHappened = true
+        if (event.type === "touchmove" && event.cancelable) event.preventDefault()
+
         onDrag({ startPos: this.#dragStartPosition, mouseXY: this.#positionOf(event) }, event)
     }
 
@@ -430,9 +433,9 @@ export class EventCapture {
         const currentCharts = getCurrentCharts(chartConfig, position)
         const { panEnabled, draggable: somethingSelected } = this.#canPan()
 
-        const arm = (onMove, onEnd) => {
+        const arm = (onMove, onEnd, { passive = true } = {}) => {
             const signal = this.#startGesture()
-            window.addEventListener(move, onMove, { signal })
+            window.addEventListener(move, onMove, { signal, passive })
             window.addEventListener(end, onEnd, { signal })
             if (cancel !== undefined) window.addEventListener(cancel, onEnd, { signal })
         }
@@ -444,7 +447,21 @@ export class EventCapture {
             this.#dragStartPosition = position
 
             onDragStart?.({ startPos: position }, event)
-            arm(this.#handleDrag, this.#handleDragEnd)
+
+            /**
+             * Cú kéo này thuộc về đối tượng, nên phải nói với trình duyệt là đừng cuộn trang.
+             *
+             * Vùng bắt sự kiện khai `touch-action: pan-y` — cố ý, để người đọc còn cuộn được
+             * qua biểu đồ. Nhưng khi cú kéo đã được một đối tượng nhận thì nó không còn là
+             * một cú vuốt trang nữa, và kéo một đối tượng xuống dưới không được biến thành
+             * cuộn trang. `preventDefault` chỉ nói được điều ấy nếu listener KHÔNG passive,
+             * mà `touchmove` trên `window` thì trình duyệt mặc định cho là passive — nên phải
+             * khai rõ.
+             *
+             * Nhánh pan thì không: pan là ngang, còn dọc vẫn thuộc về trang, đúng như
+             * `pan-y` đã hẹn.
+             */
+            arm(this.#handleDrag, this.#handleDragEnd, { passive: false })
         } else if (panEnabled) {
             this.#panInProgress = true
             this.#panStart = { panStartXScale: xScale, panOrigin: position, chartsToPan: currentCharts }
@@ -550,6 +567,10 @@ export class EventCapture {
      *
      * Ba điều kiện, và cả ba đều cần:
      *
+     * - cử chỉ phải là **một ngón từ đầu đến cuối**, và mọi ngón đã rời ra. Pinch không
+     *   phải một cú bấm, và nó không đặt `#panHappened` — nên thiếu điều kiện này thì chụm
+     *   hai ngón để zoom lại đặt ra một đối tượng vẽ. Đo được: pinch khi đang bật công cụ
+     *   Text đặt oan một nhãn.
      * - ngón tay phải **đi** quá `DOUBLE_CLICK_SLOP`. Nếu chỉ gõ thì trình duyệt tự sinh
      *   `click`, và phát thêm một cái nữa thì một cú gõ bị xử lý hai lần — đúng cái đã
      *   xảy ra ở `DrawingObjectSelector` theo chiều ngược lại.
@@ -563,10 +584,16 @@ export class EventCapture {
      */
     #handleTouchEnd = event => {
         const wasMoved = this.#touchMoved
-        this.#touchMoved = false
-        this.#touchOrigin = null
+        const fingers = this.#touchFingers
+        const allUp = event.touches.length === 0
 
-        if (!wasMoved || this.#panHappened || this.#dragHappened) return
+        if (allUp) {
+            this.#touchMoved = false
+            this.#touchOrigin = null
+            this.#touchFingers = 0
+        }
+
+        if (!allUp || fingers !== 1 || !wasMoved || this.#panHappened || this.#dragHappened) return
 
         const { onClick } = this.#props()
         if (onClick === undefined) return
@@ -576,6 +603,7 @@ export class EventCapture {
 
     #handleTouchStart = event => {
         this.#mouseInteraction = false
+        this.#touchFingers = Math.max(this.#touchFingers, event.touches.length)
 
         const { pan: panEnabled, onMouseMove, onMouseDown, xScale, onPanEnd } = this.#props()
 
@@ -583,6 +611,7 @@ export class EventCapture {
             this.#panHappened = false
             this.#dragHappened = false
             this.#touchMoved = false
+            this.#touchFingers = 1
 
             const touchXY = touchPosition(getTouchProps(event.touches[0]), event)
             this.#touchOrigin = touchXY
