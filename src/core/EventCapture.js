@@ -57,6 +57,12 @@ export class EventCapture {
 
         this.#element = document.createElementNS("http://www.w3.org/2000/svg", "rect")
         this.#element.style.opacity = 0
+
+        // A finger on the chart is there to drag the chart and to pinch the chart — not
+        // to scroll or zoom the page. Say so, or the browser claims both gestures for
+        // itself and the chart's own `touchmove` never runs.
+        this.#element.style.touchAction = "none"
+
         // The class attribute carries the cursor and gets rewritten, so identity lives
         // on a separate attribute that nothing overwrites.
         this.#element.setAttribute("data-event-capture", "")

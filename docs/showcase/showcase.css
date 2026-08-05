@@ -64,13 +64,26 @@ header.site p.tagline {
     font-size: 14px;
 }
 
+/*
+ * Tab xếp ngang và KHÔNG xuống dòng: trên điện thoại chúng cuộn ngang.
+ * Xuống dòng thì thanh điều hướng cao gấp đôi và đẩy biểu đồ khỏi màn hình.
+ */
 nav.site {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+}
+
+nav.site::-webkit-scrollbar {
+    display: none;
 }
 
 nav.site a {
+    flex: 0 0 auto;
+    white-space: nowrap;
     padding: 8px 12px;
     border-radius: 6px 6px 0 0;
     text-decoration: none;
@@ -85,8 +98,9 @@ nav.site a:hover {
     color: var(--ink);
 }
 
+/* Trong một dải cuộn được thì `margin-left: auto` vô nghĩa — chỉ cần tách ra một chút. */
 nav.site a.away {
-    margin-left: auto;
+    margin-left: 12px;
 }
 
 nav.site a[aria-current="page"] {
@@ -198,6 +212,8 @@ chart-canvas {
     display: block;
     width: 100%;
     height: 420px;
+    /* cử chỉ trên chart là của chart, không phải của trang */
+    touch-action: none;
 }
 
 .grid {
@@ -228,4 +244,66 @@ p.disclaimer {
     border-top: 1px solid var(--line);
     color: var(--ink-soft);
     font-size: 13px;
+}
+
+/* ── điện thoại ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    body {
+        font-size: 14px;
+    }
+
+    header.site {
+        padding: 14px 12px 0;
+    }
+
+    main {
+        padding: 12px;
+    }
+
+    section.demo {
+        margin: 24px 0;
+        border-radius: 8px;
+    }
+
+    section.demo > h2,
+    section.demo > p.about,
+    section.demo > details > summary {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    section.demo .readout {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    section.demo pre {
+        padding-left: 12px;
+        padding-right: 12px;
+        font-size: 11.5px;
+    }
+
+    section.demo > .stage {
+        padding: 8px;
+    }
+
+    chart-canvas {
+        height: 320px;
+    }
+
+    .grid {
+        /* một cột: hai cái 320px cạnh nhau trên màn 360px là không đọc được */
+        grid-template-columns: 1fr;
+    }
+
+    .grid .cell chart-canvas {
+        height: 200px;
+    }
+
+    /* nút bấm to hơn cho ngón tay */
+    section.demo .controls button,
+    section.demo .controls select {
+        padding: 8px 12px;
+    }
 }

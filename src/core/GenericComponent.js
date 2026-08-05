@@ -437,7 +437,23 @@ export class GenericComponent extends ElementBase {
  * SVG components return `{ tag, attrs, children }` rather than elements, for the same
  * reason series return drawing functions: a description can be produced and checked
  * outside a browser, and the element is then a thin shell around it.
+ *
+ * The names in those descriptions are React's — `className`, `strokeWidth`, `fontSize` —
+ * because that is what the original wrote and the port keeps its shape. SVG attributes
+ * are `class`, `stroke-width`, `font-size`, so the names are translated here, on the way
+ * into the document. Setting them verbatim does not fail loudly: the browser stores an
+ * attribute nobody reads, and the element simply renders unstyled.
  */
+
+/** Names that are camelCase in SVG too, and must survive untouched. */
+const KEEP_AS_IS = new Set(["viewBox", "preserveAspectRatio", "textLength", "lengthAdjust", "gradientTransform"])
+
+export const attributeName = name => {
+    if (name === "className") return "class"
+    if (KEEP_AS_IS.has(name)) return name
+    return name.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)
+}
+
 export const buildSvg = description => {
     if (description === null || description === undefined || description === false) return []
     if (Array.isArray(description)) return description.flatMap(buildSvg)
@@ -456,7 +472,7 @@ export const buildSvg = description => {
             node.addEventListener(name.replace(/^on/, "").toLowerCase(), value)
             continue
         }
-        node.setAttribute(name, String(value))
+        node.setAttribute(attributeName(name), String(value))
     }
 
     node.append(...buildSvg(description.children ?? []))

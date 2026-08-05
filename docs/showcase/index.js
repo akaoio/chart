@@ -50,14 +50,20 @@ demo({
             displayXAccessor,
             seriesName: "DEMO",
             margin: { left: 0, right: 64, top: 8, bottom: 28 },
-            // show the last 120 bars; the rest is there to scroll back into
-            xExtents: [xAccessor(data[data.length - 120]), xAccessor(data[data.length - 1])],
+            // Open on the last N bars; the rest is there to scroll back into. Fewer of
+            // them on a narrow screen, or every candle is one pixel wide.
+            xExtents: (visible =>
+                [xAccessor(data[data.length - visible]), xAccessor(data[data.length - 1])])(
+                window.innerWidth < 640 ? 60 : 120,
+            ),
         })
 
+        // No height: the price pane fills whatever the canvas turns out to be, so the
+        // layout survives a phone as well as a desktop. Volume is pinned to the bottom
+        // and overlays it, which is what a trading screen does anyway.
         const price = document.createElement("chart-pane")
         Object.assign(price, {
             chartId: "price",
-            height: 300,
             yExtents: datum => [datum.high, datum.low],
         })
 
@@ -101,8 +107,8 @@ demo({
         const volume = document.createElement("chart-pane")
         Object.assign(volume, {
             chartId: "volume",
-            height: 90,
-            origin: (width, height) => [0, height - 90],
+            height: 80,
+            origin: (width, height) => [0, height - 80],
             yExtents: datum => datum.volume,
         })
 
@@ -112,12 +118,11 @@ demo({
             fillStyle: datum => (datum.close > datum.open ? "#26a69a66" : "#ef535066"),
         })
 
-        const volumeAxis = document.createElement("chart-y-axis")
-        Object.assign(volumeAxis, { ticks: 3, tickFormat: value => `${Math.round(value / 1000)}k` })
-
+        // No y axis on the volume pane: its labels would land on top of the price
+        // labels, and nobody reads volume off an axis.
         const xAxis = document.createElement("chart-x-axis")
 
-        volume.append(volumeBars, volumeAxis, xAxis)
+        volume.append(volumeBars, xAxis)
 
         const cursor = document.createElement("chart-cross-hair-cursor")
         const xCoordinate = document.createElement("chart-mouse-coordinate-x")
@@ -125,6 +130,8 @@ demo({
             displayFormat: date => date.toISOString().slice(0, 10),
         })
         const zoom = document.createElement("chart-zoom-buttons")
+        // clear of the volume bars along the bottom
+        zoom.heightFromBase = 108
 
         volume.append(cursor, xCoordinate)
         price.append(zoom)

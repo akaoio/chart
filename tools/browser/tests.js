@@ -1728,6 +1728,95 @@ TESTS["bấm hai lần lên trục là nhấp đúp, kéo rồi nhả thì khôn
     return t.checks
 }
 
+/**
+ * Tên thuộc tính SVG, đúng như tài liệu chờ đợi.
+ *
+ * Mô tả SVG trong thư viện viết theo lối React — `className`, `strokeWidth`, `fontSize` —
+ * vì bản gốc viết thế. Đưa thẳng những tên ấy vào tài liệu thì **không nổ**: trình duyệt
+ * cất một thuộc tính không ai đọc, phần tử vẽ ra trần trụi, và `class` không tồn tại nên
+ * `pointer-events` không bao giờ áp. Nút zoom bấm không ăn chính là vì thế.
+ *
+ * Bộ so golden không bắt được: nó quy chuẩn tên **ở cả hai phía** trước khi so, nên hai
+ * bên vẫn khớp trong khi thứ đi vào tài liệu thì sai. Bài này soi tài liệu thật.
+ */
+const SVG_CAMEL_CASE_OK = new Set(["viewBox", "preserveAspectRatio", "textLength", "lengthAdjust", "gradientTransform"])
+
+TESTS["SVG dựng ra dùng đúng tên thuộc tính của SVG"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, pane } = mountWithTool("chart-zoom-buttons", {})
+    await settle()
+
+    // đủ thứ vẽ bằng SVG: tooltip, annotation, nút zoom
+    const tooltip = document.createElement("chart-ohlc-tooltip")
+    Object.assign(tooltip, { origin: [8, 12], fontSize: 13, fontFamily: "monospace" })
+
+    const average = document.createElement("chart-single-value-tooltip")
+    Object.assign(average, { origin: [8, 40], yLabel: "Đóng", yAccessor: datum => datum.close })
+
+    pane.append(tooltip, average)
+    await settle(4)
+
+    const nodes = [...canvas.shadowRoot.querySelectorAll("svg *")]
+    t.gt("có node SVG để soi", nodes.length, 10)
+
+    const wrong = []
+    for (const node of nodes) {
+        for (const attribute of node.attributes) {
+            if (/[A-Z]/.test(attribute.name) && !SVG_CAMEL_CASE_OK.has(attribute.name)) {
+                wrong.push(`${node.localName}[${attribute.name}]`)
+            }
+        }
+    }
+    t.is("không thuộc tính nào còn viết hoa kiểu React", wrong.slice(0, 5).join(" "), "")
+
+    // và những cái tên ấy phải THẬT SỰ tới nơi, không chỉ là không sai
+    const text = canvas.shadowRoot.querySelector("svg text")
+    t.ok("chữ trong tooltip có font-family", text?.getAttribute("font-family") !== null)
+    t.ok("chữ trong tooltip có font-size", text?.getAttribute("font-size") !== null)
+
+    const hit = canvas.shadowRoot.querySelector("svg circle.chart-enable-interaction")
+    t.ok("nút zoom có class, nên mới nhận được con trỏ", hit !== null)
+    t.is(
+        "và class ấy bật pointer-events",
+        hit === null ? "" : getComputedStyle(hit).pointerEvents,
+        "all",
+    )
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["bấm nút zoom thì chart phóng to thật"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithTool("chart-zoom-buttons", {})
+    await settle(4)
+
+    const before = canvas.getState().xScale.domain()
+    const span = ([from, to]) => to - from
+
+    const button = kind => canvas.shadowRoot.querySelector(`svg circle.chart-enable-interaction.${kind}`)
+
+    t.ok("có ba nút", ["in", "out", "reset"].every(kind => button(kind) !== null))
+
+    // Bấm đúng lên vòng tròn bắt sự kiện — nếu class không tới nơi thì nó không tồn tại
+    // để mà bấm, và bài này đổ ngay ở dòng trên.
+    button("in").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
+    await new Promise(resolve => setTimeout(resolve, 200))
+
+    const zoomedIn = canvas.getState().xScale.domain()
+    t.ok("bấm + thì nhìn được ít phiên hơn", span(zoomedIn) < span(before))
+
+    button("out").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
+    await new Promise(resolve => setTimeout(resolve, 200))
+
+    t.gt("bấm − thì nhìn được nhiều hơn lúc vừa phóng", span(canvas.getState().xScale.domain()), span(zoomedIn))
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
