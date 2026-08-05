@@ -19,7 +19,7 @@ import {
     wma,
 } from "@akaoio/chart"
 import { daily, secondary } from "./data.js"
-import { demo, grid, page } from "./showcase.js"
+import { demo, grid, opening, page } from "./showcase.js"
 
 page({
     title: "Indicators",
@@ -43,6 +43,7 @@ const chart = (host, rows, { height = 320, extents = price, tickFormat, window: 
         xAccessor,
         displayXAccessor,
         margin: { left: 0, right: 56, top: 8, bottom: 24 },
+        xExtents: opening(data, xAccessor, { wide: rows.length, narrow: 70 }),
     })
     canvas.style.height = `${height}px`
 
@@ -190,6 +191,8 @@ demo({
             xAccessor,
             displayXAccessor,
             margin: { left: 0, right: 56, top: 8, bottom: 24 },
+            // bỏ qua 40 phiên đầu: MACD chưa ổn định ở đó và cái gai ấy nuốt cả thang
+            xExtents: opening(data, xAccessor, { wide: data.length - 40, narrow: 70 }),
         })
         canvas.style.height = "520px"
 
@@ -409,11 +412,21 @@ demo({
 
         const { pane } = chart(stage, rows)
 
-        const candles = document.createElement("chart-candlestick-series")
         const colours = { up: "#26a69a", down: "#ef5350", neutral: "#2a6df4" }
+
+        // `fill` and `wickStroke` are handed whatever `yAccessor` returned — not the row.
+        // So anything they need to colour by has to come out of the accessor with it.
+        const candles = document.createElement("chart-candlestick-series")
         Object.assign(candles, {
-            fill: datum => colours[datum.impulse] ?? "#9aa1ad",
-            wickStroke: datum => colours[datum.impulse] ?? "#9aa1ad",
+            yAccessor: datum => ({
+                open: datum.open,
+                high: datum.high,
+                low: datum.low,
+                close: datum.close,
+                impulse: datum.impulse,
+            }),
+            fill: ohlc => colours[ohlc.impulse] ?? "#9aa1ad",
+            wickStroke: ohlc => colours[ohlc.impulse] ?? "#9aa1ad",
         })
 
         pane.prepend(candles)

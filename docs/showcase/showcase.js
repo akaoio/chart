@@ -102,17 +102,28 @@ export const opening = (data, xAccessor, { wide = 160, narrow = 55 } = {}) => {
     return [xAccessor(data[data.length - count]), xAccessor(data[data.length - 1])]
 }
 
-/** A row of small charts inside one demo, for galleries. */
+/**
+ * A row of small charts inside one demo, for galleries.
+ *
+ * Every cell is put in place **before** any chart is built into one. A chart measures
+ * its own box the moment it connects, and a cell that is still the only child of the
+ * grid is full width — the chart would size itself to that, then get narrower when the
+ * next cell arrives. It survives that, but `maintainPointsPerPixelOnResize` keeps the
+ * candle width and drops bars instead, so the first cell would quietly show a different
+ * stretch of history than the rest.
+ */
 export const grid = (stage, entries, build) => {
     const container = element("div", { class: "grid" })
     stage.append(container)
 
-    for (const entry of entries) {
+    const cells = entries.map(entry => {
         const cell = element("div", { class: "cell" })
         cell.append(element("h3", { text: entry.title ?? entry }))
         container.append(cell)
-        build(cell, entry)
-    }
+        return cell
+    })
+
+    entries.forEach((entry, index) => build(cells[index], entry))
 }
 
 export const page = ({ title, intro }) => {

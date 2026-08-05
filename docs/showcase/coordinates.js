@@ -192,7 +192,7 @@ demo({
         const strongUp = document.createElement("chart-annotate")
         Object.assign(strongUp, {
             with: renderSvgPathAnnotation,
-            when: datum => datum.close > datum.open * 1.012,
+            when: datum => datum.close > datum.open * 1.018,
             usingProps: {
                 y: ({ yScale, datum }) => yScale(datum.low) + 12,
                 path: () => "M0,0L6,10L-6,10Z",
@@ -207,7 +207,7 @@ demo({
         const strongDown = document.createElement("chart-annotate")
         Object.assign(strongDown, {
             with: renderLabelAnnotation,
-            when: datum => datum.close < datum.open * 0.988,
+            when: datum => datum.close < datum.open * 0.982,
             usingProps: {
                 y: ({ yScale, datum }) => yScale(datum.high) - 8,
                 text: "S",

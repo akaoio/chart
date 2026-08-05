@@ -108,6 +108,19 @@ Object.assign(canvas, {
 Panning and zooming change it from there. `getState().xScale.domain()` reads it back at
 any moment.
 
+## When the chart's box changes
+
+Leave `width` and `height` unset and the canvas measures itself, then keeps watching. On
+a resize the default `maintainPointsPerPixelOnResize` keeps the **bar width** and changes
+how many bars fit — a chart made narrower shows less history rather than squeezing what it
+had. Set it to `false` to keep the domain and squeeze instead.
+
+Worth knowing because it also applies to the box settling *after* the chart is built. A
+chart created into a container that is still growing measures the wrong width first and
+then treats the correction as a resize, so it ends up showing a different stretch than
+`xExtents` asked for. If you build charts into a layout you are still assembling, finish
+the layout first.
+
 ## Data that keeps arriving
 
 Assign `data` again:
