@@ -12,7 +12,7 @@ import evaluator from "./utils/evaluator.js"
 import { CanvasContainer } from "./CanvasContainer.js"
 import { EventCapture } from "./EventCapture.js"
 import { serveContext } from "./context.js"
-import { define, ElementBase } from "./element.js"
+import { define, deferred, ElementBase } from "./element.js"
 
 const SVG = "http://www.w3.org/2000/svg"
 
@@ -669,6 +669,19 @@ export class ChartCanvas extends ElementBase {
         this.clearThreeCanvas()
         this.draw({ force: true })
     }
+
+    /**
+     * Xin một lần vẽ lại, gộp nhiều lời xin trong cùng một lượt thành một.
+     *
+     * `redraw()` xoá và vẽ lại ngay tại chỗ. Có những lúc hàng chục phần tử cùng biến mất —
+     * bấm Clear là xoá sạch đối tượng của cả bảy công cụ — và mỗi phần tử ra khỏi cây đều
+     * cần một lần vẽ lại; gọi thẳng `redraw()` thì vẽ lại hàng chục lần cho một việc.
+     *
+     * Đi qua `deferred` nên nó cũng không thể giữ vòng lặp sự kiện: xem `element.js`.
+     */
+    requestRedraw = deferred(() => {
+        if (this.#state !== null && this.#state !== undefined) this.redraw()
+    })
 
     // ─── interaction ──────────────────────────────────────────────────────────────
 

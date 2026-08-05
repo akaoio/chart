@@ -1924,6 +1924,53 @@ TESTS["series bọc trong div vẫn tìm được pane"] = async () => {
  * phụ thuộc vào dữ liệu và domain được hỏi. Xem docs/parity/core.md.
  */
 /**
+ * Gỡ một phần tử ra khỏi cây thì thứ nó đã vẽ phải biến mất NGAY, không đợi ai chạm vào.
+ *
+ * Lúc vào cây, phần tử tự hẹn một lần vẽ. Lúc ra thì trước đây không ai xin vẽ lại: SVG của
+ * nó được gỡ, còn những gì nó đã tô lên canvas dùng chung vẫn nằm đó. Người dùng thấy đúng
+ * điều ấy: "bấm clear thì các thứ đã vẽ không biến mất, nhưng sau đó nếu chạm vào chart thì
+ * chúng biến mất".
+ *
+ * Lỗi có sẵn từ lâu mà không thấy, vì bị một lỗi khác che: mỗi lần dựng lại cây con đều ghi
+ * lại toàn bộ prop của con, kể cả prop không đổi, và mỗi lượt ghi lại xin một lần vẽ. Vá cái
+ * churn ấy xong thì lỗi này lộ ra.
+ *
+ * Bài này đếm pixel trước và sau khi gỡ, và **không** chạm vào biểu đồ ở giữa — vì chính cái
+ * "phải chạm mới xong" là điều đang bị bắt lỗi.
+ */
+TESTS["gỡ phần tử ra thì hình nó vẽ biến mất ngay, không cần chạm vào chart"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mount()
+    const pane = canvas.querySelector("chart-pane")
+
+    const series = document.createElement("chart-candlestick-series")
+    pane.append(series)
+    await settle(6)
+
+    const painted = () => {
+        const context = canvas.getCanvasContexts().axes
+        const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+        let count = 0
+        for (let at = 3; at < pixels.length; at += 4) if (pixels[at] > 0) count++
+        return count
+    }
+
+    const before = painted()
+    t.gt("có vẽ ra pixel để mà xoá", before, 1000)
+
+    series.remove()
+    await settle(6)
+
+    const after = painted()
+
+    t.ok(`gỡ ra thì pixel giảm hẳn (${before} → ${after})`, after < before / 2)
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Một vòng lặp ghi-vẽ-ghi phải làm chart CHẬM, không được làm trang chết.
  *
  * Người dùng báo: "nó đơ tới mức không refresh được luôn". Đó là dấu hiệu rất cụ thể của một

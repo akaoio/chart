@@ -145,17 +145,35 @@ export class GenericComponent extends ElementBase {
     }
 
     disconnectedCallback() {
+        const canvas = this.#canvas
+
         this.#cancelFind()
 
         if (this.#subscriberId !== null) {
-            this.#canvas?.unsubscribe(this.#subscriberId)
-            if (this.#iSetTheCursorClass) this.#canvas?.setCursorClass(null)
+            canvas?.unsubscribe(this.#subscriberId)
+            if (this.#iSetTheCursorClass) canvas?.setCursorClass(null)
         }
 
         this.#svgGroup?.remove()
         this.#svgGroup = null
         this.#subscriberId = null
         this.#canvas = null
+
+        /**
+         * Phần tử rời khỏi cây thì thứ nó đã vẽ cũng phải rời khỏi màn hình.
+         *
+         * Lúc vào cây, phần tử tự hẹn một lần vẽ (xem `connectedCallback`). Lúc ra thì trước
+         * đây không ai xin vẽ lại: SVG của nó được gỡ, nhưng những gì nó đã tô lên canvas
+         * dùng chung vẫn còn nguyên tới khi có ai đó chạm vào biểu đồ.
+         *
+         * Lỗi này có sẵn từ lâu mà không thấy, vì nó bị một lỗi khác che: mỗi lần dựng lại
+         * cây con đều ghi lại toàn bộ prop của con, kể cả prop không đổi, và mỗi lượt ghi lại
+         * xin một lần vẽ. Vá cái churn ấy xong thì lỗi này lộ ra — bấm Clear, đối tượng vẫn
+         * nằm đó, chạm vào biểu đồ mới biến mất.
+         *
+         * Đi qua `requestRedraw` để hàng chục phần tử cùng ra khỏi cây chỉ tốn một lần vẽ.
+         */
+        canvas?.requestRedraw?.()
     }
 
     get canvas() {

@@ -50,7 +50,7 @@ export const define = (name, constructor) => {
  */
 const CHAIN_LIMIT = 8
 
-const deferred = work => {
+export const deferred = work => {
     let queued = false
     let chain = 0
     let resetQueued = false
