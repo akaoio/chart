@@ -21,7 +21,7 @@ ghi ◐ kèm tỉ lệ, và file parity của nó phải liệt kê đích danh 
 | [`tooltip`](tooltip.md) | 13 | 4 | ☑ 13/13 |
 | [`annotations`](annotations.md) | 5 | 4 | ☑ 5/5 |
 | [`indicators`](indicators.md) | 20 | 5 | ☑ 20/20 |
-| [`interactive`](interactive.md) | 18 | 6 | ◐ 10/18 |
+| [`interactive`](interactive.md) | 18 | 6 | ◐ 11/18 |
 
 ## Hai package không có mặt ở bảng trên
 

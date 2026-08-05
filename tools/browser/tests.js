@@ -3,6 +3,7 @@ import { CircleMarker } from "../../src/series/index.js"
 import "../../src/coordinates/index.js"
 import "../../src/tooltip/index.js"
 import "../../src/annotations/index.js"
+import "../../src/interactive/index.js"
 import "../../src/axes/index.js"
 import { discontinuousTimeScaleProviderBuilder } from "../../src/scales/index.js"
 
@@ -844,6 +845,293 @@ TESTS["coordinates, tooltip và annotation dựng được và vẽ ra pixel"] =
     const texts = ohlcTooltip.canvas.paneGroup(0).querySelectorAll("text")
     t.gt("tooltip sinh ra chữ thật, không phải pixel", texts.length, 0)
     t.ok("chữ trong tooltip đọc được", texts[0].textContent.includes("O"))
+
+    cleanup()
+    return t.checks
+}
+
+/**
+ * Dựng một chart có công cụ vẽ tay, trả về những thứ cần để thao tác.
+ *
+ * Đây là bộ máy chứng minh mà bậc 6 cần và golden data không thay được: giá trị của một
+ * công cụ vẽ nằm ở CHUỖI thao tác — bấm chỗ này, kéo tới chỗ kia, thả, rồi kéo lại đầu
+ * mút — chứ không ở một hàm có thể gọi rồi so kết quả.
+ */
+const mountWithTool = (tagName, toolProps = {}) => {
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(makeData(120))
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "tương tác",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+
+    const series = document.createElement("chart-candlestick-series")
+    const tool = document.createElement(tagName)
+    Object.assign(tool, toolProps)
+
+    pane.append(series, tool)
+    canvas.append(pane)
+    stage.append(canvas)
+
+    return { canvas, pane, tool, data, xAccessor }
+}
+
+/** Bấm chuột tại một điểm trên chart — đủ cả enter, move, down, up để tool nhận được. */
+const clickAt = async (canvas, x, y) => {
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    const at = (type, target, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, {
+                clientX: box.left + x,
+                clientY: box.top + y,
+                bubbles: true,
+                composed: true,
+                button: 0,
+                ...extra,
+            }),
+        )
+
+    at("mouseenter", rect)
+    at("mousemove", window)
+    await settle(2)
+    at("mousedown", rect, { buttons: 1 })
+    await settle(1)
+    at("mouseup", window, { buttons: 0 })
+    at("click", rect)
+    await settle(2)
+}
+
+/**
+ * Chờ qua cửa sổ nhấp đúp.
+ *
+ * Hai lần bấm trong vòng 400ms là một cú NHẤP ĐÚP, không phải hai cú bấm — đúng như bản
+ * gốc quy định. Vẽ trendline cần hai cú bấm rời nhau, nên bài kiểm phải chờ thật.
+ */
+const pastDoubleClickWindow = () => new Promise(resolve => setTimeout(resolve, 450))
+
+/** Di chuột không bấm. */
+const hoverAt = async (canvas, x, y) => {
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    rect.dispatchEvent(new MouseEvent("mouseenter", { clientX: box.left + x, clientY: box.top + y, bubbles: true }))
+    window.dispatchEvent(new MouseEvent("mousemove", { clientX: box.left + x, clientY: box.top + y, bubbles: true }))
+    await settle(2)
+}
+
+TESTS["vẽ được một trendline bằng hai lần bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const started = []
+
+    const { canvas, tool } = mountWithTool("chart-trend-line", {
+        enabled: true,
+        snap: false,
+        trends: [],
+        onStart: () => started.push(true),
+        onComplete: (event, trends) => completed.push(trends),
+    })
+    await settle()
+
+    t.ok("tool dựng được", tool.isConnected)
+    t.gt("tool tạo ra phần tử con", tool.children.length, 0)
+
+    // bấm lần một: cố định đầu thứ nhất
+    await clickAt(canvas, 200, 150)
+    t.is("onStart được gọi", started.length, 1)
+    t.is("chưa hoàn thành gì", completed.length, 0)
+
+    // di chuột: đường tạm chạy theo con trỏ
+    await hoverAt(canvas, 400, 250)
+    const temporary = tool.querySelector("chart-interactive-straight-line")
+    t.ok("có đường tạm bám theo chuột", temporary !== null)
+
+    // bấm lần hai: hoàn thành
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 400, 250)
+
+    t.is("onComplete được gọi đúng một lần", completed.length, 1)
+    t.is("và báo về đúng một trendline", completed[0].length, 1)
+    t.ok("trendline có hai đầu", completed[0][0].start !== undefined && completed[0][0].end !== undefined)
+    t.ok("và được đánh dấu đang chọn", completed[0][0].selected === true)
+
+    // hai đầu phải khác nhau — nếu không thì đó là đường dài 0
+    const [start, end] = [completed[0][0].start, completed[0][0].end]
+    t.not("hai đầu không trùng nhau", String(start), String(end))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["bấm mà không di chuột thì không tạo ra đường dài 0"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-trend-line", {
+        enabled: true,
+        snap: false,
+        trends: [],
+        onComplete: (event, trends) => completed.push(trends),
+    })
+    await settle()
+
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    // Đưa chuột vào một lần để chart biết con trỏ ở đâu
+    rect.dispatchEvent(new MouseEvent("mouseenter", { clientX: box.left + 300, clientY: box.top + 200, bubbles: true }))
+    window.dispatchEvent(new MouseEvent("mousemove", { clientX: box.left + 300, clientY: box.top + 200, bubbles: true }))
+    await settle(2)
+
+    /** Bấm mà TUYỆT ĐỐI không di chuột — đây mới là điều kiện mà cửa chặn canh. */
+    const clickWithoutMoving = async () => {
+        const at = (type, target, extra = {}) =>
+            target.dispatchEvent(
+                new MouseEvent(type, {
+                    clientX: box.left + 300,
+                    clientY: box.top + 200,
+                    bubbles: true,
+                    composed: true,
+                    button: 0,
+                    ...extra,
+                }),
+            )
+        at("mousedown", rect, { buttons: 1 })
+        await settle(1)
+        at("mouseup", window, { buttons: 0 })
+        at("click", rect)
+        await settle(2)
+    }
+
+    await clickWithoutMoving()
+    await pastDoubleClickWindow()
+    await clickWithoutMoving()
+
+    t.is("không có trendline nào được tạo", completed.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["trendline đã vẽ thì kéo được, và kéo xong báo lại toạ độ mới"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 105], selected: true, type: "LINE" }],
+        onComplete: (event, trends) => completed.push(trends),
+    })
+    await settle()
+
+    const each = tool.querySelector("chart-each-trend-line")
+    t.ok("wrapper được tạo cho trendline có sẵn", each !== null)
+    t.gt("wrapper tạo ra đường và chốt kéo", each.children.length, 2)
+
+    // đã chọn nên chốt phải hiện
+    const handles = [...each.querySelectorAll("chart-clickable-circle")]
+    t.is("có đúng hai chốt", handles.length, 2)
+    t.ok("chốt đang hiện vì đường đang được chọn", handles[0].show === true)
+
+    // kéo cả đường
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    const state = canvas.getState()
+    const xOf = value => state.xScale(value)
+    const yOf = value => state.chartConfigs[0].yScale(value)
+
+    // vào giữa đường rồi kéo xuống
+    const midX = (xOf(20) + xOf(60)) / 2
+    const midY = (yOf(100) + yOf(105)) / 2
+
+    rect.dispatchEvent(new MouseEvent("mouseenter", { clientX: box.left + midX, clientY: box.top + midY, bubbles: true }))
+    window.dispatchEvent(new MouseEvent("mousemove", { clientX: box.left + midX, clientY: box.top + midY, bubbles: true }))
+    await settle(2)
+
+    rect.dispatchEvent(
+        new MouseEvent("mousedown", { clientX: box.left + midX, clientY: box.top + midY, bubbles: true, button: 0, buttons: 1 }),
+    )
+    await settle(1)
+    // Kéo CHÉO, không chỉ dọc: kéo dọc thì bỏ hẳn phần dịch ngang cũng không lộ ra
+    window.dispatchEvent(
+        new MouseEvent("mousemove", { clientX: box.left + midX + 80, clientY: box.top + midY + 60, bubbles: true, buttons: 1 }),
+    )
+    await settle(2)
+    window.dispatchEvent(
+        new MouseEvent("mouseup", { clientX: box.left + midX + 80, clientY: box.top + midY + 60, bubbles: true, buttons: 0 }),
+    )
+    await settle(2)
+
+    t.is("kéo xong thì onComplete báo lại", completed.length, 1)
+
+    if (completed.length > 0) {
+        const moved = completed[0][0]
+        // kéo xuống nghĩa là giá giảm
+        t.ok("đầu thứ nhất đã đi xuống", moved.start[1] < 100)
+        t.ok("đầu thứ hai cũng đi xuống", moved.end[1] < 105)
+        // độ dốc giữ nguyên: cả hai đầu dịch cùng một lượng
+        const before = 105 - 100
+        const after = moved.end[1] - moved.start[1]
+        t.near("độ dốc giữ nguyên khi kéo cả đường", after, before, 0.5)
+
+        // kéo sang phải nghĩa là cả hai đầu tiến về sau theo trục thời gian
+        t.gt("đầu thứ nhất dịch sang phải", moved.start[0], 20)
+        t.gt("đầu thứ hai dịch sang phải", moved.end[0], 60)
+        const spanBefore = 60 - 20
+        t.near("độ dài theo trục x giữ nguyên", moved.end[0] - moved.start[0], spanBefore, 1.5)
+    }
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["đổi property của một phần tử thì chart vẽ lại"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, pane } = mountWithTool("chart-trend-line", { enabled: false, trends: [] })
+
+    const line = document.createElement("chart-line-series")
+    line.yAccessor = datum => datum.close
+    line.strokeStyle = "#ff00ff"
+    pane.append(line)
+    await settle()
+
+    const context = canvas.getCanvasContexts().axes
+    const countOf = (test) => {
+        const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+        let total = 0
+        for (let i = 0; i < pixels.length; i += 4) {
+            if (pixels[i + 3] > 0 && test(pixels[i], pixels[i + 1], pixels[i + 2])) total++
+        }
+        return total
+    }
+
+    const magenta = (r, g, b) => r > 200 && g < 90 && b > 200
+    // Vàng: không nến nào (#26a69a, #ef5350) hay pixel khử răng cưa nào của chúng rơi vào
+    const yellow = (r, g, b) => r > 200 && g > 200 && b < 60
+
+    t.gt("đường vẽ bằng màu ban đầu", countOf(magenta), 50)
+    t.is("chưa có màu mới", countOf(yellow), 0)
+
+    // chỉ đổi MỘT property, không gọi redraw tay
+    line.strokeStyle = "#ffff00"
+    await settle()
+
+    t.gt("đổi property xong thì màu mới xuất hiện", countOf(yellow), 50)
+    t.is("và màu cũ biến mất", countOf(magenta), 0)
 
     cleanup()
     return t.checks

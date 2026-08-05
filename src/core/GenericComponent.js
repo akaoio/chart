@@ -216,6 +216,32 @@ export class GenericComponent extends ElementBase {
 
     preEvaluate(type, moreProps, event) {}
 
+    /**
+     * Find an event hook, ignoring same-named element properties.
+     *
+     * A component may take a `onClick` property *and* override the `onClick` hook — and
+     * a property defined on the instance shadows a method on the prototype, so a plain
+     * `this.onClick` would silently call the property instead of the override. Looking
+     * the hook up on the prototype chain keeps the two apart: properties are data the
+     * component reads, hooks are behaviour the framework calls.
+     */
+    #hook(name) {
+        let prototype = Object.getPrototypeOf(this)
+
+        while (prototype !== null) {
+            const descriptor = Object.getOwnPropertyDescriptor(prototype, name)
+            if (descriptor !== undefined) return typeof descriptor.value === "function" ? descriptor.value : undefined
+
+            prototype = Object.getPrototypeOf(prototype)
+        }
+
+        return undefined
+    }
+
+    #call(name, ...args) {
+        this.#hook(name)?.apply(this, args)
+    }
+
     evaluateType(type, event) {
         const resolved = ALIASES[type] || type
         if (this.drawOn.indexOf(resolved) === -1) return
@@ -231,24 +257,24 @@ export class GenericComponent extends ElementBase {
 
             case "mouseleave":
                 this.moreProps.hovering = false
-                this.onUnHover?.(event, this.getMoreProps())
+                this.#call("onUnHover", event, this.getMoreProps())
                 break
 
             case "contextmenu":
-                this.onContextMenu?.(event, this.getMoreProps())
-                if (this.moreProps.hovering) this.onContextMenuWhenHover?.(event, this.getMoreProps())
+                this.#call("onContextMenu", event, this.getMoreProps())
+                if (this.moreProps.hovering) this.#call("onContextMenuWhenHover", event, this.getMoreProps())
                 break
 
             case "mousedown":
-                this.onMouseDown?.(event, this.getMoreProps())
+                this.#call("onMouseDown", event, this.getMoreProps())
                 break
 
             case "click": {
                 const moreProps = this.getMoreProps()
-                if (moreProps.hovering) this.onClickWhenHover?.(event, moreProps)
-                else this.onClickOutside?.(event, moreProps)
+                if (moreProps.hovering) this.#call("onClickWhenHover", event, moreProps)
+                else this.#call("onClickOutside", event, moreProps)
 
-                this.onClick?.(event, moreProps)
+                this.#call("onClick", event, moreProps)
                 break
             }
 
@@ -260,42 +286,42 @@ export class GenericComponent extends ElementBase {
 
                 const moreProps = this.getMoreProps()
 
-                if (this.moreProps.hovering && !previouslyHovering) this.onHover?.(event, moreProps)
-                if (previouslyHovering && !this.moreProps.hovering) this.onUnHover?.(event, moreProps)
+                if (this.moreProps.hovering && !previouslyHovering) this.#call("onHover", event, moreProps)
+                if (previouslyHovering && !this.moreProps.hovering) this.#call("onUnHover", event, moreProps)
 
-                this.onMouseMove?.(event, moreProps)
+                this.#call("onMouseMove", event, moreProps)
                 break
             }
 
             case "dblclick": {
                 const moreProps = this.getMoreProps()
-                this.onDoubleClick?.(event, moreProps)
-                if (this.moreProps.hovering) this.onDoubleClickWhenHover?.(event, moreProps)
+                this.#call("onDoubleClick", event, moreProps)
+                if (this.moreProps.hovering) this.#call("onDoubleClickWhenHover", event, moreProps)
                 break
             }
 
             case "pan":
                 this.moreProps.hovering = false
-                this.onPan?.(event, this.getMoreProps())
+                this.#call("onPan", event, this.getMoreProps())
                 break
 
             case "panend":
-                this.onPanEnd?.(event, this.getMoreProps())
+                this.#call("onPanEnd", event, this.getMoreProps())
                 break
 
             case "dragstart":
                 if (this.getPanConditions().draggable && this.#canvas?.amIOnTop(this.#subscriberId)) {
                     this.#dragInProgress = true
-                    this.onDragStart?.(event, this.getMoreProps())
+                    this.#call("onDragStart", event, this.getMoreProps())
                 }
                 break
 
             case "drag":
-                if (this.#dragInProgress) this.onDrag?.(event, this.getMoreProps())
+                if (this.#dragInProgress) this.#call("onDrag", event, this.getMoreProps())
                 break
 
             case "dragend":
-                if (this.#dragInProgress) this.onDragComplete?.(event, this.getMoreProps())
+                if (this.#dragInProgress) this.#call("onDragComplete", event, this.getMoreProps())
                 this.#dragInProgress = false
                 break
 
@@ -317,7 +343,7 @@ export class GenericComponent extends ElementBase {
         const hovering = this.moreProps.hovering
         const onTop = canvas.amIOnTop(this.#subscriberId)
 
-        if (hovering && !this.selected && onTop && this.onHover !== undefined) {
+        if (hovering && !this.selected && onTop && this.#hook("onHover") !== undefined) {
             canvas.setCursorClass("chart-pointer-cursor")
             this.#iSetTheCursorClass = true
         } else if (hovering && this.selected && onTop) {

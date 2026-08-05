@@ -28,13 +28,32 @@ export const define = (name, constructor) => {
  */
 export const defineProperties = (element, defaults = {}, extra = []) => {
     const props = { ...defaults }
+    let queued = false
+
+    /**
+     * Redraw once per batch, not once per property.
+     *
+     * Configuring an element means writing a dozen properties in a row; redrawing on each
+     * would repaint the whole chart a dozen times, and the first of those would land
+     * before the chart has worked out what it is showing. Waiting for the microtask lets
+     * the whole assignment land first.
+     */
+    const requestRedraw = () => {
+        if (queued) return
+        queued = true
+
+        queueMicrotask(() => {
+            queued = false
+            if (element.isConnected && element.canvas?.getState?.() != null) element.canvas.redraw()
+        })
+    }
 
     for (const name of new Set([...Object.keys(defaults), ...extra])) {
         Object.defineProperty(element, name, {
             get: () => props[name],
             set: value => {
                 props[name] = value
-                element.canvas?.redraw()
+                requestRedraw()
             },
             configurable: true,
             enumerable: true,

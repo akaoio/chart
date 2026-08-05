@@ -190,6 +190,29 @@ export class InteractiveStraightLine extends GenericChartComponent {
         })
     }
 
+    /**
+     * Chuyển tiếp callback từ property sang hook.
+     *
+     * Kể từ khi hook được tra trên chuỗi prototype (xem `GenericComponent`), property và
+     * hook trùng tên không còn che nhau nữa — nhưng cũng nghĩa là component phải nối
+     * chúng lại một cách tường minh. Đổi lại: đọc mã là thấy ngay cái nào gọi cái nào.
+     */
+    onHover(event, moreProps) {
+        this.#props.onHover?.(event, moreProps)
+    }
+    onUnHover(event, moreProps) {
+        this.#props.onUnHover?.(event, moreProps)
+    }
+    onDragStart(event, moreProps) {
+        this.#props.onDragStart?.(event, moreProps)
+    }
+    onDrag(event, moreProps) {
+        this.#props.onDrag?.(event, moreProps)
+    }
+    onDragComplete(event, moreProps) {
+        this.#props.onDragComplete?.(event, moreProps)
+    }
+
     canvasDraw(context, moreProps) {
         drawInteractiveStraightLine(context, moreProps, this.#props)
     }
