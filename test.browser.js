@@ -77,6 +77,23 @@ const runShowcaseTests = async (page, origin) => {
 
         const measured = await page.evaluate(chartMeasurements)
 
+        /**
+         * Không tooltip nào được đọc ra `n/a` khi trang vừa mở.
+         *
+         * `displayValuesFor` mặc định là "hàng con trỏ đang chỉ vào", mà lúc chưa trỏ thì
+         * không có hàng nào — sáu trong tám tooltip của bản gốc tự lùi về hàng cuối, hai
+         * cái còn lại (`RSITooltip`, `StochasticTooltip`) thì không. Đặt hai kiểu cạnh nhau
+         * trong một biểu đồ thì cái không lùi trông như đang hỏng, nên bài trưng bày phải
+         * truyền `displayValuesFor` cho chúng. Bài này canh đúng chỗ ấy.
+         */
+        const unread = await page.evaluate(() =>
+            [...document.querySelectorAll("chart-canvas")].flatMap(canvas =>
+                [...(canvas.shadowRoot?.querySelectorAll("text") ?? [])]
+                    .map(node => node.textContent)
+                    .filter(text => text.includes("n/a")),
+            ),
+        )
+
         checks.push({
             label: "trang không có lỗi nào",
             pass: problems.length === 0,
@@ -102,6 +119,12 @@ const runShowcaseTests = async (page, origin) => {
             pass: measured.every(({ inside }) => inside > 200),
             expected: "> 200 mỗi cái",
             actual: measured.map(({ inside }) => inside).join(", "),
+        })
+        checks.push({
+            label: "không tooltip nào đọc ra n/a khi trang vừa mở",
+            pass: unread.length === 0,
+            expected: "0",
+            actual: unread.length ? `${unread.length} — ${unread[0]}` : "0",
         })
 
         page.off("pageerror", onError)

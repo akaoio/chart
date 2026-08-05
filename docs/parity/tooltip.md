@@ -38,6 +38,17 @@ JSX viết `{yLabel}: ` sinh ra **hai** node văn bản rời (`"Mở"` và `": 
 
 Nghe như tiểu tiết, nhưng nó là loại khác biệt mà so ảnh không bao giờ thấy, còn CSS nhắm vào `tspan:first-child` thì thấy ngay.
 
+**Chưa trỏ chuột thì tooltip nào đọc được số, tooltip nào không — bản gốc tự lệch với chính nó.** Cả ba đều để `displayValuesFor` mặc định là `moreProps.currentItem`, tức "hàng con trỏ đang chỉ vào", và chưa trỏ thì không có hàng nào. Nhưng:
+
+| tooltip | lúc chưa trỏ chuột |
+|---|---|
+| `BollingerBandTooltip`, `GroupTooltip`, `MACDTooltip`, `MovingAverageTooltip`, `OHLCTooltip`, `SingleValueTooltip` | `?? last(fullData)` — đọc hàng cuối |
+| `RSITooltip`, `StochasticTooltip` | không có phép dự phòng, in ra `n/a` |
+
+Đúng hai cái thiếu trên tám cái — đếm lại trong `packages/tooltip/src`, không phải suy đoán.
+
+Port giữ nguyên cả hai nhánh, kể cả chỗ lệch. Nhưng đặt hai cái cạnh nhau trong cùng một biểu đồ thì trông như một cái bị hỏng — nên bài trưng bày `indicators` truyền `displayValuesFor` cho tooltip RSI và nói rõ vì sao ngay tại đó. Đó là đúng chỗ móc mà bản gốc để sẵn cho việc này.
+
 ## Lệch có chủ ý so với bản gốc
 
 | chỗ nào | bản gốc | ở đây | vì sao |

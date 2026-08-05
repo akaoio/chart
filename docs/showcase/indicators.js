@@ -185,7 +185,18 @@ demo({
         const rsiSeries = document.createElement("chart-rsi-series")
         rsiSeries.yAccessor = datum => datum.rsi
         const rsiTooltip = document.createElement("chart-rsi-tooltip")
-        Object.assign(rsiTooltip, { origin: [8, 12], yAccessor: datum => datum.rsi, options: relative.options() })
+        Object.assign(rsiTooltip, {
+            origin: [8, 12],
+            yAccessor: datum => datum.rsi,
+            options: relative.options(),
+            // Which row a tooltip reads is `displayValuesFor`, and the default is "whichever
+            // one the pointer is on" — so before you hover there is nothing and it prints
+            // n/a. The MACD tooltip below falls back to the last row on its own; this one
+            // does not, and neither does the original. Say so rather than leave it reading
+            // n/a next to a sibling that reads a number.
+            displayValuesFor: (props, moreProps) =>
+                moreProps.currentItem ?? moreProps.plotData[moreProps.plotData.length - 1],
+        })
         rsiPane.append(
             rsiSeries,
             Object.assign(document.createElement("chart-y-axis"), { ticks: 2, fontSize: 11 }),

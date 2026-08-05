@@ -85,10 +85,14 @@ demo({
             fill: datum => (datum.close > datum.open ? "#26a69a" : "#ef5350"),
         })
 
-        // a fixed price, wherever the chart happens to be
+        // A fixed price, wherever the chart happens to be. Deliberately not the latest one:
+        // rounding the last close put this label within half a point of the edge indicator
+        // above, so the two sat on the same pixel row and the yellow one hid the other.
+        const band = [Math.min(...rows.map(datum => datum.low)), Math.max(...rows.map(datum => datum.high))]
+
         const level = document.createElement("chart-price-coordinate")
         Object.assign(level, {
-            price: Math.round(rows[rows.length - 1].close),
+            price: Math.round((band[0] + band[1]) / 2),
             orient: "right",
             at: "right",
             fill: "#e0a800",
