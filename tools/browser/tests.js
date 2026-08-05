@@ -2067,6 +2067,99 @@ TESTS["chart-drawing-object-selector chọn đúng đối tượng bị bấm"] 
     return t.checks
 }
 
+/**
+ * Kéo dọc phải đi đúng bằng quãng đường ngón tay đi — và đi ngay lúc ấy.
+ *
+ * Lỗi anh Huy tìm ra trên trang thật: chỉ cần chạm vào trục giá một lần (thứ bật
+ * `yPanEnabled`), rồi kéo nến theo chiều dọc, thì nến trôi xa gấp mấy lần con trỏ, không
+ * nhúc nhích trong lúc kéo, rồi nhảy một phát khi thả tay. Hai nguyên nhân rời nhau:
+ *
+ *   1. `handlePan` nạp kết quả từng khung hình vào `#state`, mà `#panHelper` lại tính
+ *      `dy` từ mốc đặt tay xuống — nên mỗi khung cộng thêm một lần nữa lên một thang đã
+ *      dịch rồi. Độ dịch phình theo bình phương.
+ *   2. Sự kiện `pan` mang danh sách pane dưới tên `chartConfigs`, còn phép thu hẹp về
+ *      một pane lại đi tìm `chartConfig` — nên suốt cú kéo, mọi phần tử vẫn vẽ theo
+ *      thang y cũ.
+ *
+ * Bài này đo cả hai: vẽ ra ở đâu trong lúc kéo, và dừng ở đâu sau khi thả.
+ */
+TESTS["kéo dọc đi đúng quãng đường của con trỏ, và đi ngay lúc kéo"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, pane } = mountWithAxes()
+
+    // Một phần tử chỉ để ghi lại: mỗi lần được yêu cầu vẽ, thang y nó NHÌN THẤY là gì.
+    const painted = []
+    class DomainProbe extends GenericChartComponent {
+        get drawOn() {
+            return ["pan", "mousemove", "drag"]
+        }
+        canvasToDraw(contexts) {
+            return getAxisCanvas(contexts)
+        }
+        canvasDraw(context, moreProps) {
+            if (moreProps.chartConfig?.yScale) painted.push(moreProps.chartConfig.yScale.domain()[0])
+        }
+    }
+    if (!customElements.get("domain-probe")) customElements.define("domain-probe", DomainProbe)
+    pane.append(document.createElement("domain-probe"))
+
+    await settle(4)
+
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    const at = (type, target, y, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + 400, clientY: box.top + y, bubbles: true, ...extra }),
+        )
+
+    // Chưa chạm vào trục giá thì kéo dọc KHÔNG được đổi gì — đúng như anh Huy mô tả.
+    const untouched = canvas.getState().chartConfigs[0].yScale.domain().join()
+    at("mouseenter", rect, 200)
+    at("mousedown", rect, 200, { buttons: 1 })
+    at("mousemove", window, 320, { buttons: 1 })
+    await settle(2)
+    at("mouseup", window, 320, { buttons: 0 })
+    await settle(3)
+
+    t.is("chưa động vào trục giá thì kéo dọc không đổi gì", canvas.getState().chartConfigs[0].yScale.domain().join(), untouched)
+
+    // Chạm vào trục giá: đúng thao tác bật `yPanEnabled` mà người dùng làm.
+    canvas.yAxisZoom(0, canvas.getState().chartConfigs[0].yScale.domain())
+    await settle(2)
+
+    const yScale = () => canvas.getState().chartConfigs[0].yScale
+    const perPixel = Math.abs(yScale().invert(0) - yScale().invert(1))
+    const before = yScale().domain()[0]
+
+    at("mouseenter", rect, 200)
+    at("mousedown", rect, 200, { buttons: 1 })
+
+    const seen = []
+    for (const step of [20, 40, 60, 80, 100]) {
+        at("mousemove", window, 200 + step, { buttons: 1 })
+        await settle(2)
+        seen.push({ step, drawn: painted[painted.length - 1] - before })
+    }
+
+    at("mouseup", window, 300, { buttons: 0 })
+    await settle(3)
+
+    // 1) Trong lúc kéo, hình vẽ đi theo con trỏ — không đứng im.
+    t.ok("kéo dọc thì nến di chuyển ngay trong lúc kéo", seen.every(each => Math.abs(each.drawn) > 0))
+
+    // 2) Và đi đúng quãng đường ấy, không hơn. Sai số một pixel là đủ chặt.
+    for (const { step, drawn } of seen) {
+        t.near(`kéo ${step}px thì thang y dịch đúng ${step}px`, drawn, step * perPixel, perPixel * 1.5)
+    }
+
+    // 3) Thả tay ra không nhảy đi đâu cả.
+    t.near("thả tay ra thì đứng đúng chỗ đang vẽ", yScale().domain()[0] - before, 100 * perPixel, perPixel * 1.5)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

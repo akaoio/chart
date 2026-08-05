@@ -182,7 +182,7 @@ export class GenericComponent extends ElementBase {
             ...canvas.getMutableState(),
             xScale,
             plotData,
-            chartConfig: chartConfigs,
+            chartConfigs,
         }
     }
 

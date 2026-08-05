@@ -115,6 +115,20 @@ Cùng lý do, phần tử nào giữ thứ nhớ sẵn phụ thuộc vào proper
 hạn) được báo qua `propertyChanged(name)` khi property đổi. Đây là chỗ của
 `componentDidUpdate` bên bản gốc.
 
+## Kéo dọc: một lỗi của bản port và một lỗi của bản gốc
+
+Người dùng báo từ trang thật: chạm vào trục giá một lần rồi kéo nến theo chiều dọc thì nến trôi xa gấp mấy lần con trỏ, không nhúc nhích trong lúc kéo, rồi nhảy một phát khi thả tay. Đào ra hai nguyên nhân rời nhau.
+
+**Của bản port.** `handlePan` nạp kết quả từng khung hình vào `#state`, mà `#panHelper` lại tính `dy` từ mốc đặt tay xuống — nên mỗi khung cộng thêm một lần nữa lên một thang **đã dịch rồi**, và độ dịch phình theo bình phương: kéo 100px thì thang y đi xa gấp ba. Trục x không dính vì thang lúc bắt đầu kéo được truyền vào (`panStartXScale`), còn thang y thì lấy từ state.
+
+Bản gốc không dính vì nó **không `setState` trong lúc kéo** — trạng thái chỉ chốt ở `panend`. Bản port giờ làm đúng như thế: trong lúc kéo chỉ ghi lại phần con trỏ.
+
+**Của bản gốc.** Sự kiện `pan` mang danh sách pane dưới tên `chartConfigs`, còn phép thu hẹp về một pane trong `GenericChartComponent.updateMoreProps` lại đi tìm `chartConfig`. Hai cái tên không gặp nhau, nên suốt cú kéo mọi phần tử vẫn vẽ theo thang y **cũ** — kéo dọc không nhúc nhích cho tới khi thả tay.
+
+Đây là đọc mã bản gốc mà kết luận, không phải chạy React ra rồi đo: `panHelper` trả về `chartConfigs`, `updateMoreProps` đọc `chartConfig`, và không có chỗ nào ở giữa đổi tên. Bản port sửa bằng cách **tách hẳn hai cái tên**: `chartConfigs` luôn là danh sách, `chartConfig` luôn là pane này — không còn phải hỏi `Array.isArray` để biết đang cầm cái nào.
+
+8 khẳng định canh chỗ này, đo cả hai điều: trong lúc kéo hình vẽ đi tới đâu, và sau khi thả thì dừng ở đâu. Trả lại một trong hai lỗi thì bài đổ.
+
 ## Bằng chứng biết fail
 
 Bậc 2 không chứng minh được bằng golden data — nó là DOM, canvas và chuột. Bộ kiểm chạy trong Chromium thật (`npm run test:browser`, 59 khẳng định). Để chắc nó không xanh vô nghĩa, sửa hỏng bản port 6 chỗ:

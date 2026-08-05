@@ -62,7 +62,7 @@ export class GenericChartComponent extends GenericComponent {
         if (!canvas) return
 
         const chartConfig = moreProps.chartConfig
-        if (!isDefined(chartConfig) || Array.isArray(chartConfig)) return
+        if (!isDefined(chartConfig)) return
 
         const { margin, ratio } = canvas
         const { width, height, origin } = chartConfig
@@ -109,8 +109,17 @@ export class GenericChartComponent extends GenericComponent {
     updateMoreProps(moreProps) {
         super.updateMoreProps(moreProps)
 
-        const chartConfigList = moreProps.chartConfig
-        if (chartConfigList && Array.isArray(chartConfigList)) {
+        /**
+         * `chartConfigs` là danh sách của cả chart, `chartConfig` là pane này — hai cái
+         * tên, hai nghĩa, không lẫn.
+         *
+         * Trước đây cả hai cùng dùng tên `chartConfig`, phân biệt bằng `Array.isArray`.
+         * Cái bẫy: sự kiện `pan` mang danh sách dưới tên `chartConfigs`, nên phép thu hẹp
+         * ở đây không bao giờ chạy, và trong suốt cú kéo mọi phần tử vẫn vẽ theo thang y
+         * **cũ** — kéo dọc không nhúc nhích cho tới khi thả tay.
+         */
+        const chartConfigList = moreProps.chartConfigs
+        if (Array.isArray(chartConfigList)) {
             this.moreProps.chartConfig = chartConfigList.find(each => each.id === this.chartId)
         }
 

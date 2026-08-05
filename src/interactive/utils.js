@@ -59,9 +59,16 @@ const getMouseXY = (moreProps, [originX, originY]) => {
 /**
  * Narrow the chart-wide `moreProps` to one pane, with the pointer moved into that pane's
  * coordinates — so a tool drawn in the volume pane measures from the volume pane's corner.
+ *
+ * The list arrives as `chartConfigs`. The original calls it `chartConfig` and tells the
+ * two apart by asking whether it is an array; here the plural name carries the list and
+ * the singular one carries a single pane, so neither has to be inspected to know which it
+ * is. Both names are read only because the shared golden case drives this same function
+ * on both sides.
  */
 export const getMorePropsForChart = (moreProps, chartId) => {
-    const chartConfig = moreProps.chartConfig.find(each => each.id === chartId)
+    const list = moreProps.chartConfigs ?? moreProps.chartConfig
+    const chartConfig = list.find(each => each.id === chartId)
 
     return { ...moreProps, chartConfig, mouseXY: getMouseXY(moreProps, chartConfig.origin) }
 }

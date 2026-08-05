@@ -867,9 +867,23 @@ export class ChartCanvas extends ElementBase {
 
         this.triggerEvent("pan", newState, event)
 
+        /**
+         * Chỉ ghi lại phần con trỏ, KHÔNG ghi đè thang và dữ liệu.
+         *
+         * `#panHelper` tính từ mốc lúc bắt đầu kéo: `dx`/`dy` là quãng đường tính từ chỗ
+         * đặt tay xuống, còn thang x thì được truyền vào (`panStartXScale`). Thang y thì
+         * không — nó lấy từ `#state`. Nạp kết quả của khung hình này vào `#state` nghĩa
+         * là khung sau lại cộng tiếp quãng đường ấy lên một thang **đã dịch rồi**, và độ
+         * dịch phình theo bình phương: kéo 100px thì nến đi xa gấp ba.
+         *
+         * Bản gốc không dính vì nó không `setState` trong lúc kéo — trạng thái chỉ chốt
+         * lại ở `panend`. Chỗ này làm đúng như thế.
+         */
         this.#state = {
             ...this.#state,
-            ...newState,
+            mouseXY: newState.mouseXY,
+            currentItem: newState.currentItem,
+            currentCharts: newState.currentCharts,
         }
 
         requestAnimationFrame(() => {
