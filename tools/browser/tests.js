@@ -1,4 +1,5 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
+import { batched, defineProperties } from "../../src/core/element.js"
 import { CircleMarker } from "../../src/series/index.js"
 import "../../src/coordinates/index.js"
 import "../../src/tooltip/index.js"
@@ -1922,6 +1923,82 @@ TESTS["series bọc trong div vẫn tìm được pane"] = async () => {
  * là `hackyWayToStopPanBeyondBounds`. Bản port chữa ở `filterData`, nơi câu trả lời chỉ
  * phụ thuộc vào dữ liệu và domain được hỏi. Xem docs/parity/core.md.
  */
+/**
+ * Một vòng lặp ghi-vẽ-ghi phải làm chart CHẬM, không được làm trang chết.
+ *
+ * Người dùng báo: "nó đơ tới mức không refresh được luôn". Đó là dấu hiệu rất cụ thể của một
+ * chuỗi `queueMicrotask`: microtask chạy TRƯỚC khi trình duyệt lấy lại quyền, nên một
+ * microtask hẹn thêm một microtask nữa thì vòng lặp sự kiện không bao giờ được nhường. Trang
+ * không vẽ, không nhận thao tác, không refresh được — phải đóng tab.
+ *
+ * Chuỗi ấy rất dễ hình thành ở đây: ghi một prop thì hẹn dựng lại, dựng lại thì ghi prop của
+ * con, con ghi prop thì lại hẹn. Chỉ cần một giá trị trong vòng ấy đổi mỗi lượt là không có
+ * điểm dừng.
+ *
+ * Nên bài này dựng đúng cái vòng vô tận ấy — một phần tử mà `propertyChanged` luôn ghi một
+ * giá trị MỚI — rồi khẳng định điều duy nhất đáng khẳng định: sau một khung hình, trang vẫn
+ * chạy. `requestAnimationFrame` chỉ nổ được nếu vòng lặp sự kiện còn sống, nên chính nó là
+ * phép thử. Không có `deferred` thì bài này treo cả bộ kiểm.
+ */
+TESTS["vòng lặp ghi-vẽ-ghi làm chart chậm, không làm trang chết"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mount()
+    const pane = canvas.querySelector("chart-pane")
+
+    let writes = 0
+
+    class LoopProbe extends GenericChartComponent {
+        #props = defineProperties(this, { spin: 0 })
+
+        get drawOn() {
+            return ["mousemove", "pan"]
+        }
+        canvasToDraw(contexts) {
+            return getAxisCanvas(contexts)
+        }
+        canvasDraw() {}
+
+        /**
+         * Đúng hình dạng vòng lặp của các công cụ vẽ thật: ghi → HOÃN → ghi → hoãn.
+         *
+         * `propertyChanged = batched(...)` là đúng cách mọi công cụ vẽ trong thư viện làm
+         * (`batched(() => this.update())`), và `update()` thì ghi lại prop của con. Ghi thẳng
+         * trong `propertyChanged` thì chỉ là đệ quy đồng bộ và tràn stack — một hình dạng
+         * khác, không phải hình dạng làm chết trang.
+         */
+        propertyChanged = batched(() => {
+            writes++
+            if (writes < 5000) this.spin = writes + 1
+        })
+    }
+    if (!customElements.get("loop-probe")) customElements.define("loop-probe", LoopProbe)
+
+    const probe = document.createElement("loop-probe")
+    pane.append(probe)
+    await settle(4)
+
+    probe.spin = 1
+
+    // Chờ đúng một khung hình. Nếu chuỗi microtask giữ vòng lặp sự kiện thì lời hẹn này
+    // không bao giờ tới, và bài kiểm treo — đó cũng là một kết quả, chỉ là kết quả tệ nhất.
+    const alive = await new Promise(resolve => {
+        const timer = setTimeout(() => resolve(false), 3000)
+        requestAnimationFrame(() => {
+            clearTimeout(timer)
+            resolve(true)
+        })
+    })
+
+    t.ok("vòng lặp vẫn nhường lại lượt cho trình duyệt", alive)
+    t.gt("và vòng lặp thật sự đã chạy, không phải bài kiểm rỗng", writes, 4)
+    // Chặn ở ngưỡng chuỗi rồi nhường, chứ không chạy hết 5000 lượt trong một lượt duy nhất.
+    t.ok(`chuỗi microtask bị chặn ở ngưỡng, không chạy tràn (${writes} lượt)`, writes < 20)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["kéo mãi cũng không kéo chart ra khỏi dữ liệu"] = async () => {
     const t = makeChecker()
 

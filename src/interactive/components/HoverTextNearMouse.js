@@ -93,25 +93,55 @@ export class HoverTextNearMouse extends GenericChartComponent {
         return ["mousemove"]
     }
 
+    /** Chữ nào, cỡ nào, font nào — đổi một trong ba thì phải đo lại, còn không thì không. */
+    #shapeKey() {
+        const { text, fontSize, fontFamily, fontWeight } = this.#props
+        return `${fontWeight}|${fontSize}|${fontFamily}|${text}`
+    }
+
     svgDraw(moreProps) {
         if (!this.#props.text) return null
 
         const result = renderHoverTextNearMouse(moreProps, { ...this.#props, ...this.#measured })
 
-        // Measure after the fact and redraw once, which is how "auto" settles on a size
-        queueMicrotask(() => this.#measure())
+        /**
+         * Đo một lần cho mỗi chữ, không đo lại theo từng bước con trỏ.
+         *
+         * `drawOn` của phần tử này là `mousemove`, nên nó được vẽ lại mỗi lần con trỏ nhích.
+         * Trước đây mỗi lần vẽ lại đều hẹn một `#measure()`, và `#measure()` gọi `getBBox()` —
+         * mà `getBBox` buộc trình duyệt tính lại layout **đồng bộ**, ngay giữa lúc đang vẽ
+         * canvas. Đo được trên trang thật: 1,1 lần `getBBox` cho mỗi bước con trỏ, mãi mãi,
+         * dù kích cỡ chữ chẳng đổi.
+         *
+         * Kích cỡ chỉ phụ thuộc vào chữ và font, không phụ thuộc vào chỗ con trỏ đang ở. Nên
+         * chỉ đo khi một trong những thứ ấy đổi. Và `bgWidth`/`bgHeight` không phải "auto"
+         * thì không đo lần nào — trước đây vẫn hẹn một microtask rồi mới quay ra.
+         */
+        const { bgWidth, bgHeight } = this.#props
+        const auto = bgWidth === "auto" || bgHeight === "auto"
+
+        if (auto && this.#measuredFor !== this.#shapeKey()) queueMicrotask(() => this.#measure())
 
         return result
     }
 
+    #measuredFor = null
+
     #measure() {
-        const { bgWidth, bgHeight } = this.#props
-        if (bgWidth !== "auto" && bgHeight !== "auto") return
+        const key = this.#shapeKey()
+        if (this.#measuredFor === key) return
 
         const node = this.svgParent()?.querySelector("text")
         if (!node) return
 
         const { width, height } = node.getBBox()
+
+        // Chữ chưa được xếp chỗ thì `getBBox` trả 0 — đừng ghi nhớ con số ấy, vì ghi nhớ là
+        // không bao giờ đo lại nữa, và cái nhãn sẽ hẹp mãi.
+        if (width === 0) return
+
+        this.#measuredFor = key
+
         if (this.#measured.textWidth === width && this.#measured.textHeight === height) return
 
         this.#measured = { textWidth: width, textHeight: height }

@@ -28,19 +28,67 @@ export const define = (name, constructor) => {
  * toàn bộ cây con thì lần dựng đầu nhìn thấy một cấu hình dở dang. Đợi hết microtask thì
  * cả loạt gán đã xong.
  */
-export const batched = work => {
+/**
+ * Hoãn một việc tới cuối lượt hiện tại — nhưng không bao giờ giữ vòng lặp sự kiện mãi.
+ *
+ * Đây là chỗ đáng nói nhất của cả file. `queueMicrotask` chạy **trước khi** trình duyệt lấy
+ * lại quyền: một microtask hẹn thêm một microtask nữa thì chuỗi ấy không nhường lại lượt cho
+ * ai cả. Trang không vẽ, không nhận thao tác, và **không refresh được** — người dùng phải
+ * đóng tab. Đó không phải chậm, đó là chết.
+ *
+ * Mà chuỗi ấy rất dễ hình thành ở đây: ghi một prop thì hẹn dựng lại; dựng lại thì ghi prop
+ * của con; con ghi prop thì lại hẹn. Chỉ cần một giá trị trong vòng ấy đổi mỗi lượt là chuỗi
+ * không có điểm dừng. Người dùng báo đúng hiện tượng này.
+ *
+ * Nên: vài lượt đầu vẫn dùng microtask, vì đó là điều đúng cho việc gộp một loạt phép gán
+ * liên tiếp. Quá `CHAIN_LIMIT` lượt **trong cùng một khung hình** thì chuyển sang
+ * `requestAnimationFrame` — vòng lặp sự kiện được nhường lại, trang vẽ và vẫn bấm được.
+ * Một vòng lặp còn sót lại sẽ biểu hiện thành "vẽ lại mỗi khung hình", tức là chậm và nhìn
+ * thấy được, chứ không phải một tab chết không cứu được.
+ *
+ * Bộ đếm được đặt lại mỗi khung hình, nên hoạt động bình thường không bao giờ chạm tới ngưỡng.
+ */
+const CHAIN_LIMIT = 8
+
+const deferred = work => {
     let queued = false
+    let chain = 0
+    let resetQueued = false
+
+    const scheduleReset = () => {
+        if (resetQueued) return
+        resetQueued = true
+
+        requestAnimationFrame(() => {
+            chain = 0
+            resetQueued = false
+        })
+    }
 
     return () => {
         if (queued) return
         queued = true
+        chain++
+        scheduleReset()
 
-        queueMicrotask(() => {
+        const run = () => {
             queued = false
             work()
-        })
+        }
+
+        if (chain > CHAIN_LIMIT) requestAnimationFrame(run)
+        else queueMicrotask(run)
     }
 }
+
+/**
+ * Gộp nhiều lần gọi trong cùng một lượt thành một.
+ *
+ * Cấu hình một phần tử là gán liên tiếp cả chục property; nếu mỗi lần gán lại dựng lại
+ * toàn bộ cây con thì lần dựng đầu nhìn thấy một cấu hình dở dang. Đợi hết microtask thì
+ * cả loạt gán đã xong.
+ */
+export const batched = work => deferred(work)
 
 /**
  * Give an element a settable JS property per configuration key, each one asking for a
@@ -49,7 +97,6 @@ export const batched = work => {
  */
 export const defineProperties = (element, defaults = {}, extra = []) => {
     const props = { ...defaults }
-    let queued = false
 
     /**
      * Redraw once per batch, not once per property.
@@ -57,17 +104,12 @@ export const defineProperties = (element, defaults = {}, extra = []) => {
      * Configuring an element means writing a dozen properties in a row; redrawing on each
      * would repaint the whole chart a dozen times, and the first of those would land
      * before the chart has worked out what it is showing. Waiting for the microtask lets
-     * the whole assignment land first.
+     * the whole assignment land first — qua `deferred`, nên một chuỗi ghi-vẽ-ghi không thể
+     * giữ vòng lặp sự kiện mãi.
      */
-    const requestRedraw = () => {
-        if (queued) return
-        queued = true
-
-        queueMicrotask(() => {
-            queued = false
-            if (element.isConnected && element.canvas?.getState?.() != null) element.canvas.redraw()
-        })
-    }
+    const requestRedraw = deferred(() => {
+        if (element.isConnected && element.canvas?.getState?.() != null) element.canvas.redraw()
+    })
 
     /**
      * Một getter mà class tự viết thì phải được dùng, không bị che.
