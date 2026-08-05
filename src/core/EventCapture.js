@@ -48,6 +48,8 @@ export class EventCapture {
     #clicked = false
     #clickedAt = null
     #clickTimer = null
+    #touchOrigin = null
+    #touchMoved = false
     #dragHappened = false
     #panHappened = false
     #panEndTimeout
@@ -134,6 +136,8 @@ export class EventCapture {
         this.#element.addEventListener("contextmenu", this.#handleRightClick, { signal })
         this.#element.addEventListener("touchstart", this.#handleTouchStart, { signal })
         this.#element.addEventListener("touchmove", this.#handleTouchMove, { signal })
+        this.#element.addEventListener("touchend", this.#handleTouchEnd, { signal })
+        this.#element.addEventListener("touchcancel", this.#handleTouchEnd, { signal })
     }
 
     /**
@@ -524,7 +528,50 @@ export class EventCapture {
         const { onMouseMove } = this.#props()
         if (onMouseMove === undefined) return
 
-        onMouseMove(touchPosition(getTouchProps(event.touches[0]), event), "touch", event)
+        const position = touchPosition(getTouchProps(event.touches[0]), event)
+
+        if (this.#touchOrigin !== null) {
+            const moved =
+                Math.abs(position[0] - this.#touchOrigin[0]) > DOUBLE_CLICK_SLOP ||
+                Math.abs(position[1] - this.#touchOrigin[1]) > DOUBLE_CLICK_SLOP
+            if (moved) this.#touchMoved = true
+        }
+
+        onMouseMove(position, "touch", event)
+    }
+
+    /**
+     * Một cú kéo bằng ngón tay mà không ai giành, thì kết thúc của nó là một cú bấm.
+     *
+     * Trình duyệt sinh ra `click` sau một cú **gõ**, không sinh sau một cú **kéo** — đúng,
+     * vì cú kéo thường là cuộn trang. Nhưng có thứ dùng cú kéo rồi đóng lại bằng `click`:
+     * `chart-brush` bắt đầu ở `onMouseDown`, theo dấu ở `onMouseMove`, và chốt ở `onClick`.
+     * Nên trên điện thoại nó quét mãi không xong — không lỗi, chỉ là không có gì báo về.
+     *
+     * Ba điều kiện, và cả ba đều cần:
+     *
+     * - ngón tay phải **đi** quá `DOUBLE_CLICK_SLOP`. Nếu chỉ gõ thì trình duyệt tự sinh
+     *   `click`, và phát thêm một cái nữa thì một cú gõ bị xử lý hai lần — đúng cái đã
+     *   xảy ra ở `DrawingObjectSelector` theo chiều ngược lại.
+     * - không có pan và không có drag nào đã xảy ra. Chúng giành cú kéo trước, và một cú
+     *   kéo đã thuộc về ai thì không còn là cú bấm.
+     * - `onClick` phải có thật.
+     *
+     * Không dùng `preventDefault` trên `touchstart` để tự chiếm cả chuỗi sự kiện: làm thế thì
+     * chặn luôn cuộn trang bắt đầu từ trên biểu đồ, mà `touch-action: pan-y` được đặt chính
+     * là để giữ điều ấy.
+     */
+    #handleTouchEnd = event => {
+        const wasMoved = this.#touchMoved
+        this.#touchMoved = false
+        this.#touchOrigin = null
+
+        if (!wasMoved || this.#panHappened || this.#dragHappened) return
+
+        const { onClick } = this.#props()
+        if (onClick === undefined) return
+
+        onClick(this.#positionOf(event), event)
     }
 
     #handleTouchStart = event => {
@@ -535,8 +582,10 @@ export class EventCapture {
         if (event.touches.length === 1) {
             this.#panHappened = false
             this.#dragHappened = false
+            this.#touchMoved = false
 
             const touchXY = touchPosition(getTouchProps(event.touches[0]), event)
+            this.#touchOrigin = touchXY
 
             /**
              * Ba việc, đúng ba việc con chuột làm khi bấm xuống, theo đúng thứ tự ấy.
