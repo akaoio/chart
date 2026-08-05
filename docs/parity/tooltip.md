@@ -28,7 +28,7 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 
 Nên bậc 4 dựng thêm `tools/golden/svgtree.mjs`: quy cây SVG về `{ tag, attrs, children }` rồi so. Vẫn đúng nguyên tắc cũ — **một hàm quy chuẩn duy nhất nhận cả React element lẫn mô tả của bản port**, không có hai bộ luật để lệch nhau. Tên thuộc tính quy về dạng DOM (`strokeWidth` → `stroke-width`, `className` → `class`).
 
-**878 giá trị** trong cây SVG khớp bản gốc.
+**675 giá trị** trong cây SVG khớp bản gốc — phần của nhóm này trong bộ `svg`, vốn có 890 giá trị và chia với [`annotations`](annotations.md).
 
 Đã kiểm bộ này biết fail: cho `MovingAverageTooltip` xếp mọi mục chồng lên nhau → bắt được; cho `GroupTooltip` sai giãn cách `verticalRows` → bắt được.
 

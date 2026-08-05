@@ -1,4 +1,10 @@
-/** Every dash pattern the series accept. */
+/**
+ * Every dash pattern the series accept.
+ *
+ * In the original this name is a TypeScript *type* — a union of string literals, gone by
+ * the time anything runs. A type cannot be exported from JavaScript, so here it is the
+ * list itself, which is what the type was describing. Recorded in docs/parity/core.md.
+ */
 export const strokeDashTypes = [
     "Solid",
     "ShortDash",

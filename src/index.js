@@ -27,5 +27,3 @@ export * from "./indicators/index.js"
 export * from "./coordinates/index.js"
 export * from "./tooltip/index.js"
 export * from "./annotations/index.js"
-
-export const version = "0.0.0"

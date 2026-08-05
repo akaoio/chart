@@ -115,3 +115,21 @@ export const normalizeSvg = node => {
 
     return null
 }
+
+/**
+ * Khác biệt CÓ KHAI BÁO duy nhất về tên lớp: `react-financial-charts-*` thành `chart-*`.
+ *
+ * Cái tên cũ nhắc tới React trong một thư viện không có React, và các lớp con trỏ đã đổi
+ * từ bậc 2. Áp cho **cả hai phía** — đó là điều quan trọng: chỉ sửa bên bản gốc thì là
+ * che, còn thế này thì mọi khác biệt tên lớp NGOÀI đúng phép đổi tiền tố ấy vẫn lộ ra.
+ */
+export const stripPrefix = tree => {
+    if (tree === null || typeof tree !== "object") return tree
+    if (Array.isArray(tree)) return tree.map(stripPrefix)
+    if (tree.text !== undefined) return tree
+
+    const attrs = { ...tree.attrs }
+    if (typeof attrs.class === "string") attrs.class = attrs.class.replace(/react-financial-charts-/g, "chart-")
+
+    return { ...tree, attrs, children: (tree.children ?? []).map(stripPrefix) }
+}

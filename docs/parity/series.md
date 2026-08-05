@@ -44,7 +44,7 @@ Một hình vẽ trên canvas **là** một chuỗi lệnh. Nên cả bản gố
 
 Bên bản gốc, hàm vẽ được lấy ra bằng cách dựng component React rồi nhặt prop `canvasDraw` mà nó truyền cho `GenericChartComponent` — không render, không cần DOM, không cần trình duyệt.
 
-**9.465 lệnh canvas khớp bản gốc**, trên 54 bài vẽ. (Con số `npm test` in ra — 32.586 — là số *giá trị lá* được so, vì mỗi lệnh gồm tên lệnh cộng các tham số của nó. Số lệnh mới là con số đáng nói.)
+**7.745 lệnh canvas khớp bản gốc**, trên 39 bài vẽ. Con số `npm test` in ra lớn hơn nhiều (29.121 cho riêng nhóm này) vì nó đếm *giá trị lá*, mà mỗi lệnh gồm tên lệnh cộng các tham số của nó — và nó gộp chung trong bộ `draw`, nơi `axes`, `coordinates` và phần canvas của `tooltip` cũng nằm. Số lệnh mới là con số đáng nói.
 
 Cộng 40 khẳng định trong trình duyệt thật, nơi các phần tử này được dựng trong một chart thật rồi soi pixel: nến xanh, nến đỏ, đường tím, trục đen — và cả 25 series cùng gắn vào một pane một lúc.
 

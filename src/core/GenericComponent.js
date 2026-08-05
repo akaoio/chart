@@ -485,4 +485,3 @@ export const getMouseCanvas = contexts => contexts.mouseCoord
 export const getBackgroundCanvas = contexts => contexts.bg
 
 /** Exported for tests and for components that need to reason about event folding. */
-export const eventAliases = ALIASES

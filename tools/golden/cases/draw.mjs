@@ -13,20 +13,9 @@
 import { scaleLinear } from "d3-scale"
 import { curveMonotoneX } from "d3-shape"
 import { createRecorder } from "../recorder.mjs"
-import { normalizeSvg } from "../svgtree.mjs"
+import { normalizeSvg, stripPrefix } from "../svgtree.mjs"
 import { datasets } from "../data.mjs"
 
-/** Khác biệt có khai báo: tên lớp `react-financial-charts-*` thành `chart-*`. */
-const stripPrefix = tree => {
-    if (tree === null || typeof tree !== "object") return tree
-    if (Array.isArray(tree)) return tree.map(stripPrefix)
-    if (tree.text !== undefined) return tree
-
-    const attrs = { ...tree.attrs }
-    if (typeof attrs.class === "string") attrs.class = attrs.class.replace(/react-financial-charts-/g, "chart-")
-
-    return { ...tree, attrs, children: (tree.children ?? []).map(stripPrefix) }
-}
 
 export const name = "draw"
 

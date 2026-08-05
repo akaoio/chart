@@ -23,6 +23,24 @@ ghi ◐ kèm tỉ lệ, và file parity của nó phải liệt kê đích danh 
 | [`indicators`](indicators.md) | 20 | 5 | ☑ 20/20 |
 | [`interactive`](interactive.md) | 18 | 6 | ☑ 18/18 |
 
+## Bản port xuất khẩu nhiều hơn 144 cái tên ấy
+
+Bảng trên liệt kê export của **bản gốc** — đó là thứ cần đối chiếu. Bản port xuất khẩu
+thêm khoảng 120 cái tên nữa, và tất cả đều là hệ quả của một quyết định đã ghi ở
+[`series.md`](series.md): phần vẽ được tách khỏi phần tử để kiểm được ngoài trình duyệt.
+
+Chúng rơi vào ba nhóm:
+
+- `drawX` / `renderX` — thân hàm vẽ, thứ mà bộ golden gọi thẳng;
+- `xDefaults` — bộ mặc định của mỗi phần tử, cũng là nguồn của
+  [bảng tra](../reference/elements.md);
+- vài hàm hình học và tiện ích nội bộ (`getCandleData`, `edgeGeometry`, `findContext`…)
+  mà bản gốc giữ riêng, nhưng ở đây phải chạm tới được thì mới đo được.
+
+Không cái nào thay đổi hành vi; chúng chỉ mở ra thứ vốn đã có. Chỗ nào bản port **đổi**
+ý nghĩa một cái tên của bản gốc thì đó là khác biệt có khai báo, và nằm trong bảng "lệch
+có chủ ý" của từng file.
+
 ## Hai package không có mặt ở bảng trên
 
 **`charts`** không chứa dòng code nào — `packages/charts/src/index.ts` chỉ có 10 dòng

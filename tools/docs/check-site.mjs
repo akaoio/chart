@@ -9,44 +9,17 @@
  * chứ không phải người truy cập phát hiện hộ.
  */
 
-import { createServer } from "node:http"
-import { readFile, stat } from "node:fs/promises"
-import { extname, join, normalize } from "node:path"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
+import { listen, staticServer } from "../static-server.mjs"
 
 const site = fileURLToPath(new URL("../../_site/", import.meta.url))
-
-const TYPES = {
-    ".css": "text/css",
-    ".html": "text/html",
-    ".js": "text/javascript",
-    ".json": "application/json",
-    ".md": "text/plain; charset=utf-8",
-    ".mjs": "text/javascript",
-}
 
 const PAGES = ["", "docs/showcase/", "docs/showcase/series.html", "docs/showcase/indicators.html",
     "docs/showcase/coordinates.html", "docs/showcase/drawing.html", "docs/showcase/interaction.html"]
 
-const server = createServer(async (request, response) => {
-    try {
-        let path = join(site, normalize(decodeURIComponent(request.url.split("?")[0])))
-        if (!path.startsWith(site)) throw new Error("ngoài phạm vi")
-
-        if ((await stat(path)).isDirectory()) path = join(path, "index.html")
-
-        const body = await readFile(path)
-        response.writeHead(200, { "content-type": TYPES[extname(path)] ?? "application/octet-stream" })
-        response.end(body)
-    } catch {
-        response.writeHead(404)
-        response.end("không thấy")
-    }
-})
-
-await new Promise(resolve => server.listen(0, "127.0.0.1", resolve))
-const origin = `http://127.0.0.1:${server.address().port}`
+const server = staticServer({ root: site })
+const origin = await listen(server)
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1100, height: 800 } })

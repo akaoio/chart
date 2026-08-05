@@ -7,21 +7,13 @@
  * Mỗi bài phải khẳng định một điều CÓ THỂ SAI. "Không nổ" không phải là kết quả.
  */
 
-import { createServer } from "node:http"
 import { readFile, readdir } from "node:fs/promises"
-import { extname, join, normalize } from "node:path"
+import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
+import { listen, staticServer } from "./tools/static-server.mjs"
 
 const root = fileURLToPath(new URL(".", import.meta.url))
-
-const TYPES = {
-    ".js": "text/javascript",
-    ".mjs": "text/javascript",
-    ".html": "text/html",
-    ".css": "text/css",
-    ".json": "application/json",
-}
 
 /**
  * Import map cho d3.
@@ -52,27 +44,12 @@ const buildImportMap = async () => {
 
 const importMap = await buildImportMap()
 
-const server = createServer(async (request, response) => {
-    try {
-        const path = join(root, normalize(decodeURIComponent(request.url.split("?")[0])))
-        if (!path.startsWith(root)) throw new Error("ngoài phạm vi")
-
-        let body = await readFile(path)
-
-        if (path.endsWith(".html")) {
-            body = body.toString().replace("<!--IMPORTMAP-->", `<script type="importmap">${importMap}</script>`)
-        }
-
-        response.writeHead(200, { "content-type": TYPES[extname(path)] ?? "application/octet-stream" })
-        response.end(body)
-    } catch {
-        response.writeHead(404)
-        response.end("không thấy")
-    }
+const server = staticServer({
+    root,
+    transform: html => html.replace("<!--IMPORTMAP-->", `<script type="importmap">${importMap}</script>`),
 })
 
-await new Promise(resolve => server.listen(0, "127.0.0.1", resolve))
-const origin = `http://127.0.0.1:${server.address().port}`
+const origin = await listen(server)
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1000, height: 700 } })

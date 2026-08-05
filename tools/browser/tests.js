@@ -1853,6 +1853,36 @@ TESTS["cử chỉ ngón tay được chia đúng chỗ"] = async () => {
     return t.checks
 }
 
+/** Tài liệu nói series bọc trong `<div>` vẫn tìm được pane. Đo xem có đúng không. */
+TESTS["series bọc trong div vẫn tìm được pane"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, pane } = mountWithAxes()
+
+    const wrapper = document.createElement("div")
+    const line = document.createElement("chart-line-series")
+    Object.assign(line, { yAccessor: datum => datum.close, strokeStyle: "#ff00ff", strokeWidth: 2 })
+    wrapper.append(line)
+    pane.append(wrapper)
+
+    await settle(4)
+
+    t.ok("series nằm trong div", line.parentElement === wrapper)
+    t.ok("vẫn nhận ra chart", line.canvas === canvas)
+    t.ok("và nhận ra pane của nó", line.pane === pane)
+
+    const context = canvas.getCanvasContexts().axes
+    const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+    let magenta = 0
+    for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] > 0 && pixels[i] > 200 && pixels[i + 1] < 90 && pixels[i + 2] > 200) magenta++
+    }
+    t.gt("và vẽ ra thật", magenta, 50)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

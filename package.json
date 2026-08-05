@@ -33,11 +33,12 @@
     ],
     "scripts": {
         "test": "npm run test:golden && npm run test:browser",
-        "golden": "TZ=UTC node --import ./tools/golden/resolve-source.mjs tools/golden/generate.mjs",
         "docs": "node tools/docs/serve.mjs",
         "docs:check": "node tools/docs/check-site.mjs",
+        "docs:names": "node tools/docs/check-docs.mjs",
         "docs:reference": "node tools/docs/elements.mjs",
         "docs:site": "node tools/docs/build-site.mjs",
+        "golden": "TZ=UTC node --import ./tools/golden/resolve-source.mjs tools/golden/generate.mjs",
         "test:browser": "node test.browser.js",
         "test:golden": "TZ=UTC node test.js"
     },

@@ -29,9 +29,11 @@ pane.append(line)
 `.accessor()` with no argument reads the accessor back, which is why the series and the
 tooltip can both be handed the same one without repeating the field name.
 
-**`merge` and `accessor` go together.** Merging without an accessor throws — the indicator
-refuses to write a value nobody has said how to read. A few (`sma`, `ema`, `wma`, `tma`)
-default to their own name, so they work without either; the rest do not.
+**`merge` and `accessor` go together.** Most indicators default both to a field named
+after themselves, so `sma()(bars)` on its own writes `datum.sma` and reads it back. Three
+have no sensible default and throw if you merge without an accessor — `atr`,
+`bollingerBand` and `stochasticOscillator`. Setting `merge` without `accessor` is worth
+avoiding anyway: it writes a value under a name nothing else knows.
 
 Running several is just running several — each writes into its own field:
 

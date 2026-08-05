@@ -113,8 +113,10 @@ pane.append(
 )
 ```
 
-Order matters the way it does in any canvas drawing: later children are drawn over earlier
-ones.
+Order matters the way it does in any canvas drawing. Each drawable is painted in the order
+it **subscribed**, which is the order it was added to the document — so a child declared
+later covers one declared earlier, and one appended after the chart is already running goes
+on top of everything.
 
 ## Where to go next
 

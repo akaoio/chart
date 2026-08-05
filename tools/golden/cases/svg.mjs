@@ -6,7 +6,7 @@
  */
 
 import { scaleLinear } from "d3-scale"
-import { normalizeSvg } from "../svgtree.mjs"
+import { normalizeSvg, stripPrefix } from "../svgtree.mjs"
 import { datasets } from "../data.mjs"
 
 export const name = "svg"
@@ -41,29 +41,6 @@ const moreProps = (overrides = {}) => ({
     ...overrides,
 })
 
-/**
- * Một khác biệt CÓ KHAI BÁO: tên lớp CSS.
- *
- * Bản gốc đặt `react-financial-charts-*`, bản port đặt `chart-*` — cái tên cũ nhắc tới
- * React trong một thư viện không có React, và các lớp con trỏ đã đổi từ bậc 2. Đây là
- * khác biệt duy nhất được phép, nên nó được quy chuẩn ở đây, **áp cho cả hai phía** như
- * mọi luật khác trong svgtree (đổi camelCase sang gạch nối, làm tròn số).
- *
- * Áp cho cả hai phía là điều quan trọng: nếu chỉ sửa bên bản gốc thì đó là che, còn thế
- * này thì bất kỳ khác biệt tên lớp nào NGOÀI đúng phép đổi tiền tố ấy vẫn lộ ra.
- */
-const stripPrefix = tree => {
-    if (tree === null || typeof tree !== "object") return tree
-    if (Array.isArray(tree)) return tree.map(stripPrefix)
-    if (tree.text !== undefined) return tree
-
-    const attrs = { ...tree.attrs }
-    if (typeof attrs.class === "string") {
-        attrs.class = attrs.class.replace(/react-financial-charts-/g, "chart-")
-    }
-
-    return { ...tree, attrs, children: (tree.children ?? []).map(stripPrefix) }
-}
 
 const render = (draw, props, extra) => stripPrefix(normalizeSvg(draw(moreProps(extra), props)))
 

@@ -180,6 +180,18 @@ if (committed === current) {
     console.error(`✗ docs/reference/elements.md đã cũ — chạy \`npm run docs:reference\``)
 }
 
+/** Và mọi cái tên tài liệu nhắc tới phải có thật — xem tools/docs/check-docs.mjs. */
+const { checkDocs } = await import("./tools/docs/check-docs.mjs")
+const docProblems = await checkDocs()
+
+if (docProblems.length === 0) {
+    console.log(`✓ mọi tên trong tài liệu đều có thật trong mã`)
+} else {
+    failed++
+    console.error(`✗ tài liệu nhắc tới thứ không có:`)
+    for (const problem of docProblems) console.error(`    ${problem}`)
+}
+
 if (failed > 0) {
     console.error(`\n${failed} bộ lệch so với bản gốc.`)
     process.exit(1)
