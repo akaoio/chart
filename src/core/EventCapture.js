@@ -338,12 +338,36 @@ export class EventCapture {
         onContextMenu?.(mouseXY, event)
     }
 
+    /**
+     * Điểm đang được kéo, dù kéo bằng gì.
+     *
+     * `MouseEvent` mang `clientX`/`clientY` ngay trên mình, `TouchEvent` thì mang chúng
+     * trong danh sách `touches`. Phép rẽ này trước đây chỉ có ở `#handlePan`, còn
+     * `#handleDrag` chỉ gọi `pointerPosition` — nên ngay cả khi đường kéo được gọi bằng ngón
+     * tay, nó cũng đọc ra `undefined`. Một hàm cho cả hai đường: bớt một bản trùng, không
+     * thêm.
+     */
+    #positionOf(event) {
+        if (this.#mouseInteraction) return pointerPosition(event, this.#element)
+
+        const active = pointersPosition(event, this.#element)
+        if (active.length > 0) return active[0]
+
+        // `touchend`: `touches` đã rỗng vì ngón tay vừa rời ra. Điểm cuối nằm ở
+        // `changedTouches` — không đọc chỗ ấy thì một cú kéo bằng ngón tay kết thúc ở
+        // `undefined`, và cái đó đi thẳng vào `onDragComplete`.
+        const changed = event.changedTouches
+        if (changed !== undefined && changed.length > 0) return pointerPosition(changed[0], this.#element)
+
+        return this.#lastNewPos ?? [0, 0]
+    }
+
     #handleDrag = event => {
         const { onDrag } = this.#props()
         if (onDrag === undefined || this.#dragStartPosition === undefined) return
 
         this.#dragHappened = true
-        onDrag({ startPos: this.#dragStartPosition, mouseXY: pointerPosition(event, this.#element) }, event)
+        onDrag({ startPos: this.#dragStartPosition, mouseXY: this.#positionOf(event) }, event)
     }
 
     cancelDrag() {
@@ -353,7 +377,7 @@ export class EventCapture {
     }
 
     #handleDragEnd = event => {
-        const mouseXY = pointerPosition(event, this.#element)
+        const mouseXY = this.#positionOf(event)
         this.#endGesture()
 
         if (this.#dragHappened) this.#props().onDragComplete?.({ mouseXY }, event)
@@ -381,10 +405,57 @@ export class EventCapture {
         )
     }
 
+    /**
+     * Một cú đặt xuống: quyết định nó là pan hay là kéo một đối tượng, rồi vũ trang cử chỉ.
+     *
+     * Con chuột và ngón tay dùng **cùng** phép quyết định này. Chỉ ba thứ khác nhau giữa hai
+     * thiết bị, và cả ba được truyền vào: tên sự kiện di chuyển, tên sự kiện kết thúc, và vị
+     * trí điểm đặt.
+     *
+     * Trước đây phép quyết định chỉ có ở nhánh chuột, còn nhánh chạm thì luôn pan — nên trên
+     * điện thoại không đối tượng nào kéo được. Chép nhánh ấy sang là có hai bản phải giữ
+     * khớp nhau; thay vào đó cả hai gọi vào đây. Xem issue #3.
+     *
+     * Thứ tự hai nhánh đảo lại so với bản gốc, cùng kết quả nhưng đọc ra một câu: "có đối
+     * tượng nhận cú kéo thì cú kéo thuộc về nó, không thì mới tới lượt khung nhìn". Bản gốc
+     * hỏi `panEnabled && !somethingSelected` trước, nên phải đọc hai điều kiện mới biết.
+     */
+    #beginGestureAt(position, { move, end, cancel, event }) {
+        const { xScale, chartConfig, onDragStart } = this.#props()
+
+        const currentCharts = getCurrentCharts(chartConfig, position)
+        const { panEnabled, draggable: somethingSelected } = this.#canPan()
+
+        const arm = (onMove, onEnd) => {
+            const signal = this.#startGesture()
+            window.addEventListener(move, onMove, { signal })
+            window.addEventListener(end, onEnd, { signal })
+            if (cancel !== undefined) window.addEventListener(cancel, onEnd, { signal })
+        }
+
+        if (somethingSelected) {
+            this.#panInProgress = false
+            this.#dragInProgress = true
+            this.#panStart = undefined
+            this.#dragStartPosition = position
+
+            onDragStart?.({ startPos: position }, event)
+            arm(this.#handleDrag, this.#handleDragEnd)
+        } else if (panEnabled) {
+            this.#panInProgress = true
+            this.#panStart = { panStartXScale: xScale, panOrigin: position, chartsToPan: currentCharts }
+            this.#applyCursor()
+
+            arm(this.#handlePan, this.#handlePanEnd)
+        }
+
+        return currentCharts
+    }
+
     #handleMouseDown = event => {
         if (event.button !== 0) return
 
-        const { xScale, chartConfig, onMouseDown, onDragStart } = this.#props()
+        const { onMouseDown } = this.#props()
 
         this.#panHappened = false
         this.#dragHappened = false
@@ -392,29 +463,7 @@ export class EventCapture {
 
         if (!this.#panInProgress && this.#mouseInteraction) {
             const mouseXY = mousePosition(event)
-            const currentCharts = getCurrentCharts(chartConfig, mouseXY)
-            const { panEnabled, draggable: somethingSelected } = this.#canPan()
-
-            if (panEnabled && !somethingSelected) {
-                this.#panInProgress = true
-                this.#panStart = { panStartXScale: xScale, panOrigin: mouseXY, chartsToPan: currentCharts }
-                this.#applyCursor()
-
-                const signal = this.#startGesture()
-                window.addEventListener("mousemove", this.#handlePan, { signal })
-                window.addEventListener("mouseup", this.#handlePanEnd, { signal })
-            } else if (somethingSelected) {
-                this.#panInProgress = false
-                this.#dragInProgress = true
-                this.#panStart = undefined
-                this.#dragStartPosition = mouseXY
-
-                onDragStart?.({ startPos: mouseXY }, event)
-
-                const signal = this.#startGesture()
-                window.addEventListener("mousemove", this.#handleDrag, { signal })
-                window.addEventListener("mouseup", this.#handleDragEnd, { signal })
-            }
+            const currentCharts = this.#beginGestureAt(mouseXY, { move: "mousemove", end: "mouseup", event })
 
             onMouseDown?.(mouseXY, currentCharts, event)
         }
@@ -441,9 +490,7 @@ export class EventCapture {
          * thật trước khi sửa: vuốt sang phải 150px thì domain x dịch **+25.8** thay vì
          * −25.0 như khi dùng chuột. Xem docs/parity/core.md.
          */
-        const mouseXY = this.#mouseInteraction
-            ? pointerPosition(event, this.#element)
-            : pointersPosition(event, this.#element)[0]
+        const mouseXY = this.#positionOf(event)
 
         const dx = mouseXY[0] - panOrigin[0]
         const dy = mouseXY[1] - panOrigin[1]
@@ -483,26 +530,38 @@ export class EventCapture {
     #handleTouchStart = event => {
         this.#mouseInteraction = false
 
-        const { pan: panEnabled, chartConfig, onMouseMove, xScale, onPanEnd } = this.#props()
+        const { pan: panEnabled, onMouseMove, onMouseDown, xScale, onPanEnd } = this.#props()
 
         if (event.touches.length === 1) {
             this.#panHappened = false
+            this.#dragHappened = false
+
             const touchXY = touchPosition(getTouchProps(event.touches[0]), event)
-            onMouseMove?.(touchXY, "touch", event)
 
-            if (panEnabled) {
-                this.#panInProgress = true
-                this.#panStart = {
-                    panStartXScale: xScale,
-                    panOrigin: touchXY,
-                    chartsToPan: getCurrentCharts(chartConfig, touchXY),
-                }
+            /**
+             * Ba việc, đúng ba việc con chuột làm khi bấm xuống, theo đúng thứ tự ấy.
+             *
+             * 1. Nói cho các phần tử biết con trỏ đang ở đâu, để chúng tính lại `hovering`.
+             *    Phép quyết định ở bước 2 đọc chính `hovering` ấy, nên bước này phải xong
+             *    trước — và phải xong **ngay**, không qua phép chặn một-lần-mỗi-khung-hình
+             *    của `handleMouseMove`, nên gọi kèm `immediate`.
+             * 2. Quyết định cú này là pan hay là kéo một đối tượng.
+             * 3. Báo là đã có một cú đặt xuống. Đây là thứ `chart-drawing-object-selector`
+             *    nghe để biết mình vừa bị bấm vào — nó nghe `mousedown`. Mà `mousedown` do
+             *    trình duyệt sinh ra sau một cú gõ thì bị `#mouseInteraction` chặn (chặn
+             *    đúng: nếu không thì một cú gõ bị xử lý hai lần). Nên trước đây trên điện
+             *    thoại không cách nào chọn được một đối tượng đã vẽ. Đường chạm tự báo lấy.
+             */
+            onMouseMove?.(touchXY, "touch", event, { immediate: true })
 
-                const signal = this.#startGesture()
-                window.addEventListener("touchmove", this.#handlePan, { signal })
-                window.addEventListener("touchend", this.#handlePanEnd, { signal })
-                window.addEventListener("touchcancel", this.#handlePanEnd, { signal })
-            }
+            const currentCharts = this.#beginGestureAt(touchXY, {
+                move: "touchmove",
+                end: "touchend",
+                cancel: "touchcancel",
+                event,
+            })
+
+            onMouseDown?.(touchXY, currentCharts, event)
         } else if (event.touches.length === 2) {
             // A second finger turns a pan into a pinch: end the pan, start the zoom
             if (this.#panInProgress && panEnabled && onPanEnd && this.#panStart !== undefined) {

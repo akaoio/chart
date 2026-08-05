@@ -2304,6 +2304,102 @@ const swipeTouch = async (canvas, from, to, steps = 5) => {
 }
 
 /**
+ * Ngón tay phải kéo được đối tượng đã vẽ, và lúc ấy chart KHÔNG được pan.
+ *
+ * Đây là chỗ bản gốc dừng lại: `#handleMouseDown` có nhánh quyết định "cú này là pan hay là
+ * kéo một đối tượng" — hỏi `getPanConditions()` của mọi phần tử — còn `#handleTouchStart`
+ * thì không, một ngón tay luôn là pan. Nên trên điện thoại tám công cụ vẽ chỉ đặt được rồi
+ * thôi. Xem issue #3.
+ *
+ * Bài này canh hai nửa của cùng một cử chỉ, vì một nửa đúng mà nửa kia sai thì vẫn là sai:
+ * đối tượng phải đi theo ngón tay, **và** khung nhìn phải đứng im.
+ */
+TESTS["ngón tay kéo được đối tượng đã chọn, và chart không pan theo"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 105], selected: true, type: "LINE" }],
+        // `TrendLine` báo mọi thay đổi qua `onComplete`, kể cả sau một cú kéo — không có
+        // `onDragComplete` riêng. Đó là hình dạng của bản gốc.
+        onComplete: (event, trends) => completed.push(trends),
+    })
+    await settle(4)
+
+    const state = canvas.getState()
+    const xOf = value => state.xScale(value)
+    const yOf = value => state.chartConfigs[0].yScale(value)
+
+    const midX = (xOf(20) + xOf(60)) / 2
+    const midY = (yOf(100) + yOf(105)) / 2
+
+    const domainBefore = canvas.getState().xScale.domain().map(Number)
+
+    // Kéo CHÉO từ giữa đường: kéo dọc thôi thì bỏ hẳn phần dịch ngang cũng không lộ ra.
+    await swipeTouch(canvas, [midX, midY], [midX + 80, midY + 60])
+
+    const domainAfter = canvas.getState().xScale.domain().map(Number)
+
+    t.is("kéo xong thì onComplete báo lại", completed.length, 1)
+    t.is("và khung nhìn đứng im, không pan theo", domainAfter.join(), domainBefore.join())
+
+    if (completed.length > 0) {
+        const moved = completed[0][0]
+        t.ok("đầu thứ nhất đi xuống", moved.start[1] < 100)
+        t.ok("đầu thứ hai cũng đi xuống", moved.end[1] < 105)
+        t.near("độ dốc giữ nguyên", moved.end[1] - moved.start[1], 105 - 100, 0.5)
+        t.gt("đầu thứ nhất dịch sang phải", moved.start[0], 20)
+        t.near("độ dài theo trục x giữ nguyên", moved.end[0] - moved.start[0], 60 - 20, 1.5)
+    }
+
+    cleanup()
+    return t.checks
+}
+
+/**
+ * Ngược lại: ngón tay đặt vào chỗ TRỐNG thì vẫn phải pan, và không đối tượng nào đi theo.
+ *
+ * Nửa này canh chỗ dễ hỏng nhất của phép sửa trên: nếu phép quyết định trả "drag" quá rộng
+ * tay thì trên điện thoại chart mất luôn khả năng pan, mà lỗi ấy trông không giống lỗi —
+ * chỉ là vuốt không ăn.
+ */
+TESTS["ngón tay đặt vào chỗ trống thì vẫn pan, đối tượng đứng im"] = async () => {
+    const t = makeChecker()
+
+    const dragged = []
+    const { canvas } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        snap: false,
+        trends: [{ start: [20, 100], end: [60, 105], selected: true, type: "LINE" }],
+        onComplete: (event, trends) => dragged.push(trends),
+    })
+    await settle(4)
+
+    const state = canvas.getState()
+    // Xa đường: dưới đáy pane, cách đường vài chục pixel.
+    const farY = state.chartConfigs[0].yScale(state.chartConfigs[0].yScale.domain()[0]) - 10
+
+    // Đo cả hai thiết bị trong CÙNG bối cảnh: nếu con chuột cũng không pan được thì cái
+    // chặn nằm ở chỗ khác, không phải ở phép sửa cho ngón tay.
+    const beforeMouse = canvas.getState().xScale.domain().map(Number)
+    await dragAcross(canvas, 600, 450, farY)
+    const afterMouse = canvas.getState().xScale.domain().map(Number)
+
+    const before = canvas.getState().xScale.domain().map(Number)
+    await swipeTouch(canvas, [600, farY], [450, farY])
+    const after = canvas.getState().xScale.domain().map(Number)
+
+    t.not("chuột: vuốt chỗ trống thì khung nhìn dịch", afterMouse.join(), beforeMouse.join())
+    t.not("ngón tay: vuốt chỗ trống thì khung nhìn dịch", after.join(), before.join())
+    t.is("và không đối tượng nào bị kéo", dragged.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Ngón tay kéo đi đâu thì chart đi theo đấy.
  *
  * Bản gốc đảo dấu ở nhánh chạm — `dx = panOrigin[0] - mouseXY[0]` — nên trên màn hình
