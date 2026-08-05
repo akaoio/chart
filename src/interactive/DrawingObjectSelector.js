@@ -53,8 +53,25 @@ export class DrawingObjectSelector extends GenericComponent {
         return getMouseCanvas(contexts)
     }
 
+    /**
+     * `preventDefault` chỉ dành cho chuột. Trên `touchstart` nó có nghĩa khác, và phá.
+     *
+     * Bản gốc gọi thẳng `event.preventDefault()` ở đây, và với `mousedown` thì đúng: nó chặn
+     * việc trình duyệt bắt đầu bôi chọn văn bản hay kéo-thả ảnh.
+     *
+     * Trên `touchstart` thì cùng một lời gọi ấy nói một điều hoàn toàn khác: **đừng sinh ra
+     * chuỗi sự kiện chuột tương thích**. Không có `mousedown`, `mouseup`, và không có
+     * `click` — mà việc đặt một đối tượng vẽ lại xảy ra ở `click`. Nên gõ vào biểu đồ không
+     * đặt được gì cả, im lặng, không lỗi.
+     *
+     * Chuyện này chỉ lộ ra khi đường chạm bắt đầu gọi `onMouseDown` (issue #3), và nó lộ ra
+     * theo cách khó nhất: cả tám công cụ cùng ngừng đặt được, mà không hàm nào ném.
+     *
+     * Cử chỉ chạm của biểu đồ được khai bằng `touch-action` trên vùng bắt sự kiện — đó là
+     * chỗ đúng để nói với trình duyệt về ngón tay, không phải chỗ này.
+     */
     onMouseDown(event, moreProps) {
-        event.preventDefault()
+        if (event.type === "mousedown") event.preventDefault()
         if (!this.#props.enabled) return
 
         this.#props.onSelect?.(event, getInteraction(moreProps, this.#props), moreProps)

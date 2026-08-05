@@ -5,6 +5,27 @@
  * importable without a browser, and so it is obvious which functions need one.
  */
 
+/**
+ * Ngón tay to hơn con trỏ bao nhiêu pixel, khi hỏi "có trỏ trúng không".
+ *
+ * Mọi phép dò trúng trong thư viện đều được đặt theo con chuột: các công cụ tương tác lấy
+ * `tolerance: 4`, chốt kéo lấy bán kính cộng 7. Với đầu ngón tay thì mấy con số ấy là hỏi
+ * một điều bất khả — vùng tiếp xúc của ngón tay rộng cỡ 30 pixel CSS, và không ai đặt lại
+ * đúng chỗ cũ.
+ *
+ * 12 là chỗ dừng có lý: đủ rộng để bắt được một đường mảnh, còn đủ hẹp để hai chốt kéo ở
+ * hai đầu một đoạn ngắn vẫn phân biệt được. Nới rộng hơn thì bắt trúng dễ hơn nhưng chọn
+ * đúng cái mình muốn khó hơn, và cái sau khó chịu hơn nhiều.
+ *
+ * Một hằng số cho cả thư viện, còn nới **chiều nào** thì mỗi hình tự nói: hình đo bằng
+ * `tolerance` thì nới `tolerance`, hình đo bằng bán kính thì nới bán kính. Nên đây là hàm
+ * trả về "rộng thêm bao nhiêu", chứ không phải hàm tự sửa props.
+ */
+export const TOUCH_HIT_SLOP = 12
+
+/** Rộng thêm bao nhiêu pixel cho phép dò trúng, tuỳ thiết bị đang chạm vào chart. */
+export const hitSlop = moreProps => (moreProps?.inputType === "touch" ? TOUCH_HIT_SLOP : 0)
+
 /** The window a node belongs to — the node itself if it already is one. */
 export const d3Window = node =>
     node && ((node.ownerDocument && node.ownerDocument.defaultView) || (node.document && node) || node.defaultView)

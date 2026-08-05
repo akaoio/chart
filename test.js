@@ -208,6 +208,18 @@ if (docProblems.length === 0) {
     for (const problem of docProblems) console.error(`    ${problem}`)
 }
 
+/** Và không accessor nào bị `defineProperties` che — xem tools/check-accessors.mjs. */
+const { checkAccessors } = await import("./tools/check-accessors.mjs")
+const accessorProblems = await checkAccessors()
+
+if (accessorProblems.length === 0) {
+    console.log(`✓ không accessor nào bị defineProperties che`)
+} else {
+    failed++
+    console.error(`✗ accessor bị che:`)
+    for (const problem of accessorProblems) console.error(`    ${problem}`)
+}
+
 if (only === undefined) {
     const { execFileSync } = await import("node:child_process")
 

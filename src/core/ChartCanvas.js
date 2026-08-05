@@ -964,8 +964,21 @@ export class ChartCanvas extends ElementBase {
         this.triggerEvent("mouseenter", { show: true }, event)
     }
 
-    handleMouseMove = (mouseXY, eventType, event) => {
-        if (this.#waitingForMouseMove) return
+    /**
+     * `immediate` là để phục vụ một cú đặt xuống, không phải để đi lang thang.
+     *
+     * Phép chặn một-lần-mỗi-khung-hình dưới đây là đúng cho việc rê chuột: con trỏ sinh ra
+     * hàng trăm sự kiện mỗi giây và màn hình chỉ vẽ được 60 lần. Nhưng nó **cũng** chặn lời
+     * gọi mà `EventCapture` dùng để thiết lập `hovering` ngay trước khi quyết định "cú này
+     * là pan hay là kéo một đối tượng" — nếu khung hình trước còn đang chờ, lời gọi ấy bị
+     * bỏ, phép quyết định đọc trạng thái cũ, và cú chạm đầu tiên sau một lần vẽ quyết định
+     * sai. Không thấy được bằng mắt: chỉ là "lần đầu vuốt thì nó pan thay vì kéo".
+     *
+     * Nên chỗ nào phải đúng-ngay thì nói ra. Vẫn dồn phần vẽ vào khung hình sau như cũ;
+     * `immediate` chỉ bỏ phép chặn, không bỏ phép dồn.
+     */
+    handleMouseMove = (mouseXY, eventType, event, { immediate = false } = {}) => {
+        if (this.#waitingForMouseMove && !immediate) return
         this.#waitingForMouseMove = true
 
         const { chartConfigs, plotData, xScale, xAccessor } = this.#state
@@ -974,7 +987,17 @@ export class ChartCanvas extends ElementBase {
 
         this.triggerEvent(
             "mousemove",
-            { show: true, mouseXY, prevMouseXY: this.#prevMouseXY, currentItem, currentCharts },
+            {
+                show: true,
+                mouseXY,
+                prevMouseXY: this.#prevMouseXY,
+                currentItem,
+                currentCharts,
+                // Thiết bị nào đang chạm vào chart. Bản gốc nhận `eventType` ở đây rồi không
+                // dùng vào việc gì, nên không phần tử nào biết nó đang bị ngón tay trỏ vào —
+                // mà phép dò trúng thì phải biết, vì ngón tay to hơn con trỏ. Xem `hitSlop`.
+                inputType: eventType,
+            },
             event,
         )
 

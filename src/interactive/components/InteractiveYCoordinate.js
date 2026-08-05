@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { getStrokeDasharrayCanvas } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -158,7 +159,11 @@ export class InteractiveYCoordinate extends GenericChartComponent {
 
     isHoverTest(moreProps) {
         if (this.#props.onHover === undefined) return false
-        return isInteractiveYCoordinateHover(this.#props, moreProps, this.#cache.width)
+        return isInteractiveYCoordinateHover(
+            { ...this.#props, tolerance: this.#props.tolerance + hitSlop(moreProps) },
+            moreProps,
+            this.#cache.width,
+        )
     }
 
     onHover(event, moreProps) {

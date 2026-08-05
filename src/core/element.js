@@ -69,9 +69,36 @@ export const defineProperties = (element, defaults = {}, extra = []) => {
         })
     }
 
+    /**
+     * Một getter mà class tự viết thì phải được dùng, không bị che.
+     *
+     * Chỗ này cài accessor lên **chính instance**, mà thuộc tính trên instance che thuộc
+     * tính trên prototype. Nên một class viết `get disablePan()` để trả về một phép tính
+     * — chứ không phải giá trị thô — sẽ thấy getter ấy chưa từng được gọi, im lặng, không
+     * dấu vết.
+     *
+     * Đã xảy ra thật: `MouseLocationIndicator` viết `get disablePan()` trả về
+     * `enabled && disablePan`, nghĩa là "chỉ chặn pan trong lúc đang vẽ". Getter bị che nên
+     * phần tử ấy chặn pan **mọi lúc** — cứ có một công cụ vẽ trên biểu đồ là không kéo được
+     * khung nhìn nữa, bằng chuột lẫn bằng ngón tay. Xem issue #3.
+     *
+     * Nên nếu prototype đã có getter cùng tên thì dùng nó, và chỉ mượn phần setter.
+     */
+    const inherited = name => {
+        let level = Object.getPrototypeOf(element)
+        while (level !== null) {
+            const descriptor = Object.getOwnPropertyDescriptor(level, name)
+            if (descriptor !== undefined) return descriptor.get
+            level = Object.getPrototypeOf(level)
+        }
+        return undefined
+    }
+
     for (const name of new Set([...Object.keys(defaults), ...extra])) {
+        const getter = inherited(name)
+
         Object.defineProperty(element, name, {
-            get: () => props[name],
+            get: getter === undefined ? () => props[name] : () => getter.call(element),
             set: value => {
                 props[name] = value
                 // Vài phần tử có thứ nhớ sẵn phụ thuộc vào prop — bề rộng chữ đã đo chẳng

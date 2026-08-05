@@ -9,7 +9,7 @@
 
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { chromium } from "playwright"
+import { chromium, devices } from "playwright"
 import { listen, staticServer } from "./tools/static-server.mjs"
 import { chartMeasurements } from "./tools/browser/painted.mjs"
 import { importMap as buildImportMap } from "./tools/import-map.mjs"
@@ -385,12 +385,393 @@ const showcaseBrush = async (page, origin) => {
     return { name: "trưng bày: brush báo lại khoảng đã quét", checks }
 }
 
+/**
+ * Cả tám công cụ vẽ, bằng NGÓN TAY THẬT, trên chính trang người dùng mở.
+ *
+ * Bài kiểm trong harness dựng `TouchEvent` bằng tay. Cách ấy chạy được và đã chứng minh
+ * được đường pan, nhưng nó không đi qua tầng của trình duyệt: `touch-action`, phép dò trúng
+ * đích, và việc trình duyệt tự sinh ra chuỗi sự kiện chuột sau một cú gõ. Nên chỗ này chạm
+ * bằng CDP `Input.dispatchTouchEvent` — đúng đường một ngón tay thật đi.
+ *
+ * Một thân bài, một bảng tám dòng. Cùng một chuỗi cử chỉ cho mọi công cụ, vì đó chính là
+ * điều đang được khẳng định: một ngón tay làm được mọi thứ con chuột làm được, ở công cụ nào
+ * cũng vậy. Tám bản sao của cùng một thân bài thì tám lần phải giữ chúng khớp nhau.
+ */
+const TOUCH_TOOLS = [
+    { label: "Trend line", tag: "chart-trend-line", list: "trends", taps: 2, grab: [0.45, 0.475] },
+    { label: "Fibonacci", tag: "chart-fibonacci-retracement", list: "retracements", taps: 2, grab: [0.45, 0.475] },
+    { label: "Channel", tag: "chart-equidistant-channel", list: "channels", taps: 3, grab: [0.45, 0.475] },
+    /**
+     * Kênh hồi quy có hai chỗ khác mọi công cụ còn lại, và cả hai là thiết kế của bản gốc.
+     *
+     * Nó được vẽ theo đường KHỚP với dữ liệu giữa hai chỗ tay chạm, không theo dây cung nối
+     * hai chỗ ấy — nên chỗ để gõ vào không suy ra được từ mấy cú gõ, phải đo.
+     *
+     * Và **thân nó không kéo được**: `EachLinearRegressionChannel` chỉ nối `onHover` cho
+     * vùng thân, còn `onDrag` thì chỉ hai chốt hai đầu có. Bằng chuột cũng vậy. Nên bài này
+     * kéo bằng chốt — đúng cách sửa một kênh hồi quy, và vẫn đi qua đúng đường cần chứng
+     * minh: trỏ trúng → nhận cú kéo → đối tượng đổi hình.
+     */
+    {
+        label: "Regression",
+        tag: "chart-standard-deviation-channel",
+        list: "channels",
+        taps: 2,
+        grab: [0.45, 0.5],
+        dragGrab: [0.296, 0.545],
+    },
+    { label: "Gann fan", tag: "chart-gann-fan-tool", list: "fans", taps: 2, grab: [0.45, 0.475] },
+    // Nhãn chữ chỉ cần một cú gõ, và nó nằm đúng chỗ ấy.
+    { label: "Text", tag: "chart-interactive-text-tool", list: "textList", taps: 1, grab: [0.3, 0.4] },
+]
+
+const touchToolTests = async (browser, origin) => {
+    /**
+     * Ngữ cảnh điện thoại thật, không phải desktop có thêm cảm ứng.
+     *
+     * Chuyện này tôi đã đo sai một lần: trong ngữ cảnh desktop, `Input.dispatchTouchEvent`
+     * gửi được touch nhưng trình duyệt KHÔNG sinh ra chuỗi sự kiện chuột sau cú gõ — nên
+     * `click` không tới, không đối tượng nào được đặt, và trông y như một lỗi của thư viện.
+     * Cùng cú gõ ấy trong ngữ cảnh Pixel 7 thì đặt được. Bài này là bài về điện thoại, nên
+     * nó phải chạy trong ngữ cảnh điện thoại.
+     */
+    const context = await browser.newContext({ ...devices["Pixel 7"] })
+    const page = await context.newPage()
+    const client = await context.newCDPSession(page)
+    const touch = (type, points) =>
+        client.send("Input.dispatchTouchEvent", { type, touchPoints: points.map(({ x, y }) => ({ x, y })) })
+
+    const tap = async point => {
+        await touch("touchStart", [point])
+        await page.waitForTimeout(40)
+        await touch("touchEnd", [])
+        // Qua hẳn cửa sổ nhấp đúp: hai cú gõ gần nhau cùng chỗ là một cú nhấp đúp.
+        await page.waitForTimeout(450)
+    }
+
+    const swipe = async (from, to, steps = 6) => {
+        await touch("touchStart", [from])
+        for (let step = 1; step <= steps; step++) {
+            await touch("touchMove", [
+                { x: from.x + ((to.x - from.x) * step) / steps, y: from.y + ((to.y - from.y) * step) / steps },
+            ])
+            await page.waitForTimeout(16)
+        }
+        await touch("touchEnd", [])
+        await page.waitForTimeout(400)
+    }
+
+    const results = []
+
+    for (const tool of TOUCH_TOOLS) {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        // Chọn công cụ TRƯỚC khi đo toạ độ: bấm nút làm trang cuộn.
+        await page.click(`section.demo .controls button:text-is("${tool.label}")`)
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+        const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
+
+        // Ba điểm đặt, đủ cho công cụ cần tới ba cú gõ.
+        const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3)]
+        for (let index = 0; index < tool.taps; index++) await tap(spots[index])
+
+        const placed = await page.evaluate(
+            ([tag, list]) => JSON.stringify(document.querySelector(tag)[list]),
+            [tool.tag, tool.list],
+        )
+
+        checks.push({
+            label: "gõ để đặt: có đúng một đối tượng",
+            pass: JSON.parse(placed).length === 1,
+            expected: "1",
+            actual: JSON.parse(placed).length,
+        })
+
+        // Tắt công cụ, rồi gõ vào chính đối tượng để chọn nó — đúng cử chỉ đã thiết kế.
+        await page.click(`section.demo .controls button:text-is("${tool.label}")`)
+
+        /**
+         * Chỗ nắm do mỗi công cụ tự khai, vì mỗi công cụ vẽ ra một hình khác nhau.
+         *
+         * Đã thử hai cách tự suy và cả hai đều sai. Trung điểm của mấy chỗ vừa gõ: nhãn chữ
+         * chỉ cần một cú gõ nên trung điểm rơi vào chỗ trống. Quét lưới rồi hỏi
+         * `isHoverTest`: phần tử so `mouseXY` trong toạ độ của pane còn ngón tay chạm vào
+         * toạ độ của khung bắt sự kiện, nên cái nó nhận và chỗ tay đặt xuống không cùng một
+         * chỗ — bộ dò nói trúng mà thực tế trượt.
+         *
+         * Nên bỏ suy diễn: mỗi dòng khai chỗ nắm của mình, và trọng tài là hành vi thật —
+         * "gõ vào đó thì đối tượng có được chọn không". Chỗ nắm sai thì bài đỏ, chứ không
+         * âm thầm xanh.
+         */
+        const grab = at(tool.grab[0], tool.grab[1])
+        await tap(grab)
+
+        const selected = await page.evaluate(
+            ([tag, list]) => document.querySelector(tag)[list].some(each => each.selected === true),
+            [tool.tag, tool.list],
+        )
+        checks.push({ label: "gõ vào đối tượng thì nó được chọn", pass: selected, expected: "true", actual: selected })
+
+        const domainBefore = await page.evaluate(() =>
+            document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+        )
+
+        const from = tool.dragGrab === undefined ? grab : at(tool.dragGrab[0], tool.dragGrab[1])
+        await swipe(from, { x: from.x + 70, y: from.y + 50 })
+
+        const [moved, domainAfter] = await page.evaluate(
+            ([tag, list]) => [
+                JSON.stringify(document.querySelector(tag)[list]),
+                document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+            ],
+            [tool.tag, tool.list],
+        )
+
+        checks.push({
+            label: "kéo bằng ngón tay thì đối tượng đi theo",
+            pass: moved !== placed,
+            expected: "khác lúc vừa đặt",
+            actual: moved === placed ? "y nguyên" : "đã đổi",
+        })
+        checks.push({
+            label: "và khung nhìn đứng im, không pan theo",
+            pass: domainAfter === domainBefore,
+            expected: domainBefore,
+            actual: domainAfter,
+        })
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: `ngón tay thật: ${tool.tag}`, checks })
+    }
+
+    /**
+     * Cảnh báo giá: không đặt bằng cách gõ, và không cần chọn trước khi kéo.
+     *
+     * Nó đến từ một cái nút, và nó là phần tử duy nhất trong thư viện có
+     * `enableDragOnHover` — nghĩa là chạm vào là kéo được ngay, không phải chọn trước. Nên nó
+     * không nằm trong bảng trên: cùng một đường dẫn, khác hẳn cử chỉ.
+     */
+    {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        await page.click(`section.demo .controls button:text-is("Add alert")`)
+        await page.waitForTimeout(400)
+
+        const placed = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const tool = document.querySelector("chart-interactive-y-coordinate-tool")
+            const rect = canvas.shadowRoot.querySelector("[data-event-capture]").getBoundingClientRect()
+            const state = canvas.getState()
+            const alert = tool.yCoordinateList[0]
+            return {
+                count: tool.yCoordinateList.length,
+                yValue: alert?.yValue,
+                point: alert === undefined ? null : { x: rect.left + rect.width * 0.45, y: rect.top + state.chartConfigs[0].yScale(alert.yValue) },
+                domain: state.xScale.domain().map(Number).join(),
+            }
+        })
+        await page.waitForTimeout(200)
+
+        checks.push({ label: "nút thêm được một cảnh báo", pass: placed.count === 1, expected: "1", actual: placed.count })
+
+        if (placed.point !== null) {
+            await swipe(
+                { x: Math.round(placed.point.x), y: Math.round(placed.point.y) },
+                { x: Math.round(placed.point.x), y: Math.round(placed.point.y) - 60 },
+            )
+
+            const after = await page.evaluate(() => ({
+                yValue: document.querySelector("chart-interactive-y-coordinate-tool").yCoordinateList[0]?.yValue,
+                domain: document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+            }))
+
+            checks.push({
+                label: "kéo lên bằng ngón tay thì giá cảnh báo tăng",
+                pass: after.yValue > placed.yValue,
+                expected: `> ${placed.yValue}`,
+                actual: after.yValue,
+            })
+            checks.push({
+                label: "và khung nhìn đứng im",
+                pass: after.domain === placed.domain,
+                expected: placed.domain,
+                actual: after.domain,
+            })
+        }
+
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: "ngón tay thật: chart-interactive-y-coordinate-tool", checks })
+    }
+
+    /**
+     * Brush: cử chỉ CHÍNH là cú kéo, không phải "đặt rồi kéo".
+     *
+     * Nên nó cũng không nằm trong bảng. Trên điện thoại đây là chỗ dễ hỏng nhất, vì một cú
+     * kéo bằng ngón tay trên chart vốn có nghĩa là pan — brush phải giành được cú kéo ấy.
+     */
+    {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 1)
+        await page.waitForTimeout(700)
+
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelectorAll("chart-canvas")[1]
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+
+        await swipe(
+            { x: Math.round(box.left + box.width * 0.25), y: Math.round(box.top + box.height * 0.3) },
+            { x: Math.round(box.left + box.width * 0.7), y: Math.round(box.top + box.height * 0.65) },
+        )
+
+        const said = await page.evaluate(
+            () => document.querySelectorAll("section.demo .readout")[1].textContent,
+        )
+
+        checks.push({
+            label: "kéo một hộp bằng ngón tay thì brush báo hai mốc",
+            pass: /\d{4}-\d{2}-\d{2} at \d/.test(said) && said.includes("→"),
+            expected: "hai mốc có ngày và giá",
+            actual: said,
+        })
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: "ngón tay thật: chart-brush", checks })
+    }
+
+    /**
+     * Chụm hai ngón để zoom KHÔNG phải một cú bấm.
+     *
+     * Bài này canh chỗ mà chính phép sửa ở trên có thể phá. Cú bấm tự phát ở `touchend` được
+     * thêm vào để brush chốt được cú quét; mà đường pinch không đặt `#panHappened`, nên nếu
+     * chỉ hỏi "ngón tay có đi không" thì một cú chụm hai ngón cũng thành một cú bấm. Đo được
+     * trước khi sửa: pinch khi đang bật công cụ Text đặt oan một nhãn — người dùng zoom một
+     * cái là có thêm rác trên biểu đồ.
+     *
+     * Nên điều kiện là "một ngón từ đầu đến cuối, và mọi ngón đã rời ra".
+     */
+    {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        await page.click(`section.demo .controls button:text-is("Text")`)
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+        const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
+
+        const first = at(0.35, 0.4)
+        const second = at(0.6, 0.6)
+
+        await touch("touchStart", [first])
+        await page.waitForTimeout(30)
+        await touch("touchStart", [first, second])
+        for (let step = 1; step <= 5; step++) {
+            await touch("touchMove", [
+                { x: first.x - step * 6, y: first.y },
+                { x: second.x + step * 6, y: second.y },
+            ])
+            await page.waitForTimeout(20)
+        }
+        await touch("touchEnd", [])
+        await page.waitForTimeout(600)
+
+        const placed = await page.evaluate(
+            () => document.querySelector("chart-interactive-text-tool").textList.length,
+        )
+
+        checks.push({
+            label: "pinch khi đang bật công cụ thì KHÔNG đặt ra đối tượng nào",
+            pass: placed === 0,
+            expected: "0",
+            actual: placed,
+        })
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: "ngón tay thật: pinch không phải một cú bấm", checks })
+    }
+
+    await context.close()
+    return results
+}
+
 await page.goto(`${origin}/tools/browser/harness.html`)
 await page.waitForFunction(() => window.chartReady === true, null, { timeout: 15000 })
 
 const results = await page.evaluate(() => window.runChartTests())
 
 results.push(...(await runShowcaseTests(page, origin)))
+results.push(...(await touchToolTests(browser, origin)))
 
 await browser.close()
 server.close()

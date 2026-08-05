@@ -1,3 +1,4 @@
+import { hitSlop } from "../../core/utils/dom.js"
 import { getStrokeDasharrayCanvas } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -185,7 +186,7 @@ export class InteractiveStraightLine extends GenericChartComponent {
             y2Value,
             mouseXY: moreProps.mouseXY,
             type,
-            tolerance,
+            tolerance: tolerance + hitSlop(moreProps),
             xScale: moreProps.xScale,
             yScale: moreProps.chartConfig.yScale,
         })
