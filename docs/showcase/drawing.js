@@ -18,8 +18,9 @@ demo({
     title: "Seven tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel " +
-        "takes three, and text takes one. Click a drawn object to select it, then press " +
-        "Delete. Everything drawn is listed under the chart, exactly as the tools report it.",
+        "takes three, and text and alert take one. Click a drawn object to select it, then " +
+        "press Delete. Everything drawn is listed under the chart, exactly as the tools " +
+        "report it.",
     build: (stage, api) => {
         const { pane } = chart(stage)
 
@@ -69,13 +70,39 @@ demo({
             report()
         }
 
-        // Alerts are not drawn at all — they arrive already made. One button adds one at
-        // the price in the middle of the pane.
+        /**
+         * The alert tool has no placing gesture of its own — so this is where one comes from.
+         *
+         * Every other tool here listens for its own clicks. `chart-interactive-y-coordinate`
+         * does not: it draws alerts you hand it and lets you drag or delete them, and that is
+         * all. (The original declares an `onChoosePosition` prop for it and never calls it.)
+         *
+         * Which is fine, because placing one is four lines of application code — read the
+         * price under the pointer off the pane's own scale and append it. Nothing about it
+         * needs to live in the library.
+         */
         const alerts = tools.find(tool => tool.tag === "chart-interactive-y-coordinate-tool").node
         alerts.onDelete = (event, alert) => {
             alerts.yCoordinateList = alerts.yCoordinateList.filter(each => each.id !== alert.id)
             report()
         }
+
+        const placeAlert = document.createElement("chart-click-callback")
+        placeAlert.onClick = (event, moreProps) => {
+            if (active?.node !== alerts) return
+
+            const [, y] = moreProps.mouseXY
+            alerts.yCoordinateList = [
+                ...alerts.yCoordinateList.map(each => ({ ...each, selected: false })),
+                {
+                    ...alertTemplate,
+                    id: `alert-${alerts.yCoordinateList.length + 1}`,
+                    yValue: Math.round(moreProps.chartConfig.yScale.invert(y) * 100) / 100,
+                },
+            ]
+            report()
+        }
+        pane.append(placeAlert)
 
         // Selection is a separate element, because only something that can see every tool
         // can decide which object a click landed on.
@@ -119,21 +146,6 @@ demo({
             const button = api.button(tool.label, node => choose(tool, node))
             button.setAttribute("aria-pressed", "false")
             return button
-        })
-
-        api.button("Add alert", () => {
-            const middle = Math.round((Math.max(...daily(160).map(datum => datum.high)) +
-                Math.min(...daily(160).map(datum => datum.low))) / 2)
-
-            alerts.yCoordinateList = [
-                ...alerts.yCoordinateList,
-                {
-                    ...alertTemplate,
-                    id: `alert-${alerts.yCoordinateList.length + 1}`,
-                    yValue: middle + alerts.yCoordinateList.length * 2,
-                },
-            ]
-            report()
         })
 
         api.button("Clear", () => {

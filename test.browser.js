@@ -423,6 +423,24 @@ const TOUCH_TOOLS = [
     { label: "Gann fan", tag: "chart-gann-fan-tool", list: "fans", taps: 2, grab: [0.45, 0.475] },
     // Nhãn chữ chỉ cần một cú gõ, và nó nằm đúng chỗ ấy.
     { label: "Text", tag: "chart-interactive-text-tool", list: "textList", taps: 1, grab: [0.3, 0.4] },
+    /**
+     * Cảnh báo giá cũng một cú gõ, nhưng cử chỉ đặt KHÔNG do thư viện cấp.
+     *
+     * `chart-interactive-y-coordinate-tool` chỉ vẽ những cảnh báo được đưa cho nó, cho kéo và
+     * cho xoá — hết. Bản gốc khai một prop `onChoosePosition` cho nó rồi không chỗ nào gọi.
+     * Nên trang trưng bày tự đặt lấy, bằng bốn dòng: đọc giá dưới con trỏ từ thang của pane
+     * rồi thêm vào danh sách. Trước đây nút "Alert" arm một công cụ không làm được gì — bấm
+     * xong không thấy gì, chạm cũng không thấy gì.
+     *
+     * Nó là đường ngang chạy hết bề rộng pane, nên gõ ở đâu trên đường ấy cũng trúng.
+     */
+    {
+        label: "Alert",
+        tag: "chart-interactive-y-coordinate-tool",
+        list: "yCoordinateList",
+        taps: 1,
+        grab: [0.5, 0.4],
+    },
 ]
 
 const touchToolTests = async (browser, origin) => {
@@ -563,80 +581,6 @@ const touchToolTests = async (browser, origin) => {
 
         page.off("pageerror", onError)
         results.push({ name: `ngón tay thật: ${tool.tag}`, checks })
-    }
-
-    /**
-     * Cảnh báo giá: không đặt bằng cách gõ, và không cần chọn trước khi kéo.
-     *
-     * Nó đến từ một cái nút, và nó là phần tử duy nhất trong thư viện có
-     * `enableDragOnHover` — nghĩa là chạm vào là kéo được ngay, không phải chọn trước. Nên nó
-     * không nằm trong bảng trên: cùng một đường dẫn, khác hẳn cử chỉ.
-     */
-    {
-        const checks = []
-        const problems = []
-        const onError = error => problems.push(error.stack ?? error.message)
-        page.on("pageerror", onError)
-
-        await page.goto(`${origin}/docs/showcase/drawing.html`)
-        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
-        await page.waitForTimeout(700)
-
-        await page.click(`section.demo .controls button:text-is("Add alert")`)
-        await page.waitForTimeout(400)
-
-        const placed = await page.evaluate(() => {
-            const canvas = document.querySelector("chart-canvas")
-            canvas.scrollIntoView({ block: "center" })
-            const tool = document.querySelector("chart-interactive-y-coordinate-tool")
-            const rect = canvas.shadowRoot.querySelector("[data-event-capture]").getBoundingClientRect()
-            const state = canvas.getState()
-            const alert = tool.yCoordinateList[0]
-            return {
-                count: tool.yCoordinateList.length,
-                yValue: alert?.yValue,
-                point: alert === undefined ? null : { x: rect.left + rect.width * 0.45, y: rect.top + state.chartConfigs[0].yScale(alert.yValue) },
-                domain: state.xScale.domain().map(Number).join(),
-            }
-        })
-        await page.waitForTimeout(200)
-
-        checks.push({ label: "nút thêm được một cảnh báo", pass: placed.count === 1, expected: "1", actual: placed.count })
-
-        if (placed.point !== null) {
-            await swipe(
-                { x: Math.round(placed.point.x), y: Math.round(placed.point.y) },
-                { x: Math.round(placed.point.x), y: Math.round(placed.point.y) - 60 },
-            )
-
-            const after = await page.evaluate(() => ({
-                yValue: document.querySelector("chart-interactive-y-coordinate-tool").yCoordinateList[0]?.yValue,
-                domain: document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
-            }))
-
-            checks.push({
-                label: "kéo lên bằng ngón tay thì giá cảnh báo tăng",
-                pass: after.yValue > placed.yValue,
-                expected: `> ${placed.yValue}`,
-                actual: after.yValue,
-            })
-            checks.push({
-                label: "và khung nhìn đứng im",
-                pass: after.domain === placed.domain,
-                expected: placed.domain,
-                actual: after.domain,
-            })
-        }
-
-        checks.push({
-            label: "không có lỗi nào trong trang",
-            pass: problems.length === 0,
-            expected: "0",
-            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
-        })
-
-        page.off("pageerror", onError)
-        results.push({ name: "ngón tay thật: chart-interactive-y-coordinate-tool", checks })
     }
 
     /**
