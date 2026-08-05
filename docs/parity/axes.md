@@ -90,6 +90,23 @@ Bản port nối vào, mỗi trục một phép mặc định:
 
 13 khẳng định canh ba chuyện này: cột giá về tự-vừa-khung rồi kéo dọc thôi ăn, trục thời gian về mặc định từ cả hai phía (đã phóng to và đã thu nhỏ), và hàm của người dùng thắng phép mặc định. Bỏ phép nối đi thì cả ba bài đổ.
 
+### Con trỏ trên dải trục: bản gốc chọn đúng, nhưng hiện sai lúc
+
+`YAxis` của bản gốc đặt `zoomCursorClassName: "ns-resize"` và `XAxis` đặt `"ew-resize"` — chọn đúng con trỏ. Chỉ có điều `zoomCursorClassName` được áp **trong lúc đang kéo**, còn lúc nghỉ thì luôn là mũi trỏ thường. Nên gợi ý chỉ hiện ra sau khi người ta đã tự tìm được cử chỉ — đúng lúc không cần nó nữa.
+
+Bản port đảo lại: con trỏ co giãn là con trỏ **lúc nghỉ**, để rê chuột lên dải là biết kéo được. `zoomCursorClassName` giữ nguyên nghĩa của bản gốc (lớp áp trong lúc kéo) và giữ nguyên mặc định của bản gốc, nên nếu ứng dụng không đặt gì thì hai lúc cùng một con trỏ và giữa chừng không nhấp nháy.
+
+Hai chỗ liên quan cũng lộ ra trong lần này:
+
+- **Bản port từng bỏ sót hẳn prop `zoomCursorClassName` trên hai trục.** Bản gốc có, và có cả mặc định; bản port không khai báo nên đặt vào cũng vô hiệu. Đã trả lại.
+- **Con trỏ của thân chart chỉ đúng sau khi có ai chạm vào.** `useCrossHairStyleCursor` mà EventCapture nhìn thấy còn nhân với "chart có tương tác được không", mà điều ấy chỉ biết được khi đã có dữ liệu và thang — lúc `connect()` thì chưa. Bản gốc viết lớp ấy thẳng trong JSX nên nó đúng từ khung hình đầu; bản port gán bằng tay nên phải gán lại sau mỗi lần chart tính lại. Chart vừa dựng lên giờ đã là crosshair, không còn là mũi trỏ mặc định.
+
+Và một cái rác đi kèm: không trục nào đặt `className`, nên chuỗi class từng kết thúc bằng một lớp tên `undefined` — bản gốc cũng thế. Đã lọc bỏ phần rỗng.
+
+`axisZoomCaptureRect` **giữ nguyên** mặc định `chart-default-cursor` của bản gốc; phép thay thế nằm trong phần tử. Nhờ thế 5 dáng rect vẫn được so từng node với bản gốc, và fixture không đổi một byte — đã sinh lại để xác nhận.
+
+7 khẳng định: con trỏ đúng trên từng dải, thân chart vẫn crosshair (để chắc không bôi lớp sang chỗ khác), không phần tử nào mang class `undefined`, và `zoomCursorClassName` do ứng dụng đặt vẫn thắng trong lúc kéo rồi trả lại sau khi thả.
+
 ### Một chỗ cố ý khác bản gốc: kéo bằng ngón tay
 
 Bản gốc đưa thẳng `TouchEvent` vào `pointer()` của d3, mà hàm ấy đọc `event.clientX` — một TouchEvent không có thuộc tính đó, nên toạ độ ra `NaN` và **kéo trục bằng ngón tay không bao giờ chạy**. Bản port lấy `event.touches[0]`. Một dòng, và nó là khác biệt duy nhất về hành vi.

@@ -144,7 +144,9 @@ yAxis.onDoubleClick = (event, position) => rememberAndReset(position)
 ```
 
 The same two gestures on both axes — drag to take control, double-click to give it back —
-is what a trading screen conditions people to expect.
+is what a trading screen conditions people to expect. Hovering either axis shows a resize
+cursor, so the gesture is discoverable without being told; `zoomCursorClassName` changes
+what the cursor becomes while the drag is under way.
 
 ## Data that keeps arriving
 

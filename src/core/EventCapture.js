@@ -125,6 +125,19 @@ export class EventCapture {
         this.#element.addEventListener("touchmove", this.#handleTouchMove, { signal })
     }
 
+    /**
+     * Đặt lại con trỏ theo trạng thái hiện tại.
+     *
+     * Phải gọi sau mỗi lần chart tính lại, vì `useCrossHairStyleCursor` mà EventCapture
+     * nhìn thấy còn nhân với "chart có tương tác được không" — mà điều ấy chỉ biết được
+     * khi đã có dữ liệu và thang. Lúc `connect()` thì chưa có gì, nên nếu chỉ gán một lần
+     * ở đó thì chart vừa dựng lên đã mang mũi trỏ mặc định, và giữ nguyên thế cho tới khi
+     * có ai chạm vào. Bản gốc viết lớp ấy thẳng trong JSX nên nó đúng từ khung hình đầu.
+     */
+    refreshCursor() {
+        this.#applyCursor()
+    }
+
     #lifetime = null
 
     /** Everything this ever attached, anywhere, goes away here. */

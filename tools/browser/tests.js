@@ -2383,6 +2383,74 @@ TESTS["onDoubleClick của mình đặt thì thắng phép mặc định"] = asy
     return t.checks
 }
 
+/**
+ * Rê chuột lên dải trục thì con trỏ nói được là kéo được.
+ *
+ * Bản gốc đặt mũi trỏ thường lúc nghỉ và chỉ đổi con trỏ **trong lúc đang kéo** — mà
+ * `zoomCursorClassName` lại mặc định rỗng, nên chẳng đổi gì cả. Gợi ý nằm sai chỗ: nó chỉ
+ * xuất hiện khi người ta đã tìm ra cử chỉ rồi.
+ */
+TESTS["con trỏ trên dải trục nói được là kéo được"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const cursorOf = node => (node === null ? "" : getComputedStyle(node).cursor)
+
+    t.is("dải cột giá: kéo dọc", cursorOf(zoomRectFor(canvas, "chart-y-axis")), "ns-resize")
+    t.is("dải trục thời gian: kéo ngang", cursorOf(zoomRectFor(canvas, "chart-x-axis")), "ew-resize")
+
+    // và không bôi sang chỗ khác: thân chart vẫn là crosshair
+    t.is(
+        "thân chart vẫn crosshair",
+        cursorOf(canvas.shadowRoot.querySelector("[data-event-capture]")),
+        "crosshair",
+    )
+
+    // Cái rác đi kèm: không trục nào đặt `className`, nên chuỗi class từng kết thúc bằng
+    // một lớp tên `undefined`. Rẻ để canh, và canh luôn cho cả chart.
+    const junk = [...canvas.shadowRoot.querySelectorAll("*")]
+        .map(node => node.getAttribute?.("class"))
+        .filter(each => typeof each === "string" && each.split(/\s+/).includes("undefined"))
+
+    t.is("không phần tử nào mang class tên `undefined`", junk.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["zoomCursorClassName của mình đặt thì thắng trong lúc kéo"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes({ y: { zoomCursorClassName: "chart-grabbing-cursor" } })
+    await settle(4)
+
+    const rect = () => zoomRectFor(canvas, "chart-y-axis")
+    t.is("lúc nghỉ vẫn là con trỏ co giãn", getComputedStyle(rect()).cursor, "ns-resize")
+
+    const box = rect().getBoundingClientRect()
+    const at = (type, target, y, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + 20, clientY: box.top + y, bubbles: true, ...extra }),
+        )
+
+    at("mousedown", rect(), 100, { buttons: 1 })
+    await settle(2)
+    at("mousemove", window, 140, { buttons: 1 })
+    await settle(2)
+
+    t.is("đang kéo thì theo lớp của mình", getComputedStyle(rect()).cursor, "grabbing")
+
+    at("mouseup", window, 140, { buttons: 0 })
+    await settle(2)
+
+    t.is("thả tay thì về con trỏ co giãn", getComputedStyle(rect()).cursor, "ns-resize")
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

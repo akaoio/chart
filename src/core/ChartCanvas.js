@@ -465,6 +465,7 @@ export class ChartCanvas extends ElementBase {
         this.#svg.setAttribute("height", height)
         this.#contentGroup.setAttribute("transform", `translate(${margin.left + 0.5}, ${margin.top + 0.5})`)
         this.#eventCapture.resize(dimensions.width, dimensions.height)
+        this.#eventCapture.refreshCursor()
 
         this.#renderClipPaths(dimensions)
         this.#renderPanes()

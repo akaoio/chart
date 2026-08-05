@@ -37,6 +37,7 @@ export const yAxisDefaults = {
     yZoomWidth: 40,
     zoomEnabled: true,
     onDoubleClick: undefined,
+    zoomCursorClassName: "chart-ns-resize-cursor",
 }
 
 /**
@@ -75,6 +76,16 @@ export class YAxis extends Series {
 
     axisZoomCallback(domain) {
         this.canvas?.yAxisZoom(this.chartId, domain)
+    }
+
+    /**
+     * Kéo dọc trên dải này là giãn thang giá.
+     *
+     * Bản gốc chọn đúng con trỏ này (`zoomCursorClassName` mặc định là `ns-resize`) nhưng
+     * chỉ áp nó trong lúc đang kéo. Ở đây nó là con trỏ lúc nghỉ.
+     */
+    get axisCursorClass() {
+        return "chart-ns-resize-cursor"
     }
 
     /**

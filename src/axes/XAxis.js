@@ -38,6 +38,7 @@ export const xAxisDefaults = {
     zoomEnabled: true,
     edgeClip: false,
     onDoubleClick: undefined,
+    zoomCursorClassName: "chart-ew-resize-cursor",
 }
 
 /**
@@ -73,6 +74,17 @@ export class XAxis extends Series {
 
     axisZoomCallback(domain) {
         this.canvas?.xAxisZoom(domain)
+    }
+
+    /**
+     * Kéo ngang trên dải này là giãn thang thời gian.
+     *
+     * Bản gốc chọn đúng con trỏ này, nhưng chỉ áp nó **trong lúc đang kéo**
+     * (`zoomCursorClassName`) — nên gợi ý chỉ hiện ra sau khi người ta đã tìm được cử chỉ.
+     * Ở đây nó là con trỏ lúc nghỉ, để rê chuột lên là biết.
+     */
+    get axisCursorClass() {
+        return "chart-ew-resize-cursor"
     }
 
     /** Nhấp đúp lên trục thời gian: về mức zoom mặc định, giữ nguyên chỗ đang xem. */

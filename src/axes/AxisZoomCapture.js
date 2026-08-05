@@ -41,11 +41,30 @@ export const axisZoomDomain = ({ startScale, startXY, mouseXY, getMouseDelta, in
     return stretched.map(startScale.invert)
 }
 
-/** The rect itself. Invisible — it exists to catch the pointer, not to be seen. */
-export const axisZoomCaptureRect = ({ bg, className, zoomCursorClassName = "", dragging = false }) => ({
+/**
+ * The rect itself. Invisible — it exists to catch the pointer, not to be seen.
+ *
+ * `cursorClass` is what the pointer looks like at rest, and it defaults to the plain arrow
+ * the original hard-codes here. The elements pass the resize cursor of their own axis
+ * instead, which is the whole affordance: hovering the strip says it can be dragged. That
+ * substitution lives in `AxisZoomCapture` so this function stays byte-identical to the
+ * original and can go on being compared against it.
+ *
+ * Empty parts are dropped rather than joined blindly — otherwise an axis that sets no
+ * `className` ships a class literally called `undefined`, which is what the original does.
+ */
+export const axisZoomCaptureRect = ({
+    bg,
+    className,
+    cursorClass = "chart-default-cursor",
+    zoomCursorClassName = "",
+    dragging = false,
+}) => ({
     tag: "rect",
     attrs: {
-        className: `chart-enable-interaction ${dragging ? zoomCursorClassName : "chart-default-cursor"} ${className}`,
+        className: ["chart-enable-interaction", dragging ? zoomCursorClassName : cursorClass, className]
+            .filter(Boolean)
+            .join(" "),
         x: bg.x,
         y: bg.y,
         opacity: 0,
@@ -112,10 +131,16 @@ export class AxisZoomCapture extends GenericChartComponent {
             this.#rect.setAttribute("data-axis-zoom", axis.localName)
         }
 
+        // Con trỏ lúc nghỉ là con trỏ co giãn của chính trục — có thế thì rê chuột lên
+        // dải này mới biết là kéo được. Lúc đang kéo, nếu ứng dụng không đặt riêng thì
+        // vẫn là con trỏ ấy, để giữa chừng không nhấp nháy.
+        const cursorClass = axis.axisCursorClass ?? "chart-default-cursor"
+
         const { attrs } = axisZoomCaptureRect({
             bg: props.bg,
             className: this.#props.className ?? props.className,
-            zoomCursorClassName: this.#props.zoomCursorClassName || props.zoomCursorClassName,
+            cursorClass,
+            zoomCursorClassName: this.#props.zoomCursorClassName || props.zoomCursorClassName || cursorClass,
             dragging: this.#startPosition !== null,
         })
 

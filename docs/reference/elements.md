@@ -130,6 +130,7 @@ The time axis.
 | `tickStrokeWidth` | `1` |
 | `tickValues` | — |
 | `xZoomHeight` | `25` |
+| `zoomCursorClassName` | `"chart-ew-resize-cursor"` |
 | `zoomEnabled` | `true` |
 
 ### `<chart-y-axis>`
@@ -169,6 +170,7 @@ The price axis.
 | `tickStrokeWidth` | `1` |
 | `tickValues` | — |
 | `yZoomWidth` | `40` |
+| `zoomCursorClassName` | `"chart-ns-resize-cursor"` |
 | `zoomEnabled` | `true` |
 
 ## Series
