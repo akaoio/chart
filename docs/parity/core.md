@@ -169,6 +169,31 @@ Cùng chỗ ấy còn một lỗi thứ hai của bản gốc: mỗi cú bấm h
 
 5 khẳng định: hai chỗ khác nhau → hai cú bấm; cùng chỗ → một cú nhấp đúp; lệch 4px → vẫn nhấp đúp. Bỏ phép đo khoảng cách thì bài đổ.
 
+## Ngón tay: chỗ bản port đi xa hơn bản gốc
+
+Bản gốc dừng ở "một ngón tay để pan và để pinch". `#handleMouseDown` của nó có nhánh quyết định *cú đặt xuống này là pan hay là kéo một đối tượng*; `#handleTouchStart` thì không có, một ngón tay luôn là pan. Nên tám công cụ vẽ chỉ **đặt** được bằng ngón tay: không di, không co giãn, không chọn-rồi-kéo. Đo trên Pixel 7 trước khi sửa — đặt một nhãn được, kéo chính nhãn ấy thì nhãn đứng im và biểu đồ pan.
+
+Bậc này sửa điều ấy, và đường lối là **dùng lại đường dẫn của chuột, không dựng một đường song song**. Xem [issue #3](https://github.com/akaoio/chart/issues/3).
+
+| chỗ nào | trước | sau |
+|---|---|---|
+| phép quyết định pan-hay-drag | chỉ ở nhánh chuột | `#beginGestureAt(position, { move, end, cancel, event })`, cả hai thiết bị gọi vào — khác nhau đúng ba thứ, và cả ba là tham số |
+| phép lấy toạ độ | `#handlePan` có rẽ theo thiết bị, `#handleDrag` không | `#positionOf`, dùng cho pan, drag và drag-end; kèm nhánh `changedTouches` cho `touchend` |
+| `moreProps.inputType` | `handleMouseMove` nhận `eventType` rồi không dùng | đi vào `moreProps`, nên phép dò trúng biết mình đang bị cái gì trỏ vào |
+| bề rộng dò trúng | đặt theo con chuột: `tolerance: 4`, bán kính chốt `+7` | `TOUCH_HIT_SLOP = 12` cộng thêm khi là ngón tay, áp ở tám chỗ đo — mỗi hình nới đúng chiều của nó |
+| báo cú đặt xuống | `mousedown` do trình duyệt sinh sau cú gõ, mà `#mouseInteraction` chặn lại | đường chạm tự gọi `onMouseDown` |
+| kết thúc một cú kéo không ai giành | không có gì — trình duyệt không sinh `click` sau cú kéo | `touchend` tự phát cú bấm, nếu ngón tay đã đi quá `DOUBLE_CLICK_SLOP` và không pan/drag nào đã xảy ra |
+
+Hai lỗi có sẵn lộ ra trong lúc làm, và cả hai chặn **cả chuột lẫn ngón tay**:
+
+**`defineProperties` che getter mà class tự viết.** Nó cài accessor lên chính instance, mà thuộc tính trên instance che thuộc tính trên prototype. `MouseLocationIndicator.get disablePan()` viết để trả `enabled && disablePan`, tức "chỉ chặn pan trong lúc đang vẽ" — chưa từng được gọi, nên phần tử ấy chặn pan **mọi lúc**: cứ có một công cụ vẽ trên biểu đồ là không kéo được khung nhìn. Đó cũng là lý do đường chạm của bản gốc phải bỏ qua `#canPan()` — hỏi thì nó đã không pan được. Soát cả `src/`: đúng một chỗ có getter không-phải-passthrough bị che. Giờ nếu prototype đã có getter cùng tên thì `defineProperties` dùng nó và chỉ mượn phần setter.
+
+**`DrawingObjectSelector` gọi `preventDefault` trên `touchstart`.** Với `mousedown` thì đúng — chặn bôi chọn văn bản. Trên `touchstart` nó nói một điều khác: *đừng sinh chuỗi sự kiện chuột tương thích*. Không có `click`, mà việc đặt một đối tượng vẽ xảy ra ở `click`. Cả tám công cụ cùng ngừng đặt được, không hàm nào ném.
+
+Và một phép chặn đúng-nhưng-đặt-sai-chỗ: `handleMouseMove` chỉ nhận một lần mỗi khung hình, kể cả lời gọi mà `EventCapture` dùng để thiết lập `hovering` ngay trước khi quyết định pan-hay-drag. Bị bỏ thì cú chạm đầu tiên sau một lần vẽ quyết định sai. Thêm `immediate` cho đúng lời gọi ấy — bỏ phép chặn, không bỏ phép dồn vẽ.
+
+Bằng chứng: 8 công cụ, chạm bằng CDP `Input.dispatchTouchEvent` trong ngữ cảnh Pixel 7, mỗi công cụ 5 khẳng định — gõ để đặt, gõ để chọn, kéo thì đối tượng đi theo **và** khung nhìn đứng im, và không lỗi nào trong trang. Cả hai điều kiện của phép đo đều cần: trong ngữ cảnh desktop, CDP gửi được touch nhưng trình duyệt không sinh chuỗi sự kiện chuột sau cú gõ, nên không đặt được gì và trông y như lỗi của thư viện.
+
 ## Bằng chứng biết fail
 
 Bậc 2 không chứng minh được bằng golden data — nó là DOM, canvas và chuột. Bộ kiểm chạy trong Chromium thật (`npm run test:browser`, 59 khẳng định). Để chắc nó không xanh vô nghĩa, sửa hỏng bản port 6 chỗ:

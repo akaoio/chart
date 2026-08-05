@@ -123,6 +123,32 @@ would make a line of length zero, so the tools require the pointer to have trave
 **Two clicks within 400ms are a double click**, not two clicks. Drawing something that
 takes two clicks means two separate ones.
 
+## On a phone
+
+Every tool works with one finger, and the gestures are the ones you already expect:
+
+| gesture | what happens |
+|---|---|
+| tap on empty chart | places the next point of the armed tool |
+| tap on a drawn object | selects it |
+| drag a selected object | moves it |
+| drag a handle | moves that end |
+| drag empty chart | pans |
+| two fingers | zooms |
+
+Two things are wider for a finger than for a mouse, because a fingertip is about 30 CSS
+pixels across and never lands twice in the same place. Hit testing gains 12 pixels — enough
+to catch a thin line, still tight enough to tell two handles apart at the ends of a short
+segment. And a double tap has to land within 8 pixels of the first, so two deliberate taps
+in different places stay two taps.
+
+Neither widening touches the mouse. If you build your own interactive element, read
+`moreProps.inputType` (`"mouse"` or `"touch"`) and add `hitSlop(moreProps)` to whatever
+distance your hover test measures.
+
+The original library has none of this: with it, one finger always pans, so a drawn object
+can be placed but never moved. See [`docs/parity/core.md`](../parity/core.md).
+
 ## One deliberate difference from the original
 
 The body of an equidistant channel can be hovered and dragged here. In the original it
