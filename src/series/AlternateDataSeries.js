@@ -1,5 +1,6 @@
 import { findContextEventually, serveContext } from "../core/context.js"
 import { define, ElementBase } from "../core/element.js"
+import { getCurrentItem } from "../core/utils/ChartDataUtil.js"
 
 /**
  * Draw children from a different dataset than the rest of the chart: `<chart-alternate-data>`.
@@ -87,23 +88,64 @@ export class AlternateDataSeries extends ElementBase {
             listener:
                 listener === undefined
                     ? undefined
-                    : (type, props, state, event) => listener(type, this.#rewrite(props), state, event),
+                    : (type, props, state, event) => listener(type, this.#narrowState(props), state, event),
         })
     }
 
-    /** Any broadcast carrying `plotData` gets the guest's rows in its place. */
-    #rewrite(props) {
-        if (props?.plotData === undefined) return props
+    /**
+     * Thay `plotData` và `currentItem` trong một gói bất kỳ bằng thứ của dữ liệu mình cấp.
+     *
+     * Dùng cho cả hai đường tới con: gói phát ra lúc pan/zoom/di chuột, và
+     * `getMutableState()`. Hai đường ấy chở hai tập trường khác nhau, nên chỗ này chỉ chạm
+     * vào trường nào có mặt.
+     *
+     * `mouseXY` và `currentCharts` giữ nguyên của chart: con trỏ ở đâu, và những pane nào
+     * đang dưới nó, không phụ thuộc vào việc ai cấp dữ liệu.
+     */
+    #narrowState(props) {
+        if (props === null || props === undefined) return props
 
-        return { ...props, plotData: this.#narrow(props.plotData, this.#canvas?.contextValues?.xAccessor) }
+        const hasPlotData = props.plotData !== undefined
+        const hasCurrentItem = "currentItem" in props
+        if (!hasPlotData && !hasCurrentItem) return props
+
+        const values = this.#canvas?.contextValues
+        const xAccessor = props.xAccessor ?? values?.xAccessor
+        const rows = this.#narrow(props.plotData ?? values?.plotData, xAccessor)
+
+        const next = { ...props }
+        if (hasPlotData) next.plotData = rows
+
+        if (hasCurrentItem) {
+            // Thang x lúc đang pan nằm trong chính gói vừa phát, không phải trong state.
+            const xScale = props.xScale ?? values?.xScale
+            const mouseXY = props.mouseXY ?? this.#canvas?.getMutableState?.()?.mouseXY
+
+            next.currentItem =
+                rows.length > 0 && xScale !== undefined && mouseXY !== undefined
+                    ? getCurrentItem(xScale, xAccessor, mouseXY, rows)
+                    : null
+        }
+
+        return next
     }
 
     // Everything else is the real chart's job
     getState() {
         return this.#canvas?.getState() ?? null
     }
+    /**
+     * `currentItem` — hàng dưới con trỏ — cũng phải là hàng của dữ liệu mình cấp.
+     *
+     * Bản gốc chuyển tiếp thẳng, nên nó là hàng của mảng dữ liệu chính. Hệ quả: một tooltip
+     * hay `chart-current-coordinate` đặt trong đây đọc số của dữ liệu chính, ngay cạnh một
+     * series đang vẽ bộ dữ liệu thứ hai — hai con số khác nhau cho cùng một chỗ trên màn hình.
+     */
     getMutableState() {
-        return this.#canvas?.getMutableState() ?? { mouseXY: [0, 0], currentItem: null, currentCharts: [] }
+        const state = this.#canvas?.getMutableState()
+        if (!state) return { mouseXY: [0, 0], currentItem: null, currentCharts: [] }
+
+        return this.#narrowState(state)
     }
     getCanvasContexts() {
         return this.#canvas?.getCanvasContexts() ?? {}

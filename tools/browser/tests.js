@@ -2475,6 +2475,65 @@ TESTS["onDoubleClick của mình đặt thì thắng phép mặc định"] = asy
 }
 
 /**
+ * Con của `chart-alternate-data` phải thấy hàng dưới con trỏ CỦA BỘ DỮ LIỆU THỨ HAI.
+ *
+ * `currentItem` là hàng dữ liệu nằm dưới con trỏ, và nó do `getMutableState()` cấp — mà cái
+ * đó `chart-alternate-data` chuyển tiếp thẳng về chart. Nên nó là hàng của mảng dữ liệu
+ * CHÍNH, không phải của bộ dữ liệu thứ hai. Hệ quả: đặt một tooltip hay
+ * `chart-current-coordinate` vào trong `chart-alternate-data` thì nó đọc số của dữ liệu
+ * chính, dù series ngay cạnh đang vẽ bộ thứ hai. Bản gốc cũng vậy.
+ *
+ * Cùng một lý lẽ với `plotData`: phần tử này tồn tại để quyết định con của nó thấy bộ dữ
+ * liệu nào, và "hàng dưới con trỏ" là một phần của bộ dữ liệu ấy.
+ */
+TESTS["con của chart-alternate-data thấy hàng dưới con trỏ của bộ dữ liệu thứ hai"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mount()
+    const pane = canvas.querySelector("chart-pane")
+    const { data } = canvas
+
+    // Thưa hẳn, và mang một trường mà dữ liệu chính KHÔNG có, để phân biệt được nguồn.
+    const guest = []
+    for (let index = 0; index < data.length; index += 5) {
+        guest.push({ idx: data[index].idx, close: 500 + index, guestOnly: index })
+    }
+
+    const alternate = document.createElement("chart-alternate-data")
+    alternate.data = guest
+
+    const seen = []
+    const listener = document.createElement("chart-click-callback")
+    listener.onMouseMove = (event, moreProps) => seen.push(moreProps.currentItem)
+    alternate.append(listener)
+    pane.append(alternate)
+    await settle(4)
+
+    await hoverAt(canvas, 400, 150)
+
+    const item = seen[seen.length - 1]
+
+    t.gt("có báo hàng dưới con trỏ", seen.length, 0)
+    t.ok("là một hàng của bộ dữ liệu thứ hai", item?.guestOnly !== undefined)
+    t.ok(
+        "và đúng là một trong những hàng đã truyền vào",
+        guest.some(each => each.guestOnly === item?.guestOnly),
+    )
+
+    // Đường thứ hai, và là đường khác hẳn: gói phát ra lúc di chuột đi qua `subscribe`, còn
+    // một lần vẽ có `force` thì đi qua `refreshFromContext()` → `getMutableState()`. Hai
+    // đường phải trả cùng một câu trả lời, nếu không `currentItem` đổi nghĩa tuỳ theo lần
+    // vẽ vừa rồi do cái nào gây ra.
+    listener.refreshFromContext()
+    const refreshed = listener.getMoreProps().currentItem
+
+    t.ok("đường refreshFromContext cũng trả hàng của bộ thứ hai", refreshed?.guestOnly !== undefined)
+
+    cleanup()
+    return t.checks
+}
+
+/**
  * Hai cú bấm nhanh ở HAI CHỖ KHÁC NHAU là hai cú bấm, không phải một cú nhấp đúp.
  *
  * Bản gốc chỉ hỏi thời gian: cú bấm thứ hai trong 400ms ở bất kỳ đâu cũng thành nhấp đúp,

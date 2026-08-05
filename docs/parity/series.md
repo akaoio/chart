@@ -88,6 +88,20 @@ return at > start && at < end
 
 `>=`/`<=` thì hết, nhưng bản gốc là `>`/`<` (`AlternateDataSeries.tsx:21-24`) và đây là hành vi nhìn thấy được, không phải chi tiết nội bộ. Giữ nguyên, ghi ra đây, và nói thẳng trong bài trưng bày để người đọc không tưởng mình đặt sai dữ liệu.
 
+## `AlternateDataSeries`: hai chỗ bản gốc để con nó thấy dữ liệu của chart
+
+Phần tử này đứng trước chart để trả lời `contextValues`, và chỉ thế thôi. Hai đường khác vẫn chở dữ liệu của mảng chính tới con của nó, và cả hai đều nhìn thấy được trên màn hình.
+
+**`plotData` trong gói phát ra lúc pan/zoom.** Đó là đường dẫn nóng: không dựng lại gì, chart tính state mới rồi phát thẳng tới từng phần tử đã đăng ký. `GenericComponent.getMoreProps()` trải `this.moreProps` sau cùng, nên cái vừa phát vào đè lên thứ context cấp — series con vẽ đúng đường đóng cửa của bộ nến trong suốt cú kéo, rồi thả tay là thưa lại như cũ, vì `refreshFromContext()` đặt lại từ context. Người dùng phát hiện chỗ này: "đường vàng bỗng dưng khớp hoàn toàn với chart nến".
+
+**`currentItem` — hàng dưới con trỏ.** Nó đến từ `getMutableState()`, mà bản gốc chuyển tiếp thẳng. Nên một tooltip hay `chart-current-coordinate` đặt trong `<AlternateDataSeries>` đọc số của mảng chính, ngay cạnh một series đang vẽ bộ thứ hai — hai con số khác nhau cho cùng một chỗ trên màn hình.
+
+Cả hai đều không giữ, cùng một lý lẽ: phần tử này tồn tại để quyết định con của nó thấy bộ dữ liệu nào, và cả "vẽ gì" lẫn "dưới con trỏ là hàng nào" đều là phần của bộ dữ liệu ấy. `subscribe` giờ bọc listener của con lại, và `getMutableState` đi qua cùng một hàm thu hẹp — hai đường một câu trả lời, chứ không phải `currentItem` đổi nghĩa tuỳ theo lần vẽ vừa rồi do cái nào gây ra.
+
+`mouseXY` và `currentCharts` vẫn của chart: con trỏ ở đâu, và những pane nào đang dưới nó, không phụ thuộc vào việc ai cấp dữ liệu.
+
+9 khẳng định canh hai chỗ này: 5 cho `plotData` (đọc số hàng series con nhìn thấy mỗi lần được vẽ, trong lúc tay còn đặt xuống) và 4 cho `currentItem` (cả đường phát sự kiện lẫn đường `refreshFromContext`). Dữ liệu thứ hai trong bài phải thưa hẳn — bài cũ dùng dữ liệu khớp một-đối-một nên hai con số bằng nhau, không thể đỏ.
+
 ## Lệch có chủ ý so với bản gốc
 
 **Phần vẽ tách khỏi phần tử.** Mỗi series xuất ra hai thứ: một hàm `drawXSeries(context, moreProps, props)` không đụng DOM, và một phần tử mỏng gọi hàm đó. Bản gốc gộp cả hai trong một class React.
