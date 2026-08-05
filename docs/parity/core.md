@@ -129,6 +129,26 @@ Bản gốc không dính vì nó **không `setState` trong lúc kéo** — trạ
 
 8 khẳng định canh chỗ này, đo cả hai điều: trong lúc kéo hình vẽ đi tới đâu, và sau khi thả thì dừng ở đâu. Trả lại một trong hai lỗi thì bài đổ.
 
+## Ngón tay: chart chạy ngược chiều vuốt
+
+Cùng lần soi ấy còn lòi ra một lỗi nữa, và lần này của bản gốc: `handlePan` đảo dấu ở nhánh chạm —
+
+```js
+dx = panOrigin[0] - mouseXY[0]     // chạm
+dx = mouseXY[0] - panOrigin[0]     // chuột
+```
+
+— nên trên màn hình cảm ứng chart chạy **ngược** chiều ngón tay, cả ngang lẫn dọc. Đo trên trang thật trước khi sửa, cùng một cú kéo sang phải 150px:
+
+| | domain x dịch |
+|---|---:|
+| chuột | −25.0 (nến đi theo tay) |
+| ngón tay | **+25.8** (nến đi ngược) |
+
+Bản port bỏ phép đảo dấu: một công thức cho cả hai, vì "nội dung đi theo thứ đang kéo nó" không phụ thuộc vào việc thứ ấy là con trỏ hay ngón tay.
+
+4 khẳng định canh chỗ này, dựng bằng `TouchEvent` thật của trình duyệt, đo cả bốn chiều vuốt. Trả lại phép đảo dấu thì bài đổ.
+
 ## Bằng chứng biết fail
 
 Bậc 2 không chứng minh được bằng golden data — nó là DOM, canvas và chuột. Bộ kiểm chạy trong Chromium thật (`npm run test:browser`, 59 khẳng định). Để chắc nó không xanh vô nghĩa, sửa hỏng bản port 6 chỗ:

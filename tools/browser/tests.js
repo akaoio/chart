@@ -2160,6 +2160,79 @@ TESTS["kéo dọc đi đúng quãng đường của con trỏ, và đi ngay lúc
     return t.checks
 }
 
+/** Một cú vuốt bằng ngón tay, dựng bằng TouchEvent thật của trình duyệt. */
+const swipeTouch = async (canvas, from, to, steps = 5) => {
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    const touchAt = (x, y) =>
+        new Touch({ identifier: 1, target: rect, clientX: box.left + x, clientY: box.top + y })
+
+    const fire = (type, target, x, y) => {
+        const touches = type === "touchend" ? [] : [touchAt(x, y)]
+        target.dispatchEvent(new TouchEvent(type, { touches, targetTouches: touches, changedTouches: [touchAt(x, y)], bubbles: true, cancelable: true }))
+    }
+
+    fire("touchstart", rect, from[0], from[1])
+    await settle(1)
+
+    for (let step = 1; step <= steps; step++) {
+        const at = axis => from[axis] + ((to[axis] - from[axis]) * step) / steps
+        fire("touchmove", window, at(0), at(1))
+        await settle(1)
+    }
+
+    fire("touchend", window, to[0], to[1])
+    await settle(3)
+}
+
+/**
+ * Ngón tay kéo đi đâu thì chart đi theo đấy.
+ *
+ * Bản gốc đảo dấu ở nhánh chạm — `dx = panOrigin[0] - mouseXY[0]` — nên trên màn hình
+ * cảm ứng chart chạy **ngược** chiều ngón tay. Đo trên trang thật: vuốt sang phải 150px
+ * thì domain x dịch +25.8, trong khi cùng cú kéo bằng chuột cho −25.0.
+ */
+TESTS["ngón tay kéo đi đâu thì chart đi theo đấy"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const xDomain = () => canvas.getState().xScale.domain()
+    const yDomain = () => canvas.getState().chartConfigs[0].yScale.domain()
+
+    // ── ngang ─────────────────────────────────────────────────────────────────────
+    const xBefore = xDomain()[0]
+    await swipeTouch(canvas, [200, 200], [400, 200])
+
+    t.ok("vuốt sang phải thì nhìn lùi về quá khứ", xDomain()[0] < xBefore)
+
+    const xAfterRight = xDomain()[0]
+    await swipeTouch(canvas, [400, 200], [200, 200])
+
+    t.ok("vuốt sang trái thì đi ngược lại", xDomain()[0] > xAfterRight)
+
+    // ── dọc ───────────────────────────────────────────────────────────────────────
+    //
+    // Chỉ kéo dọc được sau khi người dùng đã tự đặt khung giá — cùng cửa chặn với chuột.
+    canvas.yAxisZoom(0, yDomain())
+    await settle(2)
+
+    const yBefore = yDomain()[0]
+    await swipeTouch(canvas, [200, 150], [200, 250])
+
+    t.ok("vuốt xuống thì khung giá đi lên theo ngón tay", yDomain()[0] > yBefore)
+
+    const yAfterDown = yDomain()[0]
+    await swipeTouch(canvas, [200, 250], [200, 150])
+
+    t.ok("vuốt lên thì đi ngược lại", yDomain()[0] < yAfterDown)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

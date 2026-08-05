@@ -382,20 +382,20 @@ export class EventCapture {
         this.#panHappened = true
         const { panStartXScale, panOrigin, chartsToPan } = this.#panStart
 
-        let mouseXY
-        let dx
-        let dy
+        /**
+         * Cùng một dấu cho chuột và cho ngón tay: nội dung đi **theo** thứ đang kéo nó.
+         *
+         * Bản gốc đảo dấu ở nhánh chạm (`dx = panOrigin[0] - mouseXY[0]`), nên trên màn
+         * hình cảm ứng chart chạy ngược chiều ngón tay — cả ngang lẫn dọc. Đo trên trang
+         * thật trước khi sửa: vuốt sang phải 150px thì domain x dịch **+25.8** thay vì
+         * −25.0 như khi dùng chuột. Xem docs/parity/core.md.
+         */
+        const mouseXY = this.#mouseInteraction
+            ? pointerPosition(event, this.#element)
+            : pointersPosition(event, this.#element)[0]
 
-        if (this.#mouseInteraction) {
-            mouseXY = pointerPosition(event, this.#element)
-            dx = mouseXY[0] - panOrigin[0]
-            dy = mouseXY[1] - panOrigin[1]
-        } else {
-            // Touch reports the opposite sign: the content follows the finger
-            mouseXY = pointersPosition(event, this.#element)[0]
-            dx = panOrigin[0] - mouseXY[0]
-            dy = panOrigin[1] - mouseXY[1]
-        }
+        const dx = mouseXY[0] - panOrigin[0]
+        const dy = mouseXY[1] - panOrigin[1]
 
         this.#lastNewPos = mouseXY
         this.#dx = dx
