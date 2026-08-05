@@ -93,6 +93,21 @@ Ràng buộc này đến từ tính năng khoá học TTS nêu trong #1, và đ�
 
 **Vẽ lại là phát cho tất cả, không lọc theo pane.** Ban đầu tưởng là thiếu sót và đã viết hẳn một bài kiểm để bắt lỗi — nhưng bài kiểm sai chứ không phải mã. Các pane dùng chung một lớp canvas vừa bị xoá sạch; ai không vẽ lại thì biến mất. Cửa lọc theo pane nằm ở tầng xử lý sự kiện (hover, click, callback), đúng chỗ bản gốc đặt nó.
 
+## Khác bản gốc về nhịp vẽ, không về hình vẽ
+
+React biết hết props trước khi mount; DOM thì không — `append` chạy `connectedCallback`
+*ngay tức khắc*, còn property thường được đặt sau đó. Nên bản port hoãn cả **lần vẽ đầu**
+lẫn **mọi lần vẽ lại do đổi property** sang hết microtask: cả loạt gán xong rồi mới vẽ, và
+vẽ đúng một lần.
+
+Chi tiết này là của bản port, không có ở bản gốc, nhưng nó phục vụ đúng cái bản gốc có sẵn
+nhờ React. Ba lỗi được nó chặn đứng đều tìm ra ở bậc 6 — xem
+[`interactive.md`](interactive.md).
+
+Cùng lý do, phần tử nào giữ thứ nhớ sẵn phụ thuộc vào property (bề rộng chữ đã đo, chẳng
+hạn) được báo qua `propertyChanged(name)` khi property đổi. Đây là chỗ của
+`componentDidUpdate` bên bản gốc.
+
 ## Bằng chứng biết fail
 
 Bậc 2 không chứng minh được bằng golden data — nó là DOM, canvas và chuột. Bộ kiểm chạy trong Chromium thật (`npm run test:browser`, 59 khẳng định). Để chắc nó không xanh vô nghĩa, sửa hỏng bản port 6 chỗ:

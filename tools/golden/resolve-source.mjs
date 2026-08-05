@@ -65,9 +65,12 @@ registerHooks({
     },
 
     resolve(specifier, context, next) {
-        const workspace = specifier.match(/^@react-financial-charts\/([\w-]+)$/)
+        // `@react-financial-charts/core` → packages/core/src, và cả dạng đi sâu vào một
+        // file dựng sẵn — `@react-financial-charts/coordinates/lib/MouseCoordinateY` —
+        // mà chính bản gốc có dùng, trỏ về đúng file nguồn tương ứng.
+        const workspace = specifier.match(/^@react-financial-charts\/([\w-]+)(?:\/lib\/(.+))?$/)
         if (workspace) {
-            const found = firstExisting(join(packages, workspace[1], "src"))
+            const found = firstExisting(join(packages, workspace[1], "src", workspace[2] ?? ""))
             if (found) return { url: found, shortCircuit: true }
         }
 

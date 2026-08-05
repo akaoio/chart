@@ -263,6 +263,61 @@ const zoomButtons = await import(join(packages, "interactive/src/ZoomButtons.tsx
 const d3Interpolate = createRequire(join(source, "package.json"))("d3-interpolate")
 const { normalizeSvg: normalizeSvgTree } = await import("./svgtree.mjs")
 const interactiveLine = await import(join(packages, "interactive/src/components/InteractiveStraightLine.tsx"))
+const channelWithArea = await import(join(packages, "interactive/src/components/ChannelWithArea.tsx"))
+const regressionChannel = await import(
+    join(packages, "interactive/src/components/LinearRegressionChannelWithArea.tsx"),
+)
+const gannFan = await import(join(packages, "interactive/src/components/GannFan.tsx"))
+const interactiveTextComponent = await import(join(packages, "interactive/src/components/InteractiveText.tsx"))
+const clickableShape = await import(join(packages, "interactive/src/components/ClickableShape.tsx"))
+const yCoordinate = await import(join(packages, "interactive/src/components/InteractiveYCoordinate.tsx"))
+const eachFibRetracement = await import(join(packages, "interactive/src/wrapper/EachFibRetracement.tsx"))
+
+/**
+ * Dựng thẳng một component rồi gọi phương thức riêng của nó.
+ *
+ * `private` của TypeScript chỉ có lúc dịch — lúc chạy `isHover` và `drawOnCanvas` vẫn là
+ * thuộc tính bình thường. Cần đến chúng vì ba component nhớ kết quả đo trong chính mình
+ * (bề rộng chữ, bề rộng hộp): chỉ khi vẽ rồi hỏi hover trên **cùng một thực thể** thì cái
+ * nhớ ấy mới có tác dụng, đúng như lúc chạy thật.
+ */
+const instanceOf = (Component, props) => new Component({ ...Component.defaultProps, ...props })
+
+const hoverVia = Component => (moreProps, props) => instanceOf(Component, props).isHover(moreProps)
+
+/** Vẽ trước rồi mới hỏi hover, trên cùng một thực thể. */
+const drawThenHoverVia = Component => (context, drawMoreProps, hoverMoreProps, props) => {
+    const instance = instanceOf(Component, props)
+    instance.drawOnCanvas(context, drawMoreProps)
+    return instance.isHover(hoverMoreProps)
+}
+
+/**
+ * Đi khắp cây phần tử React, dừng ở đúng chỗ collectDraws dừng.
+ *
+ * Dùng để lấy ra hình học mà bản gốc **không xuất khẩu**: các mức Fibonacci nằm trong một
+ * hàm module-private, nhưng chúng đi thẳng vào props của những đường được render — đọc ở
+ * đó là đọc đúng con số bản gốc dùng, chứ không phải chép lại công thức.
+ */
+const walkElements = (element, visit) => {
+    if (element === null || element === undefined || element === false) return
+    if (Array.isArray(element)) return element.forEach(each => walkElements(each, visit))
+    if (typeof element !== "object") return
+
+    visit(element)
+
+    if (typeof element.props?.canvasDraw === "function") return
+    if (typeof element.props?.svgDraw === "function") return
+
+    const { type, props } = element
+
+    if (typeof type === "function") {
+        const merged = { ...type.defaultProps, ...props }
+        return walkElements(type.prototype?.render ? new type(merged).render() : type(merged), visit)
+    }
+
+    walkElements(props?.children, visit)
+}
 
 const interactiveApi = {
     ...interactiveUtils,
@@ -272,6 +327,53 @@ const interactiveApi = {
     isHovering: interactiveLine.isHovering,
     isHovering2: interactiveLine.isHovering2,
     drawInteractiveStraightLine: drawVia(interactiveLine.InteractiveStraightLine),
+
+    drawChannelWithArea: drawVia(channelWithArea.ChannelWithArea),
+    isChannelHover: hoverVia(channelWithArea.ChannelWithArea),
+
+    drawLinearRegressionChannel: drawVia(regressionChannel.LinearRegressionChannelWithArea),
+    isRegressionHover: hoverVia(regressionChannel.LinearRegressionChannelWithArea),
+    edge1Provider: regressionChannel.edge1Provider,
+    edge2Provider: regressionChannel.edge2Provider,
+
+    drawGannFan: drawVia(gannFan.GannFan),
+    isGannFanHover: hoverVia(gannFan.GannFan),
+
+    textDrawThenHover: drawThenHoverVia(interactiveTextComponent.InteractiveText),
+    closeIconDrawThenHover: drawThenHoverVia(clickableShape.ClickableShape),
+    yCoordinateDrawThenHover: drawThenHoverVia(yCoordinate.InteractiveYCoordinate),
+
+    /**
+     * Các mức Fibonacci, đọc ra từ chính những đường mà bản gốc render.
+     *
+     * Phần trăm nằm trong nhãn (`"104.00 (61.80%)"`) chứ không nằm trên đường, nên nó
+     * được lấy từ nhãn — vẫn là con số bản gốc tự sinh.
+     */
+    fibRetracementLines: ({ x1, y1, x2, y2 }) => {
+        const lines = []
+        const labels = []
+
+        walkElements(
+            React.createElement(eachFibRetracement.EachFibRetracement, {
+                x1,
+                y1,
+                x2,
+                y2,
+                type: "RETRACEMENT",
+            }),
+            element => {
+                if (element.type === interactiveLine.InteractiveStraightLine) {
+                    lines.push({ x1: element.props.x1Value, x2: element.props.x2Value, y: element.props.y1Value })
+                }
+                if (element.type?.name === "Text") labels.push(element.props.children)
+            },
+        )
+
+        return lines.map((line, index) => ({
+            ...line,
+            percent: Number(/\(([\d.]+)%\)/.exec(labels[index])[1]),
+        }))
+    },
 
     /**
      * ZoomButtons của bản gốc là component đọc ChartContext và render SVG thẳng trong

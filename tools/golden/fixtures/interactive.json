@@ -268,6 +268,2277 @@
     "stroke"
    ]
   ],
+  "draw_channel": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    201.6
+   ],
+   [
+    "lineTo",
+    584.615385,
+    -14.4
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#8888884d"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "lineTo",
+    584.615385,
+    -14.4
+   ],
+   [
+    "lineTo",
+    97.435897,
+    201.6
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ]
+  ],
+  "draw_channel_negative_dy": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    374.4
+   ],
+   [
+    "lineTo",
+    584.615385,
+    158.4
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#8888884d"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "lineTo",
+    584.615385,
+    158.4
+   ],
+   [
+    "lineTo",
+    97.435897,
+    374.4
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ]
+  ],
+  "draw_channel_no_dy": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "channel_hover": {
+   "aboveTheBand": false,
+   "belowTheBand": false,
+   "noListener": false
+  },
+  "draw_regression": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set fillStyle",
+    "#8888884d"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    77.948718,
+    185.634476
+   ],
+   [
+    "lineTo",
+    623.589744,
+    194.369814
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    623.589744,
+    239.532972
+   ],
+   [
+    "lineTo",
+    77.948718,
+    230.797634
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    77.948718,
+    185.634476
+   ],
+   [
+    "lineTo",
+    623.589744,
+    194.369814
+   ],
+   [
+    "lineTo",
+    623.589744,
+    239.532972
+   ],
+   [
+    "lineTo",
+    77.948718,
+    230.797634
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    623.589744,
+    216.951393
+   ],
+   [
+    "lineTo",
+    77.948718,
+    208.216055
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_regression_narrow": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set fillStyle",
+    "#8888884d"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    233.846154,
+    161.028297
+   ],
+   [
+    "lineTo",
+    389.74359,
+    188.253897
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    389.74359,
+    220.155703
+   ],
+   [
+    "lineTo",
+    233.846154,
+    192.930103
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    233.846154,
+    161.028297
+   ],
+   [
+    "lineTo",
+    389.74359,
+    188.253897
+   ],
+   [
+    "lineTo",
+    389.74359,
+    220.155703
+   ],
+   [
+    "lineTo",
+    233.846154,
+    192.930103
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    389.74359,
+    204.2048
+   ],
+   [
+    "lineTo",
+    233.846154,
+    176.9792
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_regression_backwards": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set fillStyle",
+    "#8888884d"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    623.589744,
+    194.369814
+   ],
+   [
+    "lineTo",
+    77.948718,
+    185.634476
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    77.948718,
+    230.797634
+   ],
+   [
+    "lineTo",
+    623.589744,
+    239.532972
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    623.589744,
+    194.369814
+   ],
+   [
+    "lineTo",
+    77.948718,
+    185.634476
+   ],
+   [
+    "lineTo",
+    77.948718,
+    230.797634
+   ],
+   [
+    "lineTo",
+    623.589744,
+    239.532972
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    77.948718,
+    208.216055
+   ],
+   [
+    "lineTo",
+    623.589744,
+    216.951393
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "regression_hover": {
+   "nearTheFit": true,
+   "farAbove": false,
+   "farBelow": false
+  },
+  "regression_hover_column": [
+   186,
+   188,
+   190,
+   192,
+   210,
+   212,
+   214,
+   216,
+   232,
+   234,
+   236,
+   238
+  ],
+  "regression_edges": {
+   "edge1": [
+    77.948718,
+    208.216055
+   ],
+   "edge2": [
+    623.589744,
+    216.951393
+   ]
+  },
+  "draw_gannFan": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set font",
+    "10px sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -2062.08
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/8",
+    158.333333,
+    72
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -887.04
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/4",
+    219.230769,
+    72
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -593.28
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/3",
+    259.82906,
+    72
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -299.52
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/2",
+    341.025641,
+    72
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -5.76
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/1",
+    584.615385,
+    72
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    141.12
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "2/1",
+    584.615385,
+    180
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    190.08
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "3/1",
+    584.615385,
+    216
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    214.56
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "4/1",
+    584.615385,
+    234
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    251.28
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "8/1",
+    584.615385,
+    261
+   ],
+   [
+    "set fillStyle",
+    "#1f77b433"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -2062.08
+   ],
+   [
+    "lineTo",
+    760,
+    -887.04
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#ff7e0e33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -887.04
+   ],
+   [
+    "lineTo",
+    760,
+    -593.28
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#2ca02c33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -593.28
+   ],
+   [
+    "lineTo",
+    760,
+    -299.52
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#d6272733"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -299.52
+   ],
+   [
+    "lineTo",
+    760,
+    -5.76
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#9467bd33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -5.76
+   ],
+   [
+    "lineTo",
+    760,
+    141.12
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#8c564b33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    141.12
+   ],
+   [
+    "lineTo",
+    760,
+    190.08
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#e377c233"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    190.08
+   ],
+   [
+    "lineTo",
+    760,
+    214.56
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "·undefined·"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    214.56
+   ],
+   [
+    "lineTo",
+    760,
+    251.28
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ]
+  ],
+  "draw_gannFan_falling": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set font",
+    "10px sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    2422.08
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/8",
+    158.333333,
+    288
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    1247.04
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/4",
+    219.230769,
+    288
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    953.28
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/3",
+    259.82906,
+    288
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    659.52
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/2",
+    341.025641,
+    288
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    365.76
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "1/1",
+    584.615385,
+    288
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    218.88
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "2/1",
+    584.615385,
+    180
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    169.92
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "3/1",
+    584.615385,
+    144
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    145.44
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "4/1",
+    584.615385,
+    126
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    108.72
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "8/1",
+    584.615385,
+    99
+   ],
+   [
+    "set fillStyle",
+    "#1f77b433"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    2422.08
+   ],
+   [
+    "lineTo",
+    760,
+    1247.04
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#ff7e0e33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    1247.04
+   ],
+   [
+    "lineTo",
+    760,
+    953.28
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#2ca02c33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    953.28
+   ],
+   [
+    "lineTo",
+    760,
+    659.52
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#d6272733"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    659.52
+   ],
+   [
+    "lineTo",
+    760,
+    365.76
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#9467bd33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    365.76
+   ],
+   [
+    "lineTo",
+    760,
+    218.88
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#8c564b33"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    218.88
+   ],
+   [
+    "lineTo",
+    760,
+    169.92
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "#e377c233"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    169.92
+   ],
+   [
+    "lineTo",
+    760,
+    145.44
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "set fillStyle",
+    "·undefined·"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    72
+   ],
+   [
+    "lineTo",
+    760,
+    145.44
+   ],
+   [
+    "lineTo",
+    760,
+    108.72
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ]
+  ],
+  "draw_gannFan_degenerate": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "set font",
+    "10px sans-serif"
+   ],
+   [
+    "set fillStyle",
+    "#000000"
+   ]
+  ],
+  "gannFan_hover": {
+   "onTheOneToOne": true,
+   "onAnotherRay": true,
+   "insideTheWedge": true,
+   "behindTheOrigin": false,
+   "justPastTheTipOfARay": false
+  },
+  "gannFan_hover_column": [
+   16,
+   18,
+   20,
+   22,
+   150,
+   152,
+   154,
+   156,
+   218,
+   220,
+   222,
+   224,
+   240,
+   242,
+   244,
+   246,
+   252,
+   254,
+   256,
+   258,
+   268,
+   270,
+   272,
+   274
+  ],
+  "fibLines": [
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 95,
+    "percent": 100
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 100.73,
+    "percent": 61.8
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 102.5,
+    "percent": 50
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 104.27,
+    "percent": 38.2
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 106.46,
+    "percent": 23.6
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 110,
+    "percent": 0
+   }
+  ],
+  "fibLinesInverted": [
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 110,
+    "percent": 100
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 104.27,
+    "percent": 61.8
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 102.5,
+    "percent": 50
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 100.73,
+    "percent": 38.2
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 98.54,
+    "percent": 23.6
+   },
+   {
+    "x1": 5,
+    "x2": 30,
+    "y": 95,
+    "percent": 0
+   }
+  ],
+  "draw_text": [
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "mua ở đây"
+   ],
+   [
+    "set fillStyle",
+    "#D3D3D3"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillRect",
+    298.282051,
+    160.8,
+    66,
+    24
+   ],
+   [
+    "set fillStyle",
+    "#F10040"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "mua ở đây",
+    331.282051,
+    172.8
+   ]
+  ],
+  "draw_text_selected": [
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "mua ở đây"
+   ],
+   [
+    "set fillStyle",
+    "#D3D3D3"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillRect",
+    298.282051,
+    160.8,
+    66,
+    24
+   ],
+   [
+    "set strokeStyle",
+    "#F10040"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "strokeRect",
+    298.282051,
+    160.8,
+    66,
+    24
+   ],
+   [
+    "set fillStyle",
+    "#F10040"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "mua ở đây",
+    331.282051,
+    172.8
+   ]
+  ],
+  "text_hover": {
+   "atTheCentre": true,
+   "justInsideTheBox": false,
+   "outsideTheBox": false,
+   "wellBelow": false
+  },
+  "draw_alert": [
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "set textAlign",
+    "start"
+   ],
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "Alert"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     3
+    ]
+   ],
+   [
+    "moveTo",
+    0,
+    173
+   ],
+   [
+    "lineTo",
+    20,
+    173
+   ],
+   [
+    "moveTo",
+    98,
+    173
+   ],
+   [
+    "lineTo",
+    760,
+    173
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "fillRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "strokeRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "Alert",
+    30,
+    173
+   ],
+   [
+    "set font",
+    "12px sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    751,
+    172.5
+   ],
+   [
+    "lineTo",
+    761,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    183
+   ],
+   [
+    "lineTo",
+    761,
+    183
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "103.00",
+    785,
+    173
+   ]
+  ],
+  "draw_alert_selected": [
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set lineWidth",
+    2
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "set textAlign",
+    "start"
+   ],
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "Alert"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     3
+    ]
+   ],
+   [
+    "moveTo",
+    0,
+    173
+   ],
+   [
+    "lineTo",
+    20,
+    173
+   ],
+   [
+    "moveTo",
+    98,
+    173
+   ],
+   [
+    "lineTo",
+    760,
+    173
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "fillRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "strokeRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "Alert",
+    30,
+    173
+   ],
+   [
+    "set font",
+    "12px sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    751,
+    172.5
+   ],
+   [
+    "lineTo",
+    761,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    183
+   ],
+   [
+    "lineTo",
+    761,
+    183
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "103.00",
+    785,
+    173
+   ]
+  ],
+  "draw_alert_hovering": [
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set lineWidth",
+    2
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "set textAlign",
+    "start"
+   ],
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "Alert"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     3
+    ]
+   ],
+   [
+    "moveTo",
+    0,
+    173
+   ],
+   [
+    "lineTo",
+    20,
+    173
+   ],
+   [
+    "moveTo",
+    98,
+    173
+   ],
+   [
+    "lineTo",
+    760,
+    173
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "fillRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "strokeRect",
+    20,
+    161,
+    78,
+    24
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "fillText",
+    "Alert",
+    30,
+    173
+   ],
+   [
+    "set font",
+    "12px sans-serif"
+   ],
+   [
+    "set textBaseline",
+    "middle"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "set fillStyle",
+    "#FFFFFF"
+   ],
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    751,
+    172.5
+   ],
+   [
+    "lineTo",
+    761,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    162
+   ],
+   [
+    "lineTo",
+    811,
+    183
+   ],
+   [
+    "lineTo",
+    761,
+    183
+   ],
+   [
+    "closePath"
+   ],
+   [
+    "fill"
+   ],
+   [
+    "stroke"
+   ],
+   [
+    "set fillStyle",
+    "#6574CD"
+   ],
+   [
+    "set textAlign",
+    "center"
+   ],
+   [
+    "fillText",
+    "103.00",
+    785,
+    173
+   ]
+  ],
+  "draw_alert_offscreen": [],
+  "alert_hover": {
+   "onTheLabel": true,
+   "onTheLineFarRight": true,
+   "justOffTheLine": false,
+   "offscreenValue": false
+  },
+  "draw_closeIcon": [
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "Alert"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "moveTo",
+    82,
+    168.8
+   ],
+   [
+    "lineTo",
+    90,
+    176.8
+   ],
+   [
+    "moveTo",
+    82,
+    176.8
+   ],
+   [
+    "lineTo",
+    90,
+    168.8
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_closeIcon_hovering": [
+   [
+    "set font",
+    "normal normal 12px sans-serif"
+   ],
+   [
+    "measureText",
+    "Alert"
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "set lineWidth",
+    2
+   ],
+   [
+    "set strokeStyle",
+    "#6574CD"
+   ],
+   [
+    "moveTo",
+    82,
+    168.8
+   ],
+   [
+    "lineTo",
+    90,
+    176.8
+   ],
+   [
+    "moveTo",
+    82,
+    176.8
+   ],
+   [
+    "lineTo",
+    90,
+    168.8
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "closeIcon_hover": {
+   "onTheCross": true,
+   "onTheUpperLeftTip": true,
+   "justPastTheCross": false,
+   "wellAway": false
+  },
   "getValueFromOverride": {
    "matching": 42,
    "differentIndex": 7,

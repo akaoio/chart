@@ -2,68 +2,64 @@ import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate } from "./utils.js"
 
-export const trendLineDefaults = {
-    type: "XLINE",
+export const standardDeviationChannelDefaults = {
     enabled: true,
-    snap: true,
-    snapTo: undefined,
+    snapTo: datum => datum.close,
     onStart: undefined,
     onComplete: undefined,
-    onSelect: undefined,
+    appearance: {
+        stroke: "#000000",
+        fillOpacity: 0.2,
+        strokeOpacity: 1,
+        strokeWidth: 1,
+        fill: "#8AAFE2",
+        edgeStrokeWidth: 2,
+        edgeStroke: "#000000",
+        edgeFill: "#FFFFFF",
+        r: 5,
+    },
     currentPositionStroke: "#000000",
-    currentPositionstrokeOpacity: 1,
+    currentPositionOpacity: 1,
     currentPositionStrokeWidth: 3,
-    currentPositionRadius: 0,
-    shouldDisableSnap: event => event.button === 2 || event.shiftKey,
+    currentPositionRadius: 4,
     hoverText: {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: "Click and drag the edge circles",
         selectedText: "",
     },
-    trends: [],
-    appearance: {
-        strokeStyle: "#000000",
-        strokeWidth: 1,
-        strokeDasharray: "Solid",
-        edgeStrokeWidth: 1,
-        edgeFill: "#FFFFFF",
-        edgeStroke: "#000000",
-        r: 6,
-    },
+    channels: [],
 }
 
 /**
- * Draw trendlines by hand: `<chart-trend-line>`.
+ * Regression channel over a chosen range: `<chart-standard-deviation-channel>`.
  *
- * Two clicks make a line — the first fixes one end, the second the other, with the line
- * following the pointer in between. Once drawn, a line can be moved whole or by either
- * end.
- *
- * **The tool does not own the lines.** It reports them through `onComplete` and expects
- * `trends` to be set back. That is deliberate: the application decides what to keep,
- * what to persist, and what to undo — a drawing tool that quietly owned its own state
- * could not be part of a document that gets saved.
+ * Two clicks pick the range; the channel is then computed from the closes inside it.
+ * Nothing about the line's position is chosen by hand, which is what separates this from
+ * a trendline — it reports what the data did, not what the eye saw.
  */
-export class TrendLine extends ElementBase {
+export class StandardDeviationChannel extends ElementBase {
     #props
     #current = null
     #override = null
     #mouseMoved = false
 
+    #wrappers = []
+    #temporary = null
+    #indicator = null
+
     nodes = []
 
     constructor() {
         super()
-        this.#props = defineProperties(this, trendLineDefaults)
+        this.#props = defineProperties(this, standardDeviationChannelDefaults)
 
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
-        this.getSelectionState = isHoverForInteractiveType("trends").bind(this)
+        this.getSelectionState = isHoverForInteractiveType("channels").bind(this)
     }
 
-    /** What `isHoverForInteractiveType` reads. */
     get interactiveProps() {
         return this.#props
     }
@@ -86,53 +82,31 @@ export class TrendLine extends ElementBase {
         if (this.isConnected) this.#build()
     }
 
-    #wrappers = []
-    #temporary = null
-    #indicator = null
-
-    /**
-     * Update children in place rather than rebuilding.
-     *
-     * Same reason as `EachTrendLine`: hover and drag state live on those elements, so
-     * replacing them mid-gesture destroys the state the gesture needs. Wrappers are added
-     * and removed only when the number of trendlines actually changes.
-     */
     #build() {
         const props = this.#props
 
-        while (this.#wrappers.length > props.trends.length) {
-            this.#wrappers.pop().remove()
-        }
-
-        while (this.#wrappers.length < props.trends.length) {
-            const wrapper = document.createElement("chart-each-trend-line")
+        while (this.#wrappers.length > props.channels.length) this.#wrappers.pop().remove()
+        while (this.#wrappers.length < props.channels.length) {
+            const wrapper = document.createElement("chart-each-linear-regression-channel")
             this.#wrappers.push(wrapper)
             this.append(wrapper)
         }
 
         this.nodes = [...this.#wrappers]
 
-        props.trends.forEach((each, index) => {
+        props.channels.forEach((each, index) => {
             const appearance = isDefined(each.appearance)
                 ? { ...props.appearance, ...each.appearance }
                 : props.appearance
 
             Object.assign(this.#wrappers[index], {
                 index,
-                type: each.type ?? props.type,
                 selected: each.selected,
                 x1Value: getValueFromOverride(this.#override, index, "x1Value", each.start[0]),
-                y1Value: getValueFromOverride(this.#override, index, "y1Value", each.start[1]),
                 x2Value: getValueFromOverride(this.#override, index, "x2Value", each.end[0]),
-                y2Value: getValueFromOverride(this.#override, index, "y2Value", each.end[1]),
-                strokeStyle: appearance.strokeStyle,
-                strokeWidth: appearance.strokeWidth,
-                strokeDasharray: appearance.strokeDasharray,
-                edgeStroke: appearance.edgeStroke,
-                edgeFill: appearance.edgeFill,
-                edgeStrokeWidth: appearance.edgeStrokeWidth,
-                r: appearance.r,
-                hoverText: { ...trendLineDefaults.hoverText, ...props.hoverText },
+                appearance,
+                snapTo: props.snapTo,
+                hoverText: isDefined(each.hoverText) ? { ...props.hoverText, ...each.hoverText } : props.hoverText,
                 onDrag: this.#handleDragLine,
                 onDragComplete: this.#handleDragLineComplete,
             })
@@ -140,11 +114,10 @@ export class TrendLine extends ElementBase {
             this.#wrappers[index].update()
         })
 
-        // The line being drawn right now, following the pointer
         const drawing = isDefined(this.#current) && isDefined(this.#current.end)
 
         if (drawing && this.#temporary === null) {
-            this.#temporary = document.createElement("chart-interactive-straight-line")
+            this.#temporary = document.createElement("chart-each-linear-regression-channel")
             this.append(this.#temporary)
         } else if (!drawing && this.#temporary !== null) {
             this.#temporary.remove()
@@ -153,14 +126,13 @@ export class TrendLine extends ElementBase {
 
         if (drawing) {
             Object.assign(this.#temporary, {
-                type: props.type,
+                interactive: false,
                 x1Value: this.#current.start[0],
-                y1Value: this.#current.start[1],
                 x2Value: this.#current.end[0],
-                y2Value: this.#current.end[1],
-                strokeStyle: props.appearance.strokeStyle,
-                strokeWidth: props.appearance.strokeWidth,
+                appearance: props.appearance,
+                hoverText: props.hoverText,
             })
+            this.#temporary.update()
         }
 
         if (this.#indicator === null) {
@@ -170,12 +142,11 @@ export class TrendLine extends ElementBase {
 
         Object.assign(this.#indicator, {
             enabled: props.enabled,
-            snap: props.snap,
-            shouldDisableSnap: props.shouldDisableSnap,
+            snap: true,
             snapTo: props.snapTo,
             r: props.currentPositionRadius,
             stroke: props.currentPositionStroke,
-            opacity: props.currentPositionstrokeOpacity,
+            opacity: props.currentPositionOpacity,
             strokeWidth: props.currentPositionStrokeWidth,
             onMouseDown: this.#handleStart,
             onClick: this.#handleEnd,
@@ -183,11 +154,11 @@ export class TrendLine extends ElementBase {
         })
     }
 
-    #handleStart = (event, xyValue, moreProps) => {
+    #handleStart = (event, xyValue) => {
         if (isNotDefined(this.#current) || isNotDefined(this.#current.start)) {
             this.#mouseMoved = false
             this.setInteractiveState({ current: { start: xyValue, end: null } })
-            this.#props.onStart?.(event, moreProps)
+            this.#props.onStart?.()
         }
     }
 
@@ -198,26 +169,16 @@ export class TrendLine extends ElementBase {
         }
     }
 
-    /**
-     * The second click completes the line — but only if the pointer actually moved.
-     * Without that check, a single click on empty chart would leave a zero-length line.
-     */
     #handleEnd = (event, xyValue, moreProps) => {
         if (!this.#mouseMoved || !isDefined(this.#current) || !isDefined(this.#current.start)) return
 
-        const newTrends = [
-            ...this.#props.trends.map(each => ({ ...each, selected: false })),
-            {
-                start: this.#current.start,
-                end: xyValue,
-                selected: true,
-                appearance: this.#props.appearance,
-                type: this.#props.type,
-            },
+        const newChannels = [
+            ...this.#props.channels.map(each => ({ ...each, selected: false })),
+            { start: this.#current.start, end: xyValue, selected: true, appearance: this.#props.appearance },
         ]
 
-        this.setInteractiveState({ current: null, override: null })
-        this.#props.onComplete?.(event, newTrends, moreProps)
+        this.setInteractiveState({ current: null })
+        this.#props.onComplete?.(event, newChannels, moreProps)
     }
 
     #handleDragLine = (event, index, newXYValue) => {
@@ -229,20 +190,20 @@ export class TrendLine extends ElementBase {
 
         const override = this.#override
 
-        const newTrends = this.#props.trends.map((each, index) =>
+        const newChannels = this.#props.channels.map((each, index) =>
             index === override.index
                 ? {
                       ...each,
-                      start: [override.x1Value, override.y1Value],
-                      end: [override.x2Value, override.y2Value],
+                      start: [override.x1Value, each.start[1]],
+                      end: [override.x2Value, each.end[1]],
                       selected: true,
                   }
-                : { ...each, selected: false },
+                : each,
         )
 
         this.setInteractiveState({ override: null })
-        this.#props.onComplete?.(event, newTrends, moreProps)
+        this.#props.onComplete?.(event, newChannels, moreProps)
     }
 }
 
-define("chart-trend-line", TrendLine)
+define("chart-standard-deviation-channel", StandardDeviationChannel)

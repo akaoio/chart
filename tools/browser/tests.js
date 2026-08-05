@@ -1137,6 +1137,402 @@ TESTS["đổi property của một phần tử thì chart vẽ lại"] = async (
     return t.checks
 }
 
+/** Kéo chuột theo đường chéo từ một điểm tới điểm khác, có bấm giữ. */
+const dragOn = async (canvas, from, to) => {
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    const at = (type, target, [x, y], extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, {
+                clientX: box.left + x,
+                clientY: box.top + y,
+                bubbles: true,
+                composed: true,
+                button: 0,
+                ...extra,
+            }),
+        )
+
+    at("mouseenter", rect, from)
+    at("mousemove", window, from)
+    await settle(2)
+    at("mousedown", rect, from, { buttons: 1 })
+    await settle(1)
+    // qua một điểm giữa: kéo một phát tới đích thì vài công cụ không kịp thấy là đang kéo
+    at("mousemove", window, [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2], { buttons: 1 })
+    await settle(1)
+    at("mousemove", window, to, { buttons: 1 })
+    await settle(2)
+    at("mouseup", window, to, { buttons: 0 })
+    // Trình duyệt thật vẫn phát `click` sau khi kéo; chỗ nào không muốn nó thì đã có
+    // cửa chặn của EventCapture ("kéo rồi thì không tính là bấm").
+    at("click", rect, to)
+    await settle(2)
+}
+
+/** Đếm pixel khác trống trên lớp canvas chuột — nơi mọi công cụ vẽ. */
+const mouseLayerPixels = canvas => {
+    const context = canvas.getCanvasContexts().mouseCoord
+    const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+    let total = 0
+    for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) total++
+    return total
+}
+
+TESTS["vẽ được quạt Gann bằng hai lần bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-gann-fan-tool", {
+        enabled: true,
+        fans: [],
+        onComplete: (event, fans) => completed.push(fans),
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 120)
+    await hoverAt(canvas, 450, 280)
+
+    t.ok("có quạt tạm bám theo chuột", tool.querySelector("chart-gann-fan") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 280)
+
+    t.is("onComplete được gọi một lần", completed.length, 1)
+    t.is("và báo về đúng một quạt", completed[0].length, 1)
+    t.not("hai đầu của tia 1/1 khác nhau", String(completed[0][0].startXY), String(completed[0][0].endXY))
+
+    // dựng lại với quạt vừa vẽ để đếm chín tia thật sự được vẽ ra
+    cleanup()
+    const second = mountWithTool("chart-gann-fan-tool", { enabled: false, fans: completed[0] })
+    await settle()
+
+    const fan = second.tool.querySelector("chart-gann-fan")
+    t.ok("quạt đã lưu được dựng lại", fan !== null)
+    t.gt("quạt vẽ thật ra pixel", mouseLayerPixels(second.canvas), 500)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kênh song song: hai lần bấm ra đường, lần thứ ba đặt bề rộng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-equidistant-channel", {
+        enabled: true,
+        channels: [],
+        onComplete: (event, channels) => completed.push(channels),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 150)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 500, 220)
+    await clickAt(canvas, 500, 220)
+
+    t.is("hai lần bấm chưa xong — còn phải đặt bề rộng", completed.length, 0)
+
+    // lần ba không bấm mà chỉ di: dy chạy theo chuột
+    await hoverAt(canvas, 500, 300)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 500, 300)
+
+    t.is("lần bấm thứ ba mới hoàn thành", completed.length, 1)
+    t.is("và báo về đúng một kênh", completed[0].length, 1)
+    t.ok("kênh có bề rộng khác 0", Math.abs(completed[0][0].dy) > 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fibonacci-retracement", {
+        enabled: true,
+        retracements: [],
+        onComplete: (event, retracements) => completed.push(retracements),
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 120)
+    await hoverAt(canvas, 500, 300)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 500, 300)
+
+    t.is("onComplete được gọi một lần", completed.length, 1)
+    t.is("và báo về đúng một bộ mức", completed[0].length, 1)
+
+    cleanup()
+    const second = mountWithTool("chart-fibonacci-retracement", { enabled: false, retracements: completed[0] })
+    await settle()
+
+    const each = second.tool.querySelector("chart-each-fib-retracement")
+    t.ok("wrapper được dựng", each !== null)
+    t.is("sáu mức là sáu đường", each.querySelectorAll("chart-interactive-straight-line").length, 6)
+    t.is("mỗi mức có một nhãn", each.querySelectorAll("chart-interactive-label").length, 6)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kênh hồi quy dựng từ dữ liệu nằm giữa hai lần bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-standard-deviation-channel", {
+        enabled: true,
+        channels: [],
+        onComplete: (event, channels) => completed.push(channels),
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 150)
+    await hoverAt(canvas, 550, 150)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 550, 150)
+
+    t.is("onComplete được gọi một lần", completed.length, 1)
+    // kênh chỉ nhớ hai mốc; hình của nó do dữ liệu nằm giữa quyết định
+    t.ok("kênh có mốc đầu và mốc cuối", Array.isArray(completed[0][0].start) && Array.isArray(completed[0][0].end))
+    t.not("hai mốc x khác nhau", String(completed[0][0].start[0]), String(completed[0][0].end[0]))
+
+    cleanup()
+    const second = mountWithTool("chart-standard-deviation-channel", { enabled: false, channels: completed[0] })
+    await settle()
+    t.gt("kênh vẽ thật ra pixel", mouseLayerPixels(second.canvas), 300)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["đặt được nhãn chữ bằng một lần bấm, rồi kéo đi"] = async () => {
+    const t = makeChecker()
+
+    const chosen = []
+    const dragged = []
+    const { canvas, tool } = mountWithTool("chart-interactive-text-tool", {
+        enabled: true,
+        textList: [],
+        onChoosePosition: (event, text) => chosen.push(text),
+        onDragComplete: (event, list) => dragged.push(list),
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 200)
+
+    t.is("một lần bấm là đủ", chosen.length, 1)
+    t.ok("nhãn có chỗ đứng", Array.isArray(chosen[0].position))
+    t.ok("và có chữ mặc định", typeof chosen[0].text === "string")
+
+    // đặt nhãn vào rồi kéo nó đi
+    tool.textList = [{ ...chosen[0], selected: true }]
+    await settle()
+
+    const state = canvas.getState()
+    const at = chosen[0].position
+    const x = state.xScale(at[0])
+    const y = state.chartConfigs[0].yScale(at[1])
+
+    // Phải vẽ một lần trước đã: bề rộng chữ chỉ canvas mới đo được, mà chưa đo thì
+    // chưa biết hộp rộng bao nhiêu để mà trỏ vào.
+    await hoverAt(canvas, x, y)
+    await dragOn(canvas, [x, y], [x + 90, y + 70])
+
+    t.is("kéo xong thì onDragComplete báo lại", dragged.length, 1)
+
+    if (dragged.length > 0) {
+        const moved = dragged[0][0].position
+        t.gt("nhãn dịch sang phải", moved[0], at[0])
+        t.ok("và đi xuống", moved[1] < at[1])
+    }
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["cảnh báo giá: kéo thì đổi giá, bấm dấu ✕ thì xoá"] = async () => {
+    const t = makeChecker()
+
+    const dragged = []
+    const deleted = []
+
+    const alert = {
+        id: "a1",
+        draggable: true,
+        yValue: 0,
+        bgFill: "#FFFFFF",
+        stroke: "#6574CD",
+        strokeDasharray: "ShortDash2",
+        strokeWidth: 1,
+        textFill: "#6574CD",
+        fontFamily: "sans-serif",
+        fontSize: 12,
+        fontStyle: "normal",
+        fontWeight: "normal",
+        text: "Alert",
+        selected: false,
+        textBox: {
+            height: 24,
+            left: 20,
+            padding: { left: 10, right: 5 },
+            closeIcon: { padding: { left: 5, right: 8 }, width: 8 },
+        },
+        edge: {
+            stroke: "#6574CD",
+            strokeOpacity: 1,
+            strokeWidth: 1,
+            fill: "#FFFFFF",
+            fillOpacity: 1,
+            orient: "right",
+            at: "right",
+            arrowWidth: 10,
+            dx: 0,
+            rectWidth: 50,
+            rectHeight: 20,
+            displayFormat: value => value.toFixed(2),
+        },
+    }
+
+    const { canvas, tool } = mountWithTool("chart-interactive-y-coordinate-tool", {
+        yCoordinateList: [],
+        onDragComplete: (event, list) => dragged.push(list),
+        onDelete: (event, each) => deleted.push(each),
+    })
+    await settle()
+
+    // đặt cảnh báo vào giữa khung giá đang hiển thị
+    const state = canvas.getState()
+    const [low, high] = state.chartConfigs[0].yScale.domain()
+    const price = (low + high) / 2
+    tool.yCoordinateList = [{ ...alert, yValue: price }]
+    await settle()
+
+    const yOf = value => canvas.getState().chartConfigs[0].yScale(value)
+    const lineY = Math.round(yOf(price))
+
+    t.gt("cảnh báo vẽ thật ra pixel", mouseLayerPixels(canvas), 200)
+
+    // kéo đường xuống: giá phải giảm
+    await dragOn(canvas, [400, lineY], [400, lineY + 60])
+
+    t.is("kéo xong thì onDragComplete báo lại", dragged.length, 1)
+    if (dragged.length > 0) t.ok("giá đã giảm", dragged[0][0].yValue < price)
+
+    // Dấu ✕ nằm sau chữ trong nhãn, mà chữ rộng bao nhiêu thì chỉ canvas mới biết — nên
+    // dò dọc theo đường thay vì đoán một toạ độ.
+    const closeIcon = tool.querySelector("chart-clickable-shape")
+    t.ok("có dấu ✕", closeIcon !== null)
+
+    const responds = []
+    for (let x = 20; x <= 200; x += 2) {
+        await hoverAt(canvas, x, lineY)
+        if (closeIcon.moreProps?.hovering === true) responds.push(x)
+    }
+
+    t.gt("dấu ✕ có chỗ đứng riêng trên đường", responds.length, 0)
+    t.ok("và chỉ chiếm một khúc nhỏ", responds.length < 20)
+
+    const middle = responds[Math.floor(responds.length / 2)]
+    await pastDoubleClickWindow()
+    await clickAt(canvas, middle, lineY)
+
+    t.is("bấm dấu ✕ thì onDelete báo lại", deleted.length, 1)
+    if (deleted.length > 0) t.is("và báo đúng cảnh báo ấy", deleted[0].id, "a1")
+
+    // ngay cạnh đó, trên chính đường ấy, bấm không xoá gì
+    deleted.length = 0
+    await pastDoubleClickWindow()
+    await clickAt(canvas, responds[responds.length - 1] + 30, lineY)
+    t.is("bấm cạnh dấu ✕ thì không xoá", deleted.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["quét chọn một khoảng bằng cách kéo"] = async () => {
+    const t = makeChecker()
+
+    const brushed = []
+    const { canvas } = mountWithTool("chart-brush", {
+        enabled: true,
+        onBrush: selection => brushed.push(selection),
+    })
+    await settle()
+
+    await dragOn(canvas, [200, 120], [520, 300])
+
+    t.is("kéo xong thì onBrush báo lại", brushed.length, 1)
+
+    if (brushed.length > 0) {
+        const { start, end } = brushed[0]
+        t.ok("có mốc đầu", start !== undefined && start.xValue !== undefined)
+        t.ok("có mốc cuối", end !== undefined && end.xValue !== undefined)
+        t.gt("quét sang phải nên mốc cuối lớn hơn", end.xValue, start.xValue)
+        t.ok("kéo xuống nên giá cuối thấp hơn", end.yValue < start.yValue)
+    }
+
+    // bấm mà không kéo thì không phải là một lần quét
+    brushed.length = 0
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 300, 200)
+    t.is("bấm suông không tính là quét", brushed.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
+/**
+ * Chỗ bản port CỐ TÌNH khác bản gốc.
+ *
+ * `isHover` của ChannelWithArea bên bản gốc đưa toạ độ pixel vào một hàm chờ toạ độ giá
+ * trị, nên thân kênh không bao giờ trỏ vào được — quét cả khung ở bản gốc trúng 0/68.961
+ * điểm. Bản port bỏ lần nhân thang thừa ấy; bài này đo kết quả trong chart thật.
+ */
+TESTS["thân kênh song song trỏ vào được — chỗ bản gốc trỏ mãi không trúng"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, tool } = mountWithTool("chart-equidistant-channel", {
+        enabled: false,
+        channels: [{ startXY: [20, 0], endXY: [60, 0], dy: 0, selected: false }],
+    })
+    await settle()
+
+    // đặt kênh vào đúng khung giá đang hiển thị
+    const state = canvas.getState()
+    const [low, high] = state.chartConfigs[0].yScale.domain()
+    const startPrice = low + (high - low) * 0.4
+    const endPrice = low + (high - low) * 0.6
+    const spread = (high - low) * 0.1
+
+    tool.channels = [{ startXY: [20, startPrice], endXY: [60, endPrice], dy: spread, selected: false }]
+    await settle()
+
+    const each = tool.querySelector("chart-each-equidistant-channel")
+    const channel = each.querySelector("chart-channel-with-area")
+    t.ok("kênh được dựng", channel !== null)
+
+    const xOf = value => canvas.getState().xScale(value)
+    const yOf = value => canvas.getState().chartConfigs[0].yScale(value)
+
+    // đi vào đúng giữa đường thứ nhất
+    const midX = (xOf(20) + xOf(60)) / 2
+    const midY = (yOf(startPrice) + yOf(endPrice)) / 2
+
+    await hoverAt(canvas, midX, midY)
+    t.ok("trỏ vào thân kênh thì kênh biết", channel.moreProps?.hovering === true)
+
+    // ra xa thì thôi
+    await hoverAt(canvas, midX, midY - 90)
+    t.ok("ra xa thì thôi", channel.moreProps?.hovering === false)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

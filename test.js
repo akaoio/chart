@@ -46,11 +46,41 @@ const suites = [
     ],
     [
         await import("./tools/golden/cases/interactive.mjs"),
-        {
-            ...(await import("./src/interactive/utils.js")),
-            ...(await import("./src/interactive/components/InteractiveStraightLine.js")),
-            ...(await import("./src/interactive/ZoomButtons.js")),
-        },
+        await (async () => {
+            const text = await import("./src/interactive/components/InteractiveText.js")
+            const closeIcon = await import("./src/interactive/components/ClickableShape.js")
+            const alert = await import("./src/interactive/components/InteractiveYCoordinate.js")
+
+            return {
+                ...(await import("./src/interactive/utils.js")),
+                ...(await import("./src/interactive/components/InteractiveStraightLine.js")),
+                ...(await import("./src/interactive/components/ChannelWithArea.js")),
+                ...(await import("./src/interactive/components/LinearRegressionChannelWithArea.js")),
+                ...(await import("./src/interactive/components/GannFan.js")),
+                ...(await import("./src/interactive/ZoomButtons.js")),
+
+                fibRetracementLines: (await import("./src/interactive/wrapper/EachFibRetracement.js")).fibLines,
+
+                // Ba thứ dưới đây nhớ kết quả đo giữa lần vẽ và lần hỏi hover. Bản gốc
+                // nhớ trong chính thực thể component; bản port nhớ trong một `cache` mà
+                // phần tử giữ. Ba dòng này chỉ nối lại đúng cặp ấy — không có logic nào.
+                textDrawThenHover: (context, drawMoreProps, hoverMoreProps, props) => {
+                    const cache = {}
+                    text.drawInteractiveText(context, drawMoreProps, props, cache)
+                    return text.isTextHover(props, hoverMoreProps, cache.textWidth)
+                },
+                closeIconDrawThenHover: (context, drawMoreProps, hoverMoreProps, props) => {
+                    const cache = {}
+                    closeIcon.drawClickableShape(context, drawMoreProps, props, cache)
+                    return closeIcon.isCloseIconHover(cache.closeIcon, props.textBox, hoverMoreProps.mouseXY)
+                },
+                yCoordinateDrawThenHover: (context, drawMoreProps, hoverMoreProps, props) => {
+                    const cache = {}
+                    alert.drawInteractiveYCoordinate(context, drawMoreProps, props, cache)
+                    return alert.isInteractiveYCoordinateHover(props, hoverMoreProps, cache.width ?? 0)
+                },
+            }
+        })(),
     ],
     [
         await import("./tools/golden/cases/svg.mjs"),

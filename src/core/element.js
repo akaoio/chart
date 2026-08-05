@@ -22,6 +22,27 @@ export const define = (name, constructor) => {
 }
 
 /**
+ * Gộp nhiều lần gọi trong cùng một lượt thành một.
+ *
+ * Cấu hình một phần tử là gán liên tiếp cả chục property; nếu mỗi lần gán lại dựng lại
+ * toàn bộ cây con thì lần dựng đầu nhìn thấy một cấu hình dở dang. Đợi hết microtask thì
+ * cả loạt gán đã xong.
+ */
+export const batched = work => {
+    let queued = false
+
+    return () => {
+        if (queued) return
+        queued = true
+
+        queueMicrotask(() => {
+            queued = false
+            work()
+        })
+    }
+}
+
+/**
  * Give an element a settable JS property per configuration key, each one asking for a
  * redraw when written. `defaults` supplies both the initial values and the key list;
  * `extra` names properties that have no default.
@@ -53,6 +74,10 @@ export const defineProperties = (element, defaults = {}, extra = []) => {
             get: () => props[name],
             set: value => {
                 props[name] = value
+                // Vài phần tử có thứ nhớ sẵn phụ thuộc vào prop — bề rộng chữ đã đo chẳng
+                // hạn — nên chúng cần biết prop nào vừa đổi để bỏ cái nhớ ấy đi. Đây là
+                // chỗ của `componentDidUpdate` bên bản gốc.
+                element.propertyChanged?.(name, value)
                 requestRedraw()
             },
             configurable: true,

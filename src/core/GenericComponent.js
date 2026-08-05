@@ -129,9 +129,17 @@ export class GenericComponent extends ElementBase {
             // pass will call this component moments later. Drawing regardless would hand
             // every series an empty chartConfig — which the original series do not expect
             // and do not survive.
+            //
+            // Và đợi hết microtask rồi mới vẽ, cùng lý do với lần vẽ lại khi đổi property:
+            // gắn vào cây xong mới đặt property là cách viết DOM tự nhiên, mà `append` gọi
+            // connectedCallback ngay tức khắc — vẽ ngay tại đó là vẽ một phần tử chưa cấu
+            // hình xong, rồi nổ ở chỗ hàm vẽ đọc phải một prop chưa ai đặt.
             if (canvas.getState() !== null) {
-                this.refreshFromContext()
-                this.draw({ force: true })
+                queueMicrotask(() => {
+                    if (!this.isConnected || canvas.getState() === null) return
+                    this.refreshFromContext()
+                    this.draw({ force: true })
+                })
             }
         })
     }
