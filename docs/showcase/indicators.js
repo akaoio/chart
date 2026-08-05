@@ -32,8 +32,8 @@ page({
 const price = datum => [datum.high, datum.low]
 
 /** Canvas, pane, axes. Every demo below differs only in what goes inside. */
-const chart = (host, rows, { extents = price, ...options } = {}) =>
-    chartHost(host, rows, { height: 320, yExtents: extents, bars: { wide: rows.length, narrow: 70 }, ...options })
+const chart = (host, rows, options) =>
+    chartHost(host, rows, { height: 320, bars: { wide: rows.length, narrow: 70 }, ...options })
 
 demo({
     title: "Moving averages",
@@ -108,7 +108,7 @@ demo({
 
         // the pane has to make room for the bands, not just the candles
         const { pane } = chart(stage, rows, {
-            extents: datum => [datum.high, datum.low, datum.bb?.top, datum.bb?.bottom],
+            yExtents: datum => [datum.high, datum.low, datum.bb?.top, datum.bb?.bottom],
         })
 
         const bandSeries = document.createElement("chart-bollinger-series")
@@ -238,7 +238,7 @@ demo({
                         datum.stochastic = value
                     })
                     .accessor(datum => datum.stochastic),
-                extents: [0, 100],
+                yExtents: [0, 100],
                 build: pane => {
                     const series = document.createElement("chart-stochastic-series")
                     series.yAccessor = datum => datum.stochastic
@@ -253,7 +253,7 @@ demo({
                         datum.elderRay = value
                     })
                     .accessor(datum => datum.elderRay),
-                extents: datum => [datum.elderRay?.bullPower, datum.elderRay?.bearPower],
+                yExtents: datum => [datum.elderRay?.bullPower, datum.elderRay?.bearPower],
                 build: pane => {
                     const series = document.createElement("chart-elder-ray-series")
                     series.yAccessor = datum => datum.elderRay
@@ -268,7 +268,7 @@ demo({
                         datum.atr = value
                     })
                     .accessor(datum => datum.atr),
-                extents: datum => datum.atr,
+                yExtents: datum => datum.atr,
                 build: pane => {
                     const series = document.createElement("chart-line-series")
                     Object.assign(series, { yAccessor: datum => datum.atr, strokeStyle: "#2a6df4" })
@@ -282,7 +282,7 @@ demo({
                         datum.force = value
                     })
                     .accessor(datum => datum.force),
-                extents: datum => datum.force,
+                yExtents: datum => datum.force,
                 // triệu, viết gọn — "3,000,000" không lọt vào lề 56px
                 tickFormat: value => `${(value / 1e6).toFixed(1)}M`,
                 build: pane => {
@@ -296,7 +296,7 @@ demo({
         grid(stage, setups, (host, setup) => {
             const { pane } = chart(host, setup.indicator(daily(200)), {
                 height: 180,
-                extents: setup.extents,
+                yExtents: setup.extents,
                 tickFormat: setup.tickFormat,
             })
             setup.build(pane)
@@ -335,7 +335,7 @@ demo({
 
                 const { pane } = chart(host, rows, {
                     height: 200,
-                    extents: datum => [datum.close, datum.other],
+                    yExtents: datum => [datum.close, datum.other],
                 })
 
                 for (const [key, colour] of [

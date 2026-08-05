@@ -1566,7 +1566,7 @@ const mountWithAxes = (axisProps = {}) => {
     canvas.append(pane)
     stage.append(canvas)
 
-    return { canvas, pane, xAxis, yAxis }
+    return { canvas, pane, xAxis, yAxis, data, xAccessor }
 }
 
 const zoomRectFor = (canvas, tag) => canvas.shadowRoot.querySelector(`[data-axis-zoom="${tag}"]`)
@@ -1886,15 +1886,18 @@ TESTS["series bọc trong div vẫn tìm được pane"] = async () => {
 /**
  * Kéo mãi cũng không rời khỏi dữ liệu.
  *
- * `ChartCanvas` giữ hai biến tên `hackyWayToStopPanBeyondBounds__*`: kết quả khung hình
- * trước được nạp lại làm mốc cho khung sau, nên dữ liệu không trôi ra ngoài mép nhanh hơn
- * domain đuổi theo. Cái tên tự nhận là chắp vá và bản port giữ nguyên cả tên — nhưng giữ
- * một thứ vì "bản gốc làm thế" mà không đo xem nó làm gì thì cũng là nợ. Đây là chỗ đo.
+ * Kéo quá tay — hay giật chuột ra hẳn ngoài cửa sổ — thì domain được hỏi nằm hoàn toàn
+ * ngoài dữ liệu. `filterData` trượt cửa sổ ấy về sát mép gần nhất và giữ nguyên bề rộng,
+ * nên chart dừng ở mép chứ không trôi vào khoảng trống và cũng không nổ.
+ *
+ * Bản gốc chữa chuyện này bằng cách nạp lại khung hình trước, qua hai biến nó tự đặt tên
+ * là `hackyWayToStopPanBeyondBounds`. Bản port chữa ở `filterData`, nơi câu trả lời chỉ
+ * phụ thuộc vào dữ liệu và domain được hỏi. Xem docs/parity/core.md.
  */
 TESTS["kéo mãi cũng không kéo chart ra khỏi dữ liệu"] = async () => {
     const t = makeChecker()
 
-    const { canvas } = mountWithAxes()
+    const { canvas, data, xAccessor } = mountWithAxes()
     await settle(4)
 
     const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
@@ -1905,54 +1908,40 @@ TESTS["kéo mãi cũng không kéo chart ra khỏi dữ liệu"] = async () => {
             new MouseEvent(type, { clientX: box.left + x, clientY: box.top + 200, bubbles: true, ...extra }),
         )
 
-    const span = () => {
-        const [from, to] = canvas.getState().xScale.domain()
-        return to - from
-    }
-    const rightEdge = () => canvas.getState().xScale.domain()[1]
+    const domain = () => canvas.getState().xScale.domain()
+    const span = () => domain()[1] - domain()[0]
     const bars = () => canvas.getState().plotData.length
+    const lastX = xAccessor(data[data.length - 1])
 
-    const before = { span: span(), right: rightEdge(), bars: bars() }
-
-    // Kéo sang trái rất xa, nhiều nhịp — tức là đẩy chart về phía tương lai, nơi không
-    // còn dữ liệu nào cả.
-    at("mouseenter", rect, 600)
-    at("mousedown", rect, 600, { buttons: 1 })
-    for (let step = 1; step <= 12; step++) {
-        at("mousemove", window, 600 - step * 60, { buttons: 1 })
-        await settle(1)
+    const drag = async (steps, size) => {
+        at("mouseenter", rect, 700)
+        at("mousedown", rect, 700, { buttons: 1 })
+        for (let step = 1; step <= steps; step++) {
+            at("mousemove", window, 700 - step * size, { buttons: 1 })
+            await settle(1)
+        }
+        at("mouseup", window, 700 - steps * size, { buttons: 0 })
+        await settle(3)
     }
-    at("mouseup", window, 0, { buttons: 0 })
-    await settle(3)
 
-    t.ok("có kéo đi thật", rightEdge() > before.right)
-    t.near("bề rộng khung nhìn giữ nguyên khi kéo", span(), before.span, before.span * 0.02)
+    const before = { span: span(), bars: bars() }
+
+    // Kéo sang trái rất xa: đẩy chart về phía tương lai, nơi không còn dữ liệu nào.
+    await drag(12, 60)
+
+    t.near("bề rộng khung nhìn giữ nguyên", span(), before.span, before.span * 0.02)
     t.gt("vẫn còn dữ liệu trên màn hình", bars(), 0)
+    t.ok("và cây nến cuối cùng vẫn nằm trong khung", domain()[1] >= lastX)
 
-    // và kéo tiếp nữa cũng không làm màn hình trống trơn
-    const afterFirst = bars()
+    // Kéo thêm nữa: đã ở mép rồi thì không đi đâu được nữa.
+    const atEdge = { left: domain()[0], right: domain()[1], bars: bars() }
+    await drag(12, 60)
 
-    at("mouseenter", rect, 600)
-    at("mousedown", rect, 600, { buttons: 1 })
-    for (let step = 1; step <= 12; step++) {
-        at("mousemove", window, 600 - step * 60, { buttons: 1 })
-        await settle(1)
-    }
-    at("mouseup", window, 0, { buttons: 0 })
-    await settle(3)
-
-    t.gt("kéo thêm một lượt nữa vẫn còn dữ liệu", bars(), 0)
-    t.near("và số phiên trên màn hình không tụt dần về 0", bars(), afterFirst, Math.max(4, afterFirst * 0.5))
+    t.near("kéo tiếp không dịch được nữa", domain()[0], atEdge.left, 0.001)
+    t.near("mép phải cũng đứng yên", domain()[1], atEdge.right, 0.001)
+    t.is("và số phiên hiển thị y nguyên", bars(), atEdge.bars)
 
     // Và một cú giật khổng lồ trong MỘT nhịp — chuột bị lôi ra tận ngoài cửa sổ.
-    //
-    // Đây mới là chỗ hai biến `hackyWayToStopPanBeyondBounds__*` thật sự có việc: domain
-    // nhảy hẳn ra ngoài dữ liệu, `filterData` lọc còn số không hàng, và nhánh cuối của nó
-    // đọc `head(plotData)` — với mảng rỗng thì đó là `undefined`, và `xAccessor(undefined)`
-    // NÉM. Hai cái mốc của khung hình trước chặn đúng chỗ ấy: không có gì để lọc thì giữ
-    // nguyên khung hình cũ.
-    //
-    // Bài này bắt được vì `test.browser.js` coi mọi lỗi trong trang là hỏng.
     at("mouseenter", rect, 700)
     at("mousedown", rect, 700, { buttons: 1 })
     at("mousemove", window, -20000, { buttons: 1 })
@@ -1963,7 +1952,8 @@ TESTS["kéo mãi cũng không kéo chart ra khỏi dữ liệu"] = async () => {
     await settle(3)
 
     t.gt("giật một phát ra ngoài vũ trụ cũng không làm chart trắng", bars(), 0)
-    t.ok("và domain vẫn là số", Number.isFinite(rightEdge()))
+    t.ok("và domain vẫn là số", Number.isFinite(domain()[1]))
+    t.near("vẫn đứng đúng ở mép", domain()[0], atEdge.left, 0.001)
 
     cleanup()
     return t.checks

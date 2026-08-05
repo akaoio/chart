@@ -15,6 +15,7 @@
 import { readdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
+import { importMap } from "../import-map.mjs"
 
 const root = fileURLToPath(new URL("../../", import.meta.url))
 
@@ -39,8 +40,47 @@ const eventNames = async () => {
     return names
 }
 
-export const checkDocs = async () => {
+/**
+ * Import map trong mỗi trang trưng bày phải khớp với thứ thư viện thật sự cần.
+ *
+ * Cái map ấy buộc phải viết thẳng vào HTML — trang không qua bước dịch nào, nên không ai
+ * sinh nó ra hộ. Nghĩa là cùng một sự thật ("cần những gói nào, ở đường dẫn nào") nằm ở
+ * hai chỗ: `package.json` và sáu trang HTML. Thêm một dependency mà quên sửa map thì
+ * trang hỏng — nên chỗ này so lại, để cái quên ấy thành một bài kiểm đỏ chứ không phải
+ * một trang trắng.
+ */
+const checkImportMaps = async () => {
     const problems = []
+    const expected = await importMap("../../", { self: "../../src/index.js" })
+
+    for (const file of (await readdir(join(root, "docs/showcase"))).filter(name => name.endsWith(".html"))) {
+        const text = await readFile(join(root, "docs/showcase", file), "utf8")
+        const block = text.match(/<script type="importmap">([\s\S]*?)<\/script>/)
+
+        if (block === null) {
+            problems.push(`docs/showcase/${file}: không có import map`)
+            continue
+        }
+
+        const { imports } = JSON.parse(block[1])
+
+        for (const [name, path] of Object.entries(expected)) {
+            if (imports[name] === undefined) problems.push(`docs/showcase/${file}: thiếu "${name}"`)
+            else if (imports[name] !== path) {
+                problems.push(`docs/showcase/${file}: "${name}" trỏ ${imports[name]}, phải là ${path}`)
+            }
+        }
+
+        for (const name of Object.keys(imports)) {
+            if (expected[name] === undefined) problems.push(`docs/showcase/${file}: thừa "${name}"`)
+        }
+    }
+
+    return problems
+}
+
+export const checkDocs = async () => {
+    const problems = await checkImportMaps()
 
     const tags = new Set()
     for (const file of (await walk(join(root, "src"))).filter(f => f.endsWith(".js"))) {

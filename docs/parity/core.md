@@ -90,11 +90,13 @@ Ràng buộc này đến từ tính năng khoá học TTS nêu trong #1, và đ�
 
 ## Chỗ bản gốc kỳ lạ, cố ý giữ nguyên
 
-**`hackyWayToStopPanBeyondBounds__plotData` / `__domain` — đã đo, giữ nguyên.** Tên biến tự nhận là chắp vá, và kế hoạch ban đầu định làm lại cho tử tế. Đo rồi thì nó không phải rác, mà là thứ **chặn một lần ném lỗi**.
+**`hackyWayToStopPanBeyondBounds__plotData` / `__domain` — đã bỏ, chữa ở gốc.** Bản gốc giữ hai biến ấy để nhớ khung hình trước và trả lại nó khi kéo quá tay. Chính cái tên đã tự nhận là chắp vá, và nó chắp vá thật: `filterData` là một hàm thuần, nhưng câu trả lời của nó lại phụ thuộc vào chuyện trước đó đã kéo những gì.
 
-Trong lúc kéo, kết quả khung hình trước được nạp lại làm `currentPlotData`/`currentDomain`. Giật chuột một phát đủ mạnh — ra ngoài cửa sổ chẳng hạn — thì domain nhảy hẳn khỏi dữ liệu, `filterData` lọc còn **không hàng nào**, và nhánh cuối của nó đọc `head(plotData)`; với mảng rỗng đó là `undefined`, rồi `xAccessor(undefined)` ném. Hai cái mốc ấy chặn đúng chỗ đó: không có gì để lọc thì giữ nguyên khung hình cũ.
+Đo ra thì nó đang chặn một lần **ném lỗi**: kéo quá tay thì domain trôi tới chỗ gần như không còn điểm nào, nhánh cuối cắt danh sách còn rỗng, rồi `xAccessor(head([]))` nổ.
 
-Gỡ chúng ra rồi chạy lại bộ kiểm trình duyệt: `TypeError: Cannot read properties of undefined`. Nên giữ nguyên cả cơ chế lẫn cái tên — cái tên nói đúng sự thật, và giờ có một bài kiểm nói rõ sự thật ấy là gì (`kéo mãi cũng không kéo chart ra khỏi dữ liệu`).
+Chữa ở đúng chỗ ấy, trong `filterData`: **giới hạn khung nhìn theo chính dữ liệu**. Giữ lại đúng số điểm tối thiểu mà `minPointsPerPxThreshold` đã quy định, rồi đẩy khung nhìn lại đúng lượng tối thiểu để không vượt qua đó. Bề rộng khung nhìn không đổi, kéo tiếp thì đứng yên chứ không giật ngược, và không còn trạng thái nào phải nhớ giữa hai lần gọi — kể cả `currentPlotData`/`currentDomain` trong `options` cũng đã bỏ, vì không ai còn truyền.
+
+Hành vi người dùng thấy vẫn thế: kéo tới mép thì dừng. Bằng chứng là bài `kéo mãi cũng không kéo chart ra khỏi dữ liệu` (9 khẳng định); bỏ phép giới hạn ấy đi thì bài đổ.
 
 **Vẽ lại là phát cho tất cả, không lọc theo pane.** Ban đầu tưởng là thiếu sót và đã viết hẳn một bài kiểm để bắt lỗi — nhưng bài kiểm sai chứ không phải mã. Các pane dùng chung một lớp canvas vừa bị xoá sạch; ai không vẽ lại thì biến mất. Cửa lọc theo pane nằm ở tầng xử lý sự kiện (hover, click, callback), đúng chỗ bản gốc đặt nó.
 

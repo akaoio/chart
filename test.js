@@ -33,9 +33,7 @@ const ISOLATED = {
 
 const only = process.env.GOLDEN_SUITE
 
-const suites = only
-    ? [await ISOLATED[only]()]
-    : [
+const everySuite = [
     [await import("./tools/golden/cases/scales.mjs"), await import("./src/scales/index.js")],
     [await import("./tools/golden/cases/utils.mjs"), await import("./src/core/utils/index.js")],
     [
@@ -106,7 +104,9 @@ const suites = only
             ...(await import("./src/annotations/index.js")),
         },
     ],
-      ]
+]
+
+const suites = only ? [await ISOLATED[only]()] : everySuite
 
 /** Mọi chỗ lệch, kèm đường dẫn tới đúng ô sai — không dừng ở chỗ đầu tiên. */
 const differences = (expected, actual, path = "") => {

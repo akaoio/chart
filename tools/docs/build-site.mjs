@@ -12,13 +12,14 @@
  * Chromium là **cùng một trang, cùng một mã**. Viết lại đường dẫn lúc build thì mất đúng
  * điều đó, và mất luôn khả năng nói "cái anh thấy là cái đã được kiểm".
  *
- * Chỉ những gói d3 mà import map có nhắc tới mới được chép — chép cả node_modules là chép
- * hàng chục nghìn file không ai nạp tới.
+ * Chỉ những gói trình duyệt thật sự hỏi tới mới được chép — chép cả node_modules là chép
+ * hàng chục nghìn file không ai nạp.
  */
 
-import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises"
+import { cp, mkdir, rm, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
+import { bareSpecifiers } from "../import-map.mjs"
 
 const root = fileURLToPath(new URL("../../", import.meta.url))
 const site = join(root, "_site")
@@ -42,9 +43,11 @@ export const build = async () => {
     await cp(join(root, "LICENSE"), join(site, "LICENSE"))
 
     const modules = join(root, "node_modules")
-    const wanted = (await readdir(modules)).filter(name => name.startsWith("d3-") || name === "internmap")
+    // Đúng những gói trình duyệt sẽ hỏi tới, tính ở tools/import-map.mjs — cùng một
+    // nguồn với import map trong trang và với bộ kiểm.
+    const wanted = await bareSpecifiers()
 
-    if (wanted.length === 0) throw new Error("Không thấy gói d3 nào — chạy `npm install` trước.")
+    if (wanted.length === 0) throw new Error("Không thấy gói nào — chạy `npm install` trước.")
 
     for (const name of wanted) {
         await cp(join(modules, name), join(site, "node_modules", name), { recursive: true })

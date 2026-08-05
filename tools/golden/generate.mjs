@@ -443,9 +443,7 @@ const ISOLATED = { locale: () => import("./cases/locale.mjs") }
 
 const only = process.env.GOLDEN_SUITE
 
-const suites = only
-    ? [[await ISOLATED[only](), scales]]
-    : [
+const everySuite = [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
     [await import("./cases/chartdata.mjs"), chartData],
@@ -453,7 +451,9 @@ const suites = only
     [await import("./cases/svg.mjs"), svgApi],
     [await import("./cases/indicators.mjs"), indicators],
     [await import("./cases/interactive.mjs"), interactiveApi],
-      ]
+]
+
+const suites = only ? [[await ISOLATED[only](), scales]] : everySuite
 
 const { execSync } = await import("node:child_process")
 const commit = execSync("git rev-parse --short HEAD", { cwd: source }).toString().trim()

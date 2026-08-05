@@ -41,11 +41,48 @@ const extentsWrapper = (useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
     const filterData = (data, inputDomain, xAccessor, initialXScale, options = {}) => {
         if (useWholeData) return { plotData: data, domain: inputDomain }
 
-        const { currentPlotData, currentDomain, fallbackStart, fallbackEnd, ignoreThresholds = false } = options
+        const { fallbackStart, fallbackEnd, ignoreThresholds = false } = options
 
         let left = head(inputDomain)
         let right = last(inputDomain)
         let clampedDomain = inputDomain
+
+        /**
+         * Kéo đến đâu thì dừng: giới hạn của khung nhìn, tính từ chính dữ liệu.
+         *
+         * Kéo quá tay — hay giật chuột ra ngoài cửa sổ — thì domain được hỏi trôi tới chỗ
+         * gần như không còn điểm nào bên trong, và cái ngưỡng "ít nhất bấy nhiêu điểm mỗi
+         * pixel" ở dưới không còn cách nào đáp ứng. Bản gốc lúc ấy trả lại **khung hình
+         * trước**, qua hai biến nó tự đặt tên là `hackyWayToStopPanBeyondBounds`: đúng
+         * kết quả, nhưng phải nhớ trạng thái giữa các lần gọi, và nếu không nhớ thì nhánh
+         * cuối cắt danh sách còn rỗng rồi `xAccessor(head([]))` ném.
+         *
+         * Ở đây giới hạn được tính thẳng: giữ lại **đúng số điểm tối thiểu** mà chính
+         * `minPointsPerPxThreshold` đã quy định, rồi đẩy khung nhìn lại đúng lượng tối
+         * thiểu để không vượt qua đó. Bề rộng khung nhìn không đổi, kéo tiếp thì đứng yên
+         * chứ không giật ngược, và câu trả lời chỉ phụ thuộc vào dữ liệu cùng domain được
+         * hỏi — không phụ thuộc vào chuyện trước đó đã kéo những gì.
+         */
+        if (data.length > 0) {
+            const chartWidth = last(initialXScale.range()) - head(initialXScale.range())
+            const keep = Math.min(data.length, showMinThreshold(chartWidth, minPointsPerPxThreshold))
+
+            const furthestRight = xAccessor(data[data.length - keep]).valueOf()
+            const furthestLeft = xAccessor(data[keep - 1]).valueOf()
+
+            const shift =
+                left.valueOf() > furthestRight
+                    ? furthestRight - left.valueOf()
+                    : right.valueOf() < furthestLeft
+                      ? furthestLeft - right.valueOf()
+                      : 0
+
+            if (shift !== 0) {
+                left = left.valueOf() + shift
+                right = right.valueOf() + shift
+                clampedDomain = [left, right]
+            }
+        }
 
         let filteredData = getFilteredResponse(data, left, right, xAccessor)
 
@@ -97,12 +134,14 @@ const extentsWrapper = (useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
             }
         }
 
-        const plotData =
-            currentPlotData ?? filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold))
+        // Ít nhất một điểm. Dữ liệu có mà biểu đồ trống thì không bao giờ là câu trả lời
+        // đúng — và `head([])` là `undefined`, thứ mà `xAccessor` không chịu nổi.
+        const wanted = Math.max(1, showMax(width, pointsPerPxThreshold))
+        const plotData = filteredData.slice(Math.max(0, filteredData.length - wanted))
 
         return {
             plotData,
-            domain: currentDomain ?? [xAccessor(head(plotData)), xAccessor(last(plotData))],
+            domain: [xAccessor(head(plotData)), xAccessor(last(plotData))],
         }
     }
 

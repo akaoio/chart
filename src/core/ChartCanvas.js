@@ -123,8 +123,6 @@ export class ChartCanvas extends ElementBase {
     // Named as in the original, which is honest about what it is: while a pan is in
     // flight the previous frame's result is fed back in, so the data cannot run away
     // past the edge faster than the domain follows it.
-    #hackyWayToStopPanBeyondBounds__plotData = null
-    #hackyWayToStopPanBeyondBounds__domain = null
 
     static properties = [
         "data",
@@ -708,10 +706,7 @@ export class ChartCanvas extends ElementBase {
         const { xAccessor, displayXAccessor, xScale: initialXScale, chartConfigs, plotData, filterData, fullData } =
             this.#state
 
-        const { plotData: beforePlotData, domain } = filterData(fullData, newDomain, xAccessor, initialXScale, {
-            currentPlotData: plotData,
-            currentDomain: initialXScale.domain(),
-        })
+        const { plotData: beforePlotData, domain } = filterData(fullData, newDomain, xAccessor, initialXScale)
 
         const nextPlotData = this.#props.postCalculator(beforePlotData)
         const updatedScale = initialXScale.copy().domain(domain)
@@ -833,8 +828,6 @@ export class ChartCanvas extends ElementBase {
             .map(initialXScale.invert)
 
         const { plotData: beforePlotData, domain } = filterData(fullData, newDomain, xAccessor, initialXScale, {
-            currentPlotData: this.#hackyWayToStopPanBeyondBounds__plotData,
-            currentDomain: this.#hackyWayToStopPanBeyondBounds__domain,
             ignoreThresholds: true,
         })
 
@@ -868,13 +861,7 @@ export class ChartCanvas extends ElementBase {
         if (this.#waitingForPan) return
         this.#waitingForPan = true
 
-        this.#hackyWayToStopPanBeyondBounds__plotData ??= this.#state.plotData
-        this.#hackyWayToStopPanBeyondBounds__domain ??= this.#state.xScale.domain()
-
         const newState = this.#panHelper(mousePosition, panStartXScale, dxdy, chartsToPan)
-
-        this.#hackyWayToStopPanBeyondBounds__plotData = newState.plotData
-        this.#hackyWayToStopPanBeyondBounds__domain = newState.xScale.domain()
 
         this.#panInProgress = true
 
@@ -895,8 +882,6 @@ export class ChartCanvas extends ElementBase {
     handlePanEnd = (mousePosition, panStartXScale, dxdy, chartsToPan, event) => {
         const state = this.#panHelper(mousePosition, panStartXScale, dxdy, chartsToPan)
 
-        this.#hackyWayToStopPanBeyondBounds__plotData = null
-        this.#hackyWayToStopPanBeyondBounds__domain = null
         this.#panInProgress = false
 
         this.triggerEvent("panend", state, event)
@@ -1020,10 +1005,7 @@ export class ChartCanvas extends ElementBase {
 
         const newDomain = [x, y].map(initialPinchXScale.invert)
 
-        const { plotData: beforePlotData, domain } = filterData(fullData, newDomain, xAccessor, initialPinchXScale, {
-            currentPlotData: initialPlotData,
-            currentDomain: initialXScale.domain(),
-        })
+        const { plotData: beforePlotData, domain } = filterData(fullData, newDomain, xAccessor, initialPinchXScale)
 
         const plotData = this.#props.postCalculator(beforePlotData)
         const updatedScale = initialXScale.copy().domain(domain)

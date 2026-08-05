@@ -31,6 +31,11 @@ npm run docs:site     # gather _site/
 npm run docs:check    # serve it from its own root and drive every page in Chromium
 ```
 
+The import map in each page is checked too, against the set of bare specifiers actually
+reachable from `src/` — computed, not guessed, in `tools/import-map.mjs`. The same
+computation tells the browser test suite what to serve and the site build what to copy, so
+adding a dependency cannot leave one of the three behind.
+
 The workflow runs both before it deploys, so a broken page stops the release rather than
 reaching a reader.
 

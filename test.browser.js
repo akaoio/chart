@@ -7,12 +7,12 @@
  * Mỗi bài phải khẳng định một điều CÓ THỂ SAI. "Không nổ" không phải là kết quả.
  */
 
-import { readFile, readdir } from "node:fs/promises"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 import { listen, staticServer } from "./tools/static-server.mjs"
 import { paintedPixels } from "./tools/browser/painted.mjs"
+import { importMap as buildImportMap } from "./tools/import-map.mjs"
 
 const root = fileURLToPath(new URL(".", import.meta.url))
 
@@ -20,30 +20,10 @@ const root = fileURLToPath(new URL(".", import.meta.url))
  * Import map cho d3.
  *
  * Trình duyệt không tự phân giải `import { extent } from "d3-array"` — tên trần là việc
- * của bundler hoặc của import map. Bản port dùng d3 nên trang nào nạp nó bằng ESM thuần
- * cũng cần đúng cái map này; ghi trong README luôn, vì đây là điều người dùng phải biết
- * chứ không phải mẹo riêng của bộ test.
+ * của bundler hoặc của import map. Danh sách gói được **tính** ở `tools/import-map.mjs`,
+ * cùng một nguồn với trang trưng bày và với script gom trang tĩnh.
  */
-const buildImportMap = async () => {
-    const modules = join(root, "node_modules")
-    const imports = {}
-
-    for (const name of await readdir(modules)) {
-        if (!name.startsWith("d3-") && name !== "internmap") continue
-
-        try {
-            const manifest = JSON.parse(await readFile(join(modules, name, "package.json"), "utf8"))
-            const entry = manifest.module ?? manifest.exports?.["."]?.default ?? manifest.main
-            if (entry) imports[name] = `/node_modules/${name}/${entry.replace(/^\.\//, "")}`
-        } catch {
-            // gói không đọc được thì bỏ qua — thiếu sẽ lộ ra ngay khi trang nạp
-        }
-    }
-
-    return JSON.stringify({ imports }, null, 4)
-}
-
-const importMap = await buildImportMap()
+const importMap = JSON.stringify({ imports: await buildImportMap("/") }, null, 4)
 
 const server = staticServer({
     root,
