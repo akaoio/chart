@@ -100,6 +100,27 @@ export const defineProperties = (element, defaults = {}, extra = []) => {
         Object.defineProperty(element, name, {
             get: getter === undefined ? () => props[name] : () => getter.call(element),
             set: value => {
+                /**
+                 * Ghi lại đúng giá trị đang có thì không phải một thay đổi.
+                 *
+                 * Không có phép so này thì mỗi lượt ghi đều phát `propertyChanged` và hẹn một
+                 * redraw — kể cả khi giá trị y nguyên. Mà `propertyChanged` của các công cụ
+                 * vẽ là "dựng lại cây con", và dựng lại thì ghi lại toàn bộ prop của con.
+                 * Vòng ấy tự nuôi: ghi → dựng lại → ghi → dựng lại, khoảng mười lượt mỗi
+                 * giây, mãi mãi.
+                 *
+                 * Đo được trên trang trưng bày công cụ vẽ: một cú chạm khiến `onSelect` của
+                 * trang ghi lại danh sách của cả bảy công cụ, và từ đó biểu đồ không bao giờ
+                 * đứng lại — 37 lần redraw trong 3 giây sau khi tay đã rời ra. Trên điện
+                 * thoại thì đó là đơ. Người dùng thấy nó cùng lúc với chữ "Click to select
+                 * object", vì cả hai đều cần một đối tượng đã vẽ.
+                 *
+                 * `===` là đủ và cũng là đúng: một danh sách vừa `map` ra là một mảng mới nên
+                 * vẫn khác, đúng như nó phải khác; còn số, chuỗi, và hàm đã bind thì bằng
+                 * nhau khi chúng thật sự không đổi.
+                 */
+                if (props[name] === value) return
+
                 props[name] = value
                 // Vài phần tử có thứ nhớ sẵn phụ thuộc vào prop — bề rộng chữ đã đo chẳng
                 // hạn — nên chúng cần biết prop nào vừa đổi để bỏ cái nhớ ấy đi. Đây là

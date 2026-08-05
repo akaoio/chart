@@ -761,6 +761,75 @@ const touchToolTests = async (browser, origin) => {
         results.push({ name: "ngón tay thật: pinch không phải một cú bấm", checks })
     }
 
+    /**
+     * Sau khi tay rời ra, biểu đồ phải ĐỨNG LẠI.
+     *
+     * Đây là bài kiểm cho cái đơ mà người dùng báo — "trình duyệt thường đơ khi xuất hiện
+     * Click to select object". Chữ ấy chỉ là thứ đi kèm: cả nó và cái đơ đều cần một đối
+     * tượng đã vẽ. Cái đơ là một vòng tự nuôi.
+     *
+     * Setter của `defineProperties` từng phát `propertyChanged` và hẹn redraw kể cả khi giá
+     * trị y nguyên. Mà `propertyChanged` của công cụ vẽ là "dựng lại cây con", và dựng lại
+     * thì ghi lại toàn bộ prop của con. Một cú chạm khiến `onSelect` của trang ghi lại danh
+     * sách của cả bảy công cụ, và từ đó biểu đồ không bao giờ đứng lại: đo được 37 lần redraw
+     * trong 3 giây sau khi tay đã rời ra, và không giảm khi chờ lâu hơn.
+     *
+     * Nên bài này đếm redraw trong 2,5 giây **sau** khi cú chạm đã xong. Ngưỡng 20 rộng gấp
+     * đôi con số hiện tại (9) để không đỏ vì một khung hình lẻ, mà vẫn chặn xa dưới 37.
+     */
+    {
+        const checks = []
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        await page.click(`section.demo .controls button:text-is("Trend line")`)
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+        const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
+
+        const first = at(0.3, 0.4)
+        const second = at(0.65, 0.6)
+        await tap(first)
+        await tap(second)
+
+        // Tắt công cụ rồi bỏ chọn: đúng trạng thái người dùng đang ở khi chữ hiện ra.
+        await page.click(`section.demo .controls button:text-is("Trend line")`)
+        await tap(at(0.85, 0.85))
+
+        await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            window.__redraws = 0
+            const redraw = canvas.redraw.bind(canvas)
+            canvas.redraw = () => {
+                window.__redraws++
+                return redraw()
+            }
+        })
+
+        await tap({ x: Math.round((first.x + second.x) / 2), y: Math.round((first.y + second.y) / 2) })
+        await page.waitForTimeout(2500)
+
+        const redraws = await page.evaluate(() => window.__redraws)
+
+        checks.push({
+            label: "tay rời ra rồi thì biểu đồ đứng lại, không vẽ lại mãi",
+            pass: redraws < 20,
+            expected: "< 20 lần redraw trong 2,5s",
+            actual: redraws,
+        })
+
+        results.push({ name: "ngón tay thật: chạm xong thì biểu đồ đứng lại", checks })
+    }
+
     await context.close()
     return results
 }
