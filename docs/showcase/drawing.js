@@ -11,7 +11,8 @@ page({
 
 const price = datum => [datum.high, datum.low]
 
-const chart = (host, options) => chartHost(host, daily(160), { height: 420, ...options })
+const chart = (host, options) =>
+    chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
     title: "Seven tools, one at a time",

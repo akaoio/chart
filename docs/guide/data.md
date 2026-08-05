@@ -55,12 +55,28 @@ The provider adds `idx` to every row: an object holding the index, the date and 
 level of tick formatting that row deserves. `xAccessor` reads `datum.idx.index`.
 
 You rarely touch it, with one exception. Feeding a second dataset through
-[`<chart-alternate-data>`](../reference/elements.md) means giving those rows the **same**
-`idx` values, since that is the x the chart measures them against:
+[`<chart-alternate-data>`](../reference/elements.md) means giving each of those rows the
+`idx` of the chart row it belongs next to, since that is the x the chart measures it
+against. The guest usually has its own dates, so look them up rather than counting:
 
 ```js
-alternate.data = guestRows.map((datum, index) => ({ ...datum, idx: data[index].idx }))
+const at = new Map(data.map(datum => [Number(datum.date), datum.idx]))
+
+alternate.data = guestRows
+    .map(datum => ({ ...datum, idx: at.get(Number(datum.date)) }))
+    .filter(datum => datum.idx !== undefined)
 ```
+
+Two things follow from this, and both are worth knowing before you debug them.
+
+On an index scale there is no x *between* two bars, so a guest point always lands on a
+bar, and a guest date the chart has never heard of has nowhere to go — hence the filter.
+If your guest dataset lines up row for row with the chart's, you do not need this element
+at all: put the extra field on the rows you already have and draw a second series.
+
+And the element leaves out any guest row sitting exactly at the edge of the visible
+window, so a sparse guest series stops one sampling step short of each side. That is the
+original's behaviour, kept deliberately — see [parity: series](../parity/series.md).
 
 ### Configuring it
 

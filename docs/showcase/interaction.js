@@ -12,7 +12,8 @@ page({
 
 const price = datum => [datum.high, datum.low]
 
-const chart = (host, rows, options) => chartHost(host, rows, options)
+const chart = (host, rows, options) =>
+    chartHost(host, rows, { series: ["chart-candlestick-series"], ...options })
 
 demo({
     title: "Pan, zoom, and the axes",

@@ -11,7 +11,7 @@ import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 import { listen, staticServer } from "./tools/static-server.mjs"
-import { paintedPixels } from "./tools/browser/painted.mjs"
+import { chartMeasurements } from "./tools/browser/painted.mjs"
 import { importMap as buildImportMap } from "./tools/import-map.mjs"
 
 const root = fileURLToPath(new URL(".", import.meta.url))
@@ -75,7 +75,7 @@ const runShowcaseTests = async (page, origin) => {
         // để mọi biểu đồ kịp đo mình và vẽ xong
         await page.waitForTimeout(600)
 
-        const painted = await page.evaluate(paintedPixels)
+        const measured = await page.evaluate(chartMeasurements)
 
         checks.push({
             label: "trang không có lỗi nào",
@@ -83,12 +83,25 @@ const runShowcaseTests = async (page, origin) => {
             expected: "0",
             actual: String(problems.length) + (problems.length ? ` — ${problems[0]}` : ""),
         })
-        checks.push({ label: "trang có biểu đồ", pass: painted.length > 0, expected: "> 0", actual: painted.length })
+        checks.push({ label: "trang có biểu đồ", pass: measured.length > 0, expected: "> 0", actual: measured.length })
         checks.push({
             label: "biểu đồ nào cũng vẽ ra pixel",
-            pass: painted.every(count => count > 200),
+            pass: measured.every(({ painted }) => painted > 200),
             expected: "> 200 mỗi cái",
-            actual: painted.join(", "),
+            actual: measured.map(({ painted }) => painted).join(", "),
+        })
+        // Hai bài dưới đây là chỗ bài cũ để lọt ba trang chỉ còn hai cái trục.
+        checks.push({
+            label: "biểu đồ nào cũng có series",
+            pass: measured.every(({ series }) => series > 0),
+            expected: "≥ 1 mỗi cái",
+            actual: measured.map(({ series }) => series).join(", "),
+        })
+        checks.push({
+            label: "biểu đồ nào cũng vẽ ra pixel TRONG VÙNG VẼ, không chỉ hai cái trục",
+            pass: measured.every(({ inside }) => inside > 200),
+            expected: "> 200 mỗi cái",
+            actual: measured.map(({ inside }) => inside).join(", "),
         })
 
         page.off("pageerror", onError)
@@ -99,8 +112,67 @@ const runShowcaseTests = async (page, origin) => {
 
     results.push(await showcaseDrawing(page, origin))
     results.push(await showcaseBrush(page, origin))
+    results.push(await showcaseAlternateData(page, origin))
 
     return results
+}
+
+/**
+ * `chart-alternate-data` chỉ đáng một demo nếu dữ liệu khách **không** khớp một-đối-một.
+ *
+ * Bản demo đầu tiên gán cho mỗi hàng khách đúng `idx` của một cây nến, một-đối-một. Chạy
+ * thì đúng, nhìn thì hợp lý, mà không chứng minh gì cả: y hệt việc thêm một trường vào
+ * hàng gốc rồi vẽ line. Người đọc phát hiện hộ, vì đường vàng ăn khớp từng nến. Nên bài
+ * này canh đúng chỗ ấy — số hàng khách phải khác số nến — và canh cả việc nó có vẽ thật.
+ */
+const showcaseAlternateData = async (page, origin) => {
+    const checks = []
+
+    await page.goto(`${origin}/docs/showcase/series.html`)
+    await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+    await page.waitForTimeout(600)
+
+    const counts = await page.evaluate(() => {
+        const section = [...document.querySelectorAll("section.demo")].find(node =>
+            node.querySelector("h2")?.textContent === "A second dataset in the same chart",
+        )
+        if (!section) return null
+
+        const said = section.querySelector(".readout").textContent
+        const [candles, guest] = [...said.matchAll(/\d+/g)].map(match => Number(match[0]))
+
+        // Vàng của đường khách, #e0a800 — đếm để biết nó có thật sự được vẽ ra hay không.
+        const context = section.querySelector("chart-canvas").getCanvasContexts().axes
+        const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+
+        let yellow = 0
+        for (let at = 0; at < pixels.length; at += 4) {
+            if (pixels[at] > 180 && pixels[at + 1] > 120 && pixels[at + 1] < 210 && pixels[at + 2] < 90) yellow++
+        }
+
+        return { candles, guest, yellow }
+    })
+
+    checks.push({
+        label: "demo báo cả hai số hàng",
+        pass: counts !== null && counts.candles > 0 && counts.guest > 0,
+        expected: "hai số dương",
+        actual: JSON.stringify(counts),
+    })
+    checks.push({
+        label: "dữ liệu khách KHÔNG khớp một-đối-một với nến",
+        pass: counts !== null && counts.guest < counts.candles / 2,
+        expected: "khách < nửa số nến",
+        actual: counts && `${counts.guest} khách / ${counts.candles} nến`,
+    })
+    checks.push({
+        label: "đường khách vẽ ra pixel vàng",
+        pass: counts !== null && counts.yellow > 100,
+        expected: "> 100",
+        actual: counts?.yellow,
+    })
+
+    return { name: "trưng bày: dữ liệu khách có lịch sử riêng", checks }
 }
 
 /** Bấm hai lần trên trang công cụ vẽ, rồi đọc lại bảng kết quả của chính trang ấy. */

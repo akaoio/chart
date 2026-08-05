@@ -296,7 +296,7 @@ demo({
         grid(stage, setups, (host, setup) => {
             const { pane } = chart(host, setup.indicator(daily(200)), {
                 height: 180,
-                yExtents: setup.extents,
+                yExtents: setup.yExtents,
                 tickFormat: setup.tickFormat,
             })
             setup.build(pane)

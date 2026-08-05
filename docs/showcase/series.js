@@ -21,11 +21,22 @@ page({
         "library is below, drawn from the same 120 bars unless the shape needs its own data.",
 })
 
-const bars = sma()
-    .options({ windowSize: 20 })
-    .merge((datum, value) => {
-        datum.average = value
-    })(daily(120))
+/**
+ * The 120 bars every cell in the gallery draws, with two things merged onto each row.
+ *
+ * `sma` is there because several cells want a moving average to draw. `change` is there
+ * for a subtler reason: a few series colour themselves from `absoluteChange` and fall back
+ * to black when a row has none — `chart-ohlc-series` does, and without this every bar in
+ * that cell came out the fallback colour. A gallery of defaults has to show the default,
+ * not the degenerate case the default guards against.
+ */
+const bars = change()(
+    sma()
+        .options({ windowSize: 20 })
+        .merge((datum, value) => {
+            datum.average = value
+        })(daily(120)),
+)
 
 /** The scaffolding every cell in the gallery shares: a canvas, a pane, an axis. */
 const cell = (host, { yExtents, data = bars, ticks = 4, tickFormat }) => {
@@ -211,9 +222,11 @@ demo({
     title: "A second dataset in the same chart",
     about:
         "`chart-alternate-data` stands in front of the chart and answers its children with " +
-        "different rows. Everything inside pans and zooms with the chart but plots its own " +
-        "history — a benchmark, a second instrument, a forecast.",
-    build: stage => {
+        "different rows. The guest below is a second instrument sampled once a week, and its " +
+        "history only starts a third of the way in — the count is under the chart. Pan and " +
+        "zoom: it keeps up, because the element narrows its own rows to the window on screen. " +
+        "A point at the very edge of that window is left out, so the line stops a step short.",
+    build: (stage, api) => {
         const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
         const { data, xScale, xAccessor, displayXAccessor } = provider(daily(120))
 
@@ -231,24 +244,42 @@ demo({
 
         const candles = document.createElement("chart-candlestick-series")
 
-        // A second instrument, rebased so it starts where this one does — the pane takes
-        // its y extents from the chart's own rows, so a guest far outside them is clipped.
-        const guest = secondary(120)
-        const factor = data[0].close / guest[0].close
+        // The guest is a different instrument on a different clock: one point per week, and
+        // nothing before the fortieth bar. That is the whole reason this element exists — a
+        // dataset that lines up row for row needs no help, just another field on the rows.
+        //
+        // Rebased to meet the chart where it starts, because the pane takes its y extents
+        // from the chart's own rows and a guest far outside them would be clipped away.
+        const other = secondary(120)
+        const factor = data[40].close / other[40].close
+
+        // Each guest row carries the SAME x the provider handed out — an `idx` object it
+        // made — because that is what the chart measures the guest against. On an index
+        // scale there is no x between two bars, so a guest point lands on a bar; what
+        // makes it a guest is that there are far fewer of them, over a shorter span.
+        const guest = []
+        for (let index = 40; index < data.length; index += 5) {
+            guest.push({
+                idx: data[index].idx,
+                close: Math.round(other[index].close * factor * 100) / 100,
+            })
+        }
 
         const alternate = document.createElement("chart-alternate-data")
-        // The guest rows have to carry the SAME x the provider handed out — that is what
-        // the chart measures them against. Here that is `idx`, an object the provider made.
-        alternate.data = guest.map((datum, index) => ({
-            ...datum,
-            idx: data[index].idx,
-            close: Math.round(datum.close * factor * 100) / 100,
-        }))
+        alternate.data = guest
 
-        const other = document.createElement("chart-line-series")
-        Object.assign(other, { yAccessor: close, strokeStyle: "#e0a800", strokeWidth: 2 })
+        const line = document.createElement("chart-line-series")
+        Object.assign(line, { yAccessor: close, strokeStyle: "#e0a800", strokeWidth: 2 })
 
-        alternate.append(other)
+        // Every child is fed the guest rows, not just the first — the dots sit on the line.
+        const dots = document.createElement("chart-scatter-series")
+        Object.assign(dots, {
+            yAccessor: close,
+            marker: CircleMarker,
+            markerProps: { r: 3, fillStyle: "#e0a800" },
+        })
+
+        alternate.append(line, dots)
 
         const axis = document.createElement("chart-y-axis")
         Object.assign(axis, { ticks: 6, fontSize: 10 })
@@ -257,6 +288,8 @@ demo({
         canvas.append(pane)
         canvas.style.height = "300px"
         stage.append(canvas)
+
+        api.say(`${data.length} candles · ${guest.length} guest points`)
     },
 })
 

@@ -26,7 +26,8 @@ const average = sma()
 
 const rows = average(daily(160))
 
-const chart = (host, options) => chartHost(host, rows, { height: 320, ...options })
+const chart = (host, options) =>
+    chartHost(host, rows, { height: 320, series: ["chart-candlestick-series"], ...options })
 
 demo({
     title: "Cursors",

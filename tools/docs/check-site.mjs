@@ -12,7 +12,7 @@
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 import { listen, staticServer } from "../static-server.mjs"
-import { paintedPixels } from "../browser/painted.mjs"
+import { chartMeasurements } from "../browser/painted.mjs"
 
 const site = fileURLToPath(new URL("../../_site/", import.meta.url))
 
@@ -66,26 +66,35 @@ for (const path of PAGES) {
         problems.push(error.message.split("\n")[0])
     }
 
-    const painted = isRedirect || problems.length > 0
+    const measured = isRedirect || problems.length > 0
         ? []
-        : await page.evaluate(paintedPixels)
+        : await page.evaluate(chartMeasurements)
 
     page.off("pageerror", onError)
     page.off("console", onConsole)
     page.off("requestfailed", onFailed)
 
-    const blank = painted.filter(count => count <= 200).length
+    // "Không vẽ gì" và "chỉ vẽ được hai cái trục" là hai cái sai khác nhau, và cái thứ hai
+    // mới là cái đã lọt lên trang thật: trục xám vượt ngưỡng pixel, còn nến thì không có.
+    const blank = measured.filter(({ painted }) => painted <= 200).length
+    const empty = measured.filter(({ inside }) => inside <= 200).length
+    const bare = measured.filter(({ series }) => series === 0).length
+
     const ok =
-        response?.ok() === true && problems.length === 0 && (isRedirect || (painted.length > 0 && blank === 0))
+        response?.ok() === true &&
+        problems.length === 0 &&
+        (isRedirect || (measured.length > 0 && blank === 0 && empty === 0 && bare === 0))
 
     if (ok) {
-        console.log(`✓ /${path}${isRedirect ? " (chuyển hướng)" : ` — ${painted.length} biểu đồ vẽ ra pixel`}`)
+        console.log(`✓ /${path}${isRedirect ? " (chuyển hướng)" : ` — ${measured.length} biểu đồ vẽ ra dữ liệu`}`)
     } else {
         failed++
         console.error(`✗ /${path}`)
         if (!response?.ok()) console.error(`    HTTP ${response?.status()}`)
         for (const problem of problems.slice(0, 5)) console.error(`    ${problem}`)
         if (!isRedirect && blank > 0) console.error(`    ${blank} biểu đồ không vẽ gì`)
+        if (!isRedirect && bare > 0) console.error(`    ${bare} biểu đồ không có series nào`)
+        if (!isRedirect && empty > 0) console.error(`    ${empty} biểu đồ trống trong vùng vẽ — chỉ có trục`)
     }
 }
 

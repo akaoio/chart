@@ -78,6 +78,16 @@ Kết quả là đáy vùng tô thành `NaN` — vùng tô biến mất. 40 lệ
 
 **`ScatterSeries` gom điểm theo màu tô rồi mới theo màu viền.** Trông thừa một tầng, nhưng đó là cách giảm số lần đổi trạng thái canvas — thứ đắt hơn hẳn việc vẽ.
 
+**`AlternateDataSeries` bỏ đúng hai hàng ở hai mép khung nhìn.** Bộ lọc so sánh nghiêm ngặt:
+
+```js
+return at > start && at < end
+```
+
+`start` và `end` chính là x của hàng đầu và hàng cuối đang hiện trên màn hình, nên hàng khách nằm đúng ở hai mép bị loại. Thấy được bằng mắt: đường của dữ liệu khách luôn dừng sớm hơn mép vùng vẽ một bước, và khi kéo thì điểm đầu điểm cuối lần lượt hiện ra rồi mất đi. Với dữ liệu khách thưa — thứ mà phần tử này sinh ra để phục vụ — chỗ hụt ấy rộng bằng cả một bước lấy mẫu.
+
+`>=`/`<=` thì hết, nhưng bản gốc là `>`/`<` (`AlternateDataSeries.tsx:21-24`) và đây là hành vi nhìn thấy được, không phải chi tiết nội bộ. Giữ nguyên, ghi ra đây, và nói thẳng trong bài trưng bày để người đọc không tưởng mình đặt sai dữ liệu.
+
 ## Lệch có chủ ý so với bản gốc
 
 **Phần vẽ tách khỏi phần tử.** Mỗi series xuất ra hai thứ: một hàm `drawXSeries(context, moreProps, props)` không đụng DOM, và một phần tử mỏng gọi hàm đó. Bản gốc gộp cả hai trong một class React.

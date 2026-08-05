@@ -174,6 +174,13 @@ export const page = ({ title, intro }) => {
  * Trước đây mỗi trang chép một bản gần giống nhau. Nó là giàn giáo chứ không phải nội
  * dung — phần mã hiện dưới mỗi demo là thân hàm `build`, và giàn giáo không nằm trong đó —
  * nên gom về một chỗ không giấu đi thứ gì của người đọc.
+ *
+ * Nó **không** tự dựng series nào: trang nào muốn nến thì phải hỏi, bằng `series`. Đợt gom
+ * này từng dựng nến sẵn rồi đánh rơi mất dòng ấy, và ba trang chỉ còn hai cái trục — mà
+ * nếu chữa bằng cách dựng sẵn lại, thì trang tự lo series của mình (`indicators`) lãnh hai
+ * lớp nến đè nhau. Không mặc định thì cả hai kiểu sai đều lộ ra ngay ở chỗ gọi.
+ *
+ * Thứ tự đăng ký là thứ tự vẽ, nên series vào pane trước hai trục.
  */
 export const chartHost = (
     host,
@@ -186,6 +193,7 @@ export const chartHost = (
         tickFormat,
         fontSize = 11,
         bars,
+        series = [],
         ...canvasProps
     } = {},
 ) => {
@@ -209,6 +217,7 @@ export const chartHost = (
     pane.yExtents = yExtents
 
     pane.append(
+        ...series.map(tag => document.createElement(tag)),
         Object.assign(document.createElement("chart-y-axis"), { ticks, fontSize, tickFormat }),
         Object.assign(document.createElement("chart-x-axis"), { fontSize }),
     )
