@@ -17,6 +17,9 @@ export * from "./utils/index.js"
 export * from "./axes/index.js"
 export * from "./series/index.js"
 
+// bậc 6 (chưa xong — xem docs/parity/interactive.md)
+export * from "./interactive/index.js"
+
 // bậc 5
 export * from "./indicators/index.js"
 

@@ -1,0 +1,492 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "line_rising_LINE": {
+   "x1": 5,
+   "y1": 95,
+   "x2": 30,
+   "y2": 110
+  },
+  "line_rising_RAY": {
+   "x1": 5,
+   "y1": 95,
+   "x2": 39,
+   "y2": 115.4
+  },
+  "line_rising_XLINE": {
+   "x1": 0,
+   "y1": 92,
+   "x2": 39,
+   "y2": 115.4
+  },
+  "slope_rising": 0.6,
+  "line_falling_LINE": {
+   "x1": 5,
+   "y1": 110,
+   "x2": 30,
+   "y2": 95
+  },
+  "line_falling_RAY": {
+   "x1": 5,
+   "y1": 110,
+   "x2": 39,
+   "y2": 89.6
+  },
+  "line_falling_XLINE": {
+   "x1": 0,
+   "y1": 113,
+   "x2": 39,
+   "y2": 89.6
+  },
+  "slope_falling": -0.6,
+  "line_vertical_LINE": {
+   "x1": 12,
+   "y1": 95,
+   "x2": 12,
+   "y2": 110
+  },
+  "line_vertical_RAY": {
+   "x1": 12,
+   "y1": 95,
+   "x2": 12,
+   "y2": 115
+  },
+  "line_vertical_XLINE": {
+   "x1": 12,
+   "y1": 90,
+   "x2": 12,
+   "y2": 115
+  },
+  "slope_vertical": "undefined",
+  "line_horizontal_LINE": {
+   "x1": 5,
+   "y1": 102,
+   "x2": 30,
+   "y2": 102
+  },
+  "line_horizontal_RAY": {
+   "x1": 5,
+   "y1": 102,
+   "x2": 39,
+   "y2": 102
+  },
+  "line_horizontal_XLINE": {
+   "x1": 0,
+   "y1": 102,
+   "x2": 39,
+   "y2": 102
+  },
+  "slope_horizontal": 0,
+  "line_backwards_LINE": {
+   "x1": 30,
+   "y1": 110,
+   "x2": 5,
+   "y2": 95
+  },
+  "line_backwards_RAY": {
+   "x1": 30,
+   "y1": 110,
+   "x2": 0,
+   "y2": 92
+  },
+  "line_backwards_XLINE": {
+   "x1": 39,
+   "y1": 115.4,
+   "x2": 0,
+   "y2": 92
+  },
+  "slope_backwards": 0.6,
+  "yIntercept": 10,
+  "hovering": {
+   "onTheLine": true,
+   "justOff": true,
+   "farOff": false,
+   "pastTheEnd": false,
+   "beforeTheStart": false
+  },
+  "hovering2": {
+   "onIt": true,
+   "nearIt": true,
+   "awayFromIt": false,
+   "verticalOnIt": true,
+   "verticalNear": true,
+   "verticalPastEnd": false
+  },
+  "draw_LINE": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_RAY": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    760,
+    -5.76
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_XLINE": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    0,
+    331.2
+   ],
+   [
+    "lineTo",
+    760,
+    -5.76
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_dashed": [
+   [
+    "set lineWidth",
+    3
+   ],
+   [
+    "set strokeStyle",
+    "#ff0000"
+   ],
+   [
+    "setLineDash",
+    [
+     6,
+     2
+    ]
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    97.435897,
+    288
+   ],
+   [
+    "lineTo",
+    584.615385,
+    72
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "draw_vertical": [
+   [
+    "set lineWidth",
+    1
+   ],
+   [
+    "set strokeStyle",
+    "#000000"
+   ],
+   [
+    "setLineDash",
+    []
+   ],
+   [
+    "beginPath"
+   ],
+   [
+    "moveTo",
+    233.846154,
+    288
+   ],
+   [
+    "lineTo",
+    233.846154,
+    72
+   ],
+   [
+    "stroke"
+   ]
+  ],
+  "getValueFromOverride": {
+   "matching": 42,
+   "differentIndex": 7,
+   "noOverride": 7
+  },
+  "getMorePropsForChart": {
+   "chartId": "volume",
+   "mouseXY": [
+    400,
+    30
+   ]
+  },
+  "getMorePropsForChartNoMouse": {
+   "mouseXY": "undefined"
+  },
+  "getSelected": [
+   {
+    "type": "TrendLine",
+    "objects": [
+     {
+      "selected": true,
+      "id": 1
+     }
+    ]
+   },
+   {
+    "type": "Channel",
+    "objects": [
+     {
+      "selected": true,
+      "id": 4
+     }
+    ]
+   }
+  ],
+  "zoomButtons": {
+   "tag": "g",
+   "attrs": {
+    "class": "chart-zoom-buttons"
+   },
+   "children": [
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-button",
+      "cx": "324",
+      "cy": "336",
+      "fill": "#ffffff",
+      "fill-opacity": "0.75",
+      "stroke": "#e0e3eb",
+      "stroke-width": "1",
+      "r": "16"
+     },
+     "children": []
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate (312, 324)"
+     },
+     "children": [
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M19,13H5V11H19V13Z",
+        "fill": "#000000"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-button",
+      "cx": "364",
+      "cy": "336",
+      "fill": "#ffffff",
+      "fill-opacity": "0.75",
+      "stroke": "#e0e3eb",
+      "stroke-width": "1",
+      "r": "16"
+     },
+     "children": []
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate (352, 324)"
+     },
+     "children": [
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z",
+        "fill": "#000000"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-button",
+      "cx": "420",
+      "cy": "336",
+      "fill": "#ffffff",
+      "fill-opacity": "0.75",
+      "stroke": "#e0e3eb",
+      "stroke-width": "1",
+      "r": "16"
+     },
+     "children": []
+    },
+    {
+     "tag": "g",
+     "attrs": {
+      "transform": "translate (412, 328)"
+     },
+     "children": [
+      {
+       "tag": "path",
+       "attrs": {
+        "d": "M2.35 2.35A7.958 7.958 0 018 0a8 8 0 110 16c-3.73 0-6.84-2.55-7.73-6h2.08c.82 2.33 3.04 4 5.65 4A6 6 0 108 2c-1.66 0-3.14.69-4.22 1.78L7 7H0V0l2.35 2.35z",
+        "fill": "#000000"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-enable-interaction out",
+      "cx": "324",
+      "cy": "336",
+      "r": "16",
+      "fill": "none"
+     },
+     "children": []
+    },
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-enable-interaction in",
+      "cx": "364",
+      "cy": "336",
+      "r": "16",
+      "fill": "none"
+     },
+     "children": []
+    },
+    {
+     "tag": "circle",
+     "attrs": {
+      "class": "chart-enable-interaction reset",
+      "cx": "420",
+      "cy": "336",
+      "r": "16",
+      "fill": "none"
+     },
+     "children": []
+    }
+   ]
+  },
+  "zoomSteps": {
+   "in": [
+    [
+     3.25,
+     39
+    ],
+    [
+     3.9,
+     39
+    ],
+    [
+     6.5,
+     39
+    ],
+    [
+     7.8,
+     39
+    ],
+    [
+     9.75,
+     39
+    ],
+    [
+     13,
+     39
+    ]
+   ],
+   "out": [
+    [
+     -4.875,
+     39
+    ],
+    [
+     -5.85,
+     39
+    ],
+    [
+     -9.75,
+     39
+    ],
+    [
+     -11.7,
+     39
+    ],
+    [
+     -14.625,
+     39
+    ],
+    [
+     -19.5,
+     39
+    ]
+   ]
+  }
+ }
+}

@@ -45,6 +45,14 @@ const suites = [
         await import("./src/indicators/index.js"),
     ],
     [
+        await import("./tools/golden/cases/interactive.mjs"),
+        {
+            ...(await import("./src/interactive/utils.js")),
+            ...(await import("./src/interactive/components/InteractiveStraightLine.js")),
+            ...(await import("./src/interactive/ZoomButtons.js")),
+        },
+    ],
+    [
         await import("./tools/golden/cases/svg.mjs"),
         {
             ...(await import("./src/tooltip/index.js")),

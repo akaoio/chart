@@ -258,6 +258,42 @@ const svgApi = {
 
 const indicators = await import(join(packages, "indicators/src/indicator/index.ts"))
 
+const interactiveUtils = await import(join(packages, "interactive/src/utils.ts"))
+const zoomButtons = await import(join(packages, "interactive/src/ZoomButtons.tsx"))
+const d3Interpolate = createRequire(join(source, "package.json"))("d3-interpolate")
+const { normalizeSvg: normalizeSvgTree } = await import("./svgtree.mjs")
+const interactiveLine = await import(join(packages, "interactive/src/components/InteractiveStraightLine.tsx"))
+
+const interactiveApi = {
+    ...interactiveUtils,
+    generateLine: interactiveLine.generateLine,
+    getSlope: interactiveLine.getSlope,
+    getYIntercept: interactiveLine.getYIntercept,
+    isHovering: interactiveLine.isHovering,
+    isHovering2: interactiveLine.isHovering2,
+    drawInteractiveStraightLine: drawVia(interactiveLine.InteractiveStraightLine),
+
+    /**
+     * ZoomButtons của bản gốc là component đọc ChartContext và render SVG thẳng trong
+     * `render()`, không qua GenericChartComponent — nên bơm context rồi lấy cây ra.
+     */
+    renderZoomButtons: (moreProps, props) => {
+        const instance = new zoomButtons.ZoomButtons({ ...zoomButtons.ZoomButtons.defaultProps, ...props })
+        instance.context = { chartConfig: moreProps.chartConfig }
+        return normalizeSvgTree(instance.render())
+    },
+
+    zoomSteps: (xScale, plotData, xAccessor, direction, zoomMultiplier) => {
+        const cx = xScale(xAccessor(plotData[plotData.length - 1]))
+        const factor = direction > 0 ? zoomMultiplier : 1 / zoomMultiplier
+        const [start, end] = xScale.domain()
+        const [newStart, newEnd] = xScale.range().map(x => cx + (x - cx) * factor).map(xScale.invert)
+        const left = d3Interpolate.interpolateNumber(start, newStart)
+        const right = d3Interpolate.interpolateNumber(end, newEnd)
+        return [0.25, 0.3, 0.5, 0.6, 0.75, 1].map(at => [left(at), right(at)])
+    },
+}
+
 const suites = [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
@@ -265,6 +301,7 @@ const suites = [
     [await import("./cases/draw.mjs"), drawApi],
     [await import("./cases/svg.mjs"), svgApi],
     [await import("./cases/indicators.mjs"), indicators],
+    [await import("./cases/interactive.mjs"), interactiveApi],
 ]
 
 const { execSync } = await import("node:child_process")
