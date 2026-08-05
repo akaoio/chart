@@ -1,3 +1,5 @@
+import { discontinuousTimeScaleProviderBuilder } from "@akaoio/chart"
+
 /**
  * The scaffolding around the demos: navigation, the card each demo sits in, and the
  * source listing under it.
@@ -164,4 +166,55 @@ export const page = ({ title, intro }) => {
             }),
         )
     })
+}
+
+/**
+ * Cái khung mà gần như mọi demo cần: một canvas, một pane, hai trục.
+ *
+ * Trước đây mỗi trang chép một bản gần giống nhau. Nó là giàn giáo chứ không phải nội
+ * dung — phần mã hiện dưới mỗi demo là thân hàm `build`, và giàn giáo không nằm trong đó —
+ * nên gom về một chỗ không giấu đi thứ gì của người đọc.
+ */
+export const chartHost = (
+    host,
+    rows,
+    {
+        height = 360,
+        yExtents = datum => [datum.high, datum.low],
+        margin = { left: 0, right: 56, top: 8, bottom: 24 },
+        ticks = 5,
+        tickFormat,
+        fontSize = 11,
+        bars,
+        ...canvasProps
+    } = {},
+) => {
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(rows)
+
+    const canvas = document.createElement("chart-canvas")
+    Object.assign(canvas, {
+        data,
+        xScale,
+        xAccessor,
+        displayXAccessor,
+        seriesName: "DEMO",
+        margin,
+        xExtents: opening(data, xAccessor, bars),
+        ...canvasProps,
+    })
+    canvas.style.height = `${height}px`
+
+    const pane = document.createElement("chart-pane")
+    pane.yExtents = yExtents
+
+    pane.append(
+        Object.assign(document.createElement("chart-y-axis"), { ticks, fontSize, tickFormat }),
+        Object.assign(document.createElement("chart-x-axis"), { fontSize }),
+    )
+
+    canvas.append(pane)
+    host.append(canvas)
+
+    return { canvas, pane, data, xAccessor }
 }

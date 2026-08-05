@@ -19,7 +19,23 @@ if (process.env.TZ !== "UTC") {
 
 const here = dirname(fileURLToPath(import.meta.url))
 
-const suites = [
+/**
+ * Bộ nào phải chạy một mình thì ghi ở đây — xem `tools/golden/cases/locale.mjs`.
+ * `setLocale` đổi trạng thái toàn cục của tiến trình, nên nó được chạy trong tiến trình
+ * con của chính file này.
+ */
+const ISOLATED = {
+    locale: async () => [
+        await import("./tools/golden/cases/locale.mjs"),
+        await import("./src/scales/index.js"),
+    ],
+}
+
+const only = process.env.GOLDEN_SUITE
+
+const suites = only
+    ? [await ISOLATED[only]()]
+    : [
     [await import("./tools/golden/cases/scales.mjs"), await import("./src/scales/index.js")],
     [await import("./tools/golden/cases/utils.mjs"), await import("./src/core/utils/index.js")],
     [
@@ -90,7 +106,7 @@ const suites = [
             ...(await import("./src/annotations/index.js")),
         },
     ],
-]
+      ]
 
 /** Mọi chỗ lệch, kèm đường dẫn tới đúng ô sai — không dừng ở chỗ đầu tiên. */
 const differences = (expected, actual, path = "") => {
@@ -190,6 +206,21 @@ if (docProblems.length === 0) {
     failed++
     console.error(`✗ tài liệu nhắc tới thứ không có:`)
     for (const problem of docProblems) console.error(`    ${problem}`)
+}
+
+if (only === undefined) {
+    const { execFileSync } = await import("node:child_process")
+
+    for (const name of Object.keys(ISOLATED)) {
+        try {
+            execFileSync(process.execPath, [fileURLToPath(import.meta.url)], {
+                stdio: "inherit",
+                env: { ...process.env, GOLDEN_SUITE: name },
+            })
+        } catch {
+            failed++
+        }
+    }
 }
 
 if (failed > 0) {

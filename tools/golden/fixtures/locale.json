@@ -1,0 +1,55 @@
+{
+ "source": {
+  "repo": "react-financial-charts",
+  "commit": "745c7c0"
+ },
+ "result": {
+  "before": [
+   " 1",
+   "Feb",
+   "Mar",
+   "Apr",
+   "May",
+   "Jun",
+   "Jul",
+   "Aug"
+  ],
+  "levelsBefore": [
+   15,
+   17,
+   17,
+   18,
+   17,
+   17,
+   18,
+   17
+  ],
+  "detailedBefore": [
+   " 1",
+   "15",
+   "15",
+   " 1"
+  ],
+  "setLocaleReturnsProvider": true,
+  "levelsAfter": [
+   15,
+   17,
+   17,
+   18,
+   17,
+   17,
+   18,
+   17
+  ],
+  "customFormatters": [
+   "[ngày  1]",
+   "[02]",
+   "[03]",
+   "[Q 04]",
+   "[05]",
+   "[06]",
+   "[Q 07]",
+   "[08]"
+  ]
+ }
+}

@@ -15,8 +15,8 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 | `isHoverForInteractiveType` | `utils.ts` | ☑ | |
 | `saveNodeType` | `utils.ts` | ☑ | |
 | `terminate` | `utils.ts` | ☑ | |
-| `ClickCallback` | `ClickCallback.tsx` | ☑ | vẽ rỗng, chỉ chuyển tiếp sự kiện |
-| `DrawingObjectSelector` | `DrawingObjectSelector.tsx` | ☑ | |
+| `ClickCallback` | `ClickCallback.tsx` | ☑ | 6 khẳng định: báo đúng cây nến dưới con trỏ, không phải pixel |
+| `DrawingObjectSelector` | `DrawingObjectSelector.tsx` | ☑ | 6 khẳng định: bấm đúng đường nào thì chọn đường ấy, bấm chỗ trống thì bỏ chọn |
 | `ZoomButtons` | `ZoomButtons.tsx` | ☑ | cây SVG khớp từng node, cộng 6 bước nội suy |
 | `TrendLine` | `TrendLine.tsx` | ☑ | 22 khẳng định trong trình duyệt: vẽ, cửa chặn, kéo cả đường |
 | `Brush` | `Brush.tsx` | ☑ | 6 khẳng định: kéo ra khoảng chọn, bấm suông thì không |
@@ -41,7 +41,7 @@ Nhóm này không đồng nhất như các bậc trước:
 | phần vẽ | chuỗi lệnh canvas, như bậc 3 | ☑ xong |
 | kéo thả, chọn, sửa | thao tác thật trong trình duyệt | ☑ xong |
 
-**1.421 giá trị** khớp bản gốc, cộng **65 khẳng định** trong trình duyệt thật cho riêng nhóm này.
+**1.421 giá trị** khớp bản gốc, cộng **77 khẳng định** trong trình duyệt thật cho riêng nhóm này.
 
 Ba component nhớ kết quả đo *trong chính mình* — bề rộng chữ, bề rộng hộp nhãn — nên chúng chỉ trỏ vào được sau khi đã vẽ một lần. Bộ kiểm giữ đúng ràng buộc ấy: vẽ và hỏi hover trên **cùng một thực thể**, cả hai phía. Bản gốc nhớ trong instance React, bản port nhớ trong một `cache` mà phần tử giữ.
 

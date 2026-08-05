@@ -90,7 +90,11 @@ Ràng buộc này đến từ tính năng khoá học TTS nêu trong #1, và đ�
 
 ## Chỗ bản gốc kỳ lạ, cố ý giữ nguyên
 
-**`hackyWayToStopPanBeyondBounds__plotData` / `__domain`.** Tên biến tự nhận là chắp vá, và kế hoạch ban đầu định làm lại cho tử tế. Đọc kỹ thì nó không phải rác: trong lúc kéo, kết quả khung hình trước được nạp lại làm `currentPlotData`/`currentDomain`, nên dữ liệu không trôi ra ngoài mép nhanh hơn domain đuổi theo. Giữ nguyên cả tên, vì cái tên nói đúng sự thật. Xét lại ở bậc 3 khi có axes thật để đo.
+**`hackyWayToStopPanBeyondBounds__plotData` / `__domain` — đã đo, giữ nguyên.** Tên biến tự nhận là chắp vá, và kế hoạch ban đầu định làm lại cho tử tế. Đo rồi thì nó không phải rác, mà là thứ **chặn một lần ném lỗi**.
+
+Trong lúc kéo, kết quả khung hình trước được nạp lại làm `currentPlotData`/`currentDomain`. Giật chuột một phát đủ mạnh — ra ngoài cửa sổ chẳng hạn — thì domain nhảy hẳn khỏi dữ liệu, `filterData` lọc còn **không hàng nào**, và nhánh cuối của nó đọc `head(plotData)`; với mảng rỗng đó là `undefined`, rồi `xAccessor(undefined)` ném. Hai cái mốc ấy chặn đúng chỗ đó: không có gì để lọc thì giữ nguyên khung hình cũ.
+
+Gỡ chúng ra rồi chạy lại bộ kiểm trình duyệt: `TypeError: Cannot read properties of undefined`. Nên giữ nguyên cả cơ chế lẫn cái tên — cái tên nói đúng sự thật, và giờ có một bài kiểm nói rõ sự thật ấy là gì (`kéo mãi cũng không kéo chart ra khỏi dữ liệu`).
 
 **Vẽ lại là phát cho tất cả, không lọc theo pane.** Ban đầu tưởng là thiếu sót và đã viết hẳn một bài kiểm để bắt lỗi — nhưng bài kiểm sai chứ không phải mã. Các pane dùng chung một lớp canvas vừa bị xoá sạch; ai không vẽ lại thì biến mất. Cửa lọc theo pane nằm ở tầng xử lý sự kiện (hover, click, callback), đúng chỗ bản gốc đặt nó.
 

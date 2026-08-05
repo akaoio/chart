@@ -35,7 +35,20 @@ Dòng cuối cũng quan trọng như ba dòng trên: một bộ test bắt cả 
 
 ## Chưa có bằng chứng
 
-`setLocale` **đã port nhưng chưa golden**. Nó gọi `timeFormatDefaultLocale` của d3, thứ thay đổi trạng thái toàn cục của tiến trình — chạy trong cùng một tiến trình với các bài kiểm khác sẽ làm hỏng kết quả của chúng. Cần chạy trong tiến trình con riêng. Ghi vào đây thay vì lặng lẽ bỏ qua.
+`setLocale` **đã golden, trong tiến trình riêng**. Nó gọi `timeFormatDefaultLocale` của d3, thứ đổi trạng thái toàn cục của cả tiến trình, nên chạy chung sẽ làm hỏng bài khác — `generate.mjs` và `test.js` đẻ một tiến trình con cho riêng nó (`tools/golden/cases/locale.mjs`, **37 giá trị**).
+
+Một phần của nó **không so được**, và lý do đã đo chứ không đoán:
+
+| | d3-time-format | giải ra |
+|---|---|---|
+| repo gốc | 3.0.0 | bản UMD trong `dist/` |
+| repo này | 4.x | bản ESM trong `src/` |
+
+`timeFormatDefaultLocale` gán lại biến `timeFormat` ở tầng module. Bản ESM cho một **ràng buộc sống** nên chỗ import thấy giá trị mới; bản UMD chỉ cho một **bản chụp** nên chỗ import giữ nguyên cái cũ. Hệ quả: cùng một dòng mã, `setLocale(locale)` đổi được nhãn ở repo này mà không đổi được ở repo gốc.
+
+Khác biệt nằm ở **bản dựng của d3**, không ở thư viện chart — nên so nhãn sau khi đổi ngôn ngữ là so hai bản dựng d3 với nhau, không nói lên điều gì. Cái so được thì vẫn so: nhãn trước khi đổi, giá trị trả về, mức chi tiết (không được đổi theo ngôn ngữ), và nhánh `formatters` vốn là của riêng từng builder.
+
+Với người dùng gói này thì đây là tin tốt: `setLocale` **có tác dụng**, còn ở bản gốc thì không.
 
 ## Lệch có chủ ý so với bản gốc
 
@@ -47,4 +60,8 @@ _Chưa có._ Bậc 1 port trung thành hoàn toàn, kể cả những chỗ bả
 
 **`slidingWindow` gọi `windowSize` không tham số.** Bản gốc viết `functor(windowSize).apply(this, arguments)` bên trong một arrow function, nên `arguments` là của hàm nhà máy bao ngoài — luôn rỗng. Truyền `windowSize` là hàm thì hàm đó được gọi *không có tham số nào*, chứ không phải nhận được dữ liệu như đọc lướt sẽ tưởng. Giữ nguyên, có ghi chú trong mã.
 
-**Một calculator dùng chung cho mọi lần gọi.** `discontinuousIndexCalculatorLocalTime` là biến ở tầng module, và `createIndex` cấu hình lại nó (`.source(...).misc(...)`) mỗi lần chạy. An toàn chỉ vì dữ liệu được đẩy qua ngay sau đó. Giữ nguyên ở bậc 1; sẽ xét lại ở bậc 2 khi state phải điều khiển được từ ngoài.
+**Một calculator dùng chung cho mọi lần gọi — đã bỏ.** Bản gốc giữ một `slidingWindow` ở tầng module rồi cấu hình lại nó (`.source(...).misc(...)`) mỗi lần chạy. Nó *tình cờ* an toàn vì dữ liệu được đẩy qua ngay dòng sau, không có gì xen vào — nhưng "tình cờ an toàn" mới là vấn đề: hai chart trong một tiến trình dùng chung đúng cái object ấy.
+
+Bản port dựng một cái mới mỗi lần gọi. Tốn một closure, và mối nguy biến mất hẳn.
+
+Nói cho đủ: **không bài kiểm nào hiện phân biệt được hai cách**, vì trong chính thư viện, hai dòng cấu hình và chạy nằm liền nhau. Đây là bỏ một mối nguy, không phải sửa một lỗi đã quan sát được — ghi đúng như thế thay vì gán cho nó một bằng chứng nó không có.

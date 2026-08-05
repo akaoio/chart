@@ -1,6 +1,5 @@
-import { discontinuousTimeScaleProviderBuilder } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, opening, page } from "./showcase.js"
+import { chartHost, demo, page } from "./showcase.js"
 
 page({
     title: "Drawing tools",
@@ -12,36 +11,7 @@ page({
 
 const price = datum => [datum.high, datum.low]
 
-const chart = (host, { height = 420 } = {}) => {
-    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
-    const { data, xScale, xAccessor, displayXAccessor } = provider(daily(160))
-
-    const canvas = document.createElement("chart-canvas")
-    Object.assign(canvas, {
-        data,
-        xScale,
-        xAccessor,
-        displayXAccessor,
-        seriesName: "DEMO",
-        margin: { left: 0, right: 56, top: 8, bottom: 24 },
-        xExtents: opening(data, xAccessor),
-    })
-    canvas.style.height = `${height}px`
-
-    const pane = document.createElement("chart-pane")
-    pane.yExtents = price
-
-    pane.append(
-        document.createElement("chart-candlestick-series"),
-        Object.assign(document.createElement("chart-y-axis"), { ticks: 5, fontSize: 11 }),
-        Object.assign(document.createElement("chart-x-axis"), { fontSize: 11 }),
-    )
-
-    canvas.append(pane)
-    host.append(canvas)
-
-    return { canvas, pane }
-}
+const chart = (host, options) => chartHost(host, daily(160), { height: 420, ...options })
 
 demo({
     title: "Seven tools, one at a time",
@@ -115,13 +85,17 @@ demo({
                     tools.map(tool => [tool.tag, { type: tool.tag, chartId: undefined, node: tool.node }]),
                 ),
             drawingObjectMap: Object.fromEntries(tools.map(tool => [tool.tag, tool.list])),
+            // `onSelect` nhận một MẢNG, theo thứ tự của `getInteractiveNodes` — không
+            // phải một object cùng khoá. Đó là `mapObject` của bản gốc, vốn chép từ
+            // lodash và trả về mảng.
             onSelect: (event, interactives) => {
-                for (const tool of tools) {
-                    const found = interactives[tool.tag]
-                    if (!found) continue
+                for (const found of interactives) {
+                    const tool = tools.find(each => each.tag === found.type)
+                    if (tool === undefined) continue
+
                     tool.node[tool.list] = tool.node[tool.list].map((each, index) => ({
                         ...each,
-                        selected: found.objects[index] === true,
+                        selected: found.objects[index]?.selected === true,
                     }))
                 }
                 report()

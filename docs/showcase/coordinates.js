@@ -1,12 +1,11 @@
 import {
-    discontinuousTimeScaleProviderBuilder,
     renderBarAnnotation,
     renderLabelAnnotation,
     renderSvgPathAnnotation,
     sma,
 } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, opening, grid, page } from "./showcase.js"
+import { chartHost, demo, grid, page } from "./showcase.js"
 
 page({
     title: "Cursors & tooltips",
@@ -27,36 +26,7 @@ const average = sma()
 
 const rows = average(daily(160))
 
-const chart = (host, { height = 320 } = {}) => {
-    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
-    const { data, xScale, xAccessor, displayXAccessor } = provider(rows)
-
-    const canvas = document.createElement("chart-canvas")
-    Object.assign(canvas, {
-        data,
-        xScale,
-        xAccessor,
-        displayXAccessor,
-        seriesName: "DEMO",
-        margin: { left: 0, right: 56, top: 8, bottom: 24 },
-        xExtents: opening(data, xAccessor),
-    })
-    canvas.style.height = `${height}px`
-
-    const pane = document.createElement("chart-pane")
-    pane.yExtents = price
-
-    pane.append(
-        document.createElement("chart-candlestick-series"),
-        Object.assign(document.createElement("chart-y-axis"), { ticks: 5, fontSize: 11 }),
-        Object.assign(document.createElement("chart-x-axis"), { fontSize: 11 }),
-    )
-
-    canvas.append(pane)
-    host.append(canvas)
-
-    return { canvas, pane }
-}
+const chart = (host, options) => chartHost(host, rows, { height: 320, ...options })
 
 demo({
     title: "Cursors",

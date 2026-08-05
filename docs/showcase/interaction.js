@@ -1,6 +1,6 @@
 import { discontinuousTimeScaleProviderBuilder } from "@akaoio/chart"
 import { daily } from "./data.js"
-import { demo, opening, page } from "./showcase.js"
+import { chartHost, demo, page } from "./showcase.js"
 
 page({
     title: "Interaction",
@@ -12,37 +12,7 @@ page({
 
 const price = datum => [datum.high, datum.low]
 
-const chart = (host, rows, { height = 360, ...rest } = {}) => {
-    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
-    const { data, xScale, xAccessor, displayXAccessor } = provider(rows)
-
-    const canvas = document.createElement("chart-canvas")
-    Object.assign(canvas, {
-        data,
-        xScale,
-        xAccessor,
-        displayXAccessor,
-        seriesName: "DEMO",
-        margin: { left: 0, right: 56, top: 8, bottom: 24 },
-        xExtents: opening(data, xAccessor),
-        ...rest,
-    })
-    canvas.style.height = `${height}px`
-
-    const pane = document.createElement("chart-pane")
-    pane.yExtents = price
-
-    pane.append(
-        document.createElement("chart-candlestick-series"),
-        Object.assign(document.createElement("chart-y-axis"), { ticks: 5, fontSize: 11 }),
-        Object.assign(document.createElement("chart-x-axis"), { fontSize: 11 }),
-    )
-
-    canvas.append(pane)
-    host.append(canvas)
-
-    return { canvas, pane, data, xAccessor }
-}
+const chart = (host, rows, options) => chartHost(host, rows, options)
 
 demo({
     title: "Pan, zoom, and the axes",

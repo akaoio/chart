@@ -12,6 +12,7 @@ import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 import { listen, staticServer } from "./tools/static-server.mjs"
+import { paintedPixels } from "./tools/browser/painted.mjs"
 
 const root = fileURLToPath(new URL(".", import.meta.url))
 
@@ -69,22 +70,6 @@ page.on("console", message => {
  * bị thao tác thật: bấm để vẽ, kéo để quét.
  */
 const SHOWCASE = ["index", "series", "indicators", "coordinates", "drawing", "interaction"]
-
-const paintedPixels = () =>
-    [...document.querySelectorAll("chart-canvas")].map(canvas => {
-        const contexts = canvas.getCanvasContexts?.()
-        if (!contexts) return 0
-
-        let painted = 0
-        for (const key of ["bg", "axes", "mouseCoord"]) {
-            const context = contexts[key]
-            if (!context) continue
-
-            const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
-            for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) painted++
-        }
-        return painted
-    })
 
 const runShowcaseTests = async (page, origin) => {
     const results = []

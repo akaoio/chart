@@ -8,6 +8,12 @@
  * The generator is deliberately dull — MINSTD, integer arithmetic, no `Math.random`, no
  * `Date.now` — for the same reason the test data is: a chart that changes under you is
  * impossible to compare against anything.
+ *
+ * It looks like `tools/golden/data.mjs` and is deliberately not shared with it. That one
+ * feeds the recorded fixtures: changing a single number there invalidates 42,000 recorded
+ * answers. This one exists to make a chart look like a chart, and should be free to
+ * change for that reason alone. Tying them together would mean a cosmetic tweak here
+ * breaking the parity evidence there.
  */
 
 const random = seed => {

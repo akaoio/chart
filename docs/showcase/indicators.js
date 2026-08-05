@@ -19,7 +19,7 @@ import {
     wma,
 } from "@akaoio/chart"
 import { daily, secondary } from "./data.js"
-import { demo, grid, opening, page } from "./showcase.js"
+import { chartHost, demo, grid, opening, page } from "./showcase.js"
 
 page({
     title: "Indicators",
@@ -32,36 +32,8 @@ page({
 const price = datum => [datum.high, datum.low]
 
 /** Canvas, pane, axes. Every demo below differs only in what goes inside. */
-const chart = (host, rows, { height = 320, extents = price, tickFormat, window: bars } = {}) => {
-    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
-    const { data, xScale, xAccessor, displayXAccessor } = provider(rows)
-
-    const canvas = document.createElement("chart-canvas")
-    Object.assign(canvas, {
-        data,
-        xScale,
-        xAccessor,
-        displayXAccessor,
-        margin: { left: 0, right: 56, top: 8, bottom: 24 },
-        xExtents: opening(data, xAccessor, { wide: rows.length, narrow: 70 }),
-    })
-    canvas.style.height = `${height}px`
-
-    const pane = document.createElement("chart-pane")
-    pane.yExtents = extents
-
-    const yAxis = document.createElement("chart-y-axis")
-    Object.assign(yAxis, { ticks: 5, fontSize: 11, tickFormat })
-
-    const xAxis = document.createElement("chart-x-axis")
-    Object.assign(xAxis, { fontSize: 11 })
-
-    pane.append(yAxis, xAxis)
-    canvas.append(pane)
-    host.append(canvas)
-
-    return { canvas, pane, data }
-}
+const chart = (host, rows, { extents = price, ...options } = {}) =>
+    chartHost(host, rows, { height: 320, yExtents: extents, bars: { wide: rows.length, narrow: 70 }, ...options })
 
 demo({
     title: "Moving averages",

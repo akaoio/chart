@@ -76,22 +76,32 @@ const firstRow = date => ({
     startOfYear: false,
 })
 
-// One shared calculator, reconfigured on every call. Faithful to the original; safe
-// only because `source`/`misc` are set immediately before the data is pushed through.
-const indexCalculator = slidingWindow()
-    .windowSize(2)
-    .undefinedValue((date, index, { initialIndex, formatters }) => {
-        const row = firstRow(date)
-        return { ...row, index: initialIndex, ...evaluateLevel(row, date, initialIndex, formatters) }
-    })
-    .accumulator(([previous, now], i, index, { initialIndex, formatters }) => {
-        const row = boundariesBetween(previous, now)
-        return { ...row, index: i + initialIndex, ...evaluateLevel(row, now, i, formatters) }
-    })
+/**
+ * A fresh calculator per call, not one shared and reconfigured.
+ *
+ * The original keeps a single `slidingWindow` at module level and rewrites its `source`
+ * and `misc` on every use. That happens to work because the data is pushed through
+ * immediately afterwards, with nothing in between — but "happens to work" is the whole
+ * problem: two charts sharing one process share that object, and anything that ever
+ * yields between configuring and running would silently read another chart's settings.
+ *
+ * Building one per call costs a closure and removes the hazard entirely.
+ */
+const indexCalculator = () =>
+    slidingWindow()
+        .windowSize(2)
+        .undefinedValue((date, index, { initialIndex, formatters }) => {
+            const row = firstRow(date)
+            return { ...row, index: initialIndex, ...evaluateLevel(row, date, initialIndex, formatters) }
+        })
+        .accumulator(([previous, now], i, index, { initialIndex, formatters }) => {
+            const row = boundariesBetween(previous, now)
+            return { ...row, index: i + initialIndex, ...evaluateLevel(row, now, i, formatters) }
+        })
 
 const createIndex = (realDateAccessor, inputDateAccessor, initialIndex, formatters) => data => {
     const dateAccessor = realDateAccessor(inputDateAccessor)
-    const calculate = indexCalculator.source(dateAccessor).misc({ initialIndex, formatters })
+    const calculate = indexCalculator().source(dateAccessor).misc({ initialIndex, formatters })
 
     const index = calculate(data).map(each => ({
         index: each.index,

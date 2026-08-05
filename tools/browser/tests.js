@@ -1883,6 +1883,200 @@ TESTS["series bọc trong div vẫn tìm được pane"] = async () => {
     return t.checks
 }
 
+/**
+ * Kéo mãi cũng không rời khỏi dữ liệu.
+ *
+ * `ChartCanvas` giữ hai biến tên `hackyWayToStopPanBeyondBounds__*`: kết quả khung hình
+ * trước được nạp lại làm mốc cho khung sau, nên dữ liệu không trôi ra ngoài mép nhanh hơn
+ * domain đuổi theo. Cái tên tự nhận là chắp vá và bản port giữ nguyên cả tên — nhưng giữ
+ * một thứ vì "bản gốc làm thế" mà không đo xem nó làm gì thì cũng là nợ. Đây là chỗ đo.
+ */
+TESTS["kéo mãi cũng không kéo chart ra khỏi dữ liệu"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle(4)
+
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+
+    const at = (type, target, x, extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + x, clientY: box.top + 200, bubbles: true, ...extra }),
+        )
+
+    const span = () => {
+        const [from, to] = canvas.getState().xScale.domain()
+        return to - from
+    }
+    const rightEdge = () => canvas.getState().xScale.domain()[1]
+    const bars = () => canvas.getState().plotData.length
+
+    const before = { span: span(), right: rightEdge(), bars: bars() }
+
+    // Kéo sang trái rất xa, nhiều nhịp — tức là đẩy chart về phía tương lai, nơi không
+    // còn dữ liệu nào cả.
+    at("mouseenter", rect, 600)
+    at("mousedown", rect, 600, { buttons: 1 })
+    for (let step = 1; step <= 12; step++) {
+        at("mousemove", window, 600 - step * 60, { buttons: 1 })
+        await settle(1)
+    }
+    at("mouseup", window, 0, { buttons: 0 })
+    await settle(3)
+
+    t.ok("có kéo đi thật", rightEdge() > before.right)
+    t.near("bề rộng khung nhìn giữ nguyên khi kéo", span(), before.span, before.span * 0.02)
+    t.gt("vẫn còn dữ liệu trên màn hình", bars(), 0)
+
+    // và kéo tiếp nữa cũng không làm màn hình trống trơn
+    const afterFirst = bars()
+
+    at("mouseenter", rect, 600)
+    at("mousedown", rect, 600, { buttons: 1 })
+    for (let step = 1; step <= 12; step++) {
+        at("mousemove", window, 600 - step * 60, { buttons: 1 })
+        await settle(1)
+    }
+    at("mouseup", window, 0, { buttons: 0 })
+    await settle(3)
+
+    t.gt("kéo thêm một lượt nữa vẫn còn dữ liệu", bars(), 0)
+    t.near("và số phiên trên màn hình không tụt dần về 0", bars(), afterFirst, Math.max(4, afterFirst * 0.5))
+
+    // Và một cú giật khổng lồ trong MỘT nhịp — chuột bị lôi ra tận ngoài cửa sổ.
+    //
+    // Đây mới là chỗ hai biến `hackyWayToStopPanBeyondBounds__*` thật sự có việc: domain
+    // nhảy hẳn ra ngoài dữ liệu, `filterData` lọc còn số không hàng, và nhánh cuối của nó
+    // đọc `head(plotData)` — với mảng rỗng thì đó là `undefined`, và `xAccessor(undefined)`
+    // NÉM. Hai cái mốc của khung hình trước chặn đúng chỗ ấy: không có gì để lọc thì giữ
+    // nguyên khung hình cũ.
+    //
+    // Bài này bắt được vì `test.browser.js` coi mọi lỗi trong trang là hỏng.
+    at("mouseenter", rect, 700)
+    at("mousedown", rect, 700, { buttons: 1 })
+    at("mousemove", window, -20000, { buttons: 1 })
+    await settle(2)
+    at("mousemove", window, -60000, { buttons: 1 })
+    await settle(2)
+    at("mouseup", window, -60000, { buttons: 0 })
+    await settle(3)
+
+    t.gt("giật một phát ra ngoài vũ trụ cũng không làm chart trắng", bars(), 0)
+    t.ok("và domain vẫn là số", Number.isFinite(rightEdge()))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["chart-click-callback nói được đã bấm vào cây nến nào"] = async () => {
+    const t = makeChecker()
+
+    const seen = []
+    const { canvas } = mountWithTool("chart-click-callback", {
+        onClick: (event, moreProps) => seen.push(moreProps),
+        onMouseMove: () => {},
+    })
+    await settle(4)
+
+    t.is("chưa bấm thì chưa báo gì", seen.length, 0)
+
+    await clickAt(canvas, 300, 180)
+
+    t.is("bấm một cái thì báo một lần", seen.length, 1)
+
+    if (seen.length > 0) {
+        const { currentItem, mouseXY, chartConfig } = seen[0]
+        t.ok("báo kèm cây nến dưới con trỏ", currentItem?.date instanceof Date)
+        t.ok("và toạ độ pixel trong pane", Array.isArray(mouseXY) && Number.isFinite(mouseXY[0]))
+        t.ok("và cấu hình pane để đổi ngược ra giá", typeof chartConfig?.yScale === "function")
+
+        // đúng cây nến ấy chứ không phải cây bên cạnh
+        const state = canvas.getState()
+        const nearest = state.plotData.reduce((best, datum) =>
+            Math.abs(state.xScale(state.xAccessor(datum)) - mouseXY[0]) <
+            Math.abs(state.xScale(state.xAccessor(best)) - mouseXY[0])
+                ? datum
+                : best,
+        )
+        t.is("là cây nến gần con trỏ nhất", String(currentItem.date), String(nearest.date))
+    }
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["chart-drawing-object-selector chọn đúng đối tượng bị bấm"] = async () => {
+    const t = makeChecker()
+
+    const reports = []
+
+    const { canvas, pane } = mountWithTool("chart-trend-line", {
+        enabled: false,
+        // hai đường ở hai chỗ khác hẳn nhau
+        trends: [
+            { start: [10, 100], end: [40, 100], selected: false, type: "LINE" },
+            { start: [10, 108], end: [40, 108], selected: false, type: "LINE" },
+        ],
+    })
+
+    const trendTool = pane.querySelector("chart-trend-line")
+
+    const selector = document.createElement("chart-drawing-object-selector")
+    Object.assign(selector, {
+        getInteractiveNodes: () => ({ trend: { type: "trend", chartId: 0, node: trendTool } }),
+        drawingObjectMap: { trend: "trends" },
+        // `getInteraction` dùng `mapObject`, mà `mapObject` của bản gốc trả về MỘT MẢNG
+        // chứ không phải object cùng khoá — đúng như lodash. Nên đọc theo thứ tự, không
+        // theo tên.
+        onSelect: (event, interactives) => reports.push(interactives[0].objects),
+    })
+    pane.append(selector)
+    await settle(4)
+
+    const state = canvas.getState()
+    const yOf = value => state.chartConfigs[0].yScale(value)
+    const xOf = value => state.xScale(value)
+
+    // bấm lên đường thứ nhất
+    await hoverAt(canvas, xOf(25), yOf(100))
+    await clickAt(canvas, xOf(25), yOf(100))
+
+    // `objects` là chính danh sách đối tượng, mỗi cái kèm `selected` — không phải mảng
+    // boolean. Đó là hình dạng `isHoverForInteractiveType` trả về.
+    const chosen = () => reports[reports.length - 1].map(object => object.selected === true)
+
+    t.gt("bấm lên đường thì selector báo", reports.length, 0)
+    if (reports.length > 0) {
+        t.is("đường thứ nhất được chọn", chosen()[0], true)
+        t.is("và đường thứ hai thì không", chosen()[1], false)
+    }
+
+    // rồi bấm lên đường thứ hai
+    reports.length = 0
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, xOf(25), yOf(108))
+    await clickAt(canvas, xOf(25), yOf(108))
+
+    if (reports.length > 0) {
+        t.is("giờ đến lượt đường thứ hai", chosen()[1], true)
+        t.is("và đường thứ nhất thôi được chọn", chosen()[0], false)
+    }
+
+    // bấm ra chỗ trống: không đường nào
+    reports.length = 0
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, xOf(25), yOf(130))
+    await clickAt(canvas, xOf(25), yOf(130))
+
+    if (reports.length > 0) {
+        t.is("bấm ra chỗ trống thì không đường nào được chọn", chosen().filter(Boolean).length, 0)
+    }
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

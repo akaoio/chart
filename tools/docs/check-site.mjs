@@ -12,6 +12,7 @@
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 import { listen, staticServer } from "../static-server.mjs"
+import { paintedPixels } from "../browser/painted.mjs"
 
 const site = fileURLToPath(new URL("../../_site/", import.meta.url))
 
@@ -67,22 +68,7 @@ for (const path of PAGES) {
 
     const painted = isRedirect || problems.length > 0
         ? []
-        : await page.evaluate(() =>
-              [...document.querySelectorAll("chart-canvas")].map(canvas => {
-                  const contexts = canvas.getCanvasContexts?.()
-                  if (!contexts) return 0
-
-                  let count = 0
-                  for (const key of ["bg", "axes", "mouseCoord"]) {
-                      const context = contexts[key]
-                      if (!context) continue
-
-                      const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
-                      for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) count++
-                  }
-                  return count
-              }),
-          )
+        : await page.evaluate(paintedPixels)
 
     page.off("pageerror", onError)
     page.off("console", onConsole)

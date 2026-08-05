@@ -431,7 +431,21 @@ const interactiveApi = {
     },
 }
 
-const suites = [
+/**
+ * Bộ nào phải chạy một mình thì ghi tên ở đây.
+ *
+ * `setLocale` đổi trạng thái toàn cục của tiến trình (`timeFormatDefaultLocale`), nên nó
+ * không thể ngồi chung: chạy trước thì làm hỏng bộ khác, chạy sau thì phụ thuộc vào thứ
+ * tự — mà thứ tự là thứ không nên phải nhớ. Mỗi bộ như thế được sinh trong một tiến trình
+ * con của chính script này.
+ */
+const ISOLATED = { locale: () => import("./cases/locale.mjs") }
+
+const only = process.env.GOLDEN_SUITE
+
+const suites = only
+    ? [[await ISOLATED[only](), scales]]
+    : [
     [await import("./cases/scales.mjs"), scales],
     [await import("./cases/utils.mjs"), utils],
     [await import("./cases/chartdata.mjs"), chartData],
@@ -439,7 +453,7 @@ const suites = [
     [await import("./cases/svg.mjs"), svgApi],
     [await import("./cases/indicators.mjs"), indicators],
     [await import("./cases/interactive.mjs"), interactiveApi],
-]
+      ]
 
 const { execSync } = await import("node:child_process")
 const commit = execSync("git rev-parse --short HEAD", { cwd: source }).toString().trim()
@@ -449,4 +463,15 @@ for (const [suite, api] of suites) {
     const file = join(fixtures, `${suite.name}.json`)
     writeFileSync(file, stringify({ source: { repo: "react-financial-charts", commit }, result }) + "\n")
     console.log(`${suite.name}.json ghi xong (nguồn @ ${commit})`)
+}
+
+if (only === undefined) {
+    const { execFileSync } = await import("node:child_process")
+
+    for (const name of Object.keys(ISOLATED)) {
+        execFileSync(process.execPath, process.execArgv.concat(fileURLToPath(import.meta.url)), {
+            stdio: "inherit",
+            env: { ...process.env, GOLDEN_SUITE: name },
+        })
+    }
 }
