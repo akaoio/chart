@@ -53861,6 +53861,114 @@
    [
     "restore"
    ]
-  ]
+  ],
+  "axisZoom": {
+   "stretch": [
+    5.131579,
+    33.868421
+   ],
+   "squash": [
+    -5.131579,
+    44.131579
+   ],
+   "still": [
+    0,
+    39
+   ],
+   "tooFar": "undefined",
+   "almostTooFar": [
+    18.986842,
+    20.013158
+   ],
+   "notInverted": [
+    -5.131579,
+    44.131579
+   ]
+  },
+  "axisZoomY": {
+   "stretch": [
+    94.166667,
+    110.833333
+   ],
+   "squash": [
+    85.833333,
+    119.166667
+   ],
+   "tooFar": "undefined",
+   "almostTooFar": [
+    101.805556,
+    103.194444
+   ]
+  },
+  "axisZoomOther": {
+   "wideDomain": [
+    -302.631579,
+    302.631579
+   ],
+   "flippedRange": [
+    5.131579,
+    33.868421
+   ]
+  },
+  "axisZoomCaptureX": {
+   "tag": "rect",
+   "attrs": {
+    "class": "chart-enable-interaction chart-default-cursor chart-x-axis",
+    "x": "0",
+    "y": "0",
+    "opacity": "0",
+    "height": "25",
+    "width": "760"
+   },
+   "children": []
+  },
+  "axisZoomCaptureXTop": {
+   "tag": "rect",
+   "attrs": {
+    "class": "chart-enable-interaction chart-default-cursor chart-x-axis",
+    "x": "0",
+    "y": "-25",
+    "opacity": "0",
+    "height": "25",
+    "width": "760"
+   },
+   "children": []
+  },
+  "axisZoomCaptureY": {
+   "tag": "rect",
+   "attrs": {
+    "class": "chart-enable-interaction chart-default-cursor chart-x-axis",
+    "x": "0",
+    "y": "0",
+    "opacity": "0",
+    "height": "360",
+    "width": "40"
+   },
+   "children": []
+  },
+  "axisZoomCaptureYLeft": {
+   "tag": "rect",
+   "attrs": {
+    "class": "chart-enable-interaction chart-default-cursor chart-x-axis",
+    "x": "-40",
+    "y": "0",
+    "opacity": "0",
+    "height": "360",
+    "width": "40"
+   },
+   "children": []
+  },
+  "axisZoomCaptureDragging": {
+   "tag": "rect",
+   "attrs": {
+    "class": "chart-enable-interaction chart-ew-resize-cursor chart-x-axis",
+    "x": "0",
+    "y": "0",
+    "opacity": "0",
+    "height": "25",
+    "width": "760"
+   },
+   "children": []
+  }
  }
 }

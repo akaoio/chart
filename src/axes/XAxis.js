@@ -1,6 +1,7 @@
 import { drawAxis } from "./Axis.js"
 import { Series } from "../series/Series.js"
 import { define } from "../core/element.js"
+import "./AxisZoomCapture.js"
 
 /** Fewer ticks on a narrow chart, or the labels collide into mush. */
 const ticksForWidth = width => (width < 400 ? 2 : width < 500 ? 6 : 8)
@@ -47,8 +48,30 @@ export const xAxisDefaults = {
 export class XAxis extends Series {
     static defaults = xAxisDefaults
 
+    #zoomCapture = null
+
+    connectedCallback() {
+        super.connectedCallback()
+
+        if (this.#zoomCapture === null) {
+            this.#zoomCapture = document.createElement("chart-axis-zoom-capture")
+            this.#zoomCapture.axis = this
+            this.append(this.#zoomCapture)
+        }
+    }
+
     get clip() {
         return false
+    }
+
+    /** Không có vạch thì không có gì để kéo cho giãn ra. */
+    get axisZoomEnabled() {
+        const { zoomEnabled, showTicks } = this.seriesProps
+        return Boolean(zoomEnabled && showTicks)
+    }
+
+    axisZoomCallback(domain) {
+        this.canvas?.xAxisZoom(domain)
     }
 
     get axisProps() {

@@ -1,6 +1,7 @@
 import { drawAxis } from "./Axis.js"
 import { Series } from "../series/Series.js"
 import { define } from "../core/element.js"
+import "./AxisZoomCapture.js"
 
 /** Fewer ticks on a short pane — a 100px volume pane cannot carry eight labels. */
 const ticksForHeight = height => (height < 300 ? 2 : height < 500 ? 6 : 8)
@@ -46,8 +47,33 @@ export const yAxisDefaults = {
 export class YAxis extends Series {
     static defaults = yAxisDefaults
 
+    #zoomCapture = null
+
+    connectedCallback() {
+        super.connectedCallback()
+
+        if (this.#zoomCapture === null) {
+            this.#zoomCapture = document.createElement("chart-axis-zoom-capture")
+            this.#zoomCapture.axis = this
+            this.append(this.#zoomCapture)
+        }
+    }
+
     get clip() {
         return false
+    }
+
+    /**
+     * Pane nào khoá trục giá thì trục ấy cũng không kéo giãn được — nếu không, kéo trục
+     * sẽ đổi domain rồi khung hình sau lại tính lại về chỗ cũ, và trục giật ngược lại.
+     */
+    get axisZoomEnabled() {
+        const { zoomEnabled } = this.seriesProps
+        return Boolean(zoomEnabled && this.chartConfig?.yPan)
+    }
+
+    axisZoomCallback(domain) {
+        this.canvas?.yAxisZoom(this.chartId, domain)
     }
 
     get edgeClip() {

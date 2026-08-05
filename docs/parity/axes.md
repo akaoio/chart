@@ -9,10 +9,12 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 | export | loại | file nguồn | tt | bằng chứng |
 |---|---|---|:--:|---|
 | `Axis` | class | `Axis.tsx` | ☑ | 15 cấu hình, chuỗi lệnh canvas khớp bản gốc từng lệnh một |
-| `XAxis` | class | `XAxis.tsx` | ☑ | dựng trong chart thật; trục nằm đúng đáy pane, vẽ ra pixel |
-| `YAxis` | class | `YAxis.tsx` | ☑ | dựng trong chart thật; trục nằm đúng mép phải pane |
+| `XAxis` | class | `XAxis.tsx` | ☑ | dựng trong chart thật; trục nằm đúng đáy pane, vẽ ra pixel, kéo được cho giãn |
+| `YAxis` | class | `YAxis.tsx` | ☑ | dựng trong chart thật; trục nằm đúng mép phải pane, kéo được cho giãn |
 
-Tên thẻ: `<chart-x-axis>`, `<chart-y-axis>`. `Axis` không có thẻ riêng — nó là phần vẽ dùng chung, `XAxis`/`YAxis` chỉ tính ra tham số rồi gọi nó, đúng như bản gốc.
+Nội bộ đã port: `AxisZoomCapture` — dải bắt chuột trên trục, không nằm trong barrel của bản gốc.
+
+Tên thẻ: `<chart-x-axis>`, `<chart-y-axis>`, `<chart-axis-zoom-capture>`. `Axis` không có thẻ riêng — nó là phần vẽ dùng chung, `XAxis`/`YAxis` chỉ tính ra tham số rồi gọi nó, đúng như bản gốc.
 
 ## Bằng chứng
 
@@ -37,13 +39,45 @@ Lý do: mốc thời gian không rơi đều. Đầu tháng nằm ở đâu là 
 
 Đây cũng là lý do `d3-force` nằm trong `dependencies` dù repo này không vẽ đồ thị mạng.
 
-## Chưa làm
+## Kéo trên trục để co giãn thang
 
-**`AxisZoomCapture` (232 dòng) chưa port.** Đây là phần kéo trên chính trục để co giãn thang: kéo dọc trên trục y thì giãn giá, kéo ngang trên trục x thì giãn thời gian, nhấp đúp thì trả về mặc định.
+`AxisZoomCapture` là một dải trong suốt nằm đè lên trục. Kéo dọc trên trục giá thì giãn giá, kéo ngang trên trục thời gian thì giãn thời gian; nhấp đúp để trả về mặc định là việc của ứng dụng, qua `onDoubleClick`.
 
-Hệ quả cụ thể: prop `zoomEnabled` hiện **không có tác dụng**. Trục vẫn vẽ đúng, chart vẫn pan và zoom bằng chuột như thường; chỉ riêng thao tác kéo *trên trục* là chưa có.
+Phép toán chỉ có một câu: **hai đầu của range dịch cùng một lượng, ngược chiều nhau**. Nên giữa trục đứng yên trong lúc kéo, còn domain được đọc lại từ thang cũ ở đúng hai chỗ mới ấy — kéo vào giữa thì hai đầu xích lại, khoảng nhìn hẹp đi, chart phóng to; kéo ra xa thì ngược lại. Kéo quá tay đến mức hai đầu vượt qua nhau thì phép kéo bị **từ chối** thay vì cho trục lộn ngược.
 
-Ghi ra đây thay vì để im, vì `zoomEnabled` mặc định là `true` ở cả `XAxis` lẫn `YAxis` — ai đọc API sẽ tưởng nó chạy. Phần nó nối vào (`xAxisZoom`, `yAxisZoom` của `ChartCanvas`) đã có sẵn từ bậc 2; chỗ còn thiếu chỉ là tầng bắt sự kiện trên trục.
+Trong bản port đây là một phần tử riêng, `<chart-axis-zoom-capture>`, do `XAxis`/`YAxis` tự dựng ra — nội bộ, không nằm trong barrel, đúng như bản gốc. Nó là thứ duy nhất trong thư viện vừa vẽ canvas (phần trục) vừa đặt một node SVG bắt chuột, nên nó cần cả hai kiểu bằng chứng:
+
+| chứng minh cái gì | bằng cách nào |
+|---|---|
+| domain mới sau một cú kéo | so số với `handleDrag` của chính bản gốc — 20 giá trị |
+| cái rect vô hình | so cây SVG, 5 dáng — vị trí, kích thước, lớp con trỏ |
+| kéo thật có đổi chart không | 17 khẳng định trong Chromium thật |
+
+Bên bản gốc phép toán nằm trong `handleDrag`, một thuộc tính riêng của instance. Bộ kiểm gọi thẳng nó với `ref` và `state` bơm vào bằng tay thay cho React, nên con số đem so là con số bản gốc tự tính — không phải công thức chép lại.
+
+Đã kiểm rằng bộ này biết fail — sửa hỏng 12 chỗ, bắt được 12/12:
+
+| sửa hỏng chỗ nào | bắt ở đâu |
+|---|---|
+| đảo chiều giãn | golden, 20 giá trị |
+| hai đầu vào của `getMouseDelta` đổi chỗ | golden, 20 giá trị |
+| neo vào đầu trục thay vì giữa trục | golden, 11 giá trị |
+| vùng bắt chuột hiện ra thay vì trong suốt | golden, 5 giá trị |
+| cho phép trục lộn ngược | golden, 2 giá trị |
+| con trỏ không đổi khi đang kéo | golden, 1 giá trị |
+| trục không báo domain mới lên chart (x, y) | trình duyệt |
+| bỏ qua `zoomEnabled` | trình duyệt |
+| nhấp đúp tính cả sau khi kéo | trình duyệt |
+| không nhớ là đã kéo | trình duyệt |
+| trục giá dùng nhầm thang x | trình duyệt |
+
+### Một chỗ cố ý khác bản gốc: kéo bằng ngón tay
+
+Bản gốc đưa thẳng `TouchEvent` vào `pointer()` của d3, mà hàm ấy đọc `event.clientX` — một TouchEvent không có thuộc tính đó, nên toạ độ ra `NaN` và **kéo trục bằng ngón tay không bao giờ chạy**. Bản port lấy `event.touches[0]`. Một dòng, và nó là khác biệt duy nhất về hành vi.
+
+### Và một chỗ giữ nguyên vì có lý
+
+Trục giá chỉ kéo được khi pane cho phép (`yPan`). Nếu không, kéo sẽ đổi domain rồi khung hình sau lại tính lại về chỗ cũ, và trục giật ngược lại — bản gốc chặn đúng chỗ ấy, bản port giữ nguyên.
 
 ## Export chỉ-kiểu (2)
 

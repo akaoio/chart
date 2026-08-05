@@ -1533,6 +1533,201 @@ TESTS["thân kênh song song trỏ vào được — chỗ bản gốc trỏ mã
     return t.checks
 }
 
+/**
+ * Chart có cả hai trục, để kéo cho giãn.
+ *
+ * Trục là thứ duy nhất trong thư viện vừa vẽ canvas vừa đặt một phần tử SVG bắt chuột —
+ * nên nó chỉ chứng minh được trong trình duyệt thật, không có cách nào khác.
+ */
+const mountWithAxes = (axisProps = {}) => {
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const { data, xScale, xAccessor, displayXAccessor } = provider(makeData(200))
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "trục",
+    })
+
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+
+    const series = document.createElement("chart-candlestick-series")
+    const xAxis = document.createElement("chart-x-axis")
+    const yAxis = document.createElement("chart-y-axis")
+    Object.assign(xAxis, axisProps.x ?? {})
+    Object.assign(yAxis, axisProps.y ?? {})
+
+    pane.append(series, xAxis, yAxis)
+    canvas.append(pane)
+    stage.append(canvas)
+
+    return { canvas, pane, xAxis, yAxis }
+}
+
+const zoomRectFor = (canvas, tag) => canvas.shadowRoot.querySelector(`[data-axis-zoom="${tag}"]`)
+
+/** Kéo trên chính cái rect bắt chuột của trục. */
+const dragAxis = async (rect, from, to) => {
+    const box = rect.getBoundingClientRect()
+
+    const at = (type, target, [x, y], extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, {
+                clientX: box.left + x,
+                clientY: box.top + y,
+                bubbles: true,
+                composed: true,
+                button: 0,
+                ...extra,
+            }),
+        )
+
+    at("mousedown", rect, from, { buttons: 1 })
+    await settle(1)
+
+    // Đứng yên thì TUYỆT ĐỐI không phát mousemove — trình duyệt thật cũng vậy, và đó
+    // đúng là điều kiện mà cửa chặn "kéo rồi thì không tính là bấm" canh.
+    if (from[0] !== to[0] || from[1] !== to[1]) {
+        at("mousemove", window, [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2], { buttons: 1 })
+        await settle(1)
+        at("mousemove", window, to, { buttons: 1 })
+        await settle(2)
+    }
+
+    at("mouseup", window, to, { buttons: 0 })
+    await settle(2)
+}
+
+const span = ([low, high]) => high - low
+const middle = ([low, high]) => (low + high) / 2
+
+TESTS["kéo trục thời gian thì chart giãn ra quanh giữa trục"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle()
+
+    const rect = zoomRectFor(canvas, "chart-x-axis")
+    t.ok("trục thời gian có vùng bắt chuột", rect !== null)
+    t.is("và nó vô hình", rect.getAttribute("opacity"), "0")
+
+    const before = canvas.getState().xScale.domain()
+
+    // Kéo về phía giữa trục: hai đầu range xích lại, mà domain đọc ở đúng hai chỗ ấy
+    // trên thang cũ — nên khoảng nhìn hẹp đi, chart phóng to.
+    await dragAxis(rect, [700, 12], [500, 12])
+    const after = canvas.getState().xScale.domain()
+
+    t.ok("kéo vào giữa thì nhìn được ít phiên hơn", span(after) < span(before))
+    t.near("giữa trục đứng yên", middle(after), middle(before), span(before) * 0.05)
+
+    // kéo ra xa giữa: ngược lại
+    const beforeOut = canvas.getState().xScale.domain()
+    await dragAxis(rect, [500, 12], [700, 12])
+    const afterOut = canvas.getState().xScale.domain()
+
+    t.gt("kéo ra xa thì nhìn được nhiều phiên hơn", span(afterOut), span(beforeOut))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kéo trục giá thì đổi khung giá của pane"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes()
+    await settle()
+
+    const rect = zoomRectFor(canvas, "chart-y-axis")
+    t.ok("trục giá có vùng bắt chuột", rect !== null)
+
+    const before = canvas.getState().chartConfigs[0].yScale.domain()
+
+    await dragAxis(rect, [20, 300], [20, 200])
+    const after = canvas.getState().chartConfigs[0].yScale.domain()
+
+    t.not("khung giá đã đổi", String(after), String(before))
+    t.near("giữa khung giá đứng yên", middle(after), middle(before), span(before) * 0.05)
+    t.ok("pane đánh dấu là đã tự đặt khung giá", canvas.getState().chartConfigs[0].yPanEnabled === true)
+
+    // và trục x không bị kéo theo
+    cleanup()
+    return t.checks
+}
+
+TESTS["zoomEnabled sai thì trục không kéo được nữa"] = async () => {
+    const t = makeChecker()
+
+    const { canvas, xAxis } = mountWithAxes()
+    await settle()
+
+    const rect = zoomRectFor(canvas, "chart-x-axis")
+    const before = canvas.getState().xScale.domain()
+
+    await dragAxis(rect, [700, 12], [500, 12])
+    t.not("bật thì kéo được", String(canvas.getState().xScale.domain()), String(before))
+
+    xAxis.zoomEnabled = false
+    await settle()
+
+    t.is("tắt thì vùng bắt chuột biến mất", zoomRectFor(canvas, "chart-x-axis"), null)
+
+    const stuck = canvas.getState().xScale.domain()
+    // kéo lên chính cái rect cũ: nó không còn trong tài liệu nữa
+    await dragAxis(rect, [700, 12], [400, 12])
+    t.is("và kéo không đổi gì", String(canvas.getState().xScale.domain()), String(stuck))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["showTicks sai thì trục thời gian cũng không kéo được"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithAxes({ x: { showTicks: false } })
+    await settle()
+
+    t.is("không có vạch thì không có gì để kéo", zoomRectFor(canvas, "chart-x-axis"), null)
+    t.ok("trục giá vẫn kéo được", zoomRectFor(canvas, "chart-y-axis") !== null)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["bấm hai lần lên trục là nhấp đúp, kéo rồi nhả thì không"] = async () => {
+    const t = makeChecker()
+
+    const doubles = []
+    const { canvas, xAxis } = mountWithAxes()
+    await settle()
+
+    xAxis.querySelector("chart-axis-zoom-capture").onDoubleClick = (event, position) => doubles.push(position)
+    await settle()
+
+    const rect = zoomRectFor(canvas, "chart-x-axis")
+
+    // bấm rồi nhả, không di chuột — hai lần liên tiếp
+    await dragAxis(rect, [400, 12], [400, 12])
+    t.is("lần đầu chưa phải nhấp đúp", doubles.length, 0)
+
+    await dragAxis(rect, [400, 12], [400, 12])
+    t.is("lần thứ hai mới là nhấp đúp", doubles.length, 1)
+
+    // kéo thật rồi nhả: không tính là bấm
+    doubles.length = 0
+    await dragAxis(rect, [400, 12], [300, 12])
+    await dragAxis(rect, [400, 12], [300, 12])
+    t.is("kéo rồi nhả không thành nhấp đúp", doubles.length, 0)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

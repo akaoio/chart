@@ -103,6 +103,7 @@ const drawVia = Component => (context, moreProps, props) => {
 const fromSeries = async file => import(join(packages, "series/src", file))
 
 const axes = await import(join(packages, "axes/src/Axis.tsx"))
+const axisZoomCapture = await import(join(packages, "axes/src/AxisZoomCapture.tsx"))
 const lineSeries = await fromSeries("LineSeries.tsx")
 const areaOnlySeries = await fromSeries("AreaOnlySeries.tsx")
 const areaSeries = await fromSeries("AreaSeries.tsx")
@@ -131,6 +132,40 @@ const volumeProfile = await fromSeries("VolumeProfileSeries.tsx")
 
 const drawApi = {
     drawAxis: drawVia(axes.Axis),
+
+    /**
+     * Phép toán kéo trục nằm trong `handleDrag`, một thuộc tính riêng của instance —
+     * `private` của TypeScript chỉ có lúc dịch. Nên nó được gọi thẳng, với `ref` và
+     * `state` bơm vào bằng tay thay cho React.
+     *
+     * `pointer()` của d3 lùi về `[pageX, pageY]` khi node không phải node thật, nên toạ
+     * độ chuột đi vào qua đúng đường ấy — không dựng DOM giả, không đoán.
+     */
+    axisZoomDomain: ({ startScale, startXY, mouseXY, getMouseDelta, inverted }) => {
+        let captured
+
+        const instance = new axisZoomCapture.AxisZoomCapture({
+            getMouseDelta,
+            inverted,
+            axisZoomCallback: domain => {
+                captured = domain
+            },
+        })
+
+        instance.ref = { current: {} }
+        instance.state = { startPosition: { startScale, startXY } }
+        instance.handleDrag({ pageX: mouseXY[0], pageY: mouseXY[1] })
+
+        return captured
+    },
+
+    /** Cái rect vô hình: dựng component rồi lấy cây SVG nó render ra. */
+    axisZoomCaptureRect: ({ bg, className, zoomCursorClassName, dragging = false }) => {
+        const instance = new axisZoomCapture.AxisZoomCapture({ bg, className, zoomCursorClassName })
+        if (dragging) instance.state = { startPosition: { startScale: null, startXY: [0, 0] } }
+        return instance.render()
+    },
+
     drawLineSeries: drawVia(lineSeries.LineSeries),
     drawAreaOnlySeries: drawVia(areaOnlySeries.AreaOnlySeries),
     drawAreaSeries: drawVia(areaSeries.AreaSeries),

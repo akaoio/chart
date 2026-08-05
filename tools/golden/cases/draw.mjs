@@ -13,7 +13,20 @@
 import { scaleLinear } from "d3-scale"
 import { curveMonotoneX } from "d3-shape"
 import { createRecorder } from "../recorder.mjs"
+import { normalizeSvg } from "../svgtree.mjs"
 import { datasets } from "../data.mjs"
+
+/** Khác biệt có khai báo: tên lớp `react-financial-charts-*` thành `chart-*`. */
+const stripPrefix = tree => {
+    if (tree === null || typeof tree !== "object") return tree
+    if (Array.isArray(tree)) return tree.map(stripPrefix)
+    if (tree.text !== undefined) return tree
+
+    const attrs = { ...tree.attrs }
+    if (typeof attrs.class === "string") attrs.class = attrs.class.replace(/react-financial-charts-/g, "chart-")
+
+    return { ...tree, attrs, children: (tree.children ?? []).map(stripPrefix) }
+}
 
 export const name = "draw"
 
@@ -417,6 +430,84 @@ export function run(api) {
     out.axisXTight = record(api.drawAxis, xAxis({ ticks: 24 }))
     out.axisXBarely = record(api.drawAxis, xAxis({ ticks: 16 }))
     out.axisYCrowded = record(api.drawAxis, yAxis({ ticks: 30 }))
+
+    // ── kéo trục cho giãn ra ──────────────────────────────────────────────────────
+    //
+    // Kéo ra xa giữa trục thì range giãn, domain hẹp lại, chart phóng to. Cả hai đầu đi
+    // ngược chiều nhau cùng một lượng, nên giữa trục đứng yên. Đây là toán thuần, so số.
+
+    const tidy = value => (typeof value === "number" ? Math.round(value * 1e6) / 1e6 : value)
+
+    const zoomOn = (scale, startXY, mouseXY, extra = {}) => {
+        const domain = api.axisZoomDomain({
+            startScale: scale,
+            startXY,
+            mouseXY,
+            getMouseDelta: (start, mouse) => start[0] - mouse[0],
+            ...extra,
+        })
+        return domain === undefined ? "undefined" : domain.map(tidy)
+    }
+
+    const zoomScale = () => scaleLinear().domain([0, 39]).range([0, 760])
+
+    out.axisZoom = {
+        // kéo sang trái từ giữa: range giãn ra, domain hẹp lại
+        stretch: zoomOn(zoomScale(), [400, 20], [300, 20]),
+        // kéo sang phải: ngược lại
+        squash: zoomOn(zoomScale(), [400, 20], [500, 20]),
+        // không di chuyển thì không đổi gì
+        still: zoomOn(zoomScale(), [400, 20], [400, 20]),
+        // kéo quá đà: hai đầu vượt qua nhau, trục lộn ngược — phải từ chối
+        tooFar: zoomOn(zoomScale(), [400, 20], [0, 20]),
+        // ngay trước ngưỡng ấy thì vẫn nhận
+        almostTooFar: zoomOn(zoomScale(), [400, 20], [30, 20]),
+        // không đảo dấu: kéo ra xa lại thành thu vào
+        notInverted: zoomOn(zoomScale(), [400, 20], [300, 20], { inverted: false }),
+    }
+
+    // trục dọc: cùng phép toán, nhưng range chạy ngược (360 → 0) nên dấu khác
+    const zoomOnY = (startXY, mouseXY) =>
+        api
+            .axisZoomDomain({
+                startScale: scaleLinear().domain([90, 115]).range([360, 0]),
+                startXY,
+                mouseXY,
+                getMouseDelta: (start, mouse) => start[1] - mouse[1],
+            })
+            ?.map(tidy) ?? "undefined"
+
+    out.axisZoomY = {
+        stretch: zoomOnY([20, 200], [20, 140]),
+        squash: zoomOnY([20, 200], [20, 260]),
+        tooFar: zoomOnY([20, 200], [20, 0]),
+        almostTooFar: zoomOnY([20, 200], [20, 30]),
+    }
+
+    // Thang có `invert` khác nhau thì domain ra khác nhau, nên kiểm cả thang log
+    out.axisZoomOther = {
+        wideDomain: zoomOn(scaleLinear().domain([-500, 500]).range([0, 760]), [400, 20], [250, 20]),
+        flippedRange: zoomOn(scaleLinear().domain([0, 39]).range([760, 0]), [400, 20], [300, 20]),
+    }
+
+    // ── vùng bắt chuột trên trục ──────────────────────────────────────────────────
+
+    const capture = (bg, extra = {}) =>
+        stripPrefix(
+            normalizeSvg(
+                api.axisZoomCaptureRect({ bg, className: "chart-x-axis", zoomCursorClassName: "", ...extra }),
+            ),
+        )
+
+    out.axisZoomCaptureX = capture({ x: 0, y: 0, h: 25, w: 760 })
+    out.axisZoomCaptureXTop = capture({ x: 0, y: -25, h: 25, w: 760 })
+    out.axisZoomCaptureY = capture({ x: 0, y: 0, h: 360, w: 40 })
+    out.axisZoomCaptureYLeft = capture({ x: -40, y: 0, h: 360, w: 40 })
+    // đang kéo: con trỏ đổi
+    out.axisZoomCaptureDragging = capture(
+        { x: 0, y: 0, h: 25, w: 760 },
+        { dragging: true, zoomCursorClassName: "chart-ew-resize-cursor" },
+    )
 
     return out
 }
