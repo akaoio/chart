@@ -1,0 +1,73 @@
+# Xuất bản bộ trưng bày và tài liệu lên GitHub Pages.
+#
+# Trang được **kiểm trước khi xuất bản**, trong đúng hình hài sẽ lên: `_site/` được gom
+# rồi phục vụ từ gốc trong một Chromium thật, và mỗi trang phải nạp không lỗi cùng vẽ ra
+# pixel. Trang hỏng thì việc dừng ở đây, chứ không phải người truy cập phát hiện hộ.
+#
+# Bố cục thư mục được giữ nguyên như trong kho mã, nên import map tương đối trong mỗi
+# trang trỏ đúng chỗ mà không phải viết lại đường dẫn — thứ chạy trên Pages với thứ vừa
+# được kiểm là cùng một mã.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/**
+      - src/**
+      - package.json
+      - tools/docs/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+# Chỉ cần quyền đọc mã, ghi Pages, và ký token cho lần triển khai.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Đẩy liên tiếp thì lần sau thắng; không huỷ lần đang chạy giữa chừng.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Không có `npm ci` vì kho này cố ý không commit package-lock.json.
+      - run: npm install
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Gom _site
+        run: npm run docs:site
+
+      - name: Kiểm _site trong trình duyệt thật
+        run: npm run docs:check
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

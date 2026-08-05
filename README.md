@@ -33,7 +33,8 @@ built with.
 - [Concepts](docs/guide/concepts.md), [data and scales](docs/guide/data.md),
   [indicators](docs/guide/indicators.md), [drawing tools](docs/guide/drawing-tools.md)
 - [Element reference](docs/reference/elements.md) — all 77 elements, generated from the source
-- [Showcase](docs/showcase/) — every feature running, each chart shown with the code that built it
+- [Showcase](https://akaoio.github.io/chart/) — every feature running, each chart shown with the
+  code that built it
 
 `npm run docs` serves the repository so the showcase can be opened locally. There is no build
 step for the site either.

@@ -6,3 +6,5 @@ docs/parity/shots/
 
 .DS_Store
 *.log
+
+_site/
