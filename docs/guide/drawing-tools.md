@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The twelve tools
+## The thirteen tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -44,8 +44,9 @@ the drawings are back; drop the list and they are gone.
 | `<chart-measure>` | `measures` | 2 — reads out Δprice, %, bars and elapsed time by `mode` |
 | `<chart-position-tool>` | `positions` | 1 — entry/target/stop from `side`, `stopFraction`, `riskReward` |
 | `<chart-pitchfork>` | `forks` | 3 — handle then both prongs; `variant`: `standard`, `schiff`, `modifiedSchiff` |
+| `<chart-fib-extension>` | `extensions` | 3 — swing start, swing end, pull-back; levels project C + (B−A)·r |
 
-The last five have no counterpart in the original library — they exist because
+The last six have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

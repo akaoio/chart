@@ -450,6 +450,8 @@ const TOUCH_TOOLS = [
     // Ba cú gõ: cán rồi hai chân. Chỗ nắm nằm giữa cán — trên đường trung tuyến từ
     // (0.3, 0.4) về trung điểm của hai chân (0.65, 0.425).
     { label: "Pitchfork", tag: "chart-pitchfork", list: "forks", taps: 3, grab: [0.475, 0.412] },
+    // Muc 0% cua fib extension nam ngang o y cua diem C (0.7, 0.3), chay sang phai.
+    { label: "Fib ext", tag: "chart-fib-extension", list: "extensions", taps: 3, grab: [0.8, 0.3] },
 ]
 
 const touchToolTests = async (browser, origin) => {

@@ -15,10 +15,10 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Twelve tools, one at a time",
+    title: "Thirteen tools, one at a time",
     about:
-        "Choose a tool and click on the chart — most take two clicks, the equidistant channel " +
-        "and the pitchfork take three, and text, alert, H-line and position take one. Click a " +
+        "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
+        "the pitchfork and the fib extension take three, and text, alert, H-line and position take one. Click a " +
         "drawn object to select it, then press Delete. Everything drawn is listed under the " +
         "chart, exactly as the tools report it.",
     build: (stage, api) => {
@@ -39,6 +39,7 @@ demo({
             { label: "Measure", tag: "chart-measure", list: "measures" },
             { label: "Position", tag: "chart-position-tool", list: "positions" },
             { label: "Pitchfork", tag: "chart-pitchfork", list: "forks" },
+            { label: "Fib ext", tag: "chart-fib-extension", list: "extensions" },
         ]
 
         let active = null

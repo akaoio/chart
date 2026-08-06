@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **91** of them.
+Every custom element the library defines: **93** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1175,6 +1175,26 @@ One equidistant channel, with five grab points.
 | `selected` | `false` |
 | `startXY` | — |
 
+### `<chart-each-fib-extension>`
+
+One drawn extension: six level rays, their labels, and three point handles.
+
+`EachFibExtension` — [`src/interactive/wrapper/EachFibExtension.js`](../../src/interactive/wrapper/EachFibExtension.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `selected` | `false` |
+| `yDisplayFormat` | ƒ |
+
 ### `<chart-each-fib-retracement>`
 
 One Fibonacci retracement: six levels between a high and a low.
@@ -1462,6 +1482,29 @@ A parallel price channel drawn in **three** clicks.
 | `onComplete` | — |
 | `onSelect` | — |
 | `onStart` | — |
+
+### `<chart-fib-extension>`
+
+Trend-based fib extension.
+
+`FibExtension` — [`src/interactive/FibExtension.js`](../../src/interactive/FibExtension.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `extensions` | `[]` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
 
 ### `<chart-fibonacci-retracement>`
 

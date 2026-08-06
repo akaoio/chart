@@ -1024,6 +1024,24 @@ export class ChartCanvas extends ElementBase {
         })
     }
 
+    /**
+     * Tiem crosshair tu ngoai: `setCrosshair([x, y])` ve dung nhu chuot dang
+     * o do, `setCrosshair(null)` xoa. Sinh ra cho luoi nhieu chart dong bo
+     * crosshair (akaoio/akao#156): di DUNG duong handleMouseMove that —
+     * cung mutableState, cung su kien "mousemove" toi moi subscriber — chu
+     * khong ve rieng mot lop, de tooltip/coordinate/hover cung song nhu nhau.
+     * `immediate` bo phep chan mot-lan-moi-khung-hinh, vi nguoi goi ben ngoai
+     * khong co chuot that de goi lai lan nua.
+     */
+    setCrosshair(mouseXY) {
+        if (this.#state === null) return
+        if (mouseXY === null || mouseXY === undefined) {
+            this.handleMouseLeave({})
+            return
+        }
+        this.handleMouseMove(mouseXY, "external", {}, { immediate: true })
+    }
+
     handleMouseLeave = event => {
         this.triggerEvent("mouseleave", { show: false }, event)
         this.clearMouseCanvas()
