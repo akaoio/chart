@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **130** of them.
+Every custom element the library defines: **131** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -526,6 +526,25 @@ An escape hatch into SVG.
 `SVGComponent` — [`src/series/SVGComponent.js`](../../src/series/SVGComponent.js)
 
 No configurable properties.
+
+### `<chart-volume-candlestick-series>`
+
+Wicks first, then bodies over them — same passes as the plain candlestick.
+
+`VolumeCandlestickSeries` — [`src/series/VolumeCandlestickSeries.js`](../../src/series/VolumeCandlestickSeries.js)
+
+| property | default |
+|---|---|
+| `candleStrokeWidth` | `0.5` |
+| `clip` | `true` |
+| `fill` | ƒ |
+| `minWidthRatio` | `0.2` |
+| `stroke` | `"none"` |
+| `volumeAccessor` | ƒ |
+| `wickStroke` | ƒ |
+| `width` | ƒ |
+| `widthRatio` | `0.8` |
+| `yAccessor` | ƒ |
 
 ### `<chart-volume-profile-series>`
 
