@@ -52,11 +52,13 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-arrow-mark` (`mode`) | Arrow mark up · Arrow mark down | 1 bấm | không leaf mới — glyph ▲/▼ trên `InteractiveText` |
 | `chart-fib-time-zone` | Fib time zone | 2 bấm | không leaf mới — `chart-interactive-cycles` học thêm `offsets`, dãy Fibonacci thay cho lặp đều |
 | `chart-fib-shape` (`variant`) | Fib speed resistance fan · Fib arcs · Fib circles · Fib spiral · Fib wedge | 2–3 bấm | `chart-interactive-fib-shape` (mới): hình học tính một lần trong pixel, vẽ và dò trúng cùng đọc; bán kính pixel từ hai neo dữ liệu |
+| `chart-gann-box` (`variant`) | Gann box · Gann square | 2 bấm | `chart-interactive-gann-box` (mới): hộp chia mức hai trục, `square` thêm chéo + quạt góc; một bảng mức dùng chung hai trục (TV cho hai bảng riêng — tập con trung thực). Gann square fixed CỐ Ý chưa làm: cần khoá tỉ lệ giá/nến cố định — ghi vào #5 |
+| `chart-time-cycles` (`mode`) | Time cycles · Sine line | 2 bấm | `chart-interactive-wave` (mới): bán nguyệt lặp trên nền neo đầu hoặc đường sin đỉnh–đáy trải hết pane |
 | `chart-info-line` | Info line | 2 bấm | không leaf mới — nhãn giữa đoạn đọc Δgiá/%/số nến, suy từ dữ liệu nên không cũ được. Trend angle CỐ Ý chưa làm: góc phụ thuộc tỉ lệ pixel hai trục, cần label tính chữ theo pixel — ghi vào #5 |
 
 Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape`, `EachGannBox`, `EachWave` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
 

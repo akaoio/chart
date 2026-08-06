@@ -468,6 +468,10 @@ const TOUCH_TOOLS = [
     { label: "Fib circles", tag: "chart-fib-shape", nth: 2, list: "fibShapes", taps: 2, grab: [0.3, 0.4] },
     { label: "Fib spiral", tag: "chart-fib-shape", nth: 3, list: "fibShapes", taps: 2, grab: [0.6, 0.55] },
     { label: "Fib wedge", tag: "chart-fib-shape", nth: 4, list: "fibShapes", taps: 3, grab: [0.45, 0.475] },
+    { label: "Gann box", tag: "chart-gann-box", nth: 0, list: "gannBoxes", taps: 2, grab: [0.3, 0.475] },
+    { label: "Gann square", tag: "chart-gann-box", nth: 1, list: "gannBoxes", taps: 2, grab: [0.3, 0.475] },
+    { label: "Time cycles", tag: "chart-time-cycles", nth: 0, list: "waves", taps: 2, grab: [0.3, 0.4] },
+    { label: "Sine line", tag: "chart-time-cycles", nth: 1, list: "waves", taps: 2, grab: [0.3, 0.4] },
 ]
 
 const touchToolTests = async (browser, origin) => {
