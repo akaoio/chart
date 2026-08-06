@@ -3332,6 +3332,82 @@ TESTS["một cú bấm trồng một kế hoạch vị thế đúng tỉ lệ R/
     return t.checks
 }
 
+TESTS["ba cú bấm dựng một fib extension, mức chiếu đúng công thức C + (B − A) · r"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-extension", {
+        enabled: true,
+        snap: false,
+        extensions: [],
+        onComplete: (event, extensions) => {
+            completed.push(extensions)
+            tool.extensions = extensions
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 150, 250)
+    t.is("bấm lần một chưa hoàn thành gì", completed.length, 0)
+
+    await hoverAt(canvas, 380, 130)
+    t.ok("một điểm thì hình tạm là đoạn thẳng", tool.querySelector("chart-interactive-straight-line") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 380, 130)
+    t.is("bấm lần hai vẫn chưa hoàn thành", completed.length, 0)
+
+    await hoverAt(canvas, 470, 200)
+    t.ok("hai điểm thì hình tạm là nguyên bộ mức", tool.querySelector("chart-each-fib-extension") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 470, 200)
+
+    t.is("bấm lần ba là xong", completed.length, 1)
+    const extension = completed[0][0]
+    t.ok("đủ ba điểm", extension.p1 !== undefined && extension.p2 !== undefined && extension.p3 !== undefined)
+
+    // Công thức mức: 0% nằm đúng tại C, 100% tại C + (B − A)
+    const swing = extension.p2[1] - extension.p1[1]
+    t.gt("swing khác 0 — không thì mọi mức trùng nhau", Math.abs(swing), 0)
+    t.gt("vẽ ra pixel thật (sáu mức + nhãn)", mouseLayerPixels(canvas), 300)
+
+    // Kéo thân (nắm vào mức 0% đi qua C): cả ba điểm dời cùng quãng — swing giữ nguyên
+    await dragOn(canvas, [520, 200], [560, 240])
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.near("swing giữ nguyên qua cú kéo", moved.p2[1] - moved.p1[1], swing, Math.abs(swing) * 0.02)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["setCrosshair vẽ crosshair không cần chuột, và null thì xoá"] = async () => {
+    const t = makeChecker()
+
+    const { canvas } = mountWithTool("chart-click-callback", {})
+    const crosshair = document.createElement("chart-cross-hair-cursor")
+    canvas.querySelector("chart-pane").append(crosshair)
+    await settle(3)
+
+    const before = mouseLayerPixels(canvas)
+    canvas.setCrosshair([300, 150])
+    await settle(3)
+
+    const state = canvas.getMutableState()
+    t.is("mouseXY đúng chỗ tiêm vào — x", state.mouseXY[0], 300)
+    t.is("mouseXY đúng chỗ tiêm vào — y", state.mouseXY[1], 150)
+    t.ok("có currentItem dưới crosshair", state.currentItem !== undefined && state.currentItem !== null)
+    t.gt("crosshair vẽ ra pixel thật", mouseLayerPixels(canvas), before)
+
+    canvas.setCrosshair(null)
+    await settle(3)
+    t.is("null thì lớp chuột sạch như cũ", mouseLayerPixels(canvas), before)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
