@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **93** of them.
+Every custom element the library defines: **97** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1029,6 +1029,30 @@ Drag a box over the chart to select a range.
 | `strokeStyle` | `"#000000"` |
 | `type` | `"2D"` |
 
+### `<chart-callout>`
+
+Callouts.
+
+`Callout` — [`src/interactive/Callout.js`](../../src/interactive/Callout.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `callouts` | `[]` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `defaultText` | `"Callout"` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-channel-with-area>`
 
 Two parallel lines with the space between them filled.
@@ -1155,6 +1179,25 @@ One axis-anchored line and the machinery that lets it be adjusted.
 | `strokeWidth` | `1` |
 | `xValue` | — |
 | `yValue` | — |
+
+### `<chart-each-callout>`
+
+One callout: a text box, a leg from the box to the anchor, and a handle on the anchor.
+
+`EachCallout` — [`src/interactive/wrapper/EachCallout.js`](../../src/interactive/wrapper/EachCallout.js)
+
+| property | default |
+|---|---|
+| `anchor` | — |
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `text` | `"Callout"` |
 
 ### `<chart-each-equidistant-channel>`
 
@@ -1381,6 +1424,24 @@ One position plan and its five draggable parts.
 | `textFill` | `"#FFFFFF"` |
 | `x1Value` | — |
 | `x2Value` | — |
+
+### `<chart-each-price-label>`
+
+One price label: a box whose text IS its own y value.
+
+`EachPriceLabel` — [`src/interactive/wrapper/EachPriceLabel.js`](../../src/interactive/wrapper/EachPriceLabel.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `yDisplayFormat` | ƒ |
 
 ### `<chart-each-shape>`
 
@@ -1961,6 +2022,29 @@ Position plans.
 | `snap` | `false` |
 | `snapTo` | — |
 | `stopFraction` | `0.02` |
+
+### `<chart-price-label>`
+
+Price labels.
+
+`PriceLabel` — [`src/interactive/PriceLabel.js`](../../src/interactive/PriceLabel.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `labels` | `[]` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `yDisplayFormat` | ƒ |
 
 ### `<chart-shape-tool>`
 

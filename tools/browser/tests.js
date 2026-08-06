@@ -3408,6 +3408,85 @@ TESTS["setCrosshair vẽ crosshair không cần chuột, và null thì xoá"] = 
     return t.checks
 }
 
+TESTS["callout: hai cú bấm — mũi neo rồi hộp chữ, kéo hộp không dời neo"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-callout", {
+        enabled: true,
+        snap: false,
+        defaultText: "Ghi chú",
+        callouts: [],
+        onComplete: (event, callouts) => {
+            completed.push(callouts)
+            tool.callouts = callouts
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 250, 250)
+    t.is("bấm lần một chưa hoàn thành gì", completed.length, 0)
+
+    await hoverAt(canvas, 450, 120)
+    t.ok("có chân tạm bám theo chuột", tool.querySelector("chart-interactive-straight-line") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 120)
+
+    t.is("bấm lần hai là xong", completed.length, 1)
+    const callout = completed[0][0]
+    t.ok("có đủ neo và hộp", callout.anchor !== undefined && callout.at !== undefined)
+    t.is("chữ lấy từ defaultText", callout.text, "Ghi chú")
+    t.not("neo và hộp không trùng nhau", String(callout.anchor), String(callout.at))
+    t.gt("vẽ ra pixel thật (hộp + chân)", mouseLayerPixels(canvas), 200)
+
+    // Kéo HỘP: at đổi, neo đứng im — đó là điểm phân công của callout
+    await dragOn(canvas, [450, 120], [500, 170])
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.is("neo đứng im khi kéo hộp", String(moved.anchor), String(callout.anchor))
+    t.not("hộp đã dời", String(moved.at), String(callout.at))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["price label: một cú bấm, chữ là chính giá của nó — kéo là đổi giá"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-price-label", {
+        enabled: true,
+        snap: false,
+        labels: [],
+        onComplete: (event, labels) => {
+            completed.push(labels)
+            tool.labels = labels
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 200)
+    t.is("một cú bấm là có nhãn", completed.length, 1)
+    const label = completed[0][0]
+
+    await settle(3)
+    const box = tool.querySelector("chart-interactive-text")
+    t.is("chữ trên hộp đúng bằng y của nhãn", box.text, label.at[1].toFixed(2))
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 100)
+
+    // Kéo nhãn xuống: giá mới phải khác và chữ phải đổi theo
+    await dragOn(canvas, [300, 200], [300, 280])
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.not("giá đã đổi theo chỗ mới", moved.at[1].toFixed(2), label.at[1].toFixed(2))
+    await settle(3)
+    t.is("và chữ đổi theo giá mới", tool.querySelector("chart-interactive-text").text, moved.at[1].toFixed(2))
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

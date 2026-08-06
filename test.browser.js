@@ -452,6 +452,9 @@ const TOUCH_TOOLS = [
     { label: "Pitchfork", tag: "chart-pitchfork", list: "forks", taps: 3, grab: [0.475, 0.412] },
     // Muc 0% cua fib extension nam ngang o y cua diem C (0.7, 0.3), chay sang phai.
     { label: "Fib ext", tag: "chart-fib-extension", list: "extensions", taps: 3, grab: [0.8, 0.3] },
+    // Callout: tap 1 la mui neo (0.3, 0.4), tap 2 la hop chu (0.6, 0.55) — nam vao hop.
+    { label: "Callout", tag: "chart-callout", list: "callouts", taps: 2, grab: [0.6, 0.55] },
+    { label: "Price label", tag: "chart-price-label", list: "labels", taps: 1, grab: [0.3, 0.4] },
 ]
 
 const touchToolTests = async (browser, origin) => {
