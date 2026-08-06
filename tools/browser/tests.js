@@ -4404,6 +4404,46 @@ TESTS["pan vẫn sống khi có tool một-bấm trên biểu đồ — hình th
     return t.checks
 }
 
+TESTS["terminate: nét vẽ dở dang phải chết theo — Clear không để lại bóng ma"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-shape", {
+        enabled: true,
+        variant: "circles",
+        snap: false,
+        fibShapes: [],
+        onComplete: (event, fibShapes) => {
+            completed.push(fibShapes)
+            tool.fibShapes = fibShapes
+        },
+    })
+    await settle()
+
+    // Vẽ TRỌN một hình, rồi bấm THÊM một nhát — mở một cử chỉ dở dang đúng
+    // kiểu người dùng thật; hình tạm bám con trỏ từ đây.
+    await clickAt(canvas, 250, 200)
+    await hoverAt(canvas, 320, 240)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 320, 240)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 420, 160)
+    await hoverAt(canvas, 480, 220)
+    await settle(3)
+    t.gt("hình thật + hình tạm dở dang đều ra pixel", mouseLayerPixels(canvas), 300)
+
+    // Clear kiểu ứng dụng: xoá danh sách VÀ huỷ cử chỉ dở dang.
+    // Bỏ terminate() là dòng dưới đỏ: hình tạm sống sót thành bóng ma.
+    tool.fibShapes = []
+    tool.terminate()
+    await settle(3)
+    // Bóng ma là hàng nghìn pixel; chừa 20 cho cái chấm con trỏ của indicator
+    t.gt("sau Clear sạch — nhiều nhất còn chấm con trỏ", 20, mouseLayerPixels(canvas))
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

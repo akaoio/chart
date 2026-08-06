@@ -180,7 +180,12 @@ demo({
 
         const choose = (tool, button) => {
             active = active === tool ? null : tool
-            for (const each of tools) each.node.enabled = each === active
+            for (const each of tools) {
+                // Tắt hay đổi công cụ là huỷ nét vẽ dở dang — hình tạm của một cử chỉ
+                // chưa xong không được sống thành bóng ma mà Clear không đụng tới được.
+                if (each.node.enabled && each !== active) each.node.terminate?.()
+                each.node.enabled = each === active
+            }
             for (const each of buttons) each.setAttribute("aria-pressed", String(each === button && active !== null))
         }
 
@@ -191,7 +196,10 @@ demo({
         })
 
         api.button("Clear", () => {
-            for (const tool of tools) tool.node[tool.list] = []
+            for (const tool of tools) {
+                tool.node.terminate?.()
+                tool.node[tool.list] = []
+            }
             report()
         })
 
