@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The twenty-nine tools
+## The thirty tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -61,8 +61,9 @@ the drawings are back; drop the list and they are gone.
 | `<chart-note>` | `notes` | 1 — a text box; `kind: note` wears sticky yellow, `kind: comment` a flat card; `text` is the user's words |
 | `<chart-signpost>` | `signposts` | 1 — a pole with a text box riding the top |
 | `<chart-flag-mark>` | `flags` | 1 — a ⚑ at the pointer, same glyph ride as the arrow marks |
+| `<chart-freehand>` | `strokes` | press–drag–release — `mode: brush` draws a thin line, `mode: highlighter` a wide translucent one; points are pixel-decimated |
 
-The last twenty-two have no counterpart in the original library — they exist because
+The last twenty-three have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **131** of them.
+Every custom element the library defines: **134** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1443,6 +1443,24 @@ One drawn Fibonacci construction: the shape body and one handle per anchor.
 | `selected` | `false` |
 | `variant` | `"arcs"` |
 
+### `<chart-each-freehand>`
+
+One freehand stroke: chỉ có thân, không tay cầm đỉnh — một nét vẽ tay có hàng trăm điểm, cho kéo từng đỉnh là vô nghĩa (TradingView cũng thế).
+
+`EachFreehand` — [`src/interactive/wrapper/EachFreehand.js`](../../src/interactive/wrapper/EachFreehand.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `mode` | `"brush"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `selected` | `false` |
+
 ### `<chart-each-gann-box>`
 
 One Gann box: the gridded body, a handle at each anchor corner.
@@ -1957,6 +1975,30 @@ Flag marks.
 | `snap` | `false` |
 | `snapTo` | — |
 
+### `<chart-freehand>`
+
+Freehand.
+
+`Freehand` — [`src/interactive/Freehand.js`](../../src/interactive/Freehand.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `mode` | `"brush"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `strokes` | `[]` |
+
 ### `<chart-gann-box>`
 
 Gann boxes.
@@ -2168,6 +2210,29 @@ One Fibonacci construction: fan, arcs, circles, spiral or wedge over the same an
 | `strokeWidth` | `1` |
 | `tolerance` | `7` |
 | `variant` | `"arcs"` |
+
+### `<chart-interactive-freehand>`
+
+One freehand stroke the user drew: a run of data-anchored points with round joins.
+
+`InteractiveFreehand` — [`src/interactive/components/InteractiveFreehand.js`](../../src/interactive/components/InteractiveFreehand.js)
+
+| property | default |
+|---|---|
+| `highlighterOpacity` | `0.35` |
+| `highlighterWidth` | `14` |
+| `interactiveCursorClass` | — |
+| `mode` | `"brush"` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `points` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `2` |
+| `tolerance` | `7` |
 
 ### `<chart-interactive-gann-box>`
 

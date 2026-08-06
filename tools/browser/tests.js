@@ -4174,6 +4174,52 @@ TESTS["volume candles: bề ngang thân nến theo volume — minWidthRatio đi�
     return t.checks
 }
 
+TESTS["freehand: đè-rê-nhả là một nét — highlighter rộng mờ, bề rộng điều khiển thật"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-freehand", {
+        enabled: true,
+        mode: "brush",
+        snap: false,
+        strokes: [],
+        onComplete: (event, strokes) => {
+            completed.push(strokes)
+            tool.strokes = strokes
+        },
+    })
+    await settle()
+
+    // dragOn phát đúng chuỗi đè-rê-nhả-click của một nét vẽ thật
+    await dragOn(canvas, [200, 200], [320, 260])
+    t.is("một cú kéo là một nét", completed.length, 1)
+    t.gt("nét có nhiều điểm", completed[0][0].points.length, 2)
+    t.is("nét mang mode lúc vẽ", completed[0][0].mode, "brush")
+    await settle(3)
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 60)
+
+    // Highlighter: đổi mode, kéo nét thứ hai ở chỗ trống — nét cũ giữ mode cũ
+    tool.mode = "highlighter"
+    await pastDoubleClickWindow()
+    await dragOn(canvas, [250, 120], [420, 150])
+    const both = completed[completed.length - 1]
+    t.is("hai nét trên hình", both.length, 2)
+    t.ok("nét cũ vẫn brush, nét mới là highlighter", both[0].mode === "brush" && both[1].mode === "highlighter")
+
+    // Bề rộng highlighter điều khiển pixel: nới gấp đôi là phủ nhiều pixel hơn.
+    // Bỏ nhánh highlighter trong drawFreehand là dòng này đỏ.
+    await settle(3)
+    const before = mouseLayerPixels(canvas)
+    tool.strokes = tool.strokes.map(each =>
+        each.mode === "highlighter" ? { ...each, appearance: { ...each.appearance, highlighterWidth: 30 } } : each,
+    )
+    await settle(3)
+    t.gt("highlighter rộng hơn là nhiều pixel hơn", mouseLayerPixels(canvas), before)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
