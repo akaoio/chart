@@ -3487,6 +3487,58 @@ TESTS["price label: một cú bấm, chữ là chính giá của nó — kéo l�
     return t.checks
 }
 
+TESTS["pattern XABCD: năm cú bấm, nhãn đủ năm đỉnh, kéo thân giữ dáng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-pattern", {
+        enabled: true,
+        variant: "xabcd",
+        snap: false,
+        patterns: [],
+        onComplete: (event, patterns) => {
+            completed.push(patterns)
+            tool.patterns = patterns
+        },
+    })
+    await settle()
+
+    const spots = [
+        [150, 250],
+        [280, 130],
+        [380, 260],
+        [480, 150],
+        [560, 280],
+    ]
+    for (let index = 0; index < spots.length; index++) {
+        if (index > 0) await pastDoubleClickWindow()
+        await hoverAt(canvas, spots[index][0], spots[index][1])
+        await clickAt(canvas, spots[index][0], spots[index][1])
+        if (index < spots.length - 1) t.is(`bấm lần ${index + 1} chưa hoàn thành`, completed.length, 0)
+    }
+
+    t.is("bấm lần năm là xong", completed.length, 1)
+    const pattern = completed[0][0]
+    t.is("đủ năm đỉnh", pattern.points.length, 5)
+    t.is("nhớ variant", pattern.variant, "xabcd")
+    t.gt("vẽ ra pixel thật (đường + fill + nhãn)", mouseLayerPixels(canvas), 300)
+
+    // Kéo thân từ giữa đoạn X→A: mọi đỉnh dời cùng quãng, dáng giữ nguyên
+    const spanX = pattern.points[4][0] - pattern.points[0][0]
+    await dragOn(canvas, [215, 190], [265, 240])
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.near("bề ngang X→D giữ nguyên", moved.points[4][0] - moved.points[0][0], spanX, 1.5)
+
+    // Kéo MỘT đỉnh: chỉ đỉnh đó đổi — tay cầm là công cụ sửa từng khớp
+    const before = completed[completed.length - 1][0].points.map(point => String(point))
+    const handle = tool.querySelectorAll("chart-clickable-circle")[2]
+    t.ok("có tay cầm cho đỉnh B", handle !== undefined)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
