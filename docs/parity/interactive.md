@@ -29,11 +29,11 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 
 Nội bộ đã port đủ: `components/` (`InteractiveStraightLine`, `ClickableCircle`, `ClickableShape`, `Text`, `HoverTextNearMouse`, `MouseLocationIndicator`, `ChannelWithArea`, `LinearRegressionChannelWithArea`, `GannFan`, `InteractiveText`, `InteractiveYCoordinate`) và `wrapper/` (`EachTrendLine`, `EachEquidistantChannel`, `EachLinearRegressionChannel`, `EachFibRetracement`, `EachGannFan`, `EachText`, `EachInteractiveYCoordinate`).
 
-Bề mặt công khai của `src/interactive/index.js` **chứa đúng** bề mặt của `index.ts` bản gốc: công cụ và `utils`, không có phần trong ruột. Các file trong `components/` và `wrapper/` vẫn được nạp ở đó — thẻ tuỳ biến phải được đăng ký thì trình duyệt mới hiểu — nhưng không re-export, y như bản gốc. Ngoài bề mặt ấy, index xuất thêm bốn công cụ vượt bản gốc (mục dưới) — đánh dấu tường minh trong file, không trộn lẫn với phần port.
+Bề mặt công khai của `src/interactive/index.js` **chứa đúng** bề mặt của `index.ts` bản gốc: công cụ và `utils`, không có phần trong ruột. Các file trong `components/` và `wrapper/` vẫn được nạp ở đó — thẻ tuỳ biến phải được đăng ký thì trình duyệt mới hiểu — nhưng không re-export, y như bản gốc. Ngoài bề mặt ấy, index xuất thêm năm công cụ vượt bản gốc (mục dưới) — đánh dấu tường minh trong file, không trộn lẫn với phần port.
 
 ## Công cụ vượt ra ngoài bản gốc (chart#5)
 
-TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù bốn họ hay dùng nhất — mỗi họ một bộ ba tầng đúng khuôn tool → each-wrapper → leaf, tái dùng khung có sẵn (`InteractiveStraightLine`, `ClickableCircle`, máy trạng thái hai-bấm của `TrendLine`, cách đặt một-bấm của `InteractiveText`):
+TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm họ hay dùng nhất — mỗi họ một bộ ba tầng đúng khuôn tool → each-wrapper → leaf, tái dùng khung có sẵn (`InteractiveStraightLine`, `ClickableCircle`, máy trạng thái hai-bấm của `TrendLine`, cách đặt một-bấm của `InteractiveText`):
 
 | thẻ mới | thay cho công cụ TradingView | đặt bằng | leaf |
 |---|---|---|---|
@@ -47,7 +47,15 @@ Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của 
 
 Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
-**Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: bốn bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và bốn dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ). Phá kiểu gì thì đổ: bỏ `#mouseMoved` thì bài hai-bấm đổ ở cửa chặn; đổi hệ số `riskReward` thì bài R/R đổ ở `near ±0.001`; bỏ nhánh elip thì bài đếm pixel "hình đổi thật sự" đổ.
+**Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
+
+Đã sửa hỏng ba chỗ có chủ ý, bắt được **3/3** — nhưng một chỗ chỉ bắt được sau khi làm bài kiểm chặt hơn:
+
+| sửa hỏng chỗ nào | bài nào đổ |
+|---|---|
+| bỏ `#mouseMoved` của `ShapeTool` | cả bài chuột lẫn bài chạm của shape-tool — cú bấm đầu đã đẻ ra hình |
+| `riskReward` bị thay bằng hằng số | bài R/R đổ ở `near ±0.001` |
+| bỏ nhánh elip trong `drawInteractiveShape` | **lúc đầu KHÔNG đổ**: phép so "hình đổi trên canvas" đếm một lần lúc hình đang chọn (tay cầm + nét dày) và một lần lúc không — hai số khác nhau bất kể hình có đổi hay không. Đưa cả hai lần đếm về cùng trạng thái không-chọn thì mutation bị bắt. Lại đúng bài học cũ: phép so phải chỉ còn đúng một biến. |
 
 Quy ước giữ nguyên: `hitSlop` cộng vào mọi phép đo trúng (lòng hình nới theo, `ClickableCircle` nới bán kính); `onHover === undefined` thì không hit-test; công cụ không giữ danh sách — báo qua `onComplete`, ứng dụng đặt lại.
 

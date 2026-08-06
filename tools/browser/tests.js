@@ -3147,12 +3147,17 @@ TESTS["vẽ hình chữ nhật và elip bằng hai cú bấm"] = async () => {
     t.is("hình nhớ nó là chữ nhật", completed[0][0].shape, "rectangle")
     t.not("hai góc không trùng nhau", String(completed[0][0].start), String(completed[0][0].end))
 
-    // Elip vẽ bằng cùng một phần tử — đổi shape của đối tượng là đổi hình trên canvas
-    const pixelsAsRect = mouseLayerPixels(canvas)
+    // Elip vẽ bằng cùng một phần tử — đổi shape của đối tượng là đổi hình trên canvas.
+    // Cả hai lần đếm đều ở trạng thái KHÔNG chọn: lần đầu viết bài này đếm lúc hình còn
+    // selected (tay cầm + nét dày) nên phép so "hình đổi" đúng cả khi nhánh elip bị xoá —
+    // mutation lọt lưới, đúng bài "dữ liệu kiểm phải dữ hơn dữ liệu thật".
     tool.enabled = false
+    tool.shapes = [{ ...completed[0][0], selected: false }]
+    await settle(3)
+    const pixelsAsRect = mouseLayerPixels(canvas)
+
     tool.shapes = [{ ...completed[0][0], shape: "ellipse", selected: false }]
     await settle(3)
-
     const pixelsAsEllipse = mouseLayerPixels(canvas)
     t.gt("elip vẫn vẽ ra pixel thật", pixelsAsEllipse, 200)
     t.not("và hình đổi thật sự trên canvas", pixelsAsEllipse, pixelsAsRect)
