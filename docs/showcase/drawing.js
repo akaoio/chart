@@ -15,16 +15,17 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Seven tools, one at a time",
+    title: "Twelve tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel " +
-        "takes three, and text and alert take one. Click a drawn object to select it, then " +
-        "press Delete. Everything drawn is listed under the chart, exactly as the tools " +
-        "report it.",
+        "and the pitchfork take three, and text, alert, H-line and position take one. Click a " +
+        "drawn object to select it, then press Delete. Everything drawn is listed under the " +
+        "chart, exactly as the tools report it.",
     build: (stage, api) => {
         const { pane } = chart(stage)
 
         // Each tool holds its own list of drawn objects, under its own property name.
+        // Mấy dòng mới nối vào CUỐI: bài kiểm nth-child đang trỏ vào vị trí nút "Text".
         const tools = [
             { label: "Trend line", tag: "chart-trend-line", list: "trends" },
             { label: "Fibonacci", tag: "chart-fibonacci-retracement", list: "retracements" },
@@ -33,6 +34,11 @@ demo({
             { label: "Gann fan", tag: "chart-gann-fan-tool", list: "fans" },
             { label: "Text", tag: "chart-interactive-text-tool", list: "textList" },
             { label: "Alert", tag: "chart-interactive-y-coordinate-tool", list: "yCoordinateList" },
+            { label: "H-line", tag: "chart-axis-line", list: "lines" },
+            { label: "Rectangle", tag: "chart-shape-tool", list: "shapes" },
+            { label: "Measure", tag: "chart-measure", list: "measures" },
+            { label: "Position", tag: "chart-position-tool", list: "positions" },
+            { label: "Pitchfork", tag: "chart-pitchfork", list: "forks" },
         ]
 
         let active = null

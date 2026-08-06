@@ -441,6 +441,15 @@ const TOUCH_TOOLS = [
         taps: 1,
         grab: [0.5, 0.4],
     },
+    // Bốn công cụ vượt bản gốc (chart#5). Đường ngang của H-line chạy hết bề rộng pane
+    // nên gõ đâu trên đúng y cũng trúng; ba công cụ kia nắm vào giữa thân hình.
+    { label: "H-line", tag: "chart-axis-line", list: "lines", taps: 1, grab: [0.5, 0.4] },
+    { label: "Rectangle", tag: "chart-shape-tool", list: "shapes", taps: 2, grab: [0.45, 0.475] },
+    { label: "Measure", tag: "chart-measure", list: "measures", taps: 2, grab: [0.45, 0.475] },
+    { label: "Position", tag: "chart-position-tool", list: "positions", taps: 1, grab: [0.35, 0.4] },
+    // Ba cú gõ: cán rồi hai chân. Chỗ nắm nằm giữa cán — trên đường trung tuyến từ
+    // (0.3, 0.4) về trung điểm của hai chân (0.65, 0.425).
+    { label: "Pitchfork", tag: "chart-pitchfork", list: "forks", taps: 3, grab: [0.475, 0.412] },
 ]
 
 const touchToolTests = async (browser, origin) => {

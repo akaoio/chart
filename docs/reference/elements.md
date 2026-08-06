@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **77** of them.
+Every custom element the library defines: **91** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -990,6 +990,30 @@ Large text behind the chart — a watermark, usually the instrument name.
 
 ## Interactive
 
+### `<chart-axis-line>`
+
+Axis-anchored lines.
+
+`AxisLine` — [`src/interactive/AxisLine.js`](../../src/interactive/AxisLine.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `lines` | `[]` |
+| `mode` | `"horizontal"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-brush>`
 
 Drag a box over the chart to select a range.
@@ -1106,6 +1130,32 @@ Decides which drawn object a click belongs to, across every tool at once.
 | `onDoubleClick` | — |
 | `onSelect` | — |
 
+### `<chart-each-axis-line>`
+
+One axis-anchored line and the machinery that lets it be adjusted.
+
+`EachAxisLine` — [`src/interactive/wrapper/EachAxisLine.js`](../../src/interactive/wrapper/EachAxisLine.js)
+
+| property | default |
+|---|---|
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeStroke` | `"#000000"` |
+| `edgeStrokeWidth` | `2` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `lineInteractiveCursor` | `"chart-move-cursor"` |
+| `mode` | `"horizontal"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `r` | `5` |
+| `selected` | `false` |
+| `strokeDasharray` | `"Solid"` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `xValue` | — |
+| `yValue` | — |
+
 ### `<chart-each-equidistant-channel>`
 
 One equidistant channel, with five grab points.
@@ -1212,6 +1262,134 @@ One regression channel, adjustable only by its two ends.
 | `snapTo` | ƒ |
 | `x1Value` | — |
 | `x2Value` | — |
+
+### `<chart-each-measure>`
+
+One measurement box, its two defining corners, and whole-body drag — the same three-part layout as `EachShape`, with the readout living inside the leaf.
+
+`EachMeasure` — [`src/interactive/wrapper/EachMeasure.js`](../../src/interactive/wrapper/EachMeasure.js)
+
+| property | default |
+|---|---|
+| `bodyInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeStroke` | `"#2962FF"` |
+| `edgeStrokeWidth` | `2` |
+| `fillStyle` | `"rgba(41, 98, 255, 0.16)"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontSize` | `11` |
+| `formatDuration` | — |
+| `formatPercent` | — |
+| `formatPrice` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `labelFill` | `"#2962FF"` |
+| `mode` | `"both"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `r` | `5` |
+| `selected` | `false` |
+| `strokeStyle` | `"#2962FF"` |
+| `strokeWidth` | `1` |
+| `textFill` | `"#FFFFFF"` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
+
+### `<chart-each-pitchfork>`
+
+One pitchfork, its three point handles, and whole-body drag.
+
+`EachPitchfork` — [`src/interactive/wrapper/EachPitchfork.js`](../../src/interactive/wrapper/EachPitchfork.js)
+
+| property | default |
+|---|---|
+| `bodyInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeStroke` | `"#000000"` |
+| `edgeStrokeWidth` | `2` |
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `medianStrokeStyle` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `r` | `5` |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `variant` | `"standard"` |
+
+### `<chart-each-position>`
+
+One position plan and its five draggable parts.
+
+`EachPosition` — [`src/interactive/wrapper/EachPosition.js`](../../src/interactive/wrapper/EachPosition.js)
+
+| property | default |
+|---|---|
+| `bodyInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-ns-resize-cursor"` |
+| `edgeStroke` | `"#787B86"` |
+| `edgeStrokeWidth` | `2` |
+| `entry` | — |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontSize` | `11` |
+| `formatPrice` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `lossFill` | `"rgba(239, 83, 80, 0.2)"` |
+| `lossLabelFill` | `"#EF5350"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `profitFill` | `"rgba(38, 166, 154, 0.2)"` |
+| `profitLabelFill` | `"#26A69A"` |
+| `r` | `5` |
+| `selected` | `false` |
+| `spanInteractiveCursor` | `"chart-ew-resize-cursor"` |
+| `stop` | — |
+| `strokeStyle` | `"#787B86"` |
+| `strokeWidth` | `1` |
+| `target` | — |
+| `textFill` | `"#FFFFFF"` |
+| `x1Value` | — |
+| `x2Value` | — |
+
+### `<chart-each-shape>`
+
+One drawn shape, its two corner handles, and whole-body drag.
+
+`EachShape` — [`src/interactive/wrapper/EachShape.js`](../../src/interactive/wrapper/EachShape.js)
+
+| property | default |
+|---|---|
+| `bodyInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeStroke` | `"#000000"` |
+| `edgeStrokeWidth` | `2` |
+| `fillStyle` | `"rgba(138, 175, 226, 0.35)"` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `r` | `5` |
+| `selected` | `false` |
+| `shape` | `"rectangle"` |
+| `strokeDasharray` | `"Solid"` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
 
 ### `<chart-each-text>`
 
@@ -1384,6 +1562,122 @@ A label placed by a provider function rather than by data coordinates.
 | `text` | `""` |
 | `xyProvider` | — |
 
+### `<chart-interactive-measure>`
+
+A measurement box between two points: price change, percent, bar count and elapsed time, depending on `mode` (`price`, `date` or `both`).
+
+`InteractiveMeasure` — [`src/interactive/components/InteractiveMeasure.js`](../../src/interactive/components/InteractiveMeasure.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(41, 98, 255, 0.16)"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontSize` | `11` |
+| `formatDuration` | ƒ |
+| `formatPercent` | ƒ |
+| `formatPrice` | ƒ |
+| `interactiveCursorClass` | — |
+| `labelFill` | `"#2962FF"` |
+| `mode` | `"both"` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#2962FF"` |
+| `strokeWidth` | `1` |
+| `textFill` | `"#FFFFFF"` |
+| `tolerance` | `4` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
+
+### `<chart-interactive-pitchfork>`
+
+An Andrews pitchfork (or its Schiff variants): a median from three points and two parallel tines.
+
+`InteractivePitchfork` — [`src/interactive/components/InteractivePitchfork.js`](../../src/interactive/components/InteractivePitchfork.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `interactiveCursorClass` | — |
+| `medianStrokeStyle` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+| `variant` | `"standard"` |
+
+### `<chart-interactive-position>`
+
+A position plan drawn on the chart: entry, target and stop levels over a bar span, with the profit and loss zones filled and the risk/reward ratio read out.
+
+`InteractivePosition` — [`src/interactive/components/InteractivePosition.js`](../../src/interactive/components/InteractivePosition.js)
+
+| property | default |
+|---|---|
+| `entry` | — |
+| `entryStrokeDasharray` | `"ShortDash2"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontSize` | `11` |
+| `formatPrice` | ƒ |
+| `interactiveCursorClass` | — |
+| `lossFill` | `"rgba(239, 83, 80, 0.2)"` |
+| `lossLabelFill` | `"#EF5350"` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `profitFill` | `"rgba(38, 166, 154, 0.2)"` |
+| `profitLabelFill` | `"#26A69A"` |
+| `selected` | `false` |
+| `stop` | — |
+| `strokeStyle` | `"#787B86"` |
+| `strokeWidth` | `1` |
+| `target` | — |
+| `textFill` | `"#FFFFFF"` |
+| `tolerance` | `4` |
+| `x1Value` | — |
+| `x2Value` | — |
+
+### `<chart-interactive-shape>`
+
+A filled rectangle or ellipse the user drew, spanned between two data-space corners.
+
+`InteractiveShape` — [`src/interactive/components/InteractiveShape.js`](../../src/interactive/components/InteractiveShape.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(138, 175, 226, 0.35)"` |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `shape` | `"rectangle"` |
+| `strokeDasharray` | `"Solid"` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
+
 ### `<chart-interactive-straight-line>`
 
 A straight line the user drew — bounded, one-ended or crossing the whole pane.
@@ -1529,6 +1823,30 @@ A least-squares fit through the closes between two x values, with a band either 
 | `x1Value` | — |
 | `x2Value` | — |
 
+### `<chart-measure>`
+
+Measurement boxes.
+
+`Measure` — [`src/interactive/Measure.js`](../../src/interactive/Measure.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `measures` | `[]` |
+| `mode` | `"both"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-mouse-location-indicator>`
 
 Turns pointer position into a data value, and reports it to whichever tool is drawing.
@@ -1549,6 +1867,81 @@ Turns pointer position into a data value, and reports it to whichever tool is dr
 | `snapTo` | — |
 | `stroke` | `"#000000"` |
 | `strokeWidth` | `1` |
+
+### `<chart-pitchfork>`
+
+Pitchforks.
+
+`Pitchfork` — [`src/interactive/Pitchfork.js`](../../src/interactive/Pitchfork.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `forks` | `[]` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"standard"` |
+
+### `<chart-position-tool>`
+
+Position plans.
+
+`PositionTool` — [`src/interactive/PositionTool.js`](../../src/interactive/PositionTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `barSpan` | `20` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `positions` | `[]` |
+| `riskReward` | `2` |
+| `shouldDisableSnap` | ƒ |
+| `side` | `"long"` |
+| `snap` | `false` |
+| `snapTo` | — |
+| `stopFraction` | `0.02` |
+
+### `<chart-shape-tool>`
+
+Rectangles and ellipses.
+
+`ShapeTool` — [`src/interactive/ShapeTool.js`](../../src/interactive/ShapeTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shape` | `"rectangle"` |
+| `shapes` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
 
 ### `<chart-standard-deviation-channel>`
 

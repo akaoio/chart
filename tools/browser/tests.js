@@ -3066,6 +3066,272 @@ TESTS["zoomCursorClassName của mình đặt thì thắng trong lúc kéo"] = a
     return t.checks
 }
 
+TESTS["đặt đường trục bằng một cú bấm, cả bốn mode đều vẽ ra hình"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-axis-line", {
+        enabled: true,
+        mode: "horizontal",
+        lines: [],
+        onComplete: (event, lines) => {
+            completed.push(lines)
+            tool.lines = lines
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 200)
+
+    t.is("một cú bấm là onComplete được gọi", completed.length, 1)
+    t.is("và báo về đúng một đường", completed[0].length, 1)
+    t.ok("đường mang toạ độ neo", Array.isArray(completed[0][0].at) && completed[0][0].at.length === 2)
+    t.is("đường nhớ mode của nó", completed[0][0].mode, "horizontal")
+    t.ok("và được đánh dấu đang chọn", completed[0][0].selected === true)
+
+    // Cả bốn mode cùng lúc: mỗi mode một đường, tất cả phải thành hình thật trên canvas
+    tool.enabled = false
+    const [xValue, yValue] = completed[0][0].at
+    tool.lines = [
+        { at: [xValue, yValue], mode: "horizontal", selected: false },
+        { at: [xValue, yValue * 0.98], mode: "horizontalRay", selected: false },
+        { at: [xValue + 5, yValue], mode: "vertical", selected: false },
+        { at: [xValue + 10, yValue * 1.02], mode: "cross", selected: false },
+    ]
+    await settle(3)
+
+    t.is("bốn đường là bốn wrapper", tool.querySelectorAll("chart-each-axis-line").length, 4)
+    t.gt("và tất cả vẽ ra pixel thật", mouseLayerPixels(canvas), 400)
+
+    // Kéo đường ngang: trỏ vào đúng y của nó (x nào cũng được — nó chạy hết pane)
+    tool.lines = [{ at: [xValue, yValue], mode: "horizontal", selected: true }]
+    await settle(3)
+
+    const before = tool.lines[0].at[1]
+    await dragOn(canvas, [500, 200], [500, 260])
+
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    t.not("và neo giá đã đổi", completed[1][0].at[1], before)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["vẽ hình chữ nhật và elip bằng hai cú bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-shape-tool", {
+        enabled: true,
+        shape: "rectangle",
+        snap: false,
+        shapes: [],
+        onComplete: (event, shapes) => {
+            completed.push(shapes)
+            tool.shapes = shapes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 120)
+    t.is("bấm lần một chưa hoàn thành gì", completed.length, 0)
+
+    await hoverAt(canvas, 450, 260)
+    t.ok("có hình tạm bám theo chuột", tool.querySelector("chart-interactive-shape") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 260)
+
+    t.is("bấm lần hai là xong một hình", completed.length, 1)
+    t.is("báo về đúng một hình", completed[0].length, 1)
+    t.is("hình nhớ nó là chữ nhật", completed[0][0].shape, "rectangle")
+    t.not("hai góc không trùng nhau", String(completed[0][0].start), String(completed[0][0].end))
+
+    // Elip vẽ bằng cùng một phần tử — đổi shape của đối tượng là đổi hình trên canvas.
+    // Cả hai lần đếm đều ở trạng thái KHÔNG chọn: lần đầu viết bài này đếm lúc hình còn
+    // selected (tay cầm + nét dày) nên phép so "hình đổi" đúng cả khi nhánh elip bị xoá —
+    // mutation lọt lưới, đúng bài "dữ liệu kiểm phải dữ hơn dữ liệu thật".
+    tool.enabled = false
+    tool.shapes = [{ ...completed[0][0], selected: false }]
+    await settle(3)
+    const pixelsAsRect = mouseLayerPixels(canvas)
+
+    tool.shapes = [{ ...completed[0][0], shape: "ellipse", selected: false }]
+    await settle(3)
+    const pixelsAsEllipse = mouseLayerPixels(canvas)
+    t.gt("elip vẫn vẽ ra pixel thật", pixelsAsEllipse, 200)
+    t.not("và hình đổi thật sự trên canvas", pixelsAsEllipse, pixelsAsRect)
+
+    // Kéo thân: cả hai góc dời cùng một quãng — kích thước không đổi
+    tool.shapes = [{ ...completed[0][0], selected: true }]
+    await settle(3)
+
+    const spanX = completed[0][0].end[0] - completed[0][0].start[0]
+    await dragOn(canvas, [325, 190], [375, 230])
+
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.near("bề ngang giữ nguyên khi kéo thân", moved.end[0] - moved.start[0], spanX, 1.5)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["thước đo hai điểm đọc ra số thật"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool, data, xAccessor } = mountWithTool("chart-measure", {
+        enabled: true,
+        mode: "both",
+        snap: false,
+        measures: [],
+        onComplete: (event, measures) => {
+            completed.push(measures)
+            tool.measures = measures
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 150)
+    await hoverAt(canvas, 450, 250)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 250)
+
+    t.is("hai cú bấm là một thước đo", completed.length, 1)
+    const measure = completed[0][0]
+    t.is("thước nhớ mode", measure.mode, "both")
+
+    // Số nến đo được phải khớp khoảng hai đầu trên trục x — thước nói dối thì vô dụng
+    const bars = Math.round(measure.end[0] - measure.start[0])
+    t.gt("đo qua một quãng nến thật", bars, 10)
+    t.ok(
+        "hai đầu nằm trong vùng dữ liệu",
+        measure.start[0] >= xAccessor(data[0]) && measure.end[0] <= xAccessor(data[data.length - 1]),
+    )
+
+    // Hộp số vẽ ra thật: thước không hộp số chỉ là một cái khung rỗng
+    t.gt("thước vẽ ra pixel thật (khung + mũi tên + hộp số)", mouseLayerPixels(canvas), 500)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["ba cú bấm dựng một pitchfork, ba biến thể neo ba chỗ khác nhau"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-pitchfork", {
+        enabled: true,
+        variant: "standard",
+        snap: false,
+        forks: [],
+        onComplete: (event, forks) => {
+            completed.push(forks)
+            tool.forks = forks
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 150, 250)
+    t.is("bấm lần một chưa hoàn thành gì", completed.length, 0)
+
+    await hoverAt(canvas, 400, 120)
+    t.ok("một điểm thì hình tạm là một đoạn thẳng", tool.querySelector("chart-interactive-straight-line") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 400, 120)
+    t.is("bấm lần hai vẫn chưa hoàn thành", completed.length, 0)
+
+    await hoverAt(canvas, 450, 300)
+    t.ok("hai điểm thì hình tạm là phuộc thật", tool.querySelector("chart-interactive-pitchfork") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 300)
+
+    t.is("bấm lần ba là xong một phuộc", completed.length, 1)
+    const fork = completed[0][0]
+    t.ok("phuộc có đủ ba điểm", fork.p1 !== undefined && fork.p2 !== undefined && fork.p3 !== undefined)
+    t.is("phuộc nhớ biến thể", fork.variant, "standard")
+
+    // Ba biến thể phải vẽ ra ba hình khác nhau — neo trung tuyến là chỗ chúng khác nhau
+    tool.enabled = false
+    const pixelsBy = {}
+    for (const variant of ["standard", "schiff", "modifiedSchiff"]) {
+        tool.forks = [{ ...fork, variant, selected: false }]
+        await settle(3)
+        pixelsBy[variant] = mouseLayerPixels(canvas)
+    }
+    t.gt("standard vẽ ra pixel thật", pixelsBy.standard, 200)
+    t.not("schiff khác standard trên canvas", pixelsBy.schiff, pixelsBy.standard)
+    t.not("modifiedSchiff khác schiff trên canvas", pixelsBy.modifiedSchiff, pixelsBy.schiff)
+
+    // Kéo thân: cả ba điểm dời cùng quãng — dáng phuộc không đổi
+    tool.forks = [{ ...fork, selected: true }]
+    await settle(3)
+
+    // Nắm vào trung tuyến: đường từ (150,250) về trung điểm hai chân (425,210) đi qua đây
+    const spanBefore = fork.p2[0] - fork.p1[0]
+    await dragOn(canvas, [300, 228], [340, 268])
+
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.near("khoảng cách p1→p2 giữ nguyên khi kéo thân", moved.p2[0] - moved.p1[0], spanBefore, 1.5)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["một cú bấm trồng một kế hoạch vị thế đúng tỉ lệ R/R"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-position-tool", {
+        enabled: true,
+        side: "long",
+        barSpan: 15,
+        stopFraction: 0.02,
+        riskReward: 2,
+        positions: [],
+        onComplete: (event, positions) => {
+            completed.push(positions)
+            tool.positions = positions
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 200)
+
+    t.is("một cú bấm là onComplete được gọi", completed.length, 1)
+    const plan = completed[0][0]
+
+    t.ok("long: target nằm trên entry", plan.target > plan.entry)
+    t.ok("long: stop nằm dưới entry", plan.stop < plan.entry)
+    t.near("khoảng lời gấp đúng riskReward lần khoảng lỗ", (plan.target - plan.entry) / (plan.entry - plan.stop), 2, 0.001)
+    t.is("bề ngang đúng barSpan", Math.round(plan.x2Value - plan.x1Value), 15)
+
+    t.gt("kế hoạch vẽ ra pixel thật (hai vùng + ba nhãn)", mouseLayerPixels(canvas), 500)
+
+    // Kéo thân: cả ba mức dời cùng nhau — tỉ lệ không đổi
+    tool.enabled = false
+    await settle(2)
+
+    await dragOn(canvas, [320, 200], [360, 240])
+
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const movedPlan = completed[1][0]
+    t.not("entry đã dời", movedPlan.entry, plan.entry)
+    t.near(
+        "và tỉ lệ R/R giữ nguyên qua cú kéo",
+        (movedPlan.target - movedPlan.entry) / (movedPlan.entry - movedPlan.stop),
+        (plan.target - plan.entry) / (plan.entry - plan.stop),
+        0.01,
+    )
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
