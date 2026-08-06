@@ -2,11 +2,8 @@ import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
-export const gannBoxToolDefaults = {
+export const trendAngleDefaults = {
     enabled: true,
-    variant: "box",
-    scaleRatio: undefined,
-    levels: undefined,
     snap: false,
     snapTo: undefined,
     shouldDisableSnap: event => event.button === 2 || event.shiftKey,
@@ -24,7 +21,7 @@ export const gannBoxToolDefaults = {
         text: "Click to select object",
         selectedText: "",
     },
-    gannBoxes: [],
+    angles: [],
     appearance: {
         strokeStyle: "#000000",
         strokeWidth: 1,
@@ -39,13 +36,14 @@ export const gannBoxToolDefaults = {
 }
 
 /**
- * Gann boxes: `<chart-gann-box>`.
+ * Trend angle: `<chart-trend-angle>`.
  *
- * Hai cú bấm định hai góc đối — hộp chia mức trên cả hai trục. Variant
- * `square` thêm hai đường chéo và quạt tia từ góc đầu qua các mức trên hai
- * cạnh xa. Mỗi hình nhớ variant của mình lúc đặt.
+ * Hai cú bấm: neo rồi hướng. Neo là toạ độ dữ liệu; góc và độ dài đo bằng
+ * PIXEL lúc bấm — cách TradingView làm: đổi scale hay zoom thì đường giữ
+ * nguyên góc trên màn hình và nhãn độ vẫn đúng, còn điểm cuối trôi theo
+ * dữ liệu.
  */
-export class GannBoxTool extends ElementBase {
+export class TrendAngle extends ElementBase {
     #props
     #current = null
     #override = null
@@ -59,11 +57,11 @@ export class GannBoxTool extends ElementBase {
 
     constructor() {
         super()
-        this.#props = defineProperties(this, gannBoxToolDefaults)
+        this.#props = defineProperties(this, trendAngleDefaults)
 
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
-        this.getSelectionState = isHoverForInteractiveType("gannBoxes").bind(this)
+        this.getSelectionState = isHoverForInteractiveType("angles").bind(this)
     }
 
     /** Pane nào chứa công cụ này — thứ `chart-drawing-object-selector` cần khi đăng ký. */
@@ -97,16 +95,16 @@ export class GannBoxTool extends ElementBase {
     #build() {
         const props = this.#props
 
-        while (this.#wrappers.length > props.gannBoxes.length) this.#wrappers.pop().remove()
-        while (this.#wrappers.length < props.gannBoxes.length) {
-            const wrapper = document.createElement("chart-each-gann-box")
+        while (this.#wrappers.length > props.angles.length) this.#wrappers.pop().remove()
+        while (this.#wrappers.length < props.angles.length) {
+            const wrapper = document.createElement("chart-each-angle-line")
             this.#wrappers.push(wrapper)
             this.append(wrapper)
         }
 
         this.nodes = [...this.#wrappers]
 
-        props.gannBoxes.forEach((each, index) => {
+        props.angles.forEach((each, index) => {
             const appearance = isDefined(each.appearance) ? { ...props.appearance, ...each.appearance } : props.appearance
 
             Object.assign(this.#wrappers[index], {
@@ -114,24 +112,22 @@ export class GannBoxTool extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 start: getValueFromOverride(this.#override, index, "start", each.start),
-                end: getValueFromOverride(this.#override, index, "end", each.end),
-                variant: each.variant ?? props.variant,
-                scaleRatio: each.scaleRatio ?? props.scaleRatio,
-                levels: each.levels ?? props.levels,
+                angle: getValueFromOverride(this.#override, index, "angle", each.angle),
+                length: getValueFromOverride(this.#override, index, "length", each.length),
                 appearance,
-                hoverText: { ...gannBoxToolDefaults.hoverText, ...props.hoverText },
-                onDrag: this.#handleDragBox,
-                onDragComplete: this.#handleDragBoxComplete,
+                hoverText: { ...trendAngleDefaults.hoverText, ...props.hoverText },
+                onDrag: this.#handleDragAngle,
+                onDragComplete: this.#handleDragAngleComplete,
             })
 
             this.#wrappers[index].update()
         })
 
-        // Hình tạm: hộp bám con trỏ ngay từ điểm thứ hai
-        const drawing = isDefined(this.#current) && isDefined(this.#current.end)
+        // Hình tạm: đường góc bám con trỏ, nhãn độ sống ngay khi vẽ
+        const drawing = isDefined(this.#current) && isDefined(this.#current.angle)
 
         if (drawing && this.#temporary === null) {
-            this.#temporary = document.createElement("chart-interactive-gann-box")
+            this.#temporary = document.createElement("chart-interactive-angle-line")
             this.append(this.#temporary)
         } else if (!drawing && this.#temporary !== null) {
             this.#temporary.remove()
@@ -142,11 +138,8 @@ export class GannBoxTool extends ElementBase {
             Object.assign(this.#temporary, {
                 x1Value: this.#current.start[0],
                 y1Value: this.#current.start[1],
-                x2Value: this.#current.end[0],
-                y2Value: this.#current.end[1],
-                variant: props.variant,
-                scaleRatio: props.scaleRatio ?? this.#currentRatio(),
-                levels: props.levels,
+                angle: this.#current.angle,
+                length: this.#current.length,
                 strokeStyle: props.appearance.strokeStyle,
                 strokeWidth: props.appearance.strokeWidth,
                 fontFamily: props.appearance.fontFamily,
@@ -174,71 +167,70 @@ export class GannBoxTool extends ElementBase {
         })
     }
 
-    /**
-     * `squareFixed` chưa có ratio thì chốt ngay từ hai neo đang kéo — đúng cách
-     * TV hiển thị "scale ratio" cạnh neo thứ hai; từ đó ratio là của hình,
-     * kéo rộng chỉ đổi bề ngang còn chiều cao đi theo.
-     */
-    #currentRatio() {
-        if (isNotDefined(this.#current) || isNotDefined(this.#current.end)) return undefined
-        const width = Math.abs(this.#current.end[0] - this.#current.start[0])
-        const height = Math.abs(this.#current.end[1] - this.#current.start[1])
-        return width === 0 ? undefined : height / width
+    /** Góc và độ dài đo từ pixel giữa neo và con trỏ — đại lượng nhãn sẽ hiển thị. */
+    #measure(moreProps) {
+        const {
+            xScale,
+            chartConfig: { yScale },
+            mouseXY,
+        } = moreProps
+        const startX = xScale(this.#current.start[0])
+        const startY = yScale(this.#current.start[1])
+        return {
+            angle: (Math.atan2(startY - mouseXY[1], mouseXY[0] - startX) * 180) / Math.PI,
+            length: Math.max(1, Math.hypot(mouseXY[0] - startX, mouseXY[1] - startY)),
+        }
     }
 
     #handleStart = (event, xyValue, moreProps) => {
         if (isNotDefined(this.#current) || isNotDefined(this.#current.start)) {
             this.#mouseMoved = false
-            this.setInteractiveState({ current: { start: xyValue, end: null } })
+            this.setInteractiveState({ current: { start: xyValue, angle: null, length: null } })
             this.#props.onStart?.(event, moreProps)
         }
     }
 
-    #handleDraw = (event, xyValue) => {
+    #handleDraw = (event, xyValue, moreProps) => {
         if (isDefined(this.#current) && isDefined(this.#current.start)) {
             this.#mouseMoved = true
-            this.setInteractiveState({ current: { start: this.#current.start, end: xyValue } })
+            this.setInteractiveState({ current: { start: this.#current.start, ...this.#measure(moreProps) } })
         }
     }
 
-    /** The second click fixes the far corner — but only if the pointer actually moved. */
+    /** The second click fixes the direction — but only if the pointer actually moved. */
     #handleEnd = (event, xyValue, moreProps) => {
         if (!this.#mouseMoved || !isDefined(this.#current) || !isDefined(this.#current.start)) return
 
-        const newBoxes = [
-            ...this.#props.gannBoxes.map(each => ({ ...each, selected: false })),
+        const newAngles = [
+            ...this.#props.angles.map(each => ({ ...each, selected: false })),
             {
                 start: this.#current.start,
-                end: xyValue,
-                variant: this.#props.variant,
-                ...(this.#props.variant === "squareFixed" && {
-                    scaleRatio: this.#props.scaleRatio ?? this.#currentRatio(),
-                }),
+                ...this.#measure(moreProps),
                 selected: true,
                 appearance: this.#props.appearance,
             },
         ]
 
         this.setInteractiveState({ current: null, override: null })
-        this.#props.onComplete?.(event, newBoxes, moreProps)
+        this.#props.onComplete?.(event, newAngles, moreProps)
     }
 
-    #handleDragBox = (event, index, newPoints) => {
-        this.setInteractiveState({ override: { index, ...newPoints } })
+    #handleDragAngle = (event, index, newValues) => {
+        this.setInteractiveState({ override: { index, ...newValues } })
     }
 
-    #handleDragBoxComplete = (event, moreProps) => {
+    #handleDragAngleComplete = (event, moreProps) => {
         if (!isDefined(this.#override)) return
 
-        const { index, start, end } = this.#override
+        const { index, ...changed } = this.#override
 
-        const newBoxes = this.#props.gannBoxes.map((each, position) =>
-            position === index ? { ...each, start, end, selected: true } : { ...each, selected: false },
+        const newAngles = this.#props.angles.map((each, position) =>
+            position === index ? { ...each, ...changed, selected: true } : { ...each, selected: false },
         )
 
         this.setInteractiveState({ override: null })
-        this.#props.onComplete?.(event, newBoxes, moreProps)
+        this.#props.onComplete?.(event, newAngles, moreProps)
     }
 }
 
-define("chart-gann-box", GannBoxTool)
+define("chart-trend-angle", TrendAngle)

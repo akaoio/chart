@@ -3,28 +3,32 @@ import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
 import { getNewXY } from "./EachTrendLine.js"
 
-export const eachArrowMarkDefaults = {
+export const eachNoteDefaults = {
     index: undefined,
     interactive: true,
     selected: false,
     at: undefined,
-    mode: "up",
-    glyph: undefined,
-    fill: undefined,
+    text: undefined,
+    kind: "note",
     appearance: {
-        upFill: "#26A69A",
-        downFill: "#EF5350",
-        bgFill: "rgba(0, 0, 0, 0)",
+        noteFill: "#FFF3B0",
+        commentFill: "#FFFFFF",
+        bgStroke: "#000000",
+        strokeWidth: 1,
+        textFill: "#000000",
         fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
-        fontSize: 18,
+        fontSize: 12,
     },
     hoverText: { enable: false },
     onDrag: () => {},
     onDragComplete: () => {},
 }
 
-/** One arrow mark: a ▲ or ▼ glyph riding an InteractiveText box — draggable like any label. */
-export class EachArrowMark extends ElementBase {
+/**
+ * One note or comment: a text box riding an InteractiveText — note mang nền
+ * giấy nhớ, comment mang nền phẳng; chữ là của người dùng, kéo là dời hộp.
+ */
+export class EachNote extends ElementBase {
     #props
     #hover = false
     #children = null
@@ -33,7 +37,7 @@ export class EachArrowMark extends ElementBase {
 
     constructor() {
         super()
-        this.#props = defineProperties(this, eachArrowMarkDefaults)
+        this.#props = defineProperties(this, eachNoteDefaults)
         this.isHover = isHover.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
     }
@@ -49,7 +53,7 @@ export class EachArrowMark extends ElementBase {
 
     #build() {
         const props = this.#props
-        const { at, mode, glyph, fill, interactive, appearance, hoverText, selected } = props
+        const { at, text, kind, interactive, appearance, hoverText, selected } = props
         const { enable: hoverTextEnabled, selectedText, text: unselectedText, ...restHoverText } = hoverText
 
         if (isNotDefined(at)) return
@@ -58,22 +62,21 @@ export class EachArrowMark extends ElementBase {
 
         if (this.#children === null) {
             this.#children = {
-                glyph: document.createElement("chart-interactive-text"),
+                box: document.createElement("chart-interactive-text"),
                 hoverText: document.createElement("chart-hover-text"),
             }
-            this.append(this.#children.glyph, this.#children.hoverText)
-            this.nodes = [this.#children.glyph]
+            this.append(this.#children.box, this.#children.hoverText)
+            this.nodes = [this.#children.box]
         }
 
-        Object.assign(this.#children.glyph, {
+        Object.assign(this.#children.box, {
             selected: showHandles,
             position: at,
-            // `glyph`/`fill` cho các dấu khác cưỡi cùng wrapper — cờ, ghim… — không chỉ ▲/▼
-            text: glyph ?? (mode === "down" ? "▼" : "▲"),
-            bgFillStyle: appearance.bgFill,
-            bgStroke: appearance.bgFill,
-            bgStrokeWidth: 0.001,
-            textFill: fill ?? (mode === "down" ? appearance.downFill : appearance.upFill),
+            text: text ?? (kind === "comment" ? "Comment" : "Note"),
+            bgFillStyle: kind === "comment" ? appearance.commentFill : appearance.noteFill,
+            bgStroke: appearance.bgStroke,
+            bgStrokeWidth: showHandles ? appearance.strokeWidth + 1 : appearance.strokeWidth,
+            textFill: appearance.textFill,
             fontFamily: appearance.fontFamily,
             fontSize: appearance.fontSize,
             interactiveCursorClass: "chart-move-cursor",
@@ -102,4 +105,4 @@ export class EachArrowMark extends ElementBase {
     }
 }
 
-define("chart-each-arrow-mark", EachArrowMark)
+define("chart-each-note", EachNote)

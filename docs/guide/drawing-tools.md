@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The twenty-five tools
+## The twenty-nine tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -57,8 +57,12 @@ the drawings are back; drop the list and they are gone.
 | `<chart-fib-shape>` | `fibShapes` | 2 (`variant`: `fan`, `arcs`, `circles`, `spiral`) or 3 (`wedge`) — Fibonacci constructions with pixel-space radii |
 | `<chart-gann-box>` | `gannBoxes` | 2 — opposite corners; level divisions on both axes, `variant: square` adds diagonals and corner fans |
 | `<chart-time-cycles>` | `waves` | 2 — the period; `mode: cycles` repeats semicircles on the baseline, `mode: sine` runs a sine line across the pane |
+| `<chart-trend-angle>` | `angles` | 2 — anchor then direction; the angle is a screen-space quantity, exactly what the label reads |
+| `<chart-note>` | `notes` | 1 — a text box; `kind: note` wears sticky yellow, `kind: comment` a flat card; `text` is the user's words |
+| `<chart-signpost>` | `signposts` | 1 — a pole with a text box riding the top |
+| `<chart-flag-mark>` | `flags` | 1 — a ⚑ at the pointer, same glyph ride as the arrow marks |
 
-The last eighteen have no counterpart in the original library — they exist because
+The last twenty-two have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **121** of them.
+Every custom element the library defines: **130** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1223,6 +1223,25 @@ Decides which drawn object a click belongs to, across every tool at once.
 | `onDoubleClick` | — |
 | `onSelect` | — |
 
+### `<chart-each-angle-line>`
+
+One trend angle: kéo tay cầm cuối là XOAY (đổi góc và độ dài, đo lại từ pixel — đúng thứ nhãn hiển thị), kéo tay cầm đầu hay thân là DỜI (neo đổi, góc giữ nguyên).
+
+`EachAngleLine` — [`src/interactive/wrapper/EachAngleLine.js`](../../src/interactive/wrapper/EachAngleLine.js)
+
+| property | default |
+|---|---|
+| `angle` | `0` |
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `length` | `0` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+
 ### `<chart-each-arrow>`
 
 One arrow: the shaft, a handle at the tail, a handle at the head.
@@ -1251,6 +1270,8 @@ One arrow mark: a ▲ or ▼ glyph riding an InteractiveText box — draggable l
 |---|---|
 | `appearance` | `{…}` |
 | `at` | — |
+| `fill` | — |
+| `glyph` | — |
 | `hoverText` | `{"enable":false}` |
 | `index` | — |
 | `interactive` | `true` |
@@ -1419,6 +1440,7 @@ One Gann box: the gridded body, a handle at each anchor corner.
 | `levels` | — |
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
+| `scaleRatio` | — |
 | `selected` | `false` |
 | `start` | — |
 | `variant` | `"box"` |
@@ -1542,6 +1564,25 @@ One measurement box, its two defining corners, and whole-body drag — the same 
 | `x2Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
+
+### `<chart-each-note>`
+
+One note or comment: a text box riding an InteractiveText — note mang nền giấy nhớ, comment mang nền phẳng; chữ là của người dùng, kéo là dời hộp.
+
+`EachNote` — [`src/interactive/wrapper/EachNote.js`](../../src/interactive/wrapper/EachNote.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `kind` | `"note"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `text` | — |
 
 ### `<chart-each-pattern>`
 
@@ -1672,6 +1713,24 @@ One drawn shape, its two corner handles, and whole-body drag.
 | `x2Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
+
+### `<chart-each-signpost>`
+
+One signpost: kéo là dời cả cột lẫn hộp chữ — chân cắm đổi toạ độ.
+
+`EachSignpost` — [`src/interactive/wrapper/EachSignpost.js`](../../src/interactive/wrapper/EachSignpost.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `text` | `"Signpost"` |
 
 ### `<chart-each-text>`
 
@@ -1857,6 +1916,28 @@ Fibonacci retracement levels.
 | `retracements` | `[]` |
 | `type` | `"RAY"` |
 
+### `<chart-flag-mark>`
+
+Flag marks.
+
+`FlagMark` — [`src/interactive/FlagMark.js`](../../src/interactive/FlagMark.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `flags` | `[]` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-gann-box>`
 
 Gann boxes.
@@ -1877,6 +1958,7 @@ Gann boxes.
 | `onComplete` | — |
 | `onSelect` | — |
 | `onStart` | — |
+| `scaleRatio` | — |
 | `shouldDisableSnap` | ƒ |
 | `snap` | `false` |
 | `snapTo` | — |
@@ -1969,6 +2051,32 @@ Info line.
 | `snapTo` | — |
 | `yDisplayFormat` | ƒ |
 
+### `<chart-interactive-angle-line>`
+
+One trend angle: a data-anchored start, a screen-space angle and length, a label that reads the true degrees.
+
+`InteractiveAngleLine` — [`src/interactive/components/InteractiveAngleLine.js`](../../src/interactive/components/InteractiveAngleLine.js)
+
+| property | default |
+|---|---|
+| `angle` | `0` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `11` |
+| `interactiveCursorClass` | — |
+| `length` | `0` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
+| `x1Value` | — |
+| `y1Value` | — |
+
 ### `<chart-interactive-arrow>`
 
 An arrow the user drew: a bounded line with a filled head at its end.
@@ -2060,6 +2168,7 @@ One Gann box or square: edges, level divisions on both axes, and for the square 
 | `onDragStart` | — |
 | `onHover` | — |
 | `onUnHover` | — |
+| `scaleRatio` | — |
 | `selected` | `false` |
 | `strokeStyle` | `"#000000"` |
 | `strokeWidth` | `1` |
@@ -2226,6 +2335,32 @@ A filled rectangle or ellipse the user drew, spanned between two data-space corn
 | `x2Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
+
+### `<chart-interactive-signpost>`
+
+One signpost: a pole planted at a data point, a text box riding the top.
+
+`InteractiveSignpost` — [`src/interactive/components/InteractiveSignpost.js`](../../src/interactive/components/InteractiveSignpost.js)
+
+| property | default |
+|---|---|
+| `bgFill` | `"#FFFFFF"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `11` |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `poleHeight` | `44` |
+| `position` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `text` | `"Signpost"` |
+| `tolerance` | `4` |
 
 ### `<chart-interactive-straight-line>`
 
@@ -2441,6 +2576,30 @@ Turns pointer position into a data value, and reports it to whichever tool is dr
 | `stroke` | `"#000000"` |
 | `strokeWidth` | `1` |
 
+### `<chart-note>`
+
+Notes.
+
+`Note` — [`src/interactive/Note.js`](../../src/interactive/Note.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `kind` | `"note"` |
+| `notes` | `[]` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `text` | — |
+
 ### `<chart-path>`
 
 Free path.
@@ -2586,6 +2745,29 @@ Rectangles and ellipses.
 | `snap` | `false` |
 | `snapTo` | — |
 
+### `<chart-signpost>`
+
+Signposts.
+
+`Signpost` — [`src/interactive/Signpost.js`](../../src/interactive/Signpost.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `signposts` | `[]` |
+| `snap` | `false` |
+| `snapTo` | — |
+| `text` | `"Signpost"` |
+
 ### `<chart-standard-deviation-channel>`
 
 Regression channel over a chosen range.
@@ -2629,6 +2811,29 @@ Time cycles.
 | `snap` | `false` |
 | `snapTo` | — |
 | `waves` | `[]` |
+
+### `<chart-trend-angle>`
+
+Trend angle.
+
+`TrendAngle` — [`src/interactive/TrendAngle.js`](../../src/interactive/TrendAngle.js)
+
+| property | default |
+|---|---|
+| `angles` | `[]` |
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
 
 ### `<chart-trend-line>`
 

@@ -3969,6 +3969,160 @@ TESTS["time cycles: bán nguyệt lặp theo chu kỳ, sine trải hết pane �
     return t.checks
 }
 
+TESTS["trend angle: góc đo bằng pixel đúng như nhãn — xoay bằng tay cầm cuối, dời giữ góc"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-trend-angle", {
+        enabled: true,
+        snap: false,
+        angles: [],
+        onComplete: (event, angles) => {
+            completed.push(angles)
+            tool.angles = angles
+        },
+    })
+    await settle()
+
+    // Kéo từ (200,240) tới (320,120): lên 120 sang 120 — góc phải quanh 45°
+    await clickAt(canvas, 200, 240)
+    await hoverAt(canvas, 320, 120)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 320, 120)
+
+    t.is("hai cú bấm là một đường góc", completed.length, 1)
+    const placed = completed[0][0]
+    t.near("góc đo từ pixel: 45°", placed.angle, 45, 2)
+    t.near("độ dài đo từ pixel", placed.length, Math.hypot(120, 120), 6)
+    await settle(3)
+    t.gt("vẽ ra pixel thật (đường + cung + nhãn độ)", mouseLayerPixels(canvas), 100)
+
+    // Kéo tay cầm cuối xuống ngang: góc về gần 0 — xoay là đo lại từ pixel.
+    // Hình vừa đặt đang được chọn sẵn nên tay cầm đã hiện — kéo thẳng.
+    await pastDoubleClickWindow()
+    await dragOn(canvas, [320, 120], [340, 238])
+    const rotated = completed[completed.length - 1][0]
+    t.ok("xoay xong góc đổi hẳn", Math.abs(rotated.angle - placed.angle) > 20)
+    t.is("neo đứng im khi xoay", rotated.start[0], placed.start[0])
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["gann square fixed: ratio chốt lúc đặt, chiều cao suy từ chiều rộng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-gann-box", {
+        enabled: true,
+        variant: "squareFixed",
+        snap: false,
+        gannBoxes: [],
+        onComplete: (event, gannBoxes) => {
+            completed.push(gannBoxes)
+            tool.gannBoxes = gannBoxes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 180)
+    await hoverAt(canvas, 340, 260)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 340, 260)
+
+    t.is("hai cú bấm là một hình", completed.length, 1)
+    const placed = completed[0][0]
+    t.is("variant được ghi", placed.variant, "squareFixed")
+    const expected = Math.abs(placed.end[1] - placed.start[1]) / Math.abs(placed.end[0] - placed.start[0])
+    t.near("ratio chốt đúng từ hai neo lúc đặt", placed.scaleRatio, expected, expected * 0.01)
+    await settle(3)
+    const before = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật", before, 300)
+
+    // Nhân đôi ratio của hình ĐÃ VẼ: chiều cao suy từ chiều rộng phải giãn — hình đổi thật.
+    // Bỏ nhánh squareFixed trong gannBoxGeometry là dòng này đỏ.
+    tool.gannBoxes = tool.gannBoxes.map(each => ({ ...each, scaleRatio: each.scaleRatio * 2 }))
+    await settle(3)
+    t.not("đổi ratio là hình đổi", mouseLayerPixels(canvas), before)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["notes: note vàng, comment phẳng, signpost có cột, cờ một cú bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-note", {
+        enabled: true,
+        kind: "note",
+        text: "nhớ mua",
+        snap: false,
+        notes: [],
+        onComplete: (event, notes) => {
+            completed.push(notes)
+            tool.notes = notes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 220, 200)
+    t.is("một cú bấm là một note", completed.length, 1)
+    t.is("chữ của người dùng đóng băng vào note", completed[0][0].text, "nhớ mua")
+    t.is("kind đóng băng theo", completed[0][0].kind, "note")
+    await settle(3)
+    t.is("hộp chữ hiện đúng chữ", tool.querySelector("chart-interactive-text").text, "nhớ mua")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 100)
+
+    // Comment: đổi kind, đặt cái thứ hai — note cũ giữ kind cũ
+    tool.kind = "comment"
+    tool.text = undefined
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 380, 240)
+    const both = completed[completed.length - 1]
+    t.ok("note cũ vẫn note, cái mới là comment", both[0].kind === "note" && both[1].kind === "comment")
+
+    cleanup()
+
+    // Signpost: một cú bấm, có cột và hộp chữ
+    const second = mountWithTool("chart-signpost", {
+        enabled: true,
+        text: "đáy",
+        snap: false,
+        signposts: [],
+        onComplete: (event, signposts) => {
+            completed.push(signposts)
+            second.tool.signposts = signposts
+        },
+    })
+    await settle()
+    await clickAt(second.canvas, 260, 240)
+    t.is("một cú bấm là một cột mốc", completed[completed.length - 1].length, 1)
+    t.is("chữ đóng băng vào cột mốc", completed[completed.length - 1][0].text, "đáy")
+    await settle(3)
+    t.gt("cột + hộp chữ ra pixel thật", mouseLayerPixels(second.canvas), 60)
+    cleanup()
+
+    // Flag: một cú bấm, glyph ⚑ cưỡi wrapper arrow-mark
+    const third = mountWithTool("chart-flag-mark", {
+        enabled: true,
+        snap: false,
+        flags: [],
+        onComplete: (event, flags) => {
+            completed.push(flags)
+            third.tool.flags = flags
+        },
+    })
+    await settle()
+    await clickAt(third.canvas, 300, 220)
+    t.is("một cú bấm là một cờ", completed[completed.length - 1].length, 1)
+    await settle(3)
+    t.is("glyph là cờ", third.tool.querySelector("chart-interactive-text").text, "⚑")
+    cleanup()
+
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

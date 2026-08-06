@@ -11,6 +11,7 @@ export const interactiveGannBoxDefaults = {
     x2Value: undefined,
     y2Value: undefined,
     variant: "box",
+    scaleRatio: undefined,
     levels: [0.25, 0.382, 0.5, 0.618, 0.75],
     strokeStyle: "#000000",
     strokeWidth: 1,
@@ -41,12 +42,28 @@ export const gannBoxGeometry = (props, moreProps) => {
         chartConfig: { yScale },
     } = moreProps
 
+    /**
+     * `squareFixed` khoá tỉ lệ giá/nến — cách TradingView làm: chiều cao KHÔNG
+     * lấy từ neo thứ hai mà suy từ chiều rộng nhân `scaleRatio` (giá mỗi nến),
+     * dấu theo hướng kéo. Ratio hiện cạnh neo thứ hai, như TV.
+     */
+    const fixed = resolved.variant === "squareFixed" && resolved.scaleRatio !== undefined
+    const y2Data = fixed
+        ? resolved.y1Value +
+          Math.sign(resolved.y2Value - resolved.y1Value || 1) *
+              Math.abs(resolved.x2Value - resolved.x1Value) *
+              resolved.scaleRatio
+        : resolved.y2Value
+
     const x1 = xScale(resolved.x1Value)
     const y1 = yScale(resolved.y1Value)
     const x2 = xScale(resolved.x2Value)
-    const y2 = yScale(resolved.y2Value)
+    const y2 = yScale(y2Data)
     const geometry = { segments: [], labels: [] }
     if (x1 === x2 || y1 === y2) return geometry
+
+    if (fixed)
+        geometry.labels.push({ x: x2 + 6, y: y2 + 3, text: `1 : ${Number(resolved.scaleRatio.toPrecision(4))}`, align: "left" })
 
     geometry.segments.push(
         [[x1, y1], [x2, y1]],
@@ -67,7 +84,7 @@ export const gannBoxGeometry = (props, moreProps) => {
         geometry.labels.push({ x, y: Math.max(y1, y2) + 12, text: String(level), align: "center" })
     }
 
-    if (resolved.variant === "square") {
+    if (resolved.variant === "square" || resolved.variant === "squareFixed") {
         geometry.segments.push([[x1, y1], [x2, y2]], [[x1, y2], [x2, y1]])
         for (const level of levels) {
             geometry.segments.push([[x1, y1], [x2, y1 + dy * level]])
