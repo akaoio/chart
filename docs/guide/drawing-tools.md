@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The seven tools
+## The eleven tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -39,6 +39,14 @@ the drawings are back; drop the list and they are gone.
 | `<chart-gann-fan-tool>` | `fans` | 2 |
 | `<chart-interactive-text-tool>` | `textList` | 1 |
 | `<chart-interactive-y-coordinate-tool>` | `yCoordinateList` | none — alerts arrive already made |
+| `<chart-axis-line>` | `lines` | 1 — `mode`: `horizontal`, `horizontalRay`, `vertical`, `cross` |
+| `<chart-shape-tool>` | `shapes` | 2 — `shape`: `rectangle` or `ellipse`, spanned corner to corner |
+| `<chart-measure>` | `measures` | 2 — reads out Δprice, %, bars and elapsed time by `mode` |
+| `<chart-position-tool>` | `positions` | 1 — entry/target/stop from `side`, `stopFraction`, `riskReward` |
+
+The last four have no counterpart in the original library — they exist because
+TradingView has them and a terminal needs them. Each placed object remembers its own
+`mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 
 `enabled` decides whether clicking draws. Set it on one tool at a time; several armed at
 once will all react to the same click.
