@@ -455,6 +455,8 @@ const TOUCH_TOOLS = [
     // Callout: tap 1 la mui neo (0.3, 0.4), tap 2 la hop chu (0.6, 0.55) — nam vao hop.
     { label: "Callout", tag: "chart-callout", list: "callouts", taps: 2, grab: [0.6, 0.55] },
     { label: "Price label", tag: "chart-price-label", list: "labels", taps: 1, grab: [0.3, 0.4] },
+    // XABCD nam tap: doan X(0.3,0.4) -> A(0.6,0.55) di qua trung diem (0.45, 0.475).
+    { label: "Pattern", tag: "chart-pattern", list: "patterns", taps: 5, grab: [0.45, 0.475] },
 ]
 
 const touchToolTests = async (browser, origin) => {
@@ -519,7 +521,7 @@ const touchToolTests = async (browser, origin) => {
         const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
 
         // Ba điểm đặt, đủ cho công cụ cần tới ba cú gõ.
-        const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3)]
+        const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3), at(0.45, 0.25), at(0.55, 0.5)]
         for (let index = 0; index < tool.taps; index++) await tap(spots[index])
 
         const placed = await page.evaluate(

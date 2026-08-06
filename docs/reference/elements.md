@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **97** of them.
+Every custom element the library defines: **100** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1361,6 +1361,25 @@ One measurement box, its two defining corners, and whole-body drag — the same 
 | `y1Value` | — |
 | `y2Value` | — |
 
+### `<chart-each-pattern>`
+
+One drawn pattern: the polyline body and one handle per vertex.
+
+`EachPattern` — [`src/interactive/wrapper/EachPattern.js`](../../src/interactive/wrapper/EachPattern.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `fillTriangles` | `false` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `labels` | `[]` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `selected` | `false` |
+
 ### `<chart-each-pitchfork>`
 
 One pitchfork, its three point handles, and whole-body drag.
@@ -1723,6 +1742,32 @@ An Andrews pitchfork (or its Schiff variants): a median from three points and tw
 | `tolerance` | `4` |
 | `variant` | `"standard"` |
 
+### `<chart-interactive-polyline>`
+
+A hand-drawn polyline through N points, with per-vertex labels — the body every pattern tool shares.
+
+`InteractivePolyline` — [`src/interactive/components/InteractivePolyline.js`](../../src/interactive/components/InteractivePolyline.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `fillTriangles` | `false` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `11` |
+| `interactiveCursorClass` | — |
+| `labels` | `[]` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `points` | `[]` |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+
 ### `<chart-interactive-position>`
 
 A position plan drawn on the chart: entry, target and stop levels over a bar span, with the profit and loss zones filled and the risk/reward ratio read out.
@@ -1971,6 +2016,30 @@ Turns pointer position into a data value, and reports it to whichever tool is dr
 | `snapTo` | — |
 | `stroke` | `"#000000"` |
 | `strokeWidth` | `1` |
+
+### `<chart-pattern>`
+
+Pattern tools.
+
+`PatternTool` — [`src/interactive/PatternTool.js`](../../src/interactive/PatternTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `patterns` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"xabcd"` |
 
 ### `<chart-pitchfork>`
 
