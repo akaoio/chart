@@ -3627,6 +3627,134 @@ TESTS["cyclic lines: hai điểm định chu kỳ, vạch lặp tới mép domai
     return t.checks
 }
 
+TESTS["arrow: đuôi rồi đầu, đầu đặc là pixel thật — kéo tay cầm đổi đầu"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-arrow", {
+        enabled: true,
+        snap: false,
+        arrows: [],
+        onComplete: (event, arrows) => {
+            completed.push(arrows)
+            tool.arrows = arrows
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 200)
+    await hoverAt(canvas, 320, 260)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 320, 260)
+
+    t.is("hai cú bấm là một mũi tên", completed.length, 1)
+    const arrow = completed[0][0]
+    t.ok("có đủ đuôi và đầu", arrow.start !== undefined && arrow.end !== undefined)
+
+    await settle(3)
+    const slim = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật", slim, 100)
+
+    // Đầu mũi tên là hình tam giác đặc — phóng to nó thì số pixel phải tăng.
+    // Bỏ nhánh vẽ đầu là dòng này đỏ, vì headSize không còn ảnh hưởng gì.
+    tool.arrows = tool.arrows.map(each => ({ ...each, appearance: { ...each.appearance, headSize: 30 } }))
+    await settle(3)
+    t.gt("đầu to hơn là nhiều pixel hơn — đầu có thật", mouseLayerPixels(canvas), slim)
+
+    // Kéo tay cầm ở đầu: chỉ đầu dời, đuôi đứng im
+    await dragOn(canvas, [320, 260], [400, 220])
+    t.gt("kéo xong có báo lại", completed.length, 1)
+    const moved = completed[completed.length - 1][0]
+    t.is("đuôi đứng im", moved.start[0], arrow.start[0])
+    t.not("đầu đã dời", moved.end[0].toFixed(1), arrow.end[0].toFixed(1))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["info line: nhãn giữa đoạn đọc Δgiá, phần trăm và số nến — từ dữ liệu, không từ pixel"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-info-line", {
+        enabled: true,
+        snap: false,
+        infoLines: [],
+        onComplete: (event, infoLines) => {
+            completed.push(infoLines)
+            tool.infoLines = infoLines
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 250)
+    await hoverAt(canvas, 340, 180)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 340, 180)
+
+    t.is("hai cú bấm là một đoạn đo", completed.length, 1)
+    const line = completed[0][0]
+
+    await settle(3)
+    const label = tool.querySelector("chart-interactive-label")
+    const change = line.end[1] - line.start[1]
+    const bars = Math.round(line.end[0] - line.start[0])
+    t.ok("nhãn đọc đúng Δgiá của chính nó", label.text.includes(change.toFixed(2)))
+    t.ok("nhãn đếm đúng số nến", label.text.includes(`${bars} bars`))
+    t.ok("nhãn có phần trăm", label.text.includes("%"))
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 100)
+
+    // Kéo tay cầm thứ hai: số đo phải tính lại — nhãn sống theo dữ liệu
+    await dragOn(canvas, [340, 180], [340, 120])
+    t.gt("kéo xong có báo lại", completed.length, 1)
+    const moved = completed[completed.length - 1][0]
+    await settle(3)
+    const movedChange = moved.end[1] - moved.start[1]
+    t.not("Δgiá đã khác", movedChange.toFixed(2), change.toFixed(2))
+    t.ok("và nhãn đổi theo", label.text.includes(movedChange.toFixed(2)))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["arrow mark: một cú bấm một glyph, mode định chiều — mỗi dấu nhớ chiều của mình"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-arrow-mark", {
+        enabled: true,
+        snap: false,
+        mode: "up",
+        marks: [],
+        onComplete: (event, marks) => {
+            completed.push(marks)
+            tool.marks = marks
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 250, 220)
+    t.is("một cú bấm là một dấu", completed.length, 1)
+    t.is("dấu mang chiều của công cụ lúc đặt", completed[0][0].mode, "up")
+
+    await settle(3)
+    t.is("glyph chỉ lên", tool.querySelector("chart-interactive-text").text, "▲")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 20)
+
+    // Đổi mode rồi đặt dấu thứ hai: dấu cũ giữ chiều cũ — mode là của từng dấu
+    tool.mode = "down"
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 400, 260)
+    t.is("hai dấu trên hình", completed[completed.length - 1].length, 2)
+    await settle(3)
+    const glyphs = [...tool.querySelectorAll("chart-interactive-text")].map(each => each.text)
+    t.ok("dấu cũ vẫn chỉ lên", glyphs.includes("▲"))
+    t.ok("dấu mới chỉ xuống", glyphs.includes("▼"))
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

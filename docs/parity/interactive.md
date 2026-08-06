@@ -48,10 +48,13 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-pattern` (`variant`) | XABCD · Cypher · ABCD · Triangle · Three drives · H&S · Elliott ×3 | n bấm | `chart-interactive-polyline` (mới): đường gấp khúc + nhãn đỉnh + fill tam giác; máy đặt-n-điểm là MỘT, variant chỉ là bảng |
 | `chart-path` | Path · Polyline | n bấm + nhấp đúp chốt (hoặc phương thức finish cho màn chạm) | dùng lại nguyên `chart-each-pattern` — path là pattern không bảng |
 | `chart-cyclic-lines` | Cyclic lines | 2 bấm | `chart-interactive-cycles` (mới): vạch dọc lặp theo chu kỳ, chặn 500 vạch |
+| `chart-arrow` | Arrow · Arrow marker | 2 bấm | `chart-interactive-arrow` (mới): thân + đầu đặc |
+| `chart-arrow-mark` (`mode`) | Arrow mark up · Arrow mark down | 1 bấm | không leaf mới — glyph ▲/▼ trên `InteractiveText` |
+| `chart-info-line` | Info line | 2 bấm | không leaf mới — nhãn giữa đoạn đọc Δgiá/%/số nến, suy từ dữ liệu nên không cũ được. Trend angle CỐ Ý chưa làm: góc phụ thuộc tỉ lệ pixel hai trục, cần label tính chữ theo pixel — ghi vào #5 |
 
 Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
 

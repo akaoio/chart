@@ -459,6 +459,9 @@ const TOUCH_TOOLS = [
     { label: "Pattern", tag: "chart-pattern", list: "patterns", taps: 5, grab: [0.45, 0.475] },
     // Cyclic: hai tap dinh chu ky, vach doc chay het pane — go dau tren vach dau cung trung.
     { label: "Cyclic", tag: "chart-cyclic-lines", list: "cycles", taps: 2, grab: [0.3, 0.2] },
+    { label: "Arrow", tag: "chart-arrow", list: "arrows", taps: 2, grab: [0.45, 0.475] },
+    { label: "Arrow mark", tag: "chart-arrow-mark", list: "marks", taps: 1, grab: [0.3, 0.4] },
+    { label: "Info line", tag: "chart-info-line", list: "infoLines", taps: 2, grab: [0.45, 0.475] },
 ]
 
 const touchToolTests = async (browser, origin) => {
@@ -540,6 +543,25 @@ const touchToolTests = async (browser, origin) => {
 
         // Tắt công cụ, rồi gõ vào chính đối tượng để chọn nó — đúng cử chỉ đã thiết kế.
         await page.click(`section.demo .controls button:text-is("${tool.label}")`)
+
+        /**
+         * Cú bấm tắt cũng làm trang cuộn — với nút nằm cuối hàng đã tràn dòng, trang trôi
+         * thêm hơn hai chục pixel so với lúc đo. Chỗ nắm tính trên toạ độ cũ vì thế trượt
+         * khỏi đối tượng, dù đối tượng được đặt đúng chỗ. Nên đo lại sau MỌI cú bấm nút,
+         * không chỉ cú đầu.
+         */
+        Object.assign(
+            box,
+            await page.evaluate(() => {
+                const canvas = document.querySelector("chart-canvas")
+                canvas.scrollIntoView({ block: "center" })
+                const { left, top, width, height } = canvas.shadowRoot
+                    .querySelector("[data-event-capture]")
+                    .getBoundingClientRect()
+                return { left, top, width, height }
+            }),
+        )
+        await page.waitForTimeout(200)
 
         /**
          * Chỗ nắm do mỗi công cụ tự khai, vì mỗi công cụ vẽ ra một hình khác nhau.
