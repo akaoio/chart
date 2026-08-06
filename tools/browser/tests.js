@@ -4347,6 +4347,63 @@ TESTS["pin và image: ghim một bấm, ảnh hai góc căng theo dữ liệu"] 
     return t.checks
 }
 
+TESTS["pan vẫn sống khi có tool một-bấm trên biểu đồ — hình theo chuột NGAY giữa cú kéo"] = async () => {
+    const t = makeChecker()
+
+    // Tool một-bấm GẮN nhưng KHÔNG bật — đúng cảnh đã làm pan đứng hình suốt
+    // 11 PR: indicator của nó không được gán onMouseMove, và onPan gọi trúng prop
+    // che undefined thay vì phương thức — nổ giữa vòng phát pan. Domain chỉ chốt
+    // lúc nhả chuột kể cả khi pan chạy đúng, nên trọng tài ở đây là PIXEL: hình
+    // phải đổi ngay giữa cú kéo, không đợi tới mouseup.
+    const { canvas } = mountWithTool("chart-price-label", {
+        enabled: false,
+        snap: false,
+        labels: [],
+    })
+    await settle()
+
+    const snap = () => {
+        const context = canvas.getCanvasContexts().axes
+        return context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+    }
+    const differs = (a, b) => {
+        for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return true
+        return false
+    }
+
+    const domainBefore = canvas.getState().xScale.domain().map(Number).join()
+    const before = snap()
+
+    const rect = canvas.shadowRoot.querySelector("[data-event-capture]")
+    const box = rect.getBoundingClientRect()
+    const at = (type, target, [x, y], extra = {}) =>
+        target.dispatchEvent(
+            new MouseEvent(type, { clientX: box.left + x, clientY: box.top + y, bubbles: true, composed: true, button: 0, ...extra }),
+        )
+
+    at("mouseenter", rect, [400, 200])
+    at("mousemove", window, [400, 200])
+    await settle(2)
+    at("mousedown", rect, [400, 200], { buttons: 1 })
+    await settle(1)
+    at("mousemove", window, [320, 200], { buttons: 1 })
+    await settle(3)
+
+    // Khẳng định quan trọng nhất: hình ĐÃ đổi TRƯỚC khi nhả chuột
+    t.ok("hình theo chuột ngay giữa cú kéo", differs(before, snap()))
+
+    at("mousemove", window, [240, 200], { buttons: 1 })
+    await settle(2)
+    at("mouseup", window, [240, 200], { buttons: 0 })
+    at("click", rect, [240, 200])
+    await settle(2)
+
+    t.not("nhả xong domain khác lúc đầu", canvas.getState().xScale.domain().map(Number).join(), domainBefore)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
