@@ -43,10 +43,12 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-position-tool` (`side`) | Long position · Short position | 1 bấm | `chart-interactive-position` (mới): hai vùng lời/lỗ + ba nhãn + R/R |
 | `chart-pitchfork` (`variant`) | Pitchfork · Schiff · Modified Schiff | 3 bấm | `chart-interactive-pitchfork` (mới): trung tuyến + hai càng RAY, khung tia + hộp chặn hit của GannFan |
 | `chart-fib-extension` | Trend-based fib extension | 3 bấm | không leaf mới — mỗi mức một `InteractiveStraightLine` RAY + `chart-interactive-label`, đúng khuôn retracement |
+| `chart-callout` | Callout | 2 bấm | không leaf mới — `InteractiveText` + chân `InteractiveStraightLine` + tay cầm neo |
+| `chart-price-label` | Price label | 1 bấm | không leaf mới — `InteractiveText` mà chữ là chính y của nó, kéo là đổi giá |
 
 Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
 
