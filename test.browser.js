@@ -457,6 +457,8 @@ const TOUCH_TOOLS = [
     { label: "Price label", tag: "chart-price-label", list: "labels", taps: 1, grab: [0.3, 0.4] },
     // XABCD nam tap: doan X(0.3,0.4) -> A(0.6,0.55) di qua trung diem (0.45, 0.475).
     { label: "Pattern", tag: "chart-pattern", list: "patterns", taps: 5, grab: [0.45, 0.475] },
+    // Cyclic: hai tap dinh chu ky, vach doc chay het pane — go dau tren vach dau cung trung.
+    { label: "Cyclic", tag: "chart-cyclic-lines", list: "cycles", taps: 2, grab: [0.3, 0.2] },
 ]
 
 const touchToolTests = async (browser, origin) => {

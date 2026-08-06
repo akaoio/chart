@@ -3539,6 +3539,94 @@ TESTS["pattern XABCD: năm cú bấm, nhãn đủ năm đỉnh, kéo thân giữ
     return t.checks
 }
 
+TESTS["path: mỗi click một đỉnh, nhấp đúp chốt hình"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-path", {
+        enabled: true,
+        snap: false,
+        paths: [],
+        onComplete: (event, paths) => {
+            completed.push(paths)
+            tool.paths = paths
+        },
+    })
+    await settle()
+
+    const spots = [
+        [150, 250],
+        [300, 130],
+        [430, 260],
+    ]
+    for (let index = 0; index < spots.length; index++) {
+        if (index > 0) await pastDoubleClickWindow()
+        await hoverAt(canvas, spots[index][0], spots[index][1])
+        await clickAt(canvas, spots[index][0], spots[index][1])
+    }
+    t.is("ba click chưa chốt — path không có số đỉnh định trước", completed.length, 0)
+
+    // Nhấp đúp tại đỉnh thứ tư: hai click nhanh cùng chỗ — EventCapture tự tổng hợp
+    // thành dblclick (nó đo 400ms và 8px từ click thật, không nghe DOM dblclick dựng tay).
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 520, 150)
+    await clickAt(canvas, 520, 150)
+    await clickAt(canvas, 520, 150)
+    await settle(3)
+
+    t.is("nhấp đúp là xong", completed.length, 1)
+    const path = completed[0][0]
+    t.gt("đủ đỉnh đã đóng đinh", path.points.length, 3)
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 150)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["cyclic lines: hai điểm định chu kỳ, vạch lặp tới mép domain"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-cyclic-lines", {
+        enabled: true,
+        snap: false,
+        cycles: [],
+        onComplete: (event, cycles) => {
+            completed.push(cycles)
+            tool.cycles = cycles
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 200)
+    await hoverAt(canvas, 280, 220)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 280, 220)
+
+    t.is("hai cú bấm là một bộ vạch", completed.length, 1)
+    const cycle = completed[0][0]
+    t.ok("có đủ hai neo", cycle.start !== undefined && cycle.end !== undefined)
+
+    // Số vạch phải nhiều hơn 2 — chu kỳ lặp tới mép phải của domain
+    await settle(3)
+    const body = tool.querySelector("chart-interactive-cycles")
+    const period = Math.abs(cycle.end[0] - cycle.start[0])
+    t.gt("chu kỳ dương", period, 0)
+    t.gt("vẽ ra pixel thật (nhiều vạch dọc)", mouseLayerPixels(canvas), 200)
+
+    // Kéo tay cầm thứ hai ra xa: chu kỳ giãn — đó là cách sửa duy nhất có nghĩa
+    await hoverAt(canvas, 240, 210)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 240, 210)
+    await dragOn(canvas, [280, 220], [360, 220])
+    t.gt("kéo xong có báo lại", completed.length, 1)
+    const moved = completed[completed.length - 1][0]
+    t.gt("chu kỳ giãn ra thật", Math.abs(moved.end[0] - moved.start[0]), period)
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
