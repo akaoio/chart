@@ -59,11 +59,16 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-signpost` | Signpost | 1 bấm | `chart-interactive-signpost` (mới): cột + hộp chữ đo từ chính chữ |
 | `chart-flag-mark` | Flag mark | 1 bấm | không leaf mới — `EachArrowMark` học `glyph`/`fill`, cờ ⚑ cưỡi cùng wrapper |
 | `chart-freehand` (`mode`) | Brush · Highlighter | đè–rê–nhả | `chart-interactive-freehand` (mới). KHÔNG cần sửa EventCapture: công cụ đang bật đã phủ quyết pan nên không cử chỉ nào chiếm chuỗi kéo — mousemove/touchmove vẫn chảy về indicator giữa lúc đè, cú nhả phát `onClick`. Điểm lược theo pixel (≥ 3px), chặn 2000 điểm |
+| `chart-anchored-text` (`kind`) | Anchored Text · Anchored Note | 1 bấm | `chart-interactive-anchored-box` (mới): neo MÀN HÌNH theo tỉ lệ pane — cuộn/zoom đứng yên, resize giữ chỗ tương đối, đúng tài liệu TV |
+| `chart-price-note` | Price Note | 2 bấm | không leaf mới — neo đầu ghim GIÁ, neo hai đặt nhãn, nhãn đọc giá từ neo mỗi lần vẽ (đúng hai-neo-một-đường-nối của TV) |
+| `chart-pin` | Pin | 1 bấm | không leaf mới — 📍 cưỡi wrapper arrow-mark |
+| `chart-table` | Table | 1 bấm | cùng leaf anchored-box — bảng neo màn hình, cột rộng theo ô dài nhất; sửa ô là UI ứng dụng |
+| `chart-image-tool` | Image | 2 bấm | `chart-interactive-image` (mới): ảnh căng giữa hai neo dữ liệu, `src` là dataURL do ứng dụng đưa; cache theo src, tải xong tự xin vẽ lại |
 | `chart-info-line` | Info line | 2 bấm | không leaf mới — nhãn giữa đoạn đọc Δgiá/%/số nến, suy từ dữ liệu nên không cũ được |
 
 Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape`, `EachGannBox`, `EachWave`, `EachAngleLine`, `EachNote`, `EachSignpost`, `EachFreehand` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape`, `EachGannBox`, `EachWave`, `EachAngleLine`, `EachNote`, `EachSignpost`, `EachFreehand`, `EachAnchoredBox`, `EachPriceNote`, `EachImage` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
 
