@@ -186,7 +186,12 @@ for (const [suite, port] of suites) {
  */
 const { reference } = await import("./tools/docs/elements.mjs")
 const referencePath = join(here, "docs/reference/elements.md")
-const committed = readFileSync(referencePath, "utf8")
+/**
+ * So sánh bỏ qua kiểu xuống dòng: checkout trên Windows viết file thành CRLF
+ * còn generator sinh LF — khác biệt đó là của git autocrlf, không phải của
+ * tài liệu, và từng làm bài này đỏ giả sau mỗi lần checkout.
+ */
+const committed = readFileSync(referencePath, "utf8").replaceAll("\r\n", "\n")
 const current = await reference()
 
 if (committed === current) {
