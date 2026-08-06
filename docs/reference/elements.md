@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **100** of them.
+Every custom element the library defines: **104** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1140,6 +1140,29 @@ The ✕ that deletes an alert line.
 | `textBox` | — |
 | `yValue` | — |
 
+### `<chart-cyclic-lines>`
+
+Cyclic lines.
+
+`CyclicLines` — [`src/interactive/CyclicLines.js`](../../src/interactive/CyclicLines.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `cycles` | `[]` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-drawing-object-selector>`
 
 Decides which drawn object a click belongs to, across every tool at once.
@@ -1198,6 +1221,24 @@ One callout: a text box, a leg from the box to the anchor, and a handle on the a
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
 | `text` | `"Callout"` |
+
+### `<chart-each-cyclic-lines>`
+
+One set of cyclic lines and its two anchors.
+
+`EachCyclicLines` — [`src/interactive/wrapper/EachCyclicLines.js`](../../src/interactive/wrapper/EachCyclicLines.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
 
 ### `<chart-each-equidistant-channel>`
 
@@ -1670,6 +1711,29 @@ The hint that follows the cursor while a drawn object can be grabbed.
 | `show` | `false` |
 | `text` | `""` |
 
+### `<chart-interactive-cycles>`
+
+Cyclic lines: two points set the period, vertical lines repeat rightward to the domain edge.
+
+`InteractiveCycles` — [`src/interactive/components/InteractiveCycles.js`](../../src/interactive/components/InteractiveCycles.js)
+
+| property | default |
+|---|---|
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
+
 ### `<chart-interactive-label>`
 
 A label placed by a provider function rather than by data coordinates.
@@ -2016,6 +2080,29 @@ Turns pointer position into a data value, and reports it to whichever tool is dr
 | `snapTo` | — |
 | `stroke` | `"#000000"` |
 | `strokeWidth` | `1` |
+
+### `<chart-path>`
+
+Free path.
+
+`PathTool` — [`src/interactive/PathTool.js`](../../src/interactive/PathTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `paths` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
 
 ### `<chart-pattern>`
 
