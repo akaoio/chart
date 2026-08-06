@@ -9,6 +9,7 @@ export const interactiveCyclesDefaults = {
     y1Value: undefined,
     x2Value: undefined,
     y2Value: undefined,
+    offsets: undefined,
     strokeStyle: "#000000",
     strokeWidth: 1,
     tolerance: 4,
@@ -27,7 +28,7 @@ export const interactiveCyclesDefaults = {
  * trên một domain dài không được phép treo tab.
  */
 export const cycleLines = (props, moreProps) => {
-    const { x1Value, x2Value } = { ...interactiveCyclesDefaults, ...props }
+    const { x1Value, x2Value, offsets } = { ...interactiveCyclesDefaults, ...props }
     const {
         xScale,
         chartConfig: { height },
@@ -35,6 +36,10 @@ export const cycleLines = (props, moreProps) => {
 
     const period = x2Value - x1Value
     if (!period) return []
+
+    // Có `offsets` thì không lặp đều nữa: mỗi bội số một vạch, đúng dãy được giao —
+    // Fib time zone giao dãy Fibonacci. Vạch ngoài khung để canvas tự cắt.
+    if (offsets !== undefined) return offsets.map(k => ({ x: xScale(x1Value + k * period), height }))
 
     const [, domainRight] = xScale.domain()
     const step = Math.abs(period)

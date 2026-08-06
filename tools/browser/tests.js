@@ -3755,6 +3755,128 @@ TESTS["arrow mark: một cú bấm một glyph, mode định chiều — mỗi d
     return t.checks
 }
 
+TESTS["fib time zone: vạch dọc tại bội số Fibonacci — dãy offsets điều khiển thật"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-time-zone", {
+        enabled: true,
+        snap: false,
+        zones: [],
+        onComplete: (event, zones) => {
+            completed.push(zones)
+            tool.zones = zones
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 200)
+    await hoverAt(canvas, 260, 220)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 260, 220)
+
+    t.is("hai cú bấm là một bộ vạch", completed.length, 1)
+    await settle(3)
+    const full = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật (nhiều vạch)", full, 200)
+
+    // Rút dãy về [0, 1]: chỉ còn hai vạch — chứng minh offsets điều khiển hình vẽ.
+    // Bỏ nhánh offsets trong cycleLines là dòng này đỏ.
+    tool.offsets = [0, 1]
+    await settle(3)
+    t.gt("dãy ngắn hơn là ít pixel hơn", full, mouseLayerPixels(canvas))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["fib circles: vành đồng tâm theo mức — mức và variant điều khiển thật"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-shape", {
+        enabled: true,
+        variant: "circles",
+        snap: false,
+        fibShapes: [],
+        onComplete: (event, fibShapes) => {
+            completed.push(fibShapes)
+            tool.fibShapes = fibShapes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 250, 200)
+    await hoverAt(canvas, 330, 240)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 330, 240)
+
+    t.is("hai cú bấm là một bộ vành", completed.length, 1)
+    t.is("variant được ghi vào từng hình", completed[0][0].variant, "circles")
+    await settle(3)
+    const full = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật (sáu vành)", full, 300)
+
+    // Một mức thay vì sáu: ít vành, ít pixel — mức điều khiển hình vẽ
+    tool.levels = [0.5]
+    await settle(3)
+    const single = mouseLayerPixels(canvas)
+    t.gt("một mức là ít pixel hơn sáu mức", full, single)
+
+    // Đổi variant của hình ĐÃ VẼ sang arcs: nửa vành — lại ít pixel hơn nữa
+    tool.levels = undefined
+    tool.fibShapes = tool.fibShapes.map(each => ({ ...each, variant: "arcs" }))
+    await settle(3)
+    t.gt("nửa vành ít pixel hơn vành tròn", full, mouseLayerPixels(canvas))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["fib wedge và spiral: nêm ba bấm, xoắn hai bấm"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-shape", {
+        enabled: true,
+        variant: "wedge",
+        snap: false,
+        fibShapes: [],
+        onComplete: (event, fibShapes) => {
+            completed.push(fibShapes)
+            tool.fibShapes = fibShapes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 220)
+    await hoverAt(canvas, 320, 260)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 320, 260)
+    t.is("hai cú bấm chưa chốt — nêm cần ba neo", completed.length, 0)
+
+    await hoverAt(canvas, 300, 150)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 300, 150)
+    t.is("cú bấm thứ ba chốt nêm", completed.length, 1)
+    t.is("nêm đủ ba neo", completed[0][0].points.length, 3)
+    await settle(3)
+    t.gt("vẽ ra pixel thật (hai tia + vành)", mouseLayerPixels(canvas), 200)
+
+    // Xoắn: đổi variant của công cụ, hai cú bấm là xong — bảng variant điều khiển số neo
+    tool.variant = "spiral"
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 420, 200)
+    await hoverAt(canvas, 480, 230)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 480, 230)
+    t.is("xoắn chốt sau hai cú bấm", completed.length, 2)
+    t.is("hình mới là xoắn", completed[1][1].variant, "spiral")
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 
