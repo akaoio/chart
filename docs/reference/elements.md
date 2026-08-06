@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **104** of them.
+Every custom element the library defines: **111** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -990,6 +990,52 @@ Large text behind the chart — a watermark, usually the instrument name.
 
 ## Interactive
 
+### `<chart-arrow>`
+
+Arrows.
+
+`ArrowTool` — [`src/interactive/ArrowTool.js`](../../src/interactive/ArrowTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `arrows` | `[]` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
+### `<chart-arrow-mark>`
+
+Arrow marks.
+
+`ArrowMark` — [`src/interactive/ArrowMark.js`](../../src/interactive/ArrowMark.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `marks` | `[]` |
+| `mode` | `"up"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-axis-line>`
 
 Axis-anchored lines.
@@ -1177,6 +1223,42 @@ Decides which drawn object a click belongs to, across every tool at once.
 | `onDoubleClick` | — |
 | `onSelect` | — |
 
+### `<chart-each-arrow>`
+
+One arrow: the shaft, a handle at the tail, a handle at the head.
+
+`EachArrow` — [`src/interactive/wrapper/EachArrow.js`](../../src/interactive/wrapper/EachArrow.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+
+### `<chart-each-arrow-mark>`
+
+One arrow mark: a ▲ or ▼ glyph riding an InteractiveText box — draggable like any label.
+
+`EachArrowMark` — [`src/interactive/wrapper/EachArrowMark.js`](../../src/interactive/wrapper/EachArrowMark.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `mode` | `"up"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+
 ### `<chart-each-axis-line>`
 
 One axis-anchored line and the machinery that lets it be adjusted.
@@ -1318,6 +1400,25 @@ One Gann fan, adjustable by the two points that define its 1/1 ray.
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
 | `startXY` | — |
+
+### `<chart-each-info-line>`
+
+One info line: a bounded trend segment whose midpoint label reads the measurement out — price change, percent, bar count.
+
+`EachInfoLine` — [`src/interactive/wrapper/EachInfoLine.js`](../../src/interactive/wrapper/EachInfoLine.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+| `yDisplayFormat` | ƒ |
 
 ### `<chart-each-interactive-y-coordinate>`
 
@@ -1710,6 +1811,54 @@ The hint that follows the cursor while a drawn object can be grabbed.
 | `fontSize` | `12` |
 | `show` | `false` |
 | `text` | `""` |
+
+### `<chart-info-line>`
+
+Info line.
+
+`InfoLine` — [`src/interactive/InfoLine.js`](../../src/interactive/InfoLine.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `infoLines` | `[]` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `yDisplayFormat` | ƒ |
+
+### `<chart-interactive-arrow>`
+
+An arrow the user drew: a bounded line with a filled head at its end.
+
+`InteractiveArrow` — [`src/interactive/components/InteractiveArrow.js`](../../src/interactive/components/InteractiveArrow.js)
+
+| property | default |
+|---|---|
+| `headSize` | `10` |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `2` |
+| `tolerance` | `7` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
 
 ### `<chart-interactive-cycles>`
 

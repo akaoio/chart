@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The eighteen tools
+## The twenty-one tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -50,8 +50,11 @@ the drawings are back; drop the list and they are gone.
 | `<chart-pattern>` | `patterns` | n — `variant` picks the table: XABCD, Cypher, ABCD, triangle, three drives, head-and-shoulders, Elliott ×3 |
 | `<chart-path>` | `paths` | n — click per vertex, double-click to close (the tool also exposes a finish method for touch UIs) |
 | `<chart-cyclic-lines>` | `cycles` | 2 — the period; vertical lines repeat to the domain edge |
+| `<chart-arrow>` | `arrows` | 2 — tail then head |
+| `<chart-arrow-mark>` | `marks` | 1 — ▲ or ▼ by `mode`, each mark remembers its own |
+| `<chart-info-line>` | `infoLines` | 2 — a trendline whose midpoint label reads Δprice, %, bars |
 
-The last eleven have no counterpart in the original library — they exist because
+The last fourteen have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

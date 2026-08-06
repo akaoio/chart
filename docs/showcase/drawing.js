@@ -15,7 +15,7 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Eighteen tools, one at a time",
+    title: "Twenty-one tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
         "the pitchfork and the fib extension take three, the pattern takes five, the path finishes on a double-click, and text, alert, H-line, position and price label take one. Click a " +
@@ -45,6 +45,9 @@ demo({
             { label: "Pattern", tag: "chart-pattern", list: "patterns" },
             { label: "Path", tag: "chart-path", list: "paths" },
             { label: "Cyclic", tag: "chart-cyclic-lines", list: "cycles" },
+            { label: "Arrow", tag: "chart-arrow", list: "arrows" },
+            { label: "Arrow mark", tag: "chart-arrow-mark", list: "marks" },
+            { label: "Info line", tag: "chart-info-line", list: "infoLines" },
         ]
 
         let active = null
