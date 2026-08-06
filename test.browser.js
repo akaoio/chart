@@ -693,6 +693,69 @@ const touchToolTests = async (browser, origin) => {
     }
 
     /**
+     * Freehand: cử chỉ CHÍNH là cú kéo — và khác brush-zoom, nó phải VẪy ra
+     * một nét đồng thời KHÔNG được pan khung nhìn.
+     */
+    {
+        const checks = []
+        const problems = []
+        const onError = error => problems.push(error.stack ?? error.message)
+        page.on("pageerror", onError)
+
+        await page.goto(`${origin}/docs/showcase/drawing.html`)
+        await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+        await page.waitForTimeout(700)
+
+        await page.click(`section.demo .controls button:text-is("Brush")`)
+        const box = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            canvas.scrollIntoView({ block: "center" })
+            const { left, top, width, height } = canvas.shadowRoot
+                .querySelector("[data-event-capture]")
+                .getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        await page.waitForTimeout(200)
+
+        const domainBefore = await page.evaluate(() =>
+            document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+        )
+
+        await swipe(
+            { x: Math.round(box.left + box.width * 0.3), y: Math.round(box.top + box.height * 0.35) },
+            { x: Math.round(box.left + box.width * 0.6), y: Math.round(box.top + box.height * 0.6) },
+        )
+
+        const [strokes, domainAfter] = await page.evaluate(() => [
+            JSON.stringify([...document.querySelectorAll("chart-freehand")][0].strokes),
+            document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+        ])
+        const drawn = JSON.parse(strokes)
+
+        checks.push({
+            label: "vẫy ngón tay là một nét nhiều điểm",
+            pass: drawn.length === 1 && drawn[0].points.length > 3,
+            expected: "1 nét, > 3 điểm",
+            actual: `${drawn.length} nét, ${drawn[0]?.points?.length ?? 0} điểm`,
+        })
+        checks.push({
+            label: "và khung nhìn đứng im, không pan theo",
+            pass: domainBefore === domainAfter,
+            expected: domainBefore,
+            actual: domainAfter,
+        })
+        checks.push({
+            label: "không có lỗi nào trong trang",
+            pass: problems.length === 0,
+            expected: "0",
+            actual: problems.length ? `${problems.length} — ${problems[0].split("\n")[0]}` : "0",
+        })
+
+        page.off("pageerror", onError)
+        results.push({ name: "ngón tay thật: chart-freehand", checks })
+    }
+
+    /**
      * Chụm hai ngón để zoom KHÔNG phải một cú bấm.
      *
      * Bài này canh chỗ mà chính phép sửa ở trên có thể phá. Cú bấm tự phát ở `touchend` được
