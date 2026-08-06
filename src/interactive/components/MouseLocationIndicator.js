@@ -89,8 +89,20 @@ export class MouseLocationIndicator extends GenericChartComponent {
         this.#report(event, moreProps, this.#props.onMouseMove)
     }
 
+    /**
+     * Pan cũng là con trỏ đang di chuyển — nhưng KHÔNG được gọi `this.onMouseMove`.
+     *
+     * `defineProperties` đặt prop `onMouseMove` (handler của tool) đè lên phương thức
+     * cùng tên trên prototype. Với tool hai-bấm, prop ấy là một hàm nên cú gọi "chạy"
+     * mà sai đối số, im lặng vô hại; với tool MỘT-bấm (price label, note, pin…) prop
+     * là `undefined` — cú gọi nổ giữa vòng phát pan của ChartCanvas và cắt luôn việc
+     * phát cho các phần tử sau, nên cứ có một tool một-bấm trên biểu đồ là kéo khung
+     * nhìn đứng hình tới khi nhả chuột. `#call` của GenericComponent tra prototype
+     * chính là để né cái bẫy này; ở đây lặp lại thân phương thức thay vì gọi tên.
+     */
     onPan(event, moreProps) {
-        this.onMouseMove(event, moreProps)
+        if (shallowEqual(moreProps.mousXY, moreProps.prevMouseXY)) return
+        this.#report(event, moreProps, this.#props.onMouseMove)
     }
 
     canvasDraw(context, moreProps) {
