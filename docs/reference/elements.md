@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **88** of them.
+Every custom element the library defines: **91** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1298,6 +1298,34 @@ One measurement box, its two defining corners, and whole-body drag — the same 
 | `y1Value` | — |
 | `y2Value` | — |
 
+### `<chart-each-pitchfork>`
+
+One pitchfork, its three point handles, and whole-body drag.
+
+`EachPitchfork` — [`src/interactive/wrapper/EachPitchfork.js`](../../src/interactive/wrapper/EachPitchfork.js)
+
+| property | default |
+|---|---|
+| `bodyInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeFill` | `"#FFFFFF"` |
+| `edgeInteractiveCursor` | `"chart-move-cursor"` |
+| `edgeStroke` | `"#000000"` |
+| `edgeStrokeWidth` | `2` |
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `medianStrokeStyle` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `r` | `5` |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `variant` | `"standard"` |
+
 ### `<chart-each-position>`
 
 One position plan and its five draggable parts.
@@ -1566,6 +1594,31 @@ A measurement box between two points: price change, percent, bar count and elaps
 | `y1Value` | — |
 | `y2Value` | — |
 
+### `<chart-interactive-pitchfork>`
+
+An Andrews pitchfork (or its Schiff variants): a median from three points and two parallel tines.
+
+`InteractivePitchfork` — [`src/interactive/components/InteractivePitchfork.js`](../../src/interactive/components/InteractivePitchfork.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `interactiveCursorClass` | — |
+| `medianStrokeStyle` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+| `variant` | `"standard"` |
+
 ### `<chart-interactive-position>`
 
 A position plan drawn on the chart: entry, target and stop levels over a bar span, with the profit and loss zones filled and the risk/reward ratio read out.
@@ -1814,6 +1867,30 @@ Turns pointer position into a data value, and reports it to whichever tool is dr
 | `snapTo` | — |
 | `stroke` | `"#000000"` |
 | `strokeWidth` | `1` |
+
+### `<chart-pitchfork>`
+
+Pitchforks.
+
+`Pitchfork` — [`src/interactive/Pitchfork.js`](../../src/interactive/Pitchfork.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `forks` | `[]` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"standard"` |
 
 ### `<chart-position-tool>`
 

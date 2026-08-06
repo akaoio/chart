@@ -15,12 +15,12 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Eleven tools, one at a time",
+    title: "Twelve tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel " +
-        "takes three, and text, alert, H-line and position take one. Click a drawn object to " +
-        "select it, then press Delete. Everything drawn is listed under the chart, exactly as " +
-        "the tools report it.",
+        "and the pitchfork take three, and text, alert, H-line and position take one. Click a " +
+        "drawn object to select it, then press Delete. Everything drawn is listed under the " +
+        "chart, exactly as the tools report it.",
     build: (stage, api) => {
         const { pane } = chart(stage)
 
@@ -38,6 +38,7 @@ demo({
             { label: "Rectangle", tag: "chart-shape-tool", list: "shapes" },
             { label: "Measure", tag: "chart-measure", list: "measures" },
             { label: "Position", tag: "chart-position-tool", list: "positions" },
+            { label: "Pitchfork", tag: "chart-pitchfork", list: "forks" },
         ]
 
         let active = null

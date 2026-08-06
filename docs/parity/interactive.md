@@ -41,8 +41,11 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù bốn 
 | `chart-shape-tool` (`shape`) | Rectangle · Ellipse/Circle | 2 bấm | `chart-interactive-shape` (mới): rect/elip + fill, trúng cả lòng lẫn viền |
 | `chart-measure` (`mode`) | Price range · Date range · Date & price range | 2 bấm | `chart-interactive-measure` (mới): hộp + mũi tên + hộp số Δgiá/%/nến/thời gian |
 | `chart-position-tool` (`side`) | Long position · Short position | 1 bấm | `chart-interactive-position` (mới): hai vùng lời/lỗ + ba nhãn + R/R |
+| `chart-pitchfork` (`variant`) | Pitchfork · Schiff · Modified Schiff | 3 bấm | `chart-interactive-pitchfork` (mới): trung tuyến + hai càng RAY, khung tia + hộp chặn hit của GannFan |
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
+
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: bốn bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và bốn dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ). Phá kiểu gì thì đổ: bỏ `#mouseMoved` thì bài hai-bấm đổ ở cửa chặn; đổi hệ số `riskReward` thì bài R/R đổ ở `near ±0.001`; bỏ nhánh elip thì bài đếm pixel "hình đổi thật sự" đổ.
 

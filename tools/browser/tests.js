@@ -3212,6 +3212,71 @@ TESTS["thước đo hai điểm đọc ra số thật"] = async () => {
     return t.checks
 }
 
+TESTS["ba cú bấm dựng một pitchfork, ba biến thể neo ba chỗ khác nhau"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-pitchfork", {
+        enabled: true,
+        variant: "standard",
+        snap: false,
+        forks: [],
+        onComplete: (event, forks) => {
+            completed.push(forks)
+            tool.forks = forks
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 150, 250)
+    t.is("bấm lần một chưa hoàn thành gì", completed.length, 0)
+
+    await hoverAt(canvas, 400, 120)
+    t.ok("một điểm thì hình tạm là một đoạn thẳng", tool.querySelector("chart-interactive-straight-line") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 400, 120)
+    t.is("bấm lần hai vẫn chưa hoàn thành", completed.length, 0)
+
+    await hoverAt(canvas, 450, 300)
+    t.ok("hai điểm thì hình tạm là phuộc thật", tool.querySelector("chart-interactive-pitchfork") !== null)
+
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 450, 300)
+
+    t.is("bấm lần ba là xong một phuộc", completed.length, 1)
+    const fork = completed[0][0]
+    t.ok("phuộc có đủ ba điểm", fork.p1 !== undefined && fork.p2 !== undefined && fork.p3 !== undefined)
+    t.is("phuộc nhớ biến thể", fork.variant, "standard")
+
+    // Ba biến thể phải vẽ ra ba hình khác nhau — neo trung tuyến là chỗ chúng khác nhau
+    tool.enabled = false
+    const pixelsBy = {}
+    for (const variant of ["standard", "schiff", "modifiedSchiff"]) {
+        tool.forks = [{ ...fork, variant, selected: false }]
+        await settle(3)
+        pixelsBy[variant] = mouseLayerPixels(canvas)
+    }
+    t.gt("standard vẽ ra pixel thật", pixelsBy.standard, 200)
+    t.not("schiff khác standard trên canvas", pixelsBy.schiff, pixelsBy.standard)
+    t.not("modifiedSchiff khác schiff trên canvas", pixelsBy.modifiedSchiff, pixelsBy.schiff)
+
+    // Kéo thân: cả ba điểm dời cùng quãng — dáng phuộc không đổi
+    tool.forks = [{ ...fork, selected: true }]
+    await settle(3)
+
+    // Nắm vào trung tuyến: đường từ (150,250) về trung điểm hai chân (425,210) đi qua đây
+    const spanBefore = fork.p2[0] - fork.p1[0]
+    await dragOn(canvas, [300, 228], [340, 268])
+
+    t.is("kéo xong onComplete báo lại", completed.length, 2)
+    const moved = completed[1][0]
+    t.near("khoảng cách p1→p2 giữ nguyên khi kéo thân", moved.p2[0] - moved.p1[0], spanBefore, 1.5)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["một cú bấm trồng một kế hoạch vị thế đúng tỉ lệ R/R"] = async () => {
     const t = makeChecker()
 
