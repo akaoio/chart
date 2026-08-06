@@ -778,6 +778,86 @@ const touchToolTests = async (browser, origin) => {
     return results
 }
 
+/**
+ * Mực của biểu đồ phải theo theme, và nút chuyển phải thật sự chuyển.
+ *
+ * Canvas không thừa kế CSS: mặc định của thư viện là `#000000`, trung thành với bản gốc và
+ * đúng trên nền trắng — trên nền tối thì trục, nhãn trục và số trong tooltip biến mất. Người
+ * dùng báo đúng chỗ ấy.
+ *
+ * Bài này đo bằng độ sáng của màu thật sự nằm trên phần tử, chứ không so chuỗi: chuỗi có thể
+ * là `rgb(…)`, `#…`, hay `light-dark(…)` chưa phân giải — mà chính "chưa phân giải" là cái bẫy
+ * đầu tiên tôi rơi vào, vì `getPropertyValue` trả về nguyên văn và canvas không hiểu.
+ */
+const themeTests = async (browser, origin) => {
+    const checks = []
+
+    const context = await browser.newContext({ viewport: { width: 1000, height: 800 }, colorScheme: "dark" })
+    const page = await context.newPage()
+
+    await page.goto(`${origin}/docs/showcase/index.html`)
+    await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+    await page.waitForTimeout(900)
+
+    /** Trung bình ba kênh của màu đang nằm trên trục. 0 là đen, 255 là trắng. */
+    const inkBrightness = () =>
+        page.evaluate(() => {
+            const value = document.querySelector("chart-y-axis").tickLabelFill
+            const parts = String(value).match(/\d+/g)
+            if (parts === null || parts.length < 3) return null
+            return (Number(parts[0]) + Number(parts[1]) + Number(parts[2])) / 3
+        })
+
+    const dark = await inkBrightness()
+    checks.push({
+        label: "nền tối thì mực của trục phải sáng",
+        pass: dark !== null && dark > 150,
+        expected: "> 150",
+        actual: dark,
+    })
+
+    const tooltipInk = await page.evaluate(() => document.querySelector("chart-ohlc-tooltip")?.textFill ?? null)
+    checks.push({
+        label: "số trong tooltip cũng đổi theo, không chỉ trục",
+        pass: tooltipInk !== null && !/#000|rgb\(0, 0, 0\)/.test(tooltipInk),
+        expected: "khác đen",
+        actual: tooltipInk,
+    })
+
+    // Nút chuyển: hệ → sáng. Mực phải tối lại ngay, không cần tải lại trang.
+    await page.click("button.theme")
+    await page.waitForTimeout(400)
+
+    const light = await inkBrightness()
+    checks.push({
+        label: "bấm sang chế độ sáng thì mực tối lại ngay",
+        pass: light !== null && light < 80,
+        expected: "< 80",
+        actual: light,
+    })
+    checks.push({
+        label: "và nút nói ra nó đang ở chế độ nào",
+        pass: (await page.evaluate(() => document.querySelector("button.theme").textContent)).includes("Light"),
+        expected: "Light",
+        actual: await page.evaluate(() => document.querySelector("button.theme").textContent),
+    })
+
+    // Chọn xong thì tải lại trang vẫn giữ, kể cả khi hệ điều hành đang để tối.
+    await page.reload()
+    await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+    await page.waitForTimeout(900)
+
+    checks.push({
+        label: "tải lại trang thì vẫn nhớ lựa chọn",
+        pass: (await inkBrightness()) < 80,
+        expected: "< 80",
+        actual: await inkBrightness(),
+    })
+
+    await context.close()
+    return { name: "trưng bày: mực của biểu đồ theo theme", checks }
+}
+
 await page.goto(`${origin}/tools/browser/harness.html`)
 await page.waitForFunction(() => window.chartReady === true, null, { timeout: 15000 })
 
@@ -785,6 +865,7 @@ const results = await page.evaluate(() => window.runChartTests())
 
 results.push(...(await runShowcaseTests(page, origin)))
 results.push(...(await touchToolTests(browser, origin)))
+results.push(await themeTests(browser, origin))
 
 await browser.close()
 server.close()

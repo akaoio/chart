@@ -128,19 +128,130 @@ export const grid = (stage, entries, build) => {
     entries.forEach((entry, index) => build(cells[index], entry))
 }
 
+/**
+ * Đưa màu của theme vào canvas, vì canvas không thừa kế CSS.
+ *
+ * Một `<canvas>` không biết gì về biến CSS: nó chỉ nhận màu bằng chuỗi, lúc vẽ. Nên chỗ này
+ * đọc `--chart-ink` và `--chart-grid` đã được trình duyệt phân giải (kể cả `light-dark()`)
+ * rồi đặt vào prop của những phần tử vẽ bằng mực: hai trục và các tooltip.
+ *
+ * Mặc định của thư viện là `#000000`, trung thành với bản gốc — hợp trên nền trắng, biến mất
+ * trên nền tối. Đây là việc của ứng dụng, không phải của thư viện: thư viện không nên đoán
+ * trang của bạn màu gì.
+ *
+ * Quét cả tài liệu thay vì giữ một danh sách: mỗi trang tự dựng biểu đồ của mình theo cách
+ * riêng, và một danh sách thì sẽ có ngày quên cập nhật.
+ */
+let probe = null
+
+export const applyChartTheme = () => {
+    /**
+     * Hỏi màu qua một phần tử thật, không đọc thẳng biến.
+     *
+     * `getPropertyValue("--chart-ink")` trả về chuỗi nguyên văn — `light-dark(#…, #…)`, chưa
+     * phân giải — và canvas không hiểu chuỗi ấy. Biến CSS chỉ được phân giải khi được dùng
+     * trong một thuộc tính thật, nên `.chart-ink-probe` dùng chúng vào `color` và
+     * `border-color`, và ở đây đọc ra `rgb(…)`.
+     */
+    if (probe === null || !probe.isConnected) {
+        probe = element("span", { class: "chart-ink-probe" })
+        document.body.append(probe)
+    }
+
+    const style = getComputedStyle(probe)
+    const ink = style.color
+    const grid = style.borderTopColor
+
+    for (const axis of document.querySelectorAll("chart-x-axis, chart-y-axis")) {
+        Object.assign(axis, {
+            strokeStyle: ink,
+            tickStrokeStyle: ink,
+            tickLabelFill: ink,
+            gridLinesStrokeStyle: grid,
+        })
+    }
+
+    // `textFill` cho OHLC và moving-average, `valueFill` cho họ single-value. Đặt cả hai cho
+    // mọi tooltip: tên nào phần tử không có thì phép gán rơi vào hư không, vô hại.
+    for (const node of document.querySelectorAll("*")) {
+        if (!node.localName.endsWith("-tooltip")) continue
+        Object.assign(node, { textFill: ink, valueFill: ink })
+    }
+}
+
+/**
+ * Nút đổi sáng/tối.
+ *
+ * Ba trạng thái chứ không phải hai: **theo hệ điều hành** là mặc định, và người ta phải quay
+ * lại được. Nên vòng là hệ → sáng → tối → hệ.
+ *
+ * Chỉ đặt `data-theme` lên `<html>`; toàn bộ bảng màu nằm trong CSS và tự đổi theo
+ * `color-scheme`. Phần JS chỉ còn việc nhắc canvas đọc lại màu.
+ */
+const THEMES = ["system", "light", "dark"]
+const LABELS = { system: "◐ System", light: "☀ Light", dark: "☾ Dark" }
+
+const readTheme = () => {
+    try {
+        const saved = localStorage.getItem("chart-showcase-theme")
+        return THEMES.includes(saved) ? saved : "system"
+    } catch {
+        // Trình duyệt chặn storage (chế độ riêng tư, iframe) — vẫn đổi được, chỉ là không nhớ.
+        return "system"
+    }
+}
+
+const writeTheme = theme => {
+    if (theme === "system") document.documentElement.removeAttribute("data-theme")
+    else document.documentElement.setAttribute("data-theme", theme)
+
+    try {
+        localStorage.setItem("chart-showcase-theme", theme)
+    } catch {
+        /* không nhớ được thì thôi */
+    }
+}
+
+const themeButton = () => {
+    let theme = readTheme()
+    writeTheme(theme)
+
+    const button = element("button", { type: "button", class: "theme", text: LABELS[theme] })
+    button.setAttribute("aria-label", "Switch between light, dark and system theme")
+
+    button.addEventListener("click", () => {
+        theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]
+        writeTheme(theme)
+        button.textContent = LABELS[theme]
+        applyChartTheme()
+    })
+
+    // Đang theo hệ thống mà hệ thống đổi thì biểu đồ cũng phải đổi theo.
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (theme === "system") applyChartTheme()
+    })
+
+    return button
+}
+
 export const page = ({ title, intro }) => {
     document.title = `${title} — chart`
 
     const header = element("header", { class: "site" })
     const heading = element("h1")
     heading.append(element("a", { href: "index.html", text: "chart" }))
-    header.append(
+
+    const masthead = element("div", { class: "masthead" })
+    const names = element("div")
+    names.append(
         heading,
         element("p", {
             class: "tagline",
             text: "Financial charts as plain Web Components. No framework, no build step.",
         }),
     )
+    masthead.append(names, themeButton())
+    header.append(masthead)
 
     const nav = element("nav", { class: "site" })
     for (const [href, label] of PAGES) {
@@ -165,6 +276,9 @@ export const page = ({ title, intro }) => {
                     "browser. It is not a real instrument and not a claim about any market.",
             }),
         )
+
+        // Sau `load` thì mọi demo đã dựng xong biểu đồ của nó, nên quét một lượt là đủ.
+        applyChartTheme()
     })
 }
 
