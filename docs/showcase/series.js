@@ -71,6 +71,7 @@ demo({
     build: stage => {
         const entries = [
             { title: "chart-candlestick-series", tag: "chart-candlestick-series", props: {} },
+            { title: "chart-volume-candlestick-series", tag: "chart-volume-candlestick-series", props: {} },
             { title: "chart-ohlc-series", tag: "chart-ohlc-series", props: {} },
             {
                 title: "chart-line-series",

@@ -196,6 +196,62 @@ if (committed === current) {
     console.error(`✗ docs/reference/elements.md đã cũ — chạy \`npm run docs:reference\``)
 }
 
+/**
+ * Calculator vượt ra ngoài bản gốc không có golden — chúng được so với
+ * số tính TAY theo luật chuẩn, và bộ kiểm này phải biết fail.
+ */
+{
+    const { default: lineBreak } = await import("./src/indicators/calculator/lineBreak.js")
+    const day = index => new Date(2026, 0, index + 1)
+    const bar = (index, close) => ({ date: day(index), open: close, high: close, low: close, close, volume: 10 })
+
+    // Chuỗi tăng 10→13 rồi 12.5, 10.5, 9. Vạch: (9→10)(10→11)(11→12)(12→13);
+    // 12.5 không vượt gì — không vạch; 10.5 dưới đáy HAI vạch cuối (11) nhưng
+    // trên đáy BA vạch cuối (10) — count 3 không đảo, count khác là lệch ngay;
+    // 9 < đáy 3 vạch cuối → vạch đảo từ chân vạch cuối (12) xuống 9.
+    const seed = { date: day(0), open: 9, high: 10, low: 9, close: 10, volume: 10 }
+    const lines = lineBreak().count(3)([seed, bar(1, 11), bar(2, 12), bar(3, 13), bar(4, 12.5), bar(5, 10.5), bar(6, 9)])
+    const expected = [
+        [9, 10],
+        [10, 11],
+        [11, 12],
+        [12, 13],
+        [12, 9],
+    ]
+    const got = lines.map(line => [line.open, line.close])
+    if (JSON.stringify(got) === JSON.stringify(expected) && lines[4].volume === 30) {
+        checked += expected.length
+        console.log(`✓ lineBreak: ${expected.length} vạch khớp số tính tay`)
+    } else {
+        failed++
+        console.error(`✗ lineBreak lệch: ${JSON.stringify(got)} (volume đảo: ${lines[4]?.volume})`)
+    }
+}
+
+{
+    const { default: rangeBars } = await import("./src/indicators/calculator/rangeBars.js")
+    const day = index => new Date(2026, 0, index + 1)
+    const tick = (index, close, volume = 10) => ({ date: day(index), close, volume })
+
+    // range 2, đi từ 100: 100→105 sinh (100→102)(102→104), dư 1; 105→99 đi xuống
+    // từ gốc 104: sinh (104→102)(102→100), dư 1. Volume 10 chia đôi mỗi cây 2 thanh.
+    const bars = rangeBars().range(2)([tick(0, 100), tick(1, 105), tick(2, 99)])
+    const expected = [
+        [100, 102],
+        [102, 104],
+        [104, 102],
+        [102, 100],
+    ]
+    const got = bars.map(each => [each.open, each.close])
+    if (JSON.stringify(got) === JSON.stringify(expected) && bars[0].volume === 5 && bars[2].volume === 5) {
+        checked += expected.length
+        console.log(`✓ rangeBars: ${expected.length} thanh khớp số tính tay`)
+    } else {
+        failed++
+        console.error(`✗ rangeBars lệch: ${JSON.stringify(got)} (volume: ${bars.map(each => each.volume)})`)
+    }
+}
+
 /** Và mọi cái tên tài liệu nhắc tới phải có thật — xem tools/docs/check-docs.mjs. */
 const { checkDocs } = await import("./tools/docs/check-docs.mjs")
 const docProblems = await checkDocs()

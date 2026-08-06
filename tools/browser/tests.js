@@ -1,6 +1,6 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
 import { batched, defineProperties } from "../../src/core/element.js"
-import { CircleMarker } from "../../src/series/index.js"
+import { CircleMarker, getVolumeCandleData } from "../../src/series/index.js"
 import "../../src/coordinates/index.js"
 import "../../src/tooltip/index.js"
 import "../../src/annotations/index.js"
@@ -4120,6 +4120,57 @@ TESTS["notes: note vàng, comment phẳng, signpost có cột, cờ một cú b�
     t.is("glyph là cờ", third.tool.querySelector("chart-interactive-text").text, "⚑")
     cleanup()
 
+    return t.checks
+}
+
+TESTS["volume candles: bề ngang thân nến theo volume — minWidthRatio điều khiển thật"] = async () => {
+    const t = makeChecker()
+
+    const provider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(datum => datum.date)
+    const raw = makeData(120).map((row, index) => ({ ...row, volume: index === 60 ? 50000 : 100 }))
+    const { data, xScale, xAccessor, displayXAccessor } = provider(raw)
+
+    const canvas = document.createElement("chart-canvas")
+    canvas.style.width = "800px"
+    canvas.style.height = "400px"
+    Object.assign(canvas, {
+        data, xScale, xAccessor, displayXAccessor,
+        ratio: 1, width: 800, height: 400,
+        margin: { top: 10, right: 60, bottom: 30, left: 0 },
+        seriesName: "volume-candles",
+    })
+    const pane = document.createElement("chart-pane")
+    Object.assign(pane, { chartId: 0, yExtents: datum => [datum.high, datum.low] })
+    const series = document.createElement("chart-volume-candlestick-series")
+    pane.append(series)
+    canvas.append(pane)
+    stage.append(canvas)
+    await settle(3)
+
+    const state = canvas.getState()
+    const chartConfig = (state.chartConfigs ?? [state.chartConfig]).flat()[0]
+    const moreProps = { xAccessor: state.xAccessor, xScale: state.xScale, chartConfig, plotData: state.plotData }
+
+    const candles = getVolumeCandleData(moreProps, {})
+    const widths = candles.map(candle => candle.width)
+    const widest = Math.max(...widths)
+    const slimmest = Math.min(...widths)
+    t.gt("nến volume lớn rộng hơn hẳn nến volume nhỏ", widest, slimmest * 3)
+
+    // minWidthRatio 1: volume không còn đường nào đi vào bề ngang — mọi nến bằng nhau.
+    // Bỏ phép nhân theo volume trong getVolumeCandleData là dòng trên đỏ.
+    const flat = getVolumeCandleData(moreProps, { minWidthRatio: 1 })
+    const flatWidths = new Set(flat.map(candle => candle.width.toFixed(4)))
+    t.is("minWidthRatio 1 là mọi nến cùng bề ngang", flatWidths.size, 1)
+
+    // Và có pixel thật trên lớp axes — series vẽ thật chứ không chỉ tính
+    const context = canvas.getCanvasContexts().axes
+    const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+    let painted = 0
+    for (let at = 3; at < pixels.length; at += 4) if (pixels[at] > 0) painted++
+    t.gt("vẽ ra pixel thật", painted, 1000)
+
+    cleanup()
     return t.checks
 }
 

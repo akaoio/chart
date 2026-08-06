@@ -86,3 +86,12 @@ Vì bản gốc không chạy nên **không có gì để so**: `elderImpulse` k
 ## Lệch có chủ ý so với bản gốc
 
 Bản gốc chép lại `slidingWindow`, `zipper`, `functor`, `path`, `identity` sang `indicators/src/utils/` — bản sao gần như y hệt của `core/src/utils/`. Ở đây chúng dùng chung, chỉ `rebind`, `merge` và `mappedSlidingWindow` là riêng của nhóm này.
+
+## Vượt ra ngoài bản gốc (chart#5)
+
+Hai calculator cho các kiểu chart phi-thời-gian của TradingView, không có trong bản gốc nên không có golden — chúng được so với số tính TAY theo luật chuẩn ngay trong `test.js`:
+
+- `lineBreak` (three-line break, chỉnh bằng `.count()`): tiếp diễn khi giá đóng vượt mép vạch cuối, đảo chiều phải vượt cực trị của `count` vạch gần nhất và vạch đảo bắt đầu từ chân vạch cuối. Bộ số kiểm có một cây nến nằm giữa đáy-hai-vạch và đáy-ba-vạch nên đổi `count` là bài đỏ ngay.
+- `rangeBars` (`.range()` bắt buộc): mỗi thanh là một quãng giá cố định, một cây nến đi xa sinh nhiều thanh, volume chia đều cho số thanh. TradingView dựng từ tick trong phiên; ở đây suy từ giá đóng theo nến — tập con trung thực vì dữ liệu không có tick.
+
+Cả hai trả về hàng dạng OHLC nên vẽ thẳng bằng `chart-candlestick-series`.

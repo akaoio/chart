@@ -127,3 +127,7 @@ Hai cái đầu là prop chết trong chính bản gốc: một người đọc 
 Không phải vì bộ kiểm yếu. `offset` chỉ đi vào `groupOffset` và `offset`, và cả hai đều qua `Math.round`; chênh lệch do nhánh này tạo ra luôn nhỏ hơn 0.5 nên không bao giờ sống sót qua phép làm tròn. Đây là một nhánh chết trong chính bản gốc.
 
 Giữ nguyên vì port trung thành là mặc định, nhưng ghi ra đây để không ai tưởng nó đã được chứng minh.
+
+## Vượt ra ngoài bản gốc (chart#5)
+
+`chart-volume-candlestick-series` — nến có bề ngang theo volume (TradingView "Volume candles"): mỗi thân co giãn theo volume của chính nó so với volume lớn nhất đang hiện trên khung; `minWidthRatio` giữ nến mỏng nhất còn nhìn thấy, đặt nó bằng 1 là mọi nến bằng nhau. Không có golden (không có gì để so) — được chứng minh bằng khẳng định trình duyệt trên hình học `getVolumeCandleData`.

@@ -12,6 +12,7 @@ export * from "./GroupedBarSeries.js"
 export * from "./OverlayBarSeries.js"
 
 export * from "./CandlestickSeries.js"
+export * from "./VolumeCandlestickSeries.js"
 export * from "./OHLCSeries.js"
 export * from "./ScatterSeries.js"
 
