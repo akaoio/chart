@@ -101,7 +101,10 @@ const collect = async () => {
             entries.push({
                 tag,
                 className,
-                file: relative(root, file),
+                // Xuôi dấu gạch, vì GROUPS so tiền tố bằng "src/…": trên Windows
+                // `relative()` trả về gạch ngược, mọi phần tử rơi hết vào nhóm
+                // "Other" — nhóm không được in — và file sinh ra chỉ còn cái đầu đề.
+                file: relative(root, file).replaceAll("\\", "/"),
                 // Nhiều chú thích mở đầu bằng "Tên: `<thẻ>`" — cái tên thẻ đã có ở
                 // tiêu đề ngay trên, không cần nhắc lại.
                 // Nhiều series không có chú thích ngay trên lớp — lớp chỉ là cái vỏ, còn
