@@ -15,7 +15,7 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Thirty-one tools, one at a time",
+    title: "Thirty-seven tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
         "the pitchfork and the fib extension take three, the pattern takes five, the path finishes on a double-click, and text, alert, H-line, position and price label take one. Click a " +
@@ -58,6 +58,12 @@ demo({
             { label: "Gann square", tag: "chart-gann-box", list: "gannBoxes", props: { variant: "square" } },
             { label: "Time cycles", tag: "chart-time-cycles", list: "waves", props: { mode: "cycles" } },
             { label: "Sine line", tag: "chart-time-cycles", list: "waves", props: { mode: "sine" } },
+            { label: "Trend angle", tag: "chart-trend-angle", list: "angles" },
+            { label: "Gann sq fixed", tag: "chart-gann-box", list: "gannBoxes", props: { variant: "squareFixed" } },
+            { label: "Note", tag: "chart-note", list: "notes", props: { kind: "note" } },
+            { label: "Comment", tag: "chart-note", list: "notes", props: { kind: "comment" } },
+            { label: "Signpost", tag: "chart-signpost", list: "signposts" },
+            { label: "Flag", tag: "chart-flag-mark", list: "flags" },
         ]
 
         let active = null

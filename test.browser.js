@@ -472,6 +472,12 @@ const TOUCH_TOOLS = [
     { label: "Gann square", tag: "chart-gann-box", nth: 1, list: "gannBoxes", taps: 2, grab: [0.3, 0.475] },
     { label: "Time cycles", tag: "chart-time-cycles", nth: 0, list: "waves", taps: 2, grab: [0.3, 0.4] },
     { label: "Sine line", tag: "chart-time-cycles", nth: 1, list: "waves", taps: 2, grab: [0.3, 0.4] },
+    { label: "Trend angle", tag: "chart-trend-angle", list: "angles", taps: 2, grab: [0.45, 0.475] },
+    { label: "Gann sq fixed", tag: "chart-gann-box", nth: 2, list: "gannBoxes", taps: 2, grab: [0.3, 0.475] },
+    { label: "Note", tag: "chart-note", nth: 0, list: "notes", taps: 1, grab: [0.3, 0.4] },
+    { label: "Comment", tag: "chart-note", nth: 1, list: "notes", taps: 1, grab: [0.3, 0.4] },
+    { label: "Signpost", tag: "chart-signpost", list: "signposts", taps: 1, grab: [0.3, 0.4] },
+    { label: "Flag", tag: "chart-flag-mark", list: "flags", taps: 1, grab: [0.3, 0.4] },
 ]
 
 const touchToolTests = async (browser, origin) => {
