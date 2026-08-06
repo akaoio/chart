@@ -1,5 +1,6 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
 import { batched, defineProperties } from "../../src/core/element.js"
+import { anchoredBoxGeometry } from "../../src/interactive/components/InteractiveAnchoredBox.js"
 import { CircleMarker, getVolumeCandleData } from "../../src/series/index.js"
 import "../../src/coordinates/index.js"
 import "../../src/tooltip/index.js"
@@ -4217,6 +4218,132 @@ TESTS["freehand: đè-rê-nhả là một nét — highlighter rộng mờ, bề
     t.gt("highlighter rộng hơn là nhiều pixel hơn", mouseLayerPixels(canvas), before)
 
     cleanup()
+    return t.checks
+}
+
+TESTS["anchored box: neo màn hình theo tỉ lệ pane — zoom đứng yên, bảng đo cột theo ô"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-anchored-text", {
+        enabled: true,
+        kind: "text",
+        text: "ghi chú nằm im",
+        snap: false,
+        anchoredTexts: [],
+        onComplete: (event, anchoredTexts) => {
+            completed.push(anchoredTexts)
+            tool.anchoredTexts = anchoredTexts
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 200)
+    t.is("một cú bấm là một hộp", completed.length, 1)
+    const placed = completed[0][0]
+    t.ok("vị trí là TỈ LỆ pane, không phải toạ độ dữ liệu", placed.at[0] > 0 && placed.at[0] < 1 && placed.at[1] > 0 && placed.at[1] < 1)
+    await settle(3)
+    const before = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật", before, 100)
+
+    // Zoom domain đổi hẳn — hộp neo màn hình KHÔNG được nhúc nhích một pixel
+    canvas.xAxisZoom([20, 60])
+    await settle(3)
+    t.is("zoom xong hộp đứng nguyên chỗ cũ", mouseLayerPixels(canvas), before)
+
+    // Bảng: cột rộng theo ô dài nhất của cột — đo thẳng bằng hình học leaf
+    const box = anchoredBoxGeometry(
+        { at: [0.1, 0.1], cells: [["a", "dài hơn hẳn"], ["b", "c"]] },
+        { chartConfig: { width: 800, height: 400 } },
+    )
+    t.gt("cột hai rộng hơn cột một", box.widths[1], box.widths[0])
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["price note: neo ghim giá, nhãn đọc giá ấy — kéo neo là chữ đổi theo"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-price-note", {
+        enabled: true,
+        text: "kháng cự",
+        snap: false,
+        priceNotes: [],
+        onComplete: (event, priceNotes) => {
+            completed.push(priceNotes)
+            tool.priceNotes = priceNotes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 220, 240)
+    await hoverAt(canvas, 340, 160)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 340, 160)
+
+    t.is("hai cú bấm là một price note", completed.length, 1)
+    const note = completed[0][0]
+    await settle(3)
+    const label = tool.querySelector("chart-interactive-text")
+    t.is("nhãn đọc đúng giá neo kèm lời ghi", label.text, `${note.at[1].toFixed(2)} · kháng cự`)
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 100)
+
+    // Kéo neo giá xuống: giá đổi, chữ đổi theo — nhãn sống theo dữ liệu
+    await dragOn(canvas, [220, 240], [220, 300])
+    const moved = completed[completed.length - 1][0]
+    t.not("giá neo đã đổi", moved.at[1].toFixed(2), note.at[1].toFixed(2))
+    await settle(3)
+    t.is("và nhãn đọc giá mới", tool.querySelector("chart-interactive-text").text, `${moved.at[1].toFixed(2)} · kháng cự`)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["pin và image: ghim một bấm, ảnh hai góc căng theo dữ liệu"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-pin", {
+        enabled: true,
+        snap: false,
+        pins: [],
+        onComplete: (event, pins) => {
+            completed.push(pins)
+            tool.pins = pins
+        },
+    })
+    await settle()
+    await clickAt(canvas, 260, 220)
+    t.is("một cú bấm là một ghim", completed.length, 1)
+    await settle(3)
+    t.is("glyph là ghim", tool.querySelector("chart-interactive-text").text, "📍")
+    cleanup()
+
+    // Ảnh: 1×1 pixel đỏ căng giữa hai neo — vùng đỏ phải phủ khung
+    const RED_DOT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+    const second = mountWithTool("chart-image-tool", {
+        enabled: true,
+        src: RED_DOT,
+        snap: false,
+        images: [],
+        onComplete: (event, images) => {
+            completed.push(images)
+            second.tool.images = images
+        },
+    })
+    await settle()
+    await clickAt(second.canvas, 200, 180)
+    await hoverAt(second.canvas, 360, 300)
+    await pastDoubleClickWindow()
+    await clickAt(second.canvas, 360, 300)
+    t.is("hai cú bấm là một ảnh", completed[completed.length - 1].length, 1)
+    t.is("ảnh mang src lúc đặt", completed[completed.length - 1][0].src, RED_DOT)
+    await settle(5)
+    t.gt("ảnh căng ra phủ pixel thật", mouseLayerPixels(second.canvas), 5000)
+    cleanup()
+
     return t.checks
 }
 

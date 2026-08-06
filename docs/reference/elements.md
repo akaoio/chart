@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **134** of them.
+Every custom element the library defines: **144** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1009,6 +1009,30 @@ Large text behind the chart — a watermark, usually the instrument name.
 
 ## Interactive
 
+### `<chart-anchored-text>`
+
+Anchored texts.
+
+`AnchoredText` — [`src/interactive/AnchoredText.js`](../../src/interactive/AnchoredText.js)
+
+| property | default |
+|---|---|
+| `anchoredTexts` | `[]` |
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `kind` | `"text"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `text` | — |
+
 ### `<chart-arrow>`
 
 Arrows.
@@ -1241,6 +1265,25 @@ Decides which drawn object a click belongs to, across every tool at once.
 | `getInteractiveNodes` | — |
 | `onDoubleClick` | — |
 | `onSelect` | — |
+
+### `<chart-each-anchored-box>`
+
+One screen-anchored box: kéo là dời theo TỈ LỆ pane — thứ duy nhất một vật neo màn hình cần nhớ.
+
+`EachAnchoredBox` — [`src/interactive/wrapper/EachAnchoredBox.js`](../../src/interactive/wrapper/EachAnchoredBox.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `cells` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `lines` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
 
 ### `<chart-each-angle-line>`
 
@@ -1500,6 +1543,26 @@ One Gann fan, adjustable by the two points that define its 1/1 ray.
 | `selected` | `false` |
 | `startXY` | — |
 
+### `<chart-each-image>`
+
+One placed image: two corner handles resize it, dragging the body moves it.
+
+`EachImage` — [`src/interactive/wrapper/EachImage.js`](../../src/interactive/wrapper/EachImage.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `opacity` | `1` |
+| `selected` | `false` |
+| `src` | — |
+| `start` | — |
+
 ### `<chart-each-info-line>`
 
 One info line: a bounded trend segment whose midpoint label reads the measurement out — price change, percent, bar count.
@@ -1720,6 +1783,26 @@ One price label: a box whose text IS its own y value.
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
+| `yDisplayFormat` | ƒ |
+
+### `<chart-each-price-note>`
+
+One price note: neo đầu ghim GIÁ, neo thứ hai đặt nhãn — đường kẻ nối hai neo, nhãn đọc giá của neo đầu (kèm lời ghi nếu có), suy từ dữ liệu mỗi lần vẽ nên kéo neo giá là chữ đổi theo.
+
+`EachPriceNote` — [`src/interactive/wrapper/EachPriceNote.js`](../../src/interactive/wrapper/EachPriceNote.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `label` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `text` | — |
 | `yDisplayFormat` | ƒ |
 
 ### `<chart-each-shape>`
@@ -2088,6 +2171,31 @@ The hint that follows the cursor while a drawn object can be grabbed.
 | `show` | `false` |
 | `text` | `""` |
 
+### `<chart-image-tool>`
+
+Images.
+
+`ImageTool` — [`src/interactive/ImageTool.js`](../../src/interactive/ImageTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `images` | `[]` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `opacity` | `1` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `src` | — |
+
 ### `<chart-info-line>`
 
 Info line.
@@ -2111,6 +2219,33 @@ Info line.
 | `snap` | `false` |
 | `snapTo` | — |
 | `yDisplayFormat` | ƒ |
+
+### `<chart-interactive-anchored-box>`
+
+One screen-anchored box: text or a table that stays put while the chart scrolls under it.
+
+`InteractiveAnchoredBox` — [`src/interactive/components/InteractiveAnchoredBox.js`](../../src/interactive/components/InteractiveAnchoredBox.js)
+
+| property | default |
+|---|---|
+| `at` | — |
+| `bgFill` | `"#FFFFFF"` |
+| `bgStroke` | `"#000000"` |
+| `cells` | — |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `12` |
+| `interactiveCursorClass` | — |
+| `lines` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `padding` | `8` |
+| `selected` | `false` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
 
 ### `<chart-interactive-angle-line>`
 
@@ -2258,6 +2393,31 @@ One Gann box or square: edges, level divisions on both axes, and for the square 
 | `strokeWidth` | `1` |
 | `tolerance` | `7` |
 | `variant` | `"box"` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
+
+### `<chart-interactive-image>`
+
+One image the user placed: two data anchors pin opposite corners, so the picture stretches with the chart like every other drawing — TradingView's image tool behaves the same.
+
+`InteractiveImage` — [`src/interactive/components/InteractiveImage.js`](../../src/interactive/components/InteractiveImage.js)
+
+| property | default |
+|---|---|
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `opacity` | `1` |
+| `selected` | `false` |
+| `src` | — |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
 | `x1Value` | — |
 | `x2Value` | — |
 | `y1Value` | — |
@@ -2731,6 +2891,28 @@ Pattern tools.
 | `snapTo` | — |
 | `variant` | `"xabcd"` |
 
+### `<chart-pin>`
+
+Pins.
+
+`Pin` — [`src/interactive/Pin.js`](../../src/interactive/Pin.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `pins` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+
 ### `<chart-pitchfork>`
 
 Pitchforks.
@@ -2805,6 +2987,31 @@ Price labels.
 | `snapTo` | — |
 | `yDisplayFormat` | ƒ |
 
+### `<chart-price-note>`
+
+Price notes.
+
+`PriceNote` — [`src/interactive/PriceNote.js`](../../src/interactive/PriceNote.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `priceNotes` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `text` | — |
+| `yDisplayFormat` | ƒ |
+
 ### `<chart-shape-tool>`
 
 Rectangles and ellipses.
@@ -2871,6 +3078,29 @@ Regression channel over a chosen range.
 | `onComplete` | — |
 | `onStart` | — |
 | `snapTo` | ƒ |
+
+### `<chart-table>`
+
+Tables.
+
+`TableTool` — [`src/interactive/TableTool.js`](../../src/interactive/TableTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `cells` | `[["",""],["",""]]` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `tables` | `[]` |
 
 ### `<chart-time-cycles>`
 

@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The thirty tools
+## The thirty-five tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -62,8 +62,13 @@ the drawings are back; drop the list and they are gone.
 | `<chart-signpost>` | `signposts` | 1 — a pole with a text box riding the top |
 | `<chart-flag-mark>` | `flags` | 1 — a ⚑ at the pointer, same glyph ride as the arrow marks |
 | `<chart-freehand>` | `strokes` | press–drag–release — `mode: brush` draws a thin line, `mode: highlighter` a wide translucent one; points are pixel-decimated |
+| `<chart-anchored-text>` | `anchoredTexts` | 1 — a SCREEN-anchored text box: scrolling and zooming leave it in place; position is a pane fraction so resizes keep it put; `kind: note` wears sticky yellow |
+| `<chart-price-note>` | `priceNotes` | 2 — first anchor pins the PRICE, second parks the label; the label reads the anchor's price on every draw |
+| `<chart-pin>` | `pins` | 1 — a 📍 at the pointer, same glyph ride as flags and arrow marks |
+| `<chart-table>` | `tables` | 1 — a screen-anchored table; `cells` is rows×columns of text, editing is application UI |
+| `<chart-image-tool>` | `images` | 2 — opposite corners; `src` is a dataURL from the app, no src draws a labelled placeholder |
 
-The last twenty-three have no counterpart in the original library — they exist because
+The last twenty-eight have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

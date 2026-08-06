@@ -478,6 +478,12 @@ const TOUCH_TOOLS = [
     { label: "Comment", tag: "chart-note", nth: 1, list: "notes", taps: 1, grab: [0.3, 0.4] },
     { label: "Signpost", tag: "chart-signpost", list: "signposts", taps: 1, grab: [0.3, 0.4] },
     { label: "Flag", tag: "chart-flag-mark", list: "flags", taps: 1, grab: [0.3, 0.4] },
+    { label: "Anchored text", tag: "chart-anchored-text", nth: 0, list: "anchoredTexts", taps: 1, grab: [0.33, 0.43] },
+    { label: "Anchored note", tag: "chart-anchored-text", nth: 1, list: "anchoredTexts", taps: 1, grab: [0.33, 0.43] },
+    { label: "Price note", tag: "chart-price-note", list: "priceNotes", taps: 2, grab: [0.45, 0.475] },
+    { label: "Pin", tag: "chart-pin", list: "pins", taps: 1, grab: [0.3, 0.4] },
+    { label: "Table", tag: "chart-table", list: "tables", taps: 1, grab: [0.315, 0.43] },
+    { label: "Image", tag: "chart-image-tool", list: "images", taps: 2, grab: [0.45, 0.475] },
 ]
 
 const touchToolTests = async (browser, origin) => {

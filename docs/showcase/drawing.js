@@ -15,7 +15,7 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Thirty-nine tools, one at a time",
+    title: "Forty-five tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
         "the pitchfork and the fib extension take three, the pattern takes five, the path finishes on a double-click, and text, alert, H-line, position and price label take one. Click a " +
@@ -66,6 +66,12 @@ demo({
             { label: "Flag", tag: "chart-flag-mark", list: "flags" },
             { label: "Brush", tag: "chart-freehand", list: "strokes", props: { mode: "brush" } },
             { label: "Highlighter", tag: "chart-freehand", list: "strokes", props: { mode: "highlighter" } },
+            { label: "Anchored text", tag: "chart-anchored-text", list: "anchoredTexts", props: { kind: "text" } },
+            { label: "Anchored note", tag: "chart-anchored-text", list: "anchoredTexts", props: { kind: "note" } },
+            { label: "Price note", tag: "chart-price-note", list: "priceNotes" },
+            { label: "Pin", tag: "chart-pin", list: "pins" },
+            { label: "Table", tag: "chart-table", list: "tables" },
+            { label: "Image", tag: "chart-image-tool", list: "images" },
         ]
 
         let active = null
