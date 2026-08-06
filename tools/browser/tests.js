@@ -3877,6 +3877,98 @@ TESTS["fib wedge và spiral: nêm ba bấm, xoắn hai bấm"] = async () => {
     return t.checks
 }
 
+TESTS["gann box: hộp chia mức hai trục — square thêm chéo và quạt, mức điều khiển thật"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-gann-box", {
+        enabled: true,
+        variant: "box",
+        snap: false,
+        gannBoxes: [],
+        onComplete: (event, gannBoxes) => {
+            completed.push(gannBoxes)
+            tool.gannBoxes = gannBoxes
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 180)
+    await hoverAt(canvas, 360, 280)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 360, 280)
+
+    t.is("hai cú bấm là một hộp", completed.length, 1)
+    t.is("variant được ghi vào hình", completed[0][0].variant, "box")
+    await settle(3)
+    const box = mouseLayerPixels(canvas)
+    t.gt("vẽ ra pixel thật (khung + vạch mức)", box, 300)
+
+    // Square trên cùng hai neo: thêm chéo + quạt góc — phải nhiều pixel hơn hộp trần.
+    // Bỏ nhánh square trong gannBoxGeometry là dòng này đỏ.
+    tool.gannBoxes = tool.gannBoxes.map(each => ({ ...each, variant: "square" }))
+    await settle(3)
+    const square = mouseLayerPixels(canvas)
+    t.gt("square nhiều nét hơn box", square, box)
+
+    // Rút bảng mức về rỗng: chỉ còn khung + chéo + quạt mức rỗng — ít pixel hơn
+    tool.levels = []
+    await settle(3)
+    t.gt("không mức là ít pixel hơn", square, mouseLayerPixels(canvas))
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["time cycles: bán nguyệt lặp theo chu kỳ, sine trải hết pane — mode của từng sóng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-time-cycles", {
+        enabled: true,
+        mode: "cycles",
+        snap: false,
+        waves: [],
+        onComplete: (event, waves) => {
+            completed.push(waves)
+            tool.waves = waves
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 220)
+    await hoverAt(canvas, 280, 240)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 280, 240)
+
+    t.is("hai cú bấm là một sóng", completed.length, 1)
+    t.is("sóng mang mode lúc đặt", completed[0][0].mode, "cycles")
+    await settle(3)
+    t.gt("vẽ ra pixel thật (nhiều bán nguyệt)", mouseLayerPixels(canvas), 200)
+
+    // Kéo tay cầm thứ hai ra xa: chu kỳ giãn — sóng báo lại điểm mới
+    await hoverAt(canvas, 240, 230)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 240, 230)
+    await dragOn(canvas, [280, 240], [340, 240])
+    const stretched = completed[completed.length - 1][0]
+    t.not("chu kỳ đã đổi theo tay kéo", stretched.end[0].toFixed(1), completed[0][0].end[0].toFixed(1))
+
+    // Sine: đổi mode công cụ rồi đặt sóng thứ hai — sóng cũ giữ mode cũ
+    tool.mode = "sine"
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 420, 180)
+    await hoverAt(canvas, 470, 260)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 470, 260)
+    const both = completed[completed.length - 1]
+    t.is("hai sóng trên hình", both.length, 2)
+    t.ok("sóng cũ vẫn là cycles, sóng mới là sine", both[0].mode === "cycles" && both[1].mode === "sine")
+
+    cleanup()
+    return t.checks
+}
+
 window.runChartTests = async () => {
     const results = []
 

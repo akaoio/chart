@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **115** of them.
+Every custom element the library defines: **121** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1403,6 +1403,26 @@ One drawn Fibonacci construction: the shape body and one handle per anchor.
 | `selected` | `false` |
 | `variant` | `"arcs"` |
 
+### `<chart-each-gann-box>`
+
+One Gann box: the gridded body, a handle at each anchor corner.
+
+`EachGannBox` — [`src/interactive/wrapper/EachGannBox.js`](../../src/interactive/wrapper/EachGannBox.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `levels` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+| `variant` | `"box"` |
+
 ### `<chart-each-gann-fan>`
 
 One Gann fan, adjustable by the two points that define its 1/1 ray.
@@ -1705,6 +1725,25 @@ One trendline, and the machinery that lets it be adjusted.
 | `y1Value` | — |
 | `y2Value` | — |
 
+### `<chart-each-wave>`
+
+One time wave and its two anchors: drag a handle to retime it, drag the body to move the whole thing.
+
+`EachWave` — [`src/interactive/wrapper/EachWave.js`](../../src/interactive/wrapper/EachWave.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `mode` | `"cycles"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+
 ### `<chart-equidistant-channel>`
 
 A parallel price channel drawn in **three** clicks.
@@ -1817,6 +1856,31 @@ Fibonacci retracement levels.
 | `onStart` | — |
 | `retracements` | `[]` |
 | `type` | `"RAY"` |
+
+### `<chart-gann-box>`
+
+Gann boxes.
+
+`GannBoxTool` — [`src/interactive/GannBoxTool.js`](../../src/interactive/GannBoxTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `gannBoxes` | `[]` |
+| `hoverText` | `{…}` |
+| `levels` | — |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"box"` |
 
 ### `<chart-gann-fan>`
 
@@ -1977,6 +2041,34 @@ One Fibonacci construction: fan, arcs, circles, spiral or wedge over the same an
 | `strokeWidth` | `1` |
 | `tolerance` | `7` |
 | `variant` | `"arcs"` |
+
+### `<chart-interactive-gann-box>`
+
+One Gann box or square: edges, level divisions on both axes, and for the square the diagonals and corner fans.
+
+`InteractiveGannBox` — [`src/interactive/components/InteractiveGannBox.js`](../../src/interactive/components/InteractiveGannBox.js)
+
+| property | default |
+|---|---|
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `11` |
+| `interactiveCursorClass` | — |
+| `levels` | `[0.25,0.382,0.5,0.618,0.75]` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
+| `variant` | `"box"` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
 
 ### `<chart-interactive-label>`
 
@@ -2208,6 +2300,30 @@ Labels on the chart.
 | `onDragComplete` | — |
 | `onSelect` | — |
 | `textList` | `[]` |
+
+### `<chart-interactive-wave>`
+
+One time wave: repeating semicircles on a baseline, or a sine line through peak and trough.
+
+`InteractiveWave` — [`src/interactive/components/InteractiveWave.js`](../../src/interactive/components/InteractiveWave.js)
+
+| property | default |
+|---|---|
+| `interactiveCursorClass` | — |
+| `mode` | `"cycles"` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
+| `x1Value` | — |
+| `x2Value` | — |
+| `y1Value` | — |
+| `y2Value` | — |
 
 ### `<chart-interactive-y-coordinate>`
 
@@ -2489,6 +2605,30 @@ Regression channel over a chosen range.
 | `onComplete` | — |
 | `onStart` | — |
 | `snapTo` | ƒ |
+
+### `<chart-time-cycles>`
+
+Time cycles.
+
+`TimeCycles` — [`src/interactive/TimeCycles.js`](../../src/interactive/TimeCycles.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `mode` | `"cycles"` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `waves` | `[]` |
 
 ### `<chart-trend-line>`
 
