@@ -15,7 +15,7 @@ const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
 demo({
-    title: "Twenty-one tools, one at a time",
+    title: "Twenty-seven tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
         "the pitchfork and the fib extension take three, the pattern takes five, the path finishes on a double-click, and text, alert, H-line, position and price label take one. Click a " +
@@ -48,6 +48,12 @@ demo({
             { label: "Arrow", tag: "chart-arrow", list: "arrows" },
             { label: "Arrow mark", tag: "chart-arrow-mark", list: "marks" },
             { label: "Info line", tag: "chart-info-line", list: "infoLines" },
+            { label: "Fib zone", tag: "chart-fib-time-zone", list: "zones" },
+            { label: "Fib fan", tag: "chart-fib-shape", list: "fibShapes", props: { variant: "fan" } },
+            { label: "Fib arcs", tag: "chart-fib-shape", list: "fibShapes", props: { variant: "arcs" } },
+            { label: "Fib circles", tag: "chart-fib-shape", list: "fibShapes", props: { variant: "circles" } },
+            { label: "Fib spiral", tag: "chart-fib-shape", list: "fibShapes", props: { variant: "spiral" } },
+            { label: "Fib wedge", tag: "chart-fib-shape", list: "fibShapes", props: { variant: "wedge" } },
         ]
 
         let active = null
@@ -64,6 +70,7 @@ demo({
             tool.node = node
             node[tool.list] = []
             node.enabled = false
+            if (tool.props) Object.assign(node, tool.props)
 
             // Every tool reports a finished object the same way: here is the new list.
             node.onComplete = (event, list) => {
@@ -128,17 +135,19 @@ demo({
             // vì pane mặc định có id là 0 nên không khớp: mọi cú bấm sau khi đã vẽ được một
             // đối tượng đều nổ, và cú nổ cắt ngang việc phát sự kiện cho những công cụ đăng
             // ký sau — bấm gì cũng không ăn. Phần tử tự biết pane của mình, nên hỏi nó.
+            // Khoá theo label chứ không theo tag: năm variant fib-shape là năm node
+            // cùng tag — khoá trùng thì chỉ node cuối còn được hỏi khi chọn.
             getInteractiveNodes: () =>
                 Object.fromEntries(
-                    tools.map(tool => [tool.tag, { type: tool.tag, chartId: tool.node.chartId, node: tool.node }]),
+                    tools.map(tool => [tool.label, { type: tool.label, chartId: tool.node.chartId, node: tool.node }]),
                 ),
-            drawingObjectMap: Object.fromEntries(tools.map(tool => [tool.tag, tool.list])),
+            drawingObjectMap: Object.fromEntries(tools.map(tool => [tool.label, tool.list])),
             // `onSelect` nhận một MẢNG, theo thứ tự của `getInteractiveNodes` — không
             // phải một object cùng khoá. Đó là `mapObject` của bản gốc, vốn chép từ
             // lodash và trả về mảng.
             onSelect: (event, interactives) => {
                 for (const found of interactives) {
-                    const tool = tools.find(each => each.tag === found.type)
+                    const tool = tools.find(each => each.label === found.type)
                     if (tool === undefined) continue
 
                     tool.node[tool.list] = tool.node[tool.list].map((each, index) => ({

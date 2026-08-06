@@ -4,16 +4,19 @@ import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
 import { getNewXY } from "./EachTrendLine.js"
 
-export const eachCyclicLinesDefaults = {
+export const eachFibShapeDefaults = {
     index: undefined,
     interactive: true,
     selected: false,
-    start: undefined,
-    end: undefined,
-    offsets: undefined,
+    points: undefined,
+    variant: "arcs",
+    levels: undefined,
     appearance: {
         strokeStyle: "#000000",
         strokeWidth: 1,
+        fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+        fontSize: 11,
+        fontFill: "#000000",
         edgeStroke: "#000000",
         edgeFill: "#FFFFFF",
         edgeStrokeWidth: 1,
@@ -25,10 +28,11 @@ export const eachCyclicLinesDefaults = {
 }
 
 /**
- * One set of cyclic lines and its two anchors. Kéo tay cầm nào là đổi đầu
- * ấy — tức đổi chu kỳ; kéo một vạch bất kỳ là dời cả bộ giữ nguyên chu kỳ.
+ * One drawn Fibonacci construction: the shape body and one handle per anchor.
+ * Wedge có ba neo, các variant khác hai — số tay cầm đối chiếu theo số điểm,
+ * vẫn tạo-một-lần-sửa-tại-chỗ cho từng cái.
  */
-export class EachCyclicLines extends ElementBase {
+export class EachFibShape extends ElementBase {
     #props
     #dragStart
     #hover = false
@@ -38,7 +42,7 @@ export class EachCyclicLines extends ElementBase {
 
     constructor() {
         super()
-        this.#props = defineProperties(this, eachCyclicLinesDefaults)
+        this.#props = defineProperties(this, eachFibShapeDefaults)
         this.isHover = isHover.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
     }
@@ -54,35 +58,42 @@ export class EachCyclicLines extends ElementBase {
 
     #build() {
         const props = this.#props
-        const { start, end, offsets, interactive, appearance, hoverText, selected } = props
+        const { points, variant, levels, interactive, appearance, hoverText, selected } = props
         const { enable: hoverTextEnabled, selectedText, text: unselectedText, ...restHoverText } = hoverText
 
-        if (isNotDefined(start) || isNotDefined(end)) return
+        // connectedCallback chạy trước khi tool kịp gán điểm — chưa đủ thì chưa dựng gì
+        if (isNotDefined(points) || points.length < 2) return
 
         const showHandles = selected || this.#hover
 
         if (this.#children === null) {
             this.#children = {
-                body: document.createElement("chart-interactive-cycles"),
-                first: document.createElement("chart-clickable-circle"),
-                second: document.createElement("chart-clickable-circle"),
+                body: document.createElement("chart-interactive-fib-shape"),
+                handles: [],
                 hoverText: document.createElement("chart-hover-text"),
             }
-            this.append(this.#children.body, this.#children.first, this.#children.second, this.#children.hoverText)
-            this.nodes = [this.#children.body, this.#children.first, this.#children.second]
+            this.append(this.#children.body, this.#children.hoverText)
         }
 
-        const { body, first, second, hoverText: hover } = this.#children
+        while (this.#children.handles.length > points.length) this.#children.handles.pop().remove()
+        while (this.#children.handles.length < points.length) {
+            const handle = document.createElement("chart-clickable-circle")
+            this.#children.handles.push(handle)
+            this.append(handle)
+        }
 
-        Object.assign(body, {
+        this.nodes = [this.#children.body, ...this.#children.handles]
+
+        Object.assign(this.#children.body, {
             selected: showHandles,
-            offsets,
-            x1Value: start[0],
-            y1Value: start[1],
-            x2Value: end[0],
-            y2Value: end[1],
+            points,
+            variant,
+            levels,
             strokeStyle: appearance.strokeStyle,
             strokeWidth: showHandles ? appearance.strokeWidth + 1 : appearance.strokeWidth,
+            fontFamily: appearance.fontFamily,
+            fontSize: appearance.fontSize,
+            fontFill: appearance.fontFill,
             interactiveCursorClass: "chart-move-cursor",
             onHover: interactive ? this.#handleHover : undefined,
             onUnHover: interactive ? this.#handleHover : undefined,
@@ -91,8 +102,8 @@ export class EachCyclicLines extends ElementBase {
             onDragComplete: props.onDragComplete,
         })
 
-        const dress = (circle, point, onDrag) =>
-            Object.assign(circle, {
+        points.forEach((point, index) => {
+            Object.assign(this.#children.handles[index], {
                 show: showHandles,
                 cx: point[0],
                 cy: point[1],
@@ -100,16 +111,14 @@ export class EachCyclicLines extends ElementBase {
                 fillStyle: appearance.edgeFill,
                 strokeStyle: appearance.edgeStroke,
                 strokeWidth: appearance.edgeStrokeWidth,
-                interactiveCursorClass: "chart-ew-resize-cursor",
+                interactiveCursorClass: "chart-move-cursor",
                 onDragStart: () => {},
-                onDrag,
+                onDrag: this.#handlePointDrag(index),
                 onDragComplete: props.onDragComplete,
             })
+        })
 
-        dress(first, start, this.#handleFirstDrag)
-        dress(second, end, this.#handleSecondDrag)
-
-        Object.assign(hover, {
+        Object.assign(this.#children.hoverText, {
             ...restHoverText,
             show: hoverTextEnabled && this.#hover,
             text: selected ? selectedText : unselectedText,
@@ -122,20 +131,16 @@ export class EachCyclicLines extends ElementBase {
         this.update()
     }
 
-    #handleFirstDrag = (event, moreProps) => {
-        this.#props.onDrag(event, this.#props.index, { start: getNewXY(moreProps), end: this.#props.end })
-    }
-
-    #handleSecondDrag = (event, moreProps) => {
-        this.#props.onDrag(event, this.#props.index, { start: this.#props.start, end: getNewXY(moreProps) })
+    #handlePointDrag = which => (event, moreProps) => {
+        const points = this.#props.points.map((point, index) => (index === which ? getNewXY(moreProps) : point))
+        this.#props.onDrag(event, this.#props.index, { points })
     }
 
     #handleBodyStart = () => {
-        const { start, end } = this.#props
-        this.#dragStart = { start, end }
+        this.#dragStart = { points: this.#props.points }
     }
 
-    /** Kéo thân: cả hai neo dời cùng quãng — chu kỳ giữ nguyên, cả bộ trượt ngang. */
+    /** Kéo thân: mọi neo dời cùng một quãng pixel — hình giữ nguyên dáng. */
     #handleBodyDrag = (event, moreProps) => {
         const {
             xScale,
@@ -147,12 +152,12 @@ export class EachCyclicLines extends ElementBase {
         } = moreProps
         const dx = startPos[0] - mouseXY[0]
         const dy = startPos[1] - mouseXY[1]
-        const move = ([xValue, yValue]) => [
+        const points = this.#dragStart.points.map(([xValue, yValue]) => [
             getXValue(xScale, xAccessor, [xScale(xValue) - dx, yScale(yValue) - dy], fullData),
             yScale.invert(yScale(yValue) - dy),
-        ]
-        this.#props.onDrag(event, this.#props.index, { start: move(this.#dragStart.start), end: move(this.#dragStart.end) })
+        ])
+        this.#props.onDrag(event, this.#props.index, { points })
     }
 }
 
-define("chart-each-cyclic-lines", EachCyclicLines)
+define("chart-each-fib-shape", EachFibShape)

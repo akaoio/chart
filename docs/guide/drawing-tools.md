@@ -28,7 +28,7 @@ pane.append(tool)
 Nothing is drawn that is not in the list you set. Reload the page with a stored list and
 the drawings are back; drop the list and they are gone.
 
-## The twenty-one tools
+## The twenty-three tools
 
 | element | list property | clicks to draw |
 |---|---|---|
@@ -53,8 +53,10 @@ the drawings are back; drop the list and they are gone.
 | `<chart-arrow>` | `arrows` | 2 — tail then head |
 | `<chart-arrow-mark>` | `marks` | 1 — ▲ or ▼ by `mode`, each mark remembers its own |
 | `<chart-info-line>` | `infoLines` | 2 — a trendline whose midpoint label reads Δprice, %, bars |
+| `<chart-fib-time-zone>` | `zones` | 2 — the unit; vertical lines at Fibonacci multiples 0, 1, 2, 3, 5, 8… |
+| `<chart-fib-shape>` | `fibShapes` | 2 (`variant`: `fan`, `arcs`, `circles`, `spiral`) or 3 (`wedge`) — Fibonacci constructions with pixel-space radii |
 
-The last fourteen have no counterpart in the original library — they exist because
+The last sixteen have no counterpart in the original library — they exist because
 TradingView has them and a terminal needs them. Each placed object remembers its own
 `mode`/`shape`/`side`, so one tool instance can hold a mixed list.
 

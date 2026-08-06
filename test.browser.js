@@ -462,6 +462,12 @@ const TOUCH_TOOLS = [
     { label: "Arrow", tag: "chart-arrow", list: "arrows", taps: 2, grab: [0.45, 0.475] },
     { label: "Arrow mark", tag: "chart-arrow-mark", list: "marks", taps: 1, grab: [0.3, 0.4] },
     { label: "Info line", tag: "chart-info-line", list: "infoLines", taps: 2, grab: [0.45, 0.475] },
+    { label: "Fib zone", tag: "chart-fib-time-zone", list: "zones", taps: 2, grab: [0.3, 0.2] },
+    { label: "Fib fan", tag: "chart-fib-shape", nth: 0, list: "fibShapes", taps: 2, grab: [0.45, 0.475] },
+    { label: "Fib arcs", tag: "chart-fib-shape", nth: 1, list: "fibShapes", taps: 2, grab: [0.3, 0.4] },
+    { label: "Fib circles", tag: "chart-fib-shape", nth: 2, list: "fibShapes", taps: 2, grab: [0.3, 0.4] },
+    { label: "Fib spiral", tag: "chart-fib-shape", nth: 3, list: "fibShapes", taps: 2, grab: [0.6, 0.55] },
+    { label: "Fib wedge", tag: "chart-fib-shape", nth: 4, list: "fibShapes", taps: 3, grab: [0.45, 0.475] },
 ]
 
 const touchToolTests = async (browser, origin) => {
@@ -529,9 +535,10 @@ const touchToolTests = async (browser, origin) => {
         const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3), at(0.45, 0.25), at(0.55, 0.5)]
         for (let index = 0; index < tool.taps; index++) await tap(spots[index])
 
+        // Cùng một tag có thể có nhiều node (năm variant fib-shape) — `nth` chọn đúng node
         const placed = await page.evaluate(
-            ([tag, list]) => JSON.stringify(document.querySelector(tag)[list]),
-            [tool.tag, tool.list],
+            ([tag, list, nth]) => JSON.stringify([...document.querySelectorAll(tag)][nth ?? 0][list]),
+            [tool.tag, tool.list, tool.nth],
         )
 
         checks.push({
@@ -580,8 +587,8 @@ const touchToolTests = async (browser, origin) => {
         await tap(grab)
 
         const selected = await page.evaluate(
-            ([tag, list]) => document.querySelector(tag)[list].some(each => each.selected === true),
-            [tool.tag, tool.list],
+            ([tag, list, nth]) => [...document.querySelectorAll(tag)][nth ?? 0][list].some(each => each.selected === true),
+            [tool.tag, tool.list, tool.nth],
         )
         checks.push({ label: "gõ vào đối tượng thì nó được chọn", pass: selected, expected: "true", actual: selected })
 
@@ -593,11 +600,11 @@ const touchToolTests = async (browser, origin) => {
         await swipe(from, { x: from.x + 70, y: from.y + 50 })
 
         const [moved, domainAfter] = await page.evaluate(
-            ([tag, list]) => [
-                JSON.stringify(document.querySelector(tag)[list]),
+            ([tag, list, nth]) => [
+                JSON.stringify([...document.querySelectorAll(tag)][nth ?? 0][list]),
                 document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
             ],
-            [tool.tag, tool.list],
+            [tool.tag, tool.list, tool.nth],
         )
 
         checks.push({

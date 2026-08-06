@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **111** of them.
+Every custom element the library defines: **115** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1317,6 +1317,7 @@ One set of cyclic lines and its two anchors.
 | `hoverText` | `{"enable":false}` |
 | `index` | — |
 | `interactive` | `true` |
+| `offsets` | — |
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
@@ -1382,6 +1383,25 @@ One Fibonacci retracement: six levels between a high and a low.
 | `y1` | — |
 | `y2` | — |
 | `yDisplayFormat` | ƒ |
+
+### `<chart-each-fib-shape>`
+
+One drawn Fibonacci construction: the shape body and one handle per anchor.
+
+`EachFibShape` — [`src/interactive/wrapper/EachFibShape.js`](../../src/interactive/wrapper/EachFibShape.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `levels` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `selected` | `false` |
+| `variant` | `"arcs"` |
 
 ### `<chart-each-gann-fan>`
 
@@ -1728,6 +1748,55 @@ Trend-based fib extension.
 | `snap` | `false` |
 | `snapTo` | — |
 
+### `<chart-fib-shape>`
+
+Fibonacci shapes.
+
+`FibShape` — [`src/interactive/FibShape.js`](../../src/interactive/FibShape.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `fibShapes` | `[]` |
+| `hoverText` | `{…}` |
+| `levels` | — |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"arcs"` |
+
+### `<chart-fib-time-zone>`
+
+Fib time zones.
+
+`FibTimeZone` — [`src/interactive/FibTimeZone.js`](../../src/interactive/FibTimeZone.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `offsets` | `[0,1,2,3,5,8,13,21,34,55,89,144,233,377]` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `zones` | `[]` |
+
 ### `<chart-fibonacci-retracement>`
 
 Fibonacci retracement levels.
@@ -1869,6 +1938,7 @@ Cyclic lines: two points set the period, vertical lines repeat rightward to the 
 | property | default |
 |---|---|
 | `interactiveCursorClass` | — |
+| `offsets` | — |
 | `onDrag` | — |
 | `onDragComplete` | — |
 | `onDragStart` | — |
@@ -1882,6 +1952,31 @@ Cyclic lines: two points set the period, vertical lines repeat rightward to the 
 | `x2Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
+
+### `<chart-interactive-fib-shape>`
+
+One Fibonacci construction: fan, arcs, circles, spiral or wedge over the same anchors.
+
+`InteractiveFibShape` — [`src/interactive/components/InteractiveFibShape.js`](../../src/interactive/components/InteractiveFibShape.js)
+
+| property | default |
+|---|---|
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontFill` | `"#000000"` |
+| `fontSize` | `11` |
+| `interactiveCursorClass` | — |
+| `levels` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `points` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
+| `variant` | `"arcs"` |
 
 ### `<chart-interactive-label>`
 
