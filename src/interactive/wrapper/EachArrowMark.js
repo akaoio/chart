@@ -49,7 +49,19 @@ export class EachArrowMark extends ElementBase {
 
     #build() {
         const props = this.#props
-        const { at, mode, glyph, fill, interactive, appearance, hoverText, selected } = props
+        const { at, mode, glyph, fill, interactive, hoverText, selected } = props
+
+        /**
+         * Trộn lên mặc định, không đọc thẳng — vì một màu thiếu ở đây KHÔNG nổ.
+         *
+         * `defineProperties` thay cả object `appearance`, nên một công cụ cưỡi wrapper
+         * này mà chỉ truyền vài khoá (Pin, FlagMark) làm những khoá còn lại thành
+         * `undefined`. Gán `undefined` cho `fillStyle` của canvas là giá trị không hợp
+         * lệ — trình duyệt **lặng lẽ bỏ qua** và giữ nguyên màu trước đó, mà màu
+         * trước đó là nền trong suốt. Kết quả: đặt được đối tượng, chọn được,
+         * kéo được — mà không thấy gì trên màn hình. Đúng bệnh của Pin.
+         */
+        const appearance = { ...eachArrowMarkDefaults.appearance, ...props.appearance }
         const { enable: hoverTextEnabled, selectedText, text: unselectedText, ...restHoverText } = hoverText
 
         if (isNotDefined(at)) return
