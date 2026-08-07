@@ -4315,10 +4315,22 @@ TESTS["pin và image: ghim một bấm, ảnh hai góc căng theo dữ liệu"] 
         },
     })
     await settle()
+    const emptyBoard = mouseLayerPixels(canvas)
     await clickAt(canvas, 260, 220)
     t.is("một cú bấm là một ghim", completed.length, 1)
     await settle(3)
     t.is("glyph là ghim", tool.querySelector("chart-interactive-text").text, "📍")
+
+    /**
+     * Và phải THẤY ĐƯỢC — khẳng định này sinh ra từ một lỗi thật.
+     *
+     * Bản đầu của Pin truyền `fill: undefined`, tin rằng emoji tự mang màu. Gán
+     * `undefined` cho `fillStyle` là giá trị không hợp lệ nên canvas bỏ qua, giữ
+     * nguyên màu nền trong suốt vừa đặt — ghim đặt được, chọn được, kéo được,
+     * mà vô hình. Bài cũ chỉ hỏi glyph là gì, không hỏi nó có hiện ra không,
+     * nên xanh suốt — người dùng phát hiện hộ.
+     */
+    t.gt("và ghim hiện ra pixel thật", mouseLayerPixels(canvas), emptyBoard)
     cleanup()
 
     // Ảnh: 1×1 pixel đỏ căng giữa hai neo — vùng đỏ phải phủ khung

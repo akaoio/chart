@@ -22,6 +22,7 @@ export const pinDefaults = {
     },
     pins: [],
     appearance: {
+        pinFill: "#000000",
         bgFill: "rgba(0, 0, 0, 0)",
         fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
         fontSize: 20,
@@ -32,8 +33,9 @@ export const pinDefaults = {
  * Pins: `<chart-pin>`.
  *
  * One click plants a 📍 at the pointer — the same glyph-on-a-text-box ride
- * the arrow marks and flags use. The emoji brings its own colours, so the
- * fill override stays out of the way.
+ * the arrow marks and flags use. `pinFill` follows the black-on-white ink
+ * convention, so an app that swaps those two literals for its theme picks
+ * the pin up with everything else.
  */
 export class Pin extends ElementBase {
     #props
@@ -101,7 +103,7 @@ export class Pin extends ElementBase {
                 selected: each.selected,
                 at: getValueFromOverride(this.#override, index, "at", each.at),
                 glyph: "📍",
-                fill: undefined,
+                fill: appearance.pinFill,
                 appearance: {
                     bgFill: appearance.bgFill,
                     fontFamily: appearance.fontFamily,
