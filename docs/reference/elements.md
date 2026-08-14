@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **146** of them.
+Every custom element the library defines: **149** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1850,6 +1850,25 @@ One price note: neo đầu ghim GIÁ, neo thứ hai đặt nhãn — đường k
 | `text` | — |
 | `yDisplayFormat` | ƒ |
 
+### `<chart-each-rotated-rect>`
+
+One rotated rectangle, with three grab points — its three data anchors.
+
+`EachRotatedRect` — [`src/interactive/wrapper/EachRotatedRect.js`](../../src/interactive/wrapper/EachRotatedRect.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `selected` | `false` |
+
 ### `<chart-each-shape>`
 
 One drawn shape, its two corner handles, and whole-body drag.
@@ -2600,6 +2619,29 @@ A position plan drawn on the chart: entry, target and stop levels over a bar spa
 | `x1Value` | — |
 | `x2Value` | — |
 
+### `<chart-interactive-rotated-rect>`
+
+A rectangle whose edges need not follow the axes: three data anchors, corners derived in pixels.
+
+`InteractiveRotatedRect` — [`src/interactive/components/InteractiveRotatedRect.js`](../../src/interactive/components/InteractiveRotatedRect.js)
+
+| property | default |
+|---|---|
+| `fillStyle` | `"rgba(138, 175, 226, 0.35)"` |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `p1` | — |
+| `p2` | — |
+| `p3` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
+
 ### `<chart-interactive-shape>`
 
 A filled rectangle or ellipse the user drew, spanned between two data-space corners.
@@ -3057,6 +3099,26 @@ Price notes.
 | `snapTo` | — |
 | `text` | — |
 | `yDisplayFormat` | ƒ |
+
+### `<chart-rotated-rect>`
+
+TradingView's Rotated Rectangle, three clicks.
+
+`RotatedRect` — [`src/interactive/RotatedRect.js`](../../src/interactive/RotatedRect.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionOpacity` | `1` |
+| `currentPositionRadius` | `4` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `rects` | `[]` |
 
 ### `<chart-shape-tool>`
 

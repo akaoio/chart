@@ -1412,6 +1412,44 @@ TESTS["kênh fib: levels vẽ thêm mức giữa hai mép — nhiều mực hơn
     return t.checks
 }
 
+TESTS["chữ nhật xoay: cạnh hai bấm, bấm ba kéo bề rộng"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-rotated-rect", {
+        enabled: true,
+        rects: [],
+        onComplete: (event, rects) => completed.push(rects),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 260)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 420, 160)
+    await clickAt(canvas, 420, 160)
+
+    t.is("hai bấm chưa xong — còn bề rộng", completed.length, 0)
+
+    await hoverAt(canvas, 380, 300)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 380, 300)
+
+    t.is("bấm ba chốt một chữ nhật", completed.length, 1)
+    const rect = completed[0][0]
+    t.ok("ba neo đều là điểm dữ liệu", [rect.p1, rect.p2, rect.p3].every(p => Array.isArray(p) && p.length === 2))
+    t.ok("cạnh P1–P2 không nằm ngang cũng không thẳng đứng (xoay thật)", rect.p1[0] !== rect.p2[0] && rect.p1[1] !== rect.p2[1])
+
+    cleanup()
+    const second = mountWithTool("chart-rotated-rect", { enabled: false, rects: completed[0] })
+    await settle()
+
+    t.ok("wrapper được dựng lại", second.tool.querySelector("chart-each-rotated-rect") !== null)
+    t.gt("chữ nhật vẽ thật ra pixel (lòng có tô)", mouseLayerPixels(second.canvas), 800)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
     const t = makeChecker()
 
