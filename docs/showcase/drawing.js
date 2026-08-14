@@ -79,6 +79,7 @@ demo({
             { label: "Rotated rect", tag: "chart-rotated-rect", list: "rects" },
             { label: "Anchored VWAP", tag: "chart-anchored-vwap", list: "vwaps" },
             { label: "Volume profile", tag: "chart-volume-profile-tool", list: "profiles" },
+            { label: "Bars pattern", tag: "chart-bars-pattern", list: "patterns" },
         ]
 
         let active = null
