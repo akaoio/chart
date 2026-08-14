@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **155** of them.
+Every custom element the library defines: **158** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1123,6 +1123,26 @@ Axis-anchored lines.
 | `snap` | `false` |
 | `snapTo` | — |
 
+### `<chart-bars-pattern>`
+
+TradingView's Bars Pattern, three clicks.
+
+`BarsPattern` — [`src/interactive/BarsPattern.js`](../../src/interactive/BarsPattern.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionOpacity` | `1` |
+| `currentPositionRadius` | `4` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `patterns` | `[]` |
+
 ### `<chart-brush>`
 
 Drag a box over the chart to select a range.
@@ -1427,6 +1447,25 @@ One axis-anchored line and the machinery that lets it be adjusted.
 | `strokeWidth` | `1` |
 | `xValue` | — |
 | `yValue` | — |
+
+### `<chart-each-bars-pattern>`
+
+One bars-pattern ghost, with one grab point — the paste anchor.
+
+`EachBarsPattern` — [`src/interactive/wrapper/EachBarsPattern.js`](../../src/interactive/wrapper/EachBarsPattern.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `from` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `to` | — |
 
 ### `<chart-each-callout>`
 
@@ -2436,6 +2475,28 @@ An arrow the user drew: a bounded line with a filled head at its end.
 | `x2Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
+
+### `<chart-interactive-bars-pattern>`
+
+A ghost of a bar run: source range + paste anchor, candles re-read from rows on each draw.
+
+`InteractiveBarsPattern` — [`src/interactive/components/InteractiveBarsPattern.js`](../../src/interactive/components/InteractiveBarsPattern.js)
+
+| property | default |
+|---|---|
+| `at` | — |
+| `downStyle` | `"rgba(224, 122, 122, 0.6)"` |
+| `from` | — |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `to` | — |
+| `tolerance` | `7` |
+| `upStyle` | `"rgba(106, 185, 117, 0.6)"` |
 
 ### `<chart-interactive-cycles>`
 

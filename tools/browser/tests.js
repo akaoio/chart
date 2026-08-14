@@ -1508,6 +1508,44 @@ TESTS["volume profile hai neo: histogram suy từ rows trong phạm vi"] = async
     return t.checks
 }
 
+TESTS["bars pattern: hai bấm chép dải, bóng bám con trỏ, bấm ba đặt xuống"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-bars-pattern", {
+        enabled: true,
+        patterns: [],
+        onComplete: (event, patterns) => completed.push(patterns),
+    })
+    await settle()
+
+    await clickAt(canvas, 150, 200)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 300, 200)
+    await clickAt(canvas, 300, 200)
+
+    t.is("hai bấm chưa đặt — bóng còn trên tay", completed.length, 0)
+
+    await hoverAt(canvas, 550, 120)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 550, 120)
+
+    t.is("bấm ba đặt bóng xuống", completed.length, 1)
+    const ghost = completed[0][0]
+    t.ok("đối tượng là {from, to, at} — không lưu một cây nến nào", isFinite(ghost.from) && isFinite(ghost.to) && ghost.at.length === 2 && !("rows" in ghost) && !("candles" in ghost))
+    t.ok("chỗ dán khác chỗ chép", Math.abs(ghost.at[0] - ghost.from) > 1)
+
+    cleanup()
+    const second = mountWithTool("chart-bars-pattern", { enabled: false, patterns: completed[0] })
+    await settle()
+
+    t.ok("wrapper được dựng lại", second.tool.querySelector("chart-each-bars-pattern") !== null)
+    t.gt("bóng nến vẽ thật ra pixel", mouseLayerPixels(second.canvas), 400)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
     const t = makeChecker()
 
