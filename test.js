@@ -206,6 +206,37 @@ if (committed === current) {
  * số tính TAY theo luật chuẩn, và bộ kiểm này phải biết fail.
  */
 {
+    const { drawFootprintSeries } = await import("./src/series/FootprintSeries.js")
+    // Sân khấu tay: trục x đồng nhất ×10, trục y lật (giá 100 → pixel 0, giá 99 → 10).
+    const xScale = value => value * 10
+    const yScale = value => (100 - value) * 10
+    yScale.invert = pixel => 100 - pixel / 10
+    const datum = {
+        x: 5,
+        footprint: [
+            { price: 99.5, buy: 4, sell: 2 }, // phía lớn nhất của bar = 4
+            { price: 99.6, buy: 1, sell: 3 },
+        ],
+    }
+    const rects = []
+    const context = new Proxy({}, { get: (target, key) => (key === "fillRect" ? (...args) => rects.push(args.map(n => Math.round(n * 100) / 100)) : () => {}), set: () => true })
+    drawFootprintSeries(context, { xAccessor: d => d.x, xScale, chartConfig: { yScale }, plotData: [datum] }, { width: 20, widthRatio: 1 })
+    // Tay: centre = 50, half = 10; step = 0.1 → ô cao |Δy| − 1 = 0 → minCellHeight 2 thắng.
+    // Ô 99.5: buy 4/4 → rộng 10 mọc trái từ 50; sell 2/4 → rộng 5 mọc phải.
+    // Ô 99.6: buy 1/4 → 2.5; sell 3/4 → 7.5.
+    const widths = rects.map(([, , w]) => w)
+    const expected = [10, 5, 2.5, 7.5]
+    const anchoredLeft = rects.length === 4 && rects[0][0] === 40 && rects[1][0] === 50 && rects[2][0] === 47.5 && rects[3][0] === 50
+    if (rects.length === 4 && JSON.stringify(widths) === JSON.stringify(expected) && anchoredLeft) {
+        checked += 4
+        console.log("✓ footprint: 4 nửa-ô khớp số tính tay (mọc từ trục giữa, chia theo phía lớn nhất)")
+    } else {
+        failed++
+        console.error(`✗ footprint lệch: ${JSON.stringify(rects)}`)
+    }
+}
+
+{
     const { default: lineBreak } = await import("./src/indicators/calculator/lineBreak.js")
     const day = index => new Date(2026, 0, index + 1)
     const bar = (index, close) => ({ date: day(index), open: close, high: close, low: close, close, volume: 10 })

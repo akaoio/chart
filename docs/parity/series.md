@@ -131,3 +131,10 @@ Giữ nguyên vì port trung thành là mặc định, nhưng ghi ra đây để
 ## Vượt ra ngoài bản gốc (chart#5)
 
 `chart-volume-candlestick-series` — nến có bề ngang theo volume (TradingView "Volume candles"): mỗi thân co giãn theo volume của chính nó so với volume lớn nhất đang hiện trên khung; `minWidthRatio` giữ nến mỏng nhất còn nhìn thấy, đặt nó bằng 1 là mọi nến bằng nhau. Không có golden (không có gì để so) — được chứng minh bằng khẳng định trình duyệt trên hình học `getVolumeCandleData`.
+
+
+## Series vượt ra ngoài bản gốc (chart#5 · akao#276)
+
+| thẻ mới | thay cho | leaf |
+|---|---|---|
+| `chart-footprint-series` | Volume footprint của TradingView | mỗi bar mở thành các mức giá, buy đấu sell tại từng mức — hai nửa-ô mọc về nhau từ trục giữa bar, chia theo PHÍA LỚN NHẤT của bar; đủ cao đủ rộng thì viết số. Series CHỈ ĐỌC `datum.footprint` (`[{price, buy, sell}]`) — phép gộp xảy ra ở thượng nguồn (akao#276 fold từ trade thật); bước mức suy từ chính lưới dữ liệu (khoảng cách nhỏ nhất giữa hai mức kề). Kiểm bằng số tính tay trong test.js (4 nửa-ô); đổ nếu series tự tính footprint từ OHLCV |
