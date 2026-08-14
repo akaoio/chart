@@ -13,6 +13,7 @@ export const channelWithAreaDefaults = {
     startXY: undefined,
     endXY: undefined,
     dy: undefined,
+    dy2: undefined,
     strokeStyle: undefined,
     fillStyle: undefined,
     interactiveCursorClass: undefined,
@@ -24,20 +25,24 @@ export const channelWithAreaDefaults = {
 }
 
 /**
- * Two parallel lines with the space between them filled.
+ * Two lines with the space between them filled.
  *
  * The second line is the first shifted by `dy` — a single number, not a second pair of
  * points. That is what keeps the channel parallel no matter how either end is dragged:
  * parallelism is not maintained, it is structural.
+ *
+ * `dy2`, when given, shifts the second line's FAR end by its own amount — the disjoint
+ * family (chart-disjoint-channel) is exactly "a channel whose two offsets disagree", so
+ * the geometry lives here once and parallel channels simply never set it.
  */
 export const channelLines = (props, moreProps) => {
-    const { startXY, endXY, dy, type } = props
+    const { startXY, endXY, dy, dy2, type } = props
     const { xScale } = moreProps
 
     if (isNotDefined(startXY) || isNotDefined(endXY)) return {}
 
     const line1 = generateLine({ type, start: startXY, end: endXY, xScale, yScale: undefined })
-    const line2 = isDefined(dy) ? { ...line1, y1: line1.y1 + dy, y2: line1.y2 + dy } : undefined
+    const line2 = isDefined(dy) ? { ...line1, y1: line1.y1 + dy, y2: line1.y2 + (isDefined(dy2) ? dy2 : dy) } : undefined
 
     return { line1, line2 }
 }

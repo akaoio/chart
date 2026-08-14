@@ -72,6 +72,8 @@ demo({
             { label: "Pin", tag: "chart-pin", list: "pins" },
             { label: "Table", tag: "chart-table", list: "tables" },
             { label: "Image", tag: "chart-image-tool", list: "images" },
+            { label: "Disjoint", tag: "chart-disjoint-channel", list: "channels", props: { variant: "disjoint" } },
+            { label: "Flat T/B", tag: "chart-disjoint-channel", list: "channels", props: { variant: "flat" } },
         ]
 
         let active = null

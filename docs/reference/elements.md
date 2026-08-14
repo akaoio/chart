@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **144** of them.
+Every custom element the library defines: **146** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1151,6 +1151,7 @@ Two parallel lines with the space between them filled.
 | property | default |
 |---|---|
 | `dy` | — |
+| `dy2` | — |
 | `endXY` | — |
 | `fillStyle` | — |
 | `interactiveCursorClass` | — |
@@ -1251,6 +1252,27 @@ Cyclic lines.
 | `shouldDisableSnap` | ƒ |
 | `snap` | `false` |
 | `snapTo` | — |
+
+### `<chart-disjoint-channel>`
+
+A channel whose two edges need not be parallel.
+
+`DisjointChannel` — [`src/interactive/DisjointChannel.js`](../../src/interactive/DisjointChannel.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `channels` | `[]` |
+| `currentPositionOpacity` | `1` |
+| `currentPositionRadius` | `4` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `variant` | `"disjoint"` |
 
 ### `<chart-drawing-object-selector>`
 
@@ -1405,6 +1427,27 @@ One set of cyclic lines and its two anchors.
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
 | `start` | — |
+
+### `<chart-each-disjoint-channel>`
+
+One disjoint channel, with five grab points.
+
+`EachDisjointChannel` — [`src/interactive/wrapper/EachDisjointChannel.js`](../../src/interactive/wrapper/EachDisjointChannel.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `dy` | — |
+| `dy2` | — |
+| `endXY` | — |
+| `flat` | `false` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `startXY` | — |
 
 ### `<chart-each-equidistant-channel>`
 
