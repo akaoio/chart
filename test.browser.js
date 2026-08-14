@@ -403,6 +403,8 @@ const TOUCH_TOOLS = [
     { label: "Channel", tag: "chart-equidistant-channel", list: "channels", taps: 3, grab: [0.45, 0.475] },
     { label: "Disjoint", tag: "chart-disjoint-channel", list: "channels", taps: 3, grab: [0.45, 0.475] },
     { label: "Rotated rect", tag: "chart-rotated-rect", list: "rects", taps: 3, grab: [0.45, 0.475] },
+    { label: "Anchored VWAP", tag: "chart-anchored-vwap", list: "vwaps", taps: 1, grab: [0.3, 0.4] },
+    { label: "Volume profile", tag: "chart-volume-profile-tool", list: "profiles", taps: 2, grab: [0.3, 0.4] },
     /**
      * Kênh hồi quy có hai chỗ khác mọi công cụ còn lại, và cả hai là thiết kế của bản gốc.
      *

@@ -1450,6 +1450,64 @@ TESTS["chữ nhật xoay: cạnh hai bấm, bấm ba kéo bề rộng"] = async 
     return t.checks
 }
 
+TESTS["VWAP neo: một bấm, đường suy từ chính dữ liệu"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-anchored-vwap", {
+        enabled: true,
+        vwaps: [],
+        onComplete: (event, vwaps) => completed.push(vwaps),
+    })
+    await settle()
+
+    await clickAt(canvas, 250, 200)
+
+    t.is("một bấm là xong", completed.length, 1)
+    t.ok("đối tượng chỉ mang MỘT neo — không lưu đường nào", completed[0][0].anchor.length === 2 && !("points" in completed[0][0]))
+
+    cleanup()
+    const second = mountWithTool("chart-anchored-vwap", { enabled: false, vwaps: completed[0] })
+    await settle()
+
+    t.ok("wrapper được dựng lại", second.tool.querySelector("chart-each-anchored-vwap") !== null)
+    t.gt("đường VWAP vẽ thật ra pixel từ neo về mép phải", mouseLayerPixels(second.canvas), 200)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["volume profile hai neo: histogram suy từ rows trong phạm vi"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-volume-profile-tool", {
+        enabled: true,
+        profiles: [],
+        onComplete: (event, profiles) => completed.push(profiles),
+    })
+    await settle()
+
+    await clickAt(canvas, 200, 200)
+    await hoverAt(canvas, 500, 250)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 500, 250)
+
+    t.is("hai bấm chốt một phạm vi", completed.length, 1)
+    const profile = completed[0][0]
+    t.ok("đối tượng chỉ mang HAI neo — không lưu volume nào", isNaN(profile.volumes?.length ?? NaN) && profile.start.length === 2 && profile.end.length === 2)
+
+    cleanup()
+    const second = mountWithTool("chart-volume-profile-tool", { enabled: false, profiles: completed[0] })
+    await settle()
+
+    t.ok("wrapper được dựng lại", second.tool.querySelector("chart-each-volume-profile") !== null)
+    t.gt("hộp + thanh volume vẽ thật ra pixel", mouseLayerPixels(second.canvas), 800)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
     const t = makeChecker()
 
