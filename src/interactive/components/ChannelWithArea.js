@@ -14,6 +14,7 @@ export const channelWithAreaDefaults = {
     endXY: undefined,
     dy: undefined,
     dy2: undefined,
+    levels: undefined,
     strokeStyle: undefined,
     fillStyle: undefined,
     interactiveCursorClass: undefined,
@@ -72,8 +73,11 @@ const toPixels = (props, moreProps) => {
     return { lines, line1, line2 }
 }
 
+/** TradingView's Fib channel fractions — 0 is the baseline, 1 the far edge. */
+export const FIB_CHANNEL_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1]
+
 export const drawChannelWithArea = (context, moreProps, props) => {
-    const { strokeStyle, strokeWidth, fillStyle } = { ...channelWithAreaDefaults, ...props }
+    const { strokeStyle, strokeWidth, fillStyle, levels } = { ...channelWithAreaDefaults, ...props }
     const { line1, line2 } = toPixels({ ...channelWithAreaDefaults, ...props }, moreProps)
 
     if (line1 === undefined) return
@@ -92,10 +96,23 @@ export const drawChannelWithArea = (context, moreProps, props) => {
 
     const { y1: line2Y1, y2: line2Y2 } = line2
 
-    context.beginPath()
-    context.moveTo(x1, line2Y1)
-    context.lineTo(x2, line2Y2)
-    context.stroke()
+    // A LEVELS channel — TV's Fib channel — draws a line at every fraction
+    // between the baseline (0) and the far edge (1); the plain channel is the
+    // levels.length === 2 special case and keeps its old two-stroke path.
+    if (isDefined(levels)) {
+        for (const level of levels) {
+            if (level === 0) continue // the baseline is already stroked
+            context.beginPath()
+            context.moveTo(x1, y1 + level * (line2Y1 - y1))
+            context.lineTo(x2, y2 + level * (line2Y2 - y2))
+            context.stroke()
+        }
+    } else {
+        context.beginPath()
+        context.moveTo(x1, line2Y1)
+        context.lineTo(x2, line2Y2)
+        context.stroke()
+    }
 
     context.fillStyle = fillStyle
     context.beginPath()

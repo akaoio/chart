@@ -1155,6 +1155,7 @@ Two parallel lines with the space between them filled.
 | `endXY` | — |
 | `fillStyle` | — |
 | `interactiveCursorClass` | — |
+| `levels` | — |
 | `onDrag` | — |
 | `onDragComplete` | — |
 | `onDragStart` | — |
@@ -1463,6 +1464,7 @@ One equidistant channel, with five grab points.
 | `hoverText` | `{"enable":false}` |
 | `index` | — |
 | `interactive` | `true` |
+| `levels` | — |
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
@@ -1982,6 +1984,7 @@ A parallel price channel drawn in **three** clicks.
 | `currentPositionStrokeWidth` | `3` |
 | `enabled` | `true` |
 | `hoverText` | `{…}` |
+| `levels` | — |
 | `onComplete` | — |
 | `onSelect` | — |
 | `onStart` | — |

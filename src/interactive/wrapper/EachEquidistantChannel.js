@@ -10,6 +10,7 @@ export const eachEquidistantChannelDefaults = {
     startXY: undefined,
     endXY: undefined,
     dy: undefined,
+    levels: undefined,
     hoverText: { enable: false },
     appearance: {
         stroke: "#000000",
@@ -87,6 +88,7 @@ export class EachEquidistantChannel extends ElementBase {
             startXY,
             endXY,
             dy,
+            levels: props.levels,
             strokeStyle: stroke,
             strokeWidth: showHandles ? strokeWidth + 1 : strokeWidth,
             fillStyle: fill,

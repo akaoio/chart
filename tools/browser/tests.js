@@ -1336,6 +1336,82 @@ TESTS["kênh phẳng: lần ba kéo MỨC ngang, đường hai nằm ngang"] = a
     return t.checks
 }
 
+TESTS["pitchfan: ba bấm ra bảy tia từ neo qua các mức P2–P3"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-pitchfork", {
+        enabled: true,
+        variant: "fan",
+        forks: [],
+        onComplete: (event, forks) => completed.push(forks),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 260)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 380, 120)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 460, 300)
+
+    t.is("ba bấm hoàn thành một quạt", completed.length, 1)
+    t.is("và báo về đúng một đối tượng", completed[0].length, 1)
+
+    cleanup()
+    const second = mountWithTool("chart-pitchfork", { enabled: false, variant: "fan", forks: completed[0] })
+    await settle()
+
+    t.ok("wrapper được dựng lại", second.tool.querySelector("chart-each-pitchfork") !== null)
+    t.gt("quạt vẽ thật ra pixel", mouseLayerPixels(second.canvas), 500)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kênh fib: levels vẽ thêm mức giữa hai mép — nhiều mực hơn kênh trơn"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-equidistant-channel", {
+        enabled: true,
+        levels: [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1],
+        channels: [],
+        onComplete: (event, channels) => completed.push(channels),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 150)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 500, 200)
+    await clickAt(canvas, 500, 200)
+    await hoverAt(canvas, 500, 320)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 500, 320)
+
+    t.is("máy ba bấm của kênh giữ nguyên với levels", completed.length, 1)
+
+    cleanup()
+    // cùng một đối tượng, dựng có mức và không mức — mức phải tốn mực thật
+    const plain = mountWithTool("chart-equidistant-channel", { enabled: false, channels: completed[0] })
+    await settle()
+    const plainInk = mouseLayerPixels(plain.canvas)
+    cleanup()
+
+    const levelled = mountWithTool("chart-equidistant-channel", {
+        enabled: false,
+        levels: [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1],
+        channels: completed[0],
+    })
+    await settle()
+    const levelledInk = mouseLayerPixels(levelled.canvas)
+
+    t.gt("kênh trơn vẫn vẽ", plainInk, 300)
+    t.gt("kênh fib tốn mực hơn kênh trơn (5 mức giữa có thật)", levelledInk, plainInk)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
     const t = makeChecker()
 
