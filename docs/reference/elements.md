@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **158** of them.
+Every custom element the library defines: **159** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -297,6 +297,25 @@ Bull power and bear power as bars either side of zero.
 | `stroke` | `true` |
 | `widthRatio` | `0.8` |
 | `yAccessor` | — |
+
+### `<chart-footprint-series>`
+
+Every bar opened into price levels: buy against sell at each level, read never computed.
+
+`FootprintSeries` — [`src/series/FootprintSeries.js`](../../src/series/FootprintSeries.js)
+
+| property | default |
+|---|---|
+| `accessor` | ƒ |
+| `downFill` | `"rgba(224, 122, 122, 1)"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `minCellHeight` | `2` |
+| `minTextHeight` | `9` |
+| `minTextWidth` | `46` |
+| `textFill` | `"#000000"` |
+| `upFill` | `"rgba(106, 185, 117, 1)"` |
+| `width` | ƒ |
+| `widthRatio` | `0.9` |
 
 ### `<chart-grouped-bar-series>`
 

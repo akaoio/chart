@@ -95,6 +95,35 @@ demo({
 })
 
 demo({
+    title: "Footprint",
+    about:
+        "`chart-footprint-series` opens every bar into its price levels — buy volume against " +
+        "sell volume at each level, scaled to the bar's largest side. The series READS " +
+        "`datum.footprint` — the aggregation happens upstream (akao#276 folds it from real " +
+        "trades); here the cells are synthesized deterministically from OHLCV for the demo.",
+    build: stage => {
+        const LEVELS = 6
+        const decorated = bars.map((datum, index) => {
+            const span = datum.high - datum.low
+            if (!(span > 0)) return datum
+            const step = span / LEVELS
+            const footprint = Array.from({ length: LEVELS }, (unused, level) => {
+                // tất định từ chính OHLCV — không Math.random trong trưng bày
+                const weight = 1 + Math.abs(Math.sin(index * 2.7 + level * 1.3)) * 3
+                const share = (datum.volume * weight) / (LEVELS * 2.5)
+                const lean = datum.close >= datum.open ? 0.65 : 0.35
+                return { price: datum.low + step * (level + 0.5), buy: share * lean, sell: share * (1 - lean) }
+            })
+            return { ...datum, footprint }
+        })
+        grid(stage, ["footprint"], host => {
+            const pane = cell(host, { yExtents: price, data: decorated.slice(-40) })
+            pane.append(document.createElement("chart-footprint-series"))
+        })
+    },
+})
+
+demo({
     title: "Fills",
     about:
         "`chart-area-only-series` is the fill without the line, so it can sit under a line of " +
