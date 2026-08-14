@@ -74,6 +74,8 @@ demo({
             { label: "Image", tag: "chart-image-tool", list: "images" },
             { label: "Disjoint", tag: "chart-disjoint-channel", list: "channels", props: { variant: "disjoint" } },
             { label: "Flat T/B", tag: "chart-disjoint-channel", list: "channels", props: { variant: "flat" } },
+            { label: "Pitchfan", tag: "chart-pitchfork", list: "forks", props: { variant: "fan" } },
+            { label: "Fib channel", tag: "chart-equidistant-channel", list: "channels", props: { levels: [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1] } },
         ]
 
         let active = null

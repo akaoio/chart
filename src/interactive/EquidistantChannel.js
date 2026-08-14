@@ -13,6 +13,7 @@ export const equidistantChannelDefaults = {
     currentPositionStrokeWidth: 3,
     currentPositionRadius: 4,
     hoverText: { enable: true, bgHeight: 18, bgWidth: 120, text: "Click to select object" },
+    levels: undefined,
     channels: [],
     appearance: {
         stroke: "#000000",
@@ -110,6 +111,7 @@ export class EquidistantChannel extends ElementBase {
                 startXY: live.startXY,
                 endXY: live.endXY,
                 dy: live.dy,
+                levels: props.levels,
                 appearance,
                 onDrag: this.#handleDragChannel,
                 onDragComplete: this.#handleDragChannelComplete,
@@ -134,6 +136,7 @@ export class EquidistantChannel extends ElementBase {
                 startXY: this.#current.startXY,
                 endXY: this.#current.endXY,
                 dy: this.#current.dy,
+                levels: props.levels,
                 appearance: props.appearance,
                 hoverText: props.hoverText,
             })

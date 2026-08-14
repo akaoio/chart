@@ -44,12 +44,24 @@ export const pitchforkAnchor = (variant, p1, p2) => {
 }
 
 /**
- * The three rays of a pitchfork, in pixel space.
+ * The fractions a pitchfan splits the P2–P3 segment at — TradingView's defaults.
+ * 0 and 1 are P2 and P3 themselves, so the fan's outer rays are the fork's tines'
+ * base points aimed at the anchor instead of running parallel.
+ */
+export const PITCHFAN_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1]
+
+/**
+ * The rays of a pitchfork, in pixel space.
  *
  * The median runs from the variant's anchor through the midpoint of P2–P3; the two
  * tines run from P2 and from P3 with the median's direction. All three are RAYs, so
  * they extend to the edge of the pane and must be recomputed as the domain moves —
  * same shape as `gannFanLines`, and consumed the same way by draw and hit test.
+ *
+ * `variant: "fan"` — TradingView's Pitchfan — shares the three points and the whole
+ * tool/wrapper machinery but changes the ray SET: every ray starts at the anchor and
+ * passes through a `PITCHFAN_LEVELS` fraction of P2–P3. No band fill: a fan of seven
+ * rays with a filled wedge would be noise, and TV draws none either.
  */
 export const pitchforkLines = (props, moreProps) => {
     const { p1, p2, p3, variant } = { ...interactivePitchforkDefaults, ...props }
@@ -83,6 +95,29 @@ export const pitchforkLines = (props, moreProps) => {
         }
     }
 
+    if (variant === "fan") {
+        return PITCHFAN_LEVELS.map(level => {
+            const through = [p2[0] + level * (p3[0] - p2[0]), p2[1] + level * (p3[1] - p2[1])]
+            const own = [through[0] - anchor[0], through[1] - anchor[1]]
+            if (own[0] === 0 && own[1] === 0) return null
+            const generated = generateLine({
+                type: "RAY",
+                start: anchor,
+                end: through,
+                xScale,
+                yScale,
+            })
+            return {
+                kind: "fan",
+                level,
+                x1: xScale(generated.x1),
+                y1: yScale(generated.y1),
+                x2: xScale(generated.x2),
+                y2: yScale(generated.y2),
+            }
+        }).filter(line => line !== null)
+    }
+
     return [ray(anchor, "median"), ray(p2, "tine"), ray(p3, "tine")]
 }
 
@@ -93,17 +128,19 @@ export const drawInteractivePitchfork = (context, moreProps, props) => {
     const lines = pitchforkLines(resolved, moreProps)
     if (lines.length === 0) return
 
-    const [median, tine2, tine3] = lines
+    if (lines[0].kind !== "fan") {
+        const [, tine2, tine3] = lines
 
-    // the channel between the two tines, so the fork reads as a band not three sticks
-    context.fillStyle = fillStyle
-    context.beginPath()
-    context.moveTo(tine2.x1, tine2.y1)
-    context.lineTo(tine2.x2, tine2.y2)
-    context.lineTo(tine3.x2, tine3.y2)
-    context.lineTo(tine3.x1, tine3.y1)
-    context.closePath()
-    context.fill()
+        // the channel between the two tines, so the fork reads as a band not three sticks
+        context.fillStyle = fillStyle
+        context.beginPath()
+        context.moveTo(tine2.x1, tine2.y1)
+        context.lineTo(tine2.x2, tine2.y2)
+        context.lineTo(tine3.x2, tine3.y2)
+        context.lineTo(tine3.x1, tine3.y1)
+        context.closePath()
+        context.fill()
+    }
 
     context.lineWidth = strokeWidth
     for (const line of lines) {
