@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **149** of them.
+Every custom element the library defines: **155** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1033,6 +1033,26 @@ Anchored texts.
 | `snapTo` | — |
 | `text` | — |
 
+### `<chart-anchored-vwap>`
+
+TradingView's Anchored VWAP, one click.
+
+`AnchoredVwap` — [`src/interactive/AnchoredVwap.js`](../../src/interactive/AnchoredVwap.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionOpacity` | `1` |
+| `currentPositionRadius` | `4` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `vwaps` | `[]` |
+
 ### `<chart-arrow>`
 
 Arrows.
@@ -1304,6 +1324,23 @@ One screen-anchored box: kéo là dời theo TỈ LỆ pane — thứ duy nhất
 | `index` | — |
 | `interactive` | `true` |
 | `lines` | — |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+
+### `<chart-each-anchored-vwap>`
+
+One anchored VWAP, with one grab point — the anchor itself.
+
+`EachAnchoredVwap` — [`src/interactive/wrapper/EachAnchoredVwap.js`](../../src/interactive/wrapper/EachAnchoredVwap.js)
+
+| property | default |
+|---|---|
+| `anchor` | — |
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
@@ -1968,6 +2005,24 @@ One trendline, and the machinery that lets it be adjusted.
 | `y1Value` | — |
 | `y2Value` | — |
 
+### `<chart-each-volume-profile>`
+
+One fixed-range volume profile, with two grab points — the range's anchors.
+
+`EachVolumeProfile` — [`src/interactive/wrapper/EachVolumeProfile.js`](../../src/interactive/wrapper/EachVolumeProfile.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `end` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `selected` | `false` |
+| `start` | — |
+
 ### `<chart-each-wave>`
 
 One time wave and its two anchors: drag a handle to retime it, drag the body to move the whole thing.
@@ -2311,6 +2366,26 @@ One screen-anchored box: text or a table that stays put while the chart scrolls 
 | `selected` | `false` |
 | `strokeWidth` | `1` |
 | `tolerance` | `4` |
+
+### `<chart-interactive-anchored-vwap>`
+
+An anchored VWAP: one data anchor, every y recomputed from the rows on each draw.
+
+`InteractiveAnchoredVwap` — [`src/interactive/components/InteractiveAnchoredVwap.js`](../../src/interactive/components/InteractiveAnchoredVwap.js)
+
+| property | default |
+|---|---|
+| `anchor` | — |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
 
 ### `<chart-interactive-angle-line>`
 
@@ -2767,6 +2842,31 @@ Labels on the chart.
 | `onDragComplete` | — |
 | `onSelect` | — |
 | `textList` | `[]` |
+
+### `<chart-interactive-volume-profile>`
+
+A fixed-range volume profile: two anchors, the histogram recomputed from rows on each draw.
+
+`InteractiveVolumeProfile` — [`src/interactive/components/InteractiveVolumeProfile.js`](../../src/interactive/components/InteractiveVolumeProfile.js)
+
+| property | default |
+|---|---|
+| `bins` | `24` |
+| `end` | — |
+| `fillDown` | `"rgba(224, 122, 122, 0.5)"` |
+| `fillUp` | `"rgba(106, 185, 117, 0.5)"` |
+| `interactiveCursorClass` | — |
+| `maxProfileWidthPercent` | `30` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `selected` | `false` |
+| `start` | — |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `7` |
 
 ### `<chart-interactive-wave>`
 
@@ -3280,6 +3380,26 @@ Draw trendlines by hand.
 | `snapTo` | — |
 | `trends` | `[]` |
 | `type` | `"XLINE"` |
+
+### `<chart-volume-profile-tool>`
+
+TradingView's Fixed Range Volume Profile, two clicks.
+
+`VolumeProfileTool` — [`src/interactive/VolumeProfileTool.js`](../../src/interactive/VolumeProfileTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionOpacity` | `1` |
+| `currentPositionRadius` | `4` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `profiles` | `[]` |
 
 ### `<chart-zoom-buttons>`
 

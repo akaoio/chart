@@ -77,6 +77,8 @@ demo({
             { label: "Pitchfan", tag: "chart-pitchfork", list: "forks", props: { variant: "fan" } },
             { label: "Fib channel", tag: "chart-equidistant-channel", list: "channels", props: { levels: [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1] } },
             { label: "Rotated rect", tag: "chart-rotated-rect", list: "rects" },
+            { label: "Anchored VWAP", tag: "chart-anchored-vwap", list: "vwaps" },
+            { label: "Volume profile", tag: "chart-volume-profile-tool", list: "profiles" },
         ]
 
         let active = null
