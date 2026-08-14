@@ -401,6 +401,7 @@ const TOUCH_TOOLS = [
     { label: "Trend line", tag: "chart-trend-line", list: "trends", taps: 2, grab: [0.45, 0.475] },
     { label: "Fibonacci", tag: "chart-fibonacci-retracement", list: "retracements", taps: 2, grab: [0.45, 0.475] },
     { label: "Channel", tag: "chart-equidistant-channel", list: "channels", taps: 3, grab: [0.45, 0.475] },
+    { label: "Disjoint", tag: "chart-disjoint-channel", list: "channels", taps: 3, grab: [0.45, 0.475] },
     /**
      * Kênh hồi quy có hai chỗ khác mọi công cụ còn lại, và cả hai là thiết kế của bản gốc.
      *

@@ -1251,6 +1251,91 @@ TESTS["kênh song song: hai lần bấm ra đường, lần thứ ba đặt bề
     return t.checks
 }
 
+TESTS["kênh lệch: sinh ra song song, kéo một tay cầm thì lệch"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-disjoint-channel", {
+        enabled: true,
+        variant: "disjoint",
+        channels: [],
+        onComplete: (event, channels) => completed.push(channels),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 150)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 500, 220)
+    await clickAt(canvas, 500, 220)
+
+    t.is("hai lần bấm chưa xong — còn phải đặt bề rộng", completed.length, 0)
+
+    await hoverAt(canvas, 500, 300)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 500, 300)
+
+    t.is("lần bấm thứ ba mới hoàn thành", completed.length, 1)
+    const born = completed[0][0]
+    t.ok("sinh ra SONG SONG: dy2 === dy", Math.abs(born.dy2 - born.dy) < 1e-9 && Math.abs(born.dy) > 0)
+
+    cleanup()
+    // dựng lại từ danh sách đã lưu, chọn sẵn, rồi kéo tay cầm XA của đường 2
+    const dragged = []
+    const second = mountWithTool("chart-disjoint-channel", {
+        enabled: false,
+        variant: "disjoint",
+        channels: completed[0],
+        onComplete: (event, channels) => dragged.push(channels),
+    })
+    await settle()
+
+    const wrapper = second.tool.querySelector("chart-each-disjoint-channel")
+    t.ok("wrapper được dựng lại", wrapper !== null)
+    t.gt("kênh vẽ thật ra pixel", mouseLayerPixels(second.canvas), 500)
+
+    // tay cầm xa nằm tại endXY dịch dy2 — kéo dọc 40px (dragOn: [from]→[to])
+    await dragOn(second.canvas, [500, 300], [500, 340])
+
+    t.is("kéo tay cầm xa xong báo về một lần", dragged.length, 1)
+    const bent = dragged[0][0]
+    t.ok("chỉ dy2 đổi — dy giữ nguyên (kênh đã lệch)", Math.abs(bent.dy - born.dy) < 1e-9 && Math.abs(bent.dy2 - born.dy2) > 1e-9)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["kênh phẳng: lần ba kéo MỨC ngang, đường hai nằm ngang"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas } = mountWithTool("chart-disjoint-channel", {
+        enabled: true,
+        variant: "flat",
+        channels: [],
+        onComplete: (event, channels) => completed.push(channels),
+    })
+    await settle()
+
+    await clickAt(canvas, 180, 150)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 500, 220)
+    await clickAt(canvas, 500, 220)
+    await hoverAt(canvas, 400, 320)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 400, 320)
+
+    t.is("ba lần bấm hoàn thành", completed.length, 1)
+    const flat = completed[0][0]
+    t.ok("đối tượng mang cờ flat", flat.flat === true)
+    // đường 2 nằm ngang: y1+dy === y2+dy2 (cùng một mức)
+    const level1 = flat.startXY[1] + flat.dy
+    const level2 = flat.endXY[1] + flat.dy2
+    t.ok("đường hai nằm NGANG: hai đầu cùng mức giá", Math.abs(level1 - level2) < 1e-9)
+
+    cleanup()
+    return t.checks
+}
+
 TESTS["Fibonacci: hai lần bấm ra sáu mức"] = async () => {
     const t = makeChecker()
 

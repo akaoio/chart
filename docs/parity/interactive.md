@@ -42,6 +42,7 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-measure` (`mode`) | Price range · Date range · Date & price range | 2 bấm | `chart-interactive-measure` (mới): hộp + mũi tên + hộp số Δgiá/%/nến/thời gian |
 | `chart-position-tool` (`side`) | Long position · Short position | 1 bấm | `chart-interactive-position` (mới): hai vùng lời/lỗ + ba nhãn + R/R |
 | `chart-pitchfork` (`variant`) | Pitchfork · Schiff · Modified Schiff | 3 bấm | `chart-interactive-pitchfork` (mới): trung tuyến + hai càng RAY, khung tia + hộp chặn hit của GannFan |
+| `chart-disjoint-channel` (`variant`) | Disjoint channel · Flat top/bottom | 3 bấm | `ChannelWithArea` có sẵn, thêm `dy2` tuỳ chọn — kênh lệch là "kênh mà hai offset bất đồng", hình học vẫn một chỗ; `flat` kéo MỨC ngang, hai offset suy từ mức. Wrapper mới `chart-each-disjoint-channel`: hai tay cầm đường 2 độc lập (near→`dy`, far→`dy2`), flat giữ ngang khi kéo bất kỳ đầu nào. Máy 3 bấm mượn nguyên `EquidistantChannel`; sinh ra song song, tay cầm mới làm lệch — đổ nếu `dy2` mặc định khác `dy` |
 | `chart-fib-extension` | Trend-based fib extension | 3 bấm | không leaf mới — mỗi mức một `InteractiveStraightLine` RAY + `chart-interactive-label`, đúng khuôn retracement |
 | `chart-callout` | Callout | 2 bấm | không leaf mới — `InteractiveText` + chân `InteractiveStraightLine` + tay cầm neo |
 | `chart-price-label` | Price label | 1 bấm | không leaf mới — `InteractiveText` mà chữ là chính y của nó, kéo là đổi giá |
