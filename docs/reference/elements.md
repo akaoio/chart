@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **159** of them.
+Every custom element the library defines: **160** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -489,6 +489,28 @@ Grouped by fill then stroke, so the canvas state changes once per combination.
 | `markerProps` | — |
 | `markerProvider` | — |
 | `yAccessor` | — |
+
+### `<chart-session-profile-series>`
+
+Per-session TPO / volume profiles pooled from footprint cells — read, never computed here.
+
+`SessionProfileSeries` — [`src/series/SessionProfileSeries.js`](../../src/series/SessionProfileSeries.js)
+
+| property | default |
+|---|---|
+| `accessor` | ƒ |
+| `blockFill` | `"rgba(138, 175, 226, 0.65)"` |
+| `downFill` | `"rgba(224, 122, 122, 0.55)"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `maxWidthPercent` | `40` |
+| `minCellHeight` | `2` |
+| `minLetterWidth` | `8` |
+| `mode` | `"volume"` |
+| `periodMs` | `1800000` |
+| `textFill` | `"#000000"` |
+| `upFill` | `"rgba(106, 185, 117, 0.55)"` |
+| `width` | ƒ |
+| `widthRatio` | `1` |
 
 ### `<chart-stacked-bar-series>`
 

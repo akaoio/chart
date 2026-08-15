@@ -116,9 +116,16 @@ demo({
             })
             return { ...datum, footprint }
         })
-        grid(stage, ["footprint"], host => {
+        grid(stage, ["footprint", "session volume profile", "TPO"], (host, kind) => {
             const pane = cell(host, { yExtents: price, data: decorated.slice(-40) })
-            pane.append(document.createElement("chart-footprint-series"))
+            if (kind === "footprint") return pane.append(document.createElement("chart-footprint-series"))
+            const series = document.createElement("chart-session-profile-series")
+            series.mode = kind === "TPO" ? "tpo" : "volume"
+            if (kind !== "TPO") {
+                const candles = document.createElement("chart-candlestick-series")
+                pane.append(candles)
+            }
+            pane.append(series)
         })
     },
 })
