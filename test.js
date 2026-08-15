@@ -237,12 +237,31 @@ if (committed === current) {
     drawSessionProfileSeries(context, moreProps, { mode: "tpo" })
     const tpoOk = rects.length === 4
     const letterOk = periodLetter(0) === "A" && periodLetter(1) === "B" && periodLetter(26) === "a" && periodLetter(52) === "A'"
-    if (volumeOk && tpoOk && letterOk) {
-        checked += 3
-        console.log("✓ session profile: volume 6 nửa-thanh + TPO 4 khối + bảng chữ kỳ — khớp số tính tay")
+
+    // Pan-bất-biến (#review): bar đầu TRONG KHUNG NHÌN lúc 01:00 — kỳ phải neo
+    // vào 00:00 của ngày (kỳ 2 với 30m), không phải vào bar đầu (kỳ 0).
+    const letters = []
+    const letterContext = new Proxy({}, { get: (target, key) => (key === "fillText" ? text => letters.push(text) : key === "fillRect" ? () => {} : () => {}), set: () => true })
+    drawSessionProfileSeries(
+        letterContext,
+        { xAccessor: d => d.x, xScale, chartConfig: { yScale }, plotData: [{ x: 1, date: new Date(2026, 0, 7, 1, 0), footprint: [{ price: 99.5, buy: 1, sell: 0 }, { price: 98.5, buy: 1, sell: 0 }] }] },
+        { mode: "tpo", minLetterWidth: 0 },
+    )
+    const panOk = letters.length === 2 && letters.every(letter => letter === "C")
+
+    // Datum không date: bị bỏ qua êm, không TypeError giết cả pass vẽ (#review)
+    let survived = true
+    try {
+        drawSessionProfileSeries(letterContext, { xAccessor: d => d.x, xScale, chartConfig: { yScale }, plotData: [{ x: 9 }, { x: 10, date: new Date(2026, 0, 8), footprint: [{ price: 98, buy: 1, sell: 0 }] }] }, { mode: "volume" })
+    } catch {
+        survived = false
+    }
+    if (volumeOk && tpoOk && letterOk && panOk && survived) {
+        checked += 5
+        console.log("✓ session profile: volume + TPO + chữ kỳ + neo-ngày bất biến pan + datum không date — khớp số tính tay")
     } else {
         failed++
-        console.error(`✗ session profile lệch (volume ${volumeOk}, tpo ${tpoOk} [${rects.length}], letter ${letterOk})`)
+        console.error(`✗ session profile lệch (volume ${volumeOk}, tpo ${tpoOk} [${rects.length}], letter ${letterOk}, pan ${panOk} [${letters}], dateless ${survived})`)
     }
 }
 
