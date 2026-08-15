@@ -30,6 +30,7 @@ export * from "./VolumeProfileSeries.js"
 
 export * from "./AlternateDataSeries.js"
 export * from "./FootprintSeries.js"
+export * from "./SessionProfileSeries.js"
 export * from "./SVGComponent.js"
 
 export * from "./markers/CircleMarker.js"

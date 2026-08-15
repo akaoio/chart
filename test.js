@@ -206,6 +206,47 @@ if (committed === current) {
  * số tính TAY theo luật chuẩn, và bộ kiểm này phải biết fail.
  */
 {
+    const { drawSessionProfileSeries, periodLetter } = await import("./src/series/SessionProfileSeries.js")
+    // Hai ngày, mỗi ngày hai bar 30 phút; trục tay như bài footprint.
+    const xScale = value => value * 10
+    const yScale = value => (100 - value) * 10
+    yScale.invert = pixel => 100 - pixel / 10
+    const day1 = new Date(2026, 0, 5, 0, 0)
+    const day1b = new Date(2026, 0, 5, 0, 30)
+    const day2 = new Date(2026, 0, 6, 0, 0)
+    const plotData = [
+        { x: 1, date: day1, footprint: [{ price: 99.5, buy: 3, sell: 1 }] },
+        { x: 2, date: day1b, footprint: [{ price: 99.5, buy: 0, sell: 4 }, { price: 99.6, buy: 2, sell: 0 }] },
+        { x: 5, date: day2, footprint: [{ price: 98.0, buy: 1, sell: 1 }] },
+    ]
+    const rects = []
+    const context = new Proxy({}, { get: (target, key) => (key === "fillRect" ? (...args) => rects.push(args.map(n => Math.round(n * 100) / 100)) : () => {}), set: () => true })
+    const moreProps = { xAccessor: d => d.x, xScale, chartConfig: { yScale }, plotData }
+
+    // VOLUME: phiên 1 có hai mức — 99.5 tổng 8 (max), 99.6 tổng 2; phiên 2 một mức.
+    // maxWidth phiên 1 = (x2−x1=10px)×40% = 8? (right−left)=10 → 4… tính: (20−10)×0.4 = 4 → max(8,4)=8.
+    // 99.5: total 8/8×8 = 8px, buy 3/8 → 3px; 99.6: 2/8×8 = 2px, buy 2/2 → 2px. Phiên 2: (50−50)×0.4→max(8,0)=8; total 8, buy 4.
+    drawSessionProfileSeries(context, moreProps, { mode: "volume" })
+    const volumeOk =
+        rects.length === 6 &&
+        rects[0][2] === 3 && rects[1][2] === 5 && // 99.5: buy 3 + sell 5
+        rects[2][2] === 2 && rects[3][2] === 0 && // 99.6: buy 2 + sell 0
+        rects[4][2] === 4 && rects[5][2] === 4    // ngày 2: buy 4 + sell 4
+    // TPO: 99.5 chạm kỳ A (0) và B (1) → 2 khối; 99.6 chỉ kỳ B → 1 khối; ngày 2 mức 98 kỳ A → 1 khối.
+    rects.length = 0
+    drawSessionProfileSeries(context, moreProps, { mode: "tpo" })
+    const tpoOk = rects.length === 4
+    const letterOk = periodLetter(0) === "A" && periodLetter(1) === "B" && periodLetter(26) === "a" && periodLetter(52) === "A'"
+    if (volumeOk && tpoOk && letterOk) {
+        checked += 3
+        console.log("✓ session profile: volume 6 nửa-thanh + TPO 4 khối + bảng chữ kỳ — khớp số tính tay")
+    } else {
+        failed++
+        console.error(`✗ session profile lệch (volume ${volumeOk}, tpo ${tpoOk} [${rects.length}], letter ${letterOk})`)
+    }
+}
+
+{
     const { drawFootprintSeries } = await import("./src/series/FootprintSeries.js")
     // Sân khấu tay: trục x đồng nhất ×10, trục y lật (giá 100 → pixel 0, giá 99 → 10).
     const xScale = value => value * 10
