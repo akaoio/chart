@@ -289,6 +289,21 @@ if (committed === current) {
     )
     const panOk = letters.length === 2 && letters.every(letter => letter === "C")
 
+    // IEEE epsilon (#review vòng 2): maxWidth=12.4, 3 kỳ → w=4.1333…, khối cuối
+    // tính (at+1)×w = 12.400000000000002 > 12.4 — so mép TRÁI + epsilon thì đủ 3 khối.
+    const fitRects = []
+    const fitContext = new Proxy({}, { get: (target, key) => (key === "fillRect" ? (...args) => fitRects.push(args) : () => {}), set: () => true })
+    drawSessionProfileSeries(
+        fitContext,
+        { xAccessor: d => d.x, xScale: v => v, chartConfig: { yScale }, plotData: [
+            { x: 0, date: new Date(2026, 0, 9, 0, 0), footprint: [{ price: 99.5, buy: 1, sell: 0 }] },
+            { x: 31, date: new Date(2026, 0, 9, 0, 30), footprint: [{ price: 99.5, buy: 1, sell: 0 }] },
+            { x: 62, date: new Date(2026, 0, 9, 1, 0), footprint: [{ price: 99.5, buy: 1, sell: 0 }] },
+        ] },
+        { mode: "tpo", maxWidthPercent: 20 }, // span 62px × 20% = 12.4 → w = 12.4/3
+    )
+    const fitOk = fitRects.length === 3
+
     // Datum không date: bị bỏ qua êm, không TypeError giết cả pass vẽ (#review)
     let survived = true
     try {
@@ -296,12 +311,12 @@ if (committed === current) {
     } catch {
         survived = false
     }
-    if (volumeOk && tpoOk && letterOk && panOk && survived) {
-        checked += 5
+    if (volumeOk && tpoOk && letterOk && panOk && survived && fitOk) {
+        checked += 6
         console.log("✓ session profile: volume + TPO + chữ kỳ + neo-ngày bất biến pan + datum không date — khớp số tính tay")
     } else {
         failed++
-        console.error(`✗ session profile lệch (volume ${volumeOk}, tpo ${tpoOk} [${rects.length}], letter ${letterOk}, pan ${panOk} [${letters}], dateless ${survived})`)
+        console.error(`✗ session profile lệch (volume ${volumeOk}, tpo ${tpoOk} [${rects.length}], letter ${letterOk}, pan ${panOk} [${letters}], dateless ${survived}, fit ${fitOk} [${fitRects.length}])`)
     }
 }
 
