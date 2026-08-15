@@ -254,6 +254,15 @@ demo({
                     const series = document.createElement("chart-stochastic-series")
                     series.yAccessor = datum => datum.stochastic
                     pane.prepend(series)
+                    const tooltip = document.createElement("chart-stochastic-tooltip")
+                    Object.assign(tooltip, {
+                        origin: [8, 14],
+                        yAccessor: datum => datum.stochastic,
+                        options: { windowSize: 14, kWindowSize: 3, dWindowSize: 3 },
+                        label: "STO",
+                        appearance: { stroke: { kLine: "#2a6df4", dLine: "#e0554a" } },
+                    })
+                    pane.append(tooltip)
                 },
             },
             {

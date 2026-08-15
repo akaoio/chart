@@ -236,3 +236,31 @@ demo({
         canvas.append(watermark)
     },
 })
+
+demo({
+    title: "Real DOM inside the chart",
+    about:
+        "`chart-svg` is the escape hatch into SVG: set `render` to a function of the chart's " +
+        "state and its nodes land in the pane as REAL DOM — selectable, focusable, styleable. " +
+        "Here it pins a ring and a caption on the newest bar.",
+    build: stage => {
+        const { pane } = chart(stage, { height: 280 })
+
+        const svg = document.createElement("chart-svg")
+        svg.render = ({ plotData, xScale, xAccessor, chartConfig }) => {
+            const newest = plotData[plotData.length - 1]
+            if (!newest) return null
+            const x = xScale(xAccessor(newest))
+            const y = chartConfig.yScale(newest.close)
+            return {
+                tag: "g",
+                attrs: { className: "svg-escape-hatch" },
+                children: [
+                    { tag: "circle", attrs: { cx: x, cy: y, r: 9, fill: "none", stroke: "#e0554a", strokeWidth: 2 } },
+                    { tag: "text", attrs: { x: x - 14, y: y - 14, textAnchor: "end", fontSize: 11, fill: "#e0554a" }, children: ["newest close"] },
+                ],
+            }
+        }
+        pane.append(svg)
+    },
+})

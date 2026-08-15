@@ -206,6 +206,46 @@ if (committed === current) {
  * số tính TAY theo luật chuẩn, và bộ kiểm này phải biết fail.
  */
 {
+    // LUẬT SHOWCASE (chủ repo, 2026-08-16): mọi tính năng phải có mặt trong
+    // https://akaoio.github.io/chart/ để test bằng mắt. Cổng này đếm: element
+    // CÔNG KHAI nào định nghĩa trong src mà không xuất hiện ở docs/showcase là
+    // đỏ. Tầng ruột được miễn — wrapper (chart-each-*) và leaf
+    // (chart-interactive-*) lên màn hình khi demo TOOL cha; hạ tầng trỏ chuột/
+    // tay cầm cũng vậy.
+    const { readFileSync, readdirSync } = await import("node:fs")
+    const walk = (dir, out = []) => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            if (entry.isDirectory()) walk(`${dir}/${entry.name}`, out)
+            else if (entry.name.endsWith(".js")) out.push(`${dir}/${entry.name}`)
+        }
+        return out
+    }
+    const INTERNAL = new Set([
+        "chart-clickable-circle", "chart-clickable-shape", "chart-hover-text",
+        "chart-mouse-location-indicator", "chart-axis-zoom-capture",
+        "chart-channel-with-area", "chart-linear-regression-channel", "chart-gann-fan",
+        "chart-interactive-label", "chart-interactive-straight-line",
+    ])
+    const internal = tag => tag.startsWith("chart-each-") || tag.startsWith("chart-interactive-") || INTERNAL.has(tag)
+    const defined = new Set()
+    for (const file of walk("./src")) for (const m of readFileSync(file, "utf8").matchAll(/define\("(chart-[a-z-]+)"/g)) defined.add(m[1])
+    const shown = new Set()
+    for (const file of walk("./docs/showcase")) {
+        const text = readFileSync(file, "utf8")
+        for (const m of text.matchAll(/"(chart-[a-z-]+)"/g)) shown.add(m[1])
+        for (const m of text.matchAll(/<(chart-[a-z-]+)/g)) shown.add(m[1])
+    }
+    const missing = [...defined].filter(tag => !shown.has(tag) && !internal(tag)).sort()
+    if (missing.length === 0) {
+        checked += 1
+        console.log(`✓ showcase phủ đủ bề mặt công khai (${[...defined].filter(t => !internal(t)).length} element)`)
+    } else {
+        failed++
+        console.error(`✗ ${missing.length} element công khai vắng mặt showcase: ${missing.join(", ")}`)
+    }
+}
+
+{
     const { drawSessionProfileSeries, periodLetter } = await import("./src/series/SessionProfileSeries.js")
     // Hai ngày, mỗi ngày hai bar 30 phút; trục tay như bài footprint.
     const xScale = value => value * 10
