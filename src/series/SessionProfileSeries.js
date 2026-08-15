@@ -133,7 +133,7 @@ export const drawSessionProfileSeries = (context, moreProps, props) => {
             const { top, height } = heightOf(price)
             const periods = [...levels.get(price).periods].sort((a, b) => a - b)
             periods.forEach((period, at) => {
-                if ((at + 1) * blockWidth > maxWidth) return // sàn 2px có thể vượt quỹ — cắt tại mép, không tràn sang phiên kế (#review)
+                if (at * blockWidth >= maxWidth - 1e-9) return // sàn 2px có thể vượt quỹ — cắt tại mép; so mép TRÁI + epsilon: (at+1)×w với w=maxWidth/n tròn IEEE lên trên maxWidth và rơi oan khối cuối (#review vòng 2, đo 12.4/3)
                 context.fillStyle = blockFill
                 context.fillRect(left + at * blockWidth, top, blockWidth - 1, height)
                 if (blockWidth >= minLetterWidth && height >= 8) {
