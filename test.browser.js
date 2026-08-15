@@ -127,6 +127,25 @@ const runShowcaseTests = async (page, origin) => {
             actual: unread.length ? `${unread.length} — ${unread[0]}` : "0",
         })
 
+        if (name === "coordinates") {
+            // chart-svg là cửa thoát ra DOM thật — demo của nó phải RA DOM thật
+            // ngay lần vẽ đầu, không đợi pan (bề mặt svg của pane từng có nghi
+            // án không vẽ lần đầu với chart-annotate — bài này canh cổng đó).
+            const escapeHatch = await page.evaluate(() => {
+                for (const canvas of document.querySelectorAll("chart-canvas")) {
+                    const node = canvas.shadowRoot?.querySelector(".svg-escape-hatch circle")
+                    if (node) return { r: node.getAttribute("r") }
+                }
+                return null
+            })
+            checks.push({
+                label: "chart-svg đổ node SVG thật vào pane ngay lần vẽ đầu",
+                pass: escapeHatch !== null && escapeHatch.r === "9",
+                expected: "circle r=9 trong .svg-escape-hatch",
+                actual: escapeHatch ? `circle r=${escapeHatch.r}` : "KHÔNG CÓ NODE NÀO",
+            })
+        }
+
         page.off("pageerror", onError)
         page.off("console", onConsole)
 
