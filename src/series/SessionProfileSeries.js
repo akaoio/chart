@@ -57,7 +57,8 @@ export const drawSessionProfileSeries = (context, moreProps, props) => {
     const sessions = []
     let current = null
     for (const datum of plotData) {
-        const day = datum.date?.getFullYear?.() !== undefined ? datum.date.getFullYear() * 10000 + datum.date.getMonth() * 100 + datum.date.getDate() : 0
+        if (datum.date?.getFullYear === undefined) continue // datum không date thì không thuộc phiên nào — cho qua, đừng nổ getTime ở dưới (#review)
+        const day = datum.date.getFullYear() * 10000 + datum.date.getMonth() * 100 + datum.date.getDate()
         if (!current || current.day !== day) {
             current = { day, data: [] }
             sessions.push(current)
@@ -71,7 +72,13 @@ export const drawSessionProfileSeries = (context, moreProps, props) => {
         const left = xScale(xAccessor(first))
         const right = xScale(xAccessor(last))
         const maxWidth = Math.max(8, ((right - left) * maxWidthPercent) / 100)
-        const sessionStart = first.date.getTime()
+        // Neo kỳ vào 00:00 của NGÀY (giờ hiển thị) — không phải bar đầu tiên
+        // TRONG KHUNG NHÌN (#review): plotData bị lọc theo viewport, neo theo
+        // nó thì pan một cú là mọi chữ kỳ đánh số lại, "A" đổi nghĩa giữa hai
+        // cú kéo. Ngày thì bất biến dù nhìn từ đâu.
+        const dayStart = new Date(first.date)
+        dayStart.setHours(0, 0, 0, 0)
+        const sessionStart = dayStart.getTime()
 
         // ── gom ô của cả phiên: mức → volume hoặc mức → tập kỳ ────────────────
         const levels = new Map()
@@ -126,6 +133,7 @@ export const drawSessionProfileSeries = (context, moreProps, props) => {
             const { top, height } = heightOf(price)
             const periods = [...levels.get(price).periods].sort((a, b) => a - b)
             periods.forEach((period, at) => {
+                if ((at + 1) * blockWidth > maxWidth) return // sàn 2px có thể vượt quỹ — cắt tại mép, không tràn sang phiên kế (#review)
                 context.fillStyle = blockFill
                 context.fillRect(left + at * blockWidth, top, blockWidth - 1, height)
                 if (blockWidth >= minLetterWidth && height >= 8) {
