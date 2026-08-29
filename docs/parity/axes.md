@@ -128,6 +128,7 @@ Trục giá chỉ kéo được khi pane cho phép (`yPan`). Nếu không, kéo 
 | `Axis` | là component | là hàm `drawAxis` cộng phần tử riêng | tách phần vẽ khỏi phần tử để kiểm được ngoài trình duyệt — xem [`series.md`](series.md) |
 | `tickSize` | khai báo trong props | không có | **prop chết trong chính bản gốc**: `Axis.tsx` chỉ có một biến cục bộ trùng tên (`const tickSize = sign * outerTickSize`, dòng 322), không chỗ nào đọc prop ra. Độ dài vạch do `innerTickSize`/`outerTickSize` quyết định, và cả hai đều có |
 | `domainClassName` | lớp CSS cho đường bao trục | không có | trục được vẽ lên canvas, không có node nào để gắn lớp vào |
+| `abbreviate` | không có | prop mới, `<chart-y-axis>` mặc định bật | xem phần dưới |
 
 ## Một prop tồn tại trên giấy, không tồn tại thật — đã sửa
 
@@ -136,3 +137,16 @@ Trục giá chỉ kéo được khi pane cho phép (`yPan`). Nếu không, kéo 
 Giờ `AxisZoomCapture` hỏi chính mình trước rồi hỏi trục, đúng lối `#doubleClick()` đã làm. Có bài kiểm bấm chuột phải thật trên dải trục.
 
 Đây là loại lỗ mà đếm export không bao giờ thấy: `XAxis` có đủ, `AxisZoomCapture` có đủ, chỉ thiếu sợi dây giữa hai cái.
+
+## Một prop mới: `abbreviate` trên trục giá
+
+`80,000` thành `80K`, `1,000,000` thành `1M`. Hai điều kiện, phải đủ cả hai:
+
+- **đúng từng chữ số** — dạng rút gọn và dạng đầy đủ là **cùng một số**, không làm tròn gì hết. `1,500` thành `1.5K` đạt; phép dời dấu phẩy chạy trên **chuỗi thập phân** của chính con số chứ không chia, vì `77375.89 / 1000` trong dấu phẩy động là `77.37588999999999` — một trục bịa ra chữ số còn tệ hơn một trục dài.
+- **ngắn hơn thật** — `77375.89` rút thành `77.37589K`, dài hơn một ký tự cho cùng một giá trị, nên nó được để nguyên. Cái suffix sinh ra để cột hẹp lại; một phép rút làm cột rộng ra thì không có lý do gì để xảy ra.
+
+Rê chuột lên cột giá là **đọc số thật**: trong lúc con trỏ còn ở đó, nhãn trở lại đầy đủ. Dải nghe chuột là cả cột (`margin` bên ấy), không phải `yZoomWidth` — người ta rê chuột lên "chỗ có mấy con số", không lên một dải 40px vô hình bên trong nó. Nó phải tự nghe trên chính phần tử `<chart-canvas>`, vì cột giá nằm trong margin, tức **ngoài** vùng `EventCapture` bắt chuột.
+
+`abbreviate` chỉ đụng vào cách trục tự định dạng. `tickFormat` do ứng dụng đặt là một **nhãn**, không phải một con số — nó có thể mang ký hiệu tiền tệ, đơn vị, tên. Gấp `$80,000` thành `80K` là lặng lẽ nuốt mất dấu `$`. Nên hai thứ loại trừ nhau: không nói gì thì trục được phép rút gọn số của chính nó, đưa `tickFormat` vào thì nhãn là của bạn, nguyên vẹn.
+
+Bộ golden không đụng tới: `axisBase` trong `tools/golden/cases/draw.mjs` dựng props bằng tay và không có `abbreviate`, nên 15 cấu hình trục vẫn khớp bản gốc từng lệnh một.

@@ -142,6 +142,7 @@ The price axis.
 
 | property | default |
 |---|---|
+| `abbreviate` | `true` |
 | `axisAt` | `"right"` |
 | `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
 | `fontSize` | `12` |
@@ -686,6 +687,7 @@ The value of the first or last visible point, pinned to the axis.
 | `opacity` | `1` |
 | `orient` | `"right"` |
 | `rectHeight` | `20` |
+| `rectPadding` | `4` |
 | `rectWidth` | `50` |
 | `stroke` | ƒ |
 | `strokeOpacity` | `1` |
@@ -759,6 +761,7 @@ The price readout beside the cursor.
 | `opacity` | `1` |
 | `orient` | `"right"` |
 | `rectHeight` | `20` |
+| `rectPadding` | `4` |
 | `rectWidth` | `50` |
 | `stroke` | — |
 | `strokeOpacity` | `1` |
@@ -788,6 +791,7 @@ A fixed price level with a label — an alert, an entry, a target.
 | `orient` | `"left"` |
 | `price` | `0` |
 | `rectHeight` | `20` |
+| `rectPadding` | `4` |
 | `rectWidth` | `50` |
 | `stroke` | — |
 | `strokeDasharray` | `"Solid"` |

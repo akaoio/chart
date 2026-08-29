@@ -15,6 +15,7 @@ export { default as accumulatingWindow } from "./accumulatingWindow.js"
 export * from "./closestItem.js"
 export * from "./barWidth.js"
 export * from "./strokeDasharray.js"
+export * from "./abbreviate.js"
 
 /**
  * Merge defaults the way React's `defaultProps` did, which is not the way object spread

@@ -2,7 +2,7 @@ import { isNotDefined, withDefaults } from "../core/utils/index.js"
 import { getMouseCanvas } from "../core/GenericComponent.js"
 import { Series } from "../series/Series.js"
 import { define } from "../core/element.js"
-import { drawEdgeCoordinate } from "./EdgeCoordinate.js"
+import { drawEdgeCoordinate, gutterWidthFor } from "./EdgeCoordinate.js"
 
 export const mouseCoordinateYDefaults = {
     arrowWidth: 0,
@@ -16,6 +16,7 @@ export const mouseCoordinateYDefaults = {
     orient: "right",
     rectWidth: 50,
     rectHeight: 20,
+    rectPadding: 4,
     strokeOpacity: 1,
     strokeWidth: 1,
     textFill: "#FFFFFF",
@@ -27,8 +28,8 @@ export const mouseCoordinateYDefaults = {
 
 /** Shared by the mouse readout and anything else pinning a value to the y axis. */
 export const getYCoordinate = (y, coordinate, props, moreProps) => {
-    const { width } = moreProps
-    const { orient, at, rectWidth, rectHeight, dx, stroke, strokeOpacity, strokeWidth } = props
+    const { width, margin } = moreProps
+    const { orient, at, rectWidth, rectHeight, rectPadding, dx, stroke, strokeOpacity, strokeWidth } = props
     const { fill, opacity, fitToText, fontFamily, fontSize, textFill, arrowWidth } = props
 
     return {
@@ -49,6 +50,9 @@ export const getYCoordinate = (y, coordinate, props, moreProps) => {
         strokeWidth,
         rectWidth,
         rectHeight,
+        rectPadding,
+        // `edgeAt` above ignores `yAxisPad` — the original does — so the column does too.
+        gutterWidth: gutterWidthFor(margin, at),
         arrowWidth,
         dx,
         x1: 0,

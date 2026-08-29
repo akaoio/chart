@@ -149,6 +149,22 @@ const countLeaves = value => {
 
 let failed = 0
 let checked = 0
+let onPurposeTotal = 0
+
+/**
+ * Chỗ lệch ĐÃ KHAI BÁO.
+ *
+ * Bản port sửa vài chỗ bản gốc làm sai — xem bảng "lệch có chủ ý" trong `docs/parity/`.
+ * Sửa xong thì chuỗi lệnh canvas không còn khớp fixture nữa, mà fixture là **bản gốc**
+ * chạy thật, nên nó không được sinh lại cho vừa ý bản port: làm thế là mất luôn thứ duy
+ * nhất nói được bản gốc vốn vẽ gì.
+ *
+ * Nên mỗi bộ được phép khai báo `deviations`: tên case → lý do. Hai chiều đều bị canh.
+ * Lệch ở case KHÔNG khai báo là đỏ, như trước. Và case đã khai báo mà **hết lệch** cũng
+ * là đỏ — nghĩa là bản sửa đã bị ai đó gỡ mất, hoặc lời khai báo đã hết hạn, và cả hai
+ * đều phải nói ra chứ không được lặng lẽ trôi qua.
+ */
+const caseOf = path => path.match(/^[^.[]+/)?.[0]
 
 for (const [suite, port] of suites) {
     const fixture = JSON.parse(readFileSync(join(here, "tools/golden/fixtures", `${suite.name}.json`), "utf8"))
@@ -163,11 +179,29 @@ for (const [suite, port] of suites) {
     }
     checked += leaves
 
-    const wrong = differences(expected, actual)
-    if (wrong.length === 0) {
-        console.log(`✓ ${suite.name}: ${leaves} giá trị khớp bản gốc @ ${fixture.source.commit}`)
+    const declared = suite.deviations ?? {}
+    const everyDifference = differences(expected, actual)
+
+    const wrong = everyDifference.filter(one => declared[caseOf(one.path)] === undefined)
+    const onPurpose = new Set(everyDifference.map(one => caseOf(one.path)).filter(name => declared[name]))
+
+    onPurposeTotal += everyDifference.length - wrong.length
+
+    const stale = Object.keys(declared).filter(name => !onPurpose.has(name))
+    if (stale.length > 0) {
+        failed++
+        console.error(`✗ ${suite.name}: khai báo lệch có chủ ý nhưng không lệch: ${stale.join(", ")}`)
+        for (const name of stale) console.error(`    ${name}: ${declared[name]}`)
+    }
+
+    if (wrong.length === 0 && stale.length === 0) {
+        const matched = leaves - everyDifference.length
+        const note = onPurpose.size === 0 ? "" : ` · ${onPurpose.size} case lệch có chủ ý`
+        console.log(`✓ ${suite.name}: ${matched} giá trị khớp bản gốc @ ${fixture.source.commit}${note}`)
         continue
     }
+
+    if (wrong.length === 0) continue
 
     failed++
     console.error(`✗ ${suite.name}: ${wrong.length}/${leaves} giá trị lệch`)
@@ -447,4 +481,7 @@ if (failed > 0) {
     process.exit(1)
 }
 
-console.log(`\n${checked} giá trị khớp bản gốc.`)
+console.log(
+    `\n${checked - onPurposeTotal} giá trị khớp bản gốc` +
+        (onPurposeTotal === 0 ? "." : `, ${onPurposeTotal} giá trị lệch có chủ ý (đã khai báo).`),
+)

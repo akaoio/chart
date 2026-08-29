@@ -34,6 +34,7 @@ export const yAxisDefaults = {
     tickInterval: undefined,
     tickIntervalFunction: undefined,
     ticks: undefined,
+    abbreviate: true,
     yZoomWidth: 40,
     zoomEnabled: true,
     onDoubleClick: undefined,
@@ -51,6 +52,8 @@ export class YAxis extends Series {
     static defaults = yAxisDefaults
 
     #zoomCapture = null
+    #watching = null
+    #hovering = false
 
     connectedCallback() {
         super.connectedCallback()
@@ -60,6 +63,11 @@ export class YAxis extends Series {
             this.#zoomCapture.axis = this
             this.append(this.#zoomCapture)
         }
+    }
+
+    disconnectedCallback() {
+        this.#unwatchPointer()
+        super.disconnectedCallback()
     }
 
     get clip() {
@@ -107,18 +115,101 @@ export class YAxis extends Series {
         return true
     }
 
+    // ── rê chuột lên cột giá thì số trở lại đầy đủ ────────────────────────────────
+
+    /**
+     * Cột giá, tính bằng toạ độ của chính `<chart-canvas>`.
+     *
+     * Nó nằm trong **margin**, tức ngoài vùng `EventCapture` bắt chuột — vùng ấy chỉ rộng
+     * bằng phần vẽ. Nên chuột đi qua cột giá không sinh ra `mousemove` nào của thư viện,
+     * và dải này phải tự hỏi lấy phần tử canvas.
+     *
+     * Bề ngang là cả cột chứ không phải `yZoomWidth`: người ta rê chuột lên "chỗ có mấy
+     * con số", không lên một dải 40px vô hình bên trong nó. Bề dọc là của riêng pane này —
+     * xếp ba pane chồng lên nhau thì mỗi trục chỉ nhận phần cột ngang tầm nó.
+     */
+    #priceColumn() {
+        const config = this.chartConfig
+        const margin = this.canvas?.margin
+        if (!config || !margin) return null
+
+        const { axisAt, yZoomWidth } = this.seriesProps
+        const { width, height, origin } = config
+
+        const axisLocation =
+            axisAt === "left" ? 0 : axisAt === "right" ? width : axisAt === "middle" ? width / 2 : axisAt
+        if (typeof axisLocation !== "number") return null
+
+        const left = margin.left + axisLocation
+        const top = margin.top + (origin?.[1] ?? 0)
+
+        if (axisAt === "left") return { left: left - margin.left, right: left, top, bottom: top + height }
+        if (axisAt === "right") return { left, right: left + margin.right, top, bottom: top + height }
+
+        return { left, right: left + yZoomWidth, top, bottom: top + height }
+    }
+
+    #handlePointerMove = event => {
+        const canvas = this.canvas
+        const column = this.#priceColumn()
+        if (canvas === null || column === null) return
+
+        const box = canvas.getBoundingClientRect()
+        const x = event.clientX - box.left
+        const y = event.clientY - box.top
+
+        this.#setHovering(x >= column.left && x <= column.right && y >= column.top && y <= column.bottom)
+    }
+
+    #handlePointerLeave = () => this.#setHovering(false)
+
+    /**
+     * Vẽ lại CẢ biểu đồ, không vẽ lại riêng trục.
+     *
+     * Trục dùng chung canvas với series, mà một lần vẽ lẻ không xoá gì cả — nhãn cũ sẽ
+     * còn nguyên dưới nhãn mới. Đổi trạng thái chỉ xảy ra lúc chuột vào và lúc chuột ra,
+     * mỗi lần một cú vẽ, nên đây không phải chuyện của mỗi bước chuột.
+     */
+    #setHovering(hovering) {
+        if (hovering === this.#hovering) return
+
+        this.#hovering = hovering
+        this.canvas?.requestRedraw?.()
+    }
+
+    #watchPointer() {
+        const canvas = this.canvas
+
+        if (canvas === null || !this.seriesProps.abbreviate) return this.#unwatchPointer()
+        if (this.#watching === canvas) return
+
+        this.#unwatchPointer()
+        canvas.addEventListener("mousemove", this.#handlePointerMove)
+        canvas.addEventListener("mouseleave", this.#handlePointerLeave)
+        this.#watching = canvas
+    }
+
+    #unwatchPointer() {
+        this.#watching?.removeEventListener("mousemove", this.#handlePointerMove)
+        this.#watching?.removeEventListener("mouseleave", this.#handlePointerLeave)
+        this.#watching = null
+        this.#hovering = false
+    }
+
     get axisProps() {
         const config = this.chartConfig
         if (!config) return null
 
         const { width, height } = config
-        const { axisAt, orient, ticks, yZoomWidth } = this.seriesProps
+        const { abbreviate, axisAt, orient, ticks, yZoomWidth } = this.seriesProps
 
         const axisLocation =
             axisAt === "left" ? 0 : axisAt === "right" ? width : axisAt === "middle" ? width / 2 : axisAt
 
         return {
             ...this.seriesProps,
+            // Rê chuột lên cột là hỏi con số thật: viết tắt tắt đi trong lúc chuột còn ở đó.
+            abbreviate: abbreviate && !this.#hovering,
             transform: [axisLocation, 0],
             range: [0, height],
             bg: { x: orient === "left" ? -yZoomWidth : 0, y: 0, h: height, w: yZoomWidth },
@@ -134,6 +225,8 @@ export class YAxis extends Series {
     }
 
     canvasDraw(context, moreProps) {
+        this.#watchPointer()
+
         const props = this.axisProps
         if (props !== null) drawAxis(context, moreProps, props)
     }

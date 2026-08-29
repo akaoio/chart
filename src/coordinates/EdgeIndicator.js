@@ -2,7 +2,7 @@ import { format } from "d3-format"
 import { first, functor, last, noop, withDefaults } from "../core/utils/index.js"
 import { Series } from "../series/Series.js"
 import { define } from "../core/element.js"
-import { drawEdgeCoordinate } from "./EdgeCoordinate.js"
+import { drawEdgeCoordinate, gutterWidthFor } from "./EdgeCoordinate.js"
 
 export const edgeIndicatorDefaults = {
     fitToText: false,
@@ -15,6 +15,7 @@ export const edgeIndicatorDefaults = {
     yAxisPad: 0,
     rectHeight: 20,
     rectWidth: 50,
+    rectPadding: 4,
     arrowWidth: 0,
     fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
     fontSize: 13,
@@ -69,6 +70,7 @@ export const drawEdgeIndicator = (context, moreProps, props) => {
         chartConfig: { yScale },
         xAccessor,
         width,
+        margin,
     } = moreProps
 
     const yValue = yAccessor(item)
@@ -84,6 +86,7 @@ export const drawEdgeIndicator = (context, moreProps, props) => {
         type,
         orient,
         edgeAt: edgeAt === "left" ? 0 - yAxisPad : width + yAxisPad,
+        gutterWidth: gutterWidthFor(margin, edgeAt, yAxisPad),
         fill: functor(fill)(item),
         lineStroke: functor(lineStroke)(item),
         stroke: functor(stroke)(item),

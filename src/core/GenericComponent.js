@@ -221,6 +221,10 @@ export class GenericComponent extends ElementBase {
             height: context.height,
             chartId: this.chartId,
             fullData: context.fullData,
+            // The strip an axis lives in is the chart's margin, and a label pinned to an
+            // axis has to know how wide that strip is to sit inside it. `Cursor` and
+            // `HoverTooltip` already took margin this way — see docs/parity/coordinates.md.
+            margin: context.margin,
             ...this.moreProps,
         }
     }
