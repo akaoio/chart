@@ -156,8 +156,179 @@ const runShowcaseTests = async (page, origin) => {
     results.push(await showcaseBrush(page, origin))
     results.push(await showcaseAlternateData(page, origin))
     results.push(await showcaseKeepsWorkingAfterDrawing(page, origin))
+    results.push(await showcasePriceColumn(page, origin))
 
     return results
+}
+
+/**
+ * Cột giá: chữ có bị lẹm không, và có còn dải trắng thừa không.
+ *
+ * Đo bằng PIXEL, vì đây là bài toán pixel. Canvas không cắt chữ theo hộp, nên một nhãn
+ * rộng hơn nền của nó không nổ, không cảnh báo, và trong bộ golden thì vẫn "khớp" —
+ * chuỗi lệnh vẫn đủ, chỉ có hình là sai. Chỉ có đọc lại đúng những gì đã tô mới thấy.
+ *
+ * Bốn điều CÓ THỂ SAI:
+ *   1. viết tắt phải thật sự bớt mực trên trục — `90K` ít nét hơn `90,000`;
+ *   2. rê chuột lên cột phải trả lại đủ chữ số, và rời chuột phải viết tắt lại;
+ *   3. hộp giá phải chạm mép phải của canvas — dải trắng thừa là thứ phải biến mất;
+ *   4. chữ trong hộp phải cách mép hộp, cả hai bên. Trước bản sửa, `94552.00` cỡ 13px
+ *      nằm trong hộp cứng 50px: chữ tràn ra ngoài nền của chính nó.
+ */
+const showcasePriceColumn = async (page, origin) => {
+    const checks = []
+
+    await page.goto(`${origin}/docs/showcase/coordinates.html`)
+    await page.waitForFunction(() => document.querySelectorAll("chart-canvas").length > 0)
+    await page.waitForTimeout(600)
+
+    /**
+     * Mực trong cột giá của một trong hai biểu đồ, và hình học của hộp giá xanh.
+     *
+     * Cột giá là phần bên phải đường trục, tức đúng bề rộng `margin.right`. Chữ nhãn là
+     * mực sẫm; hộp giá là màu `#2a6df4` đặt riêng cho bài này; chữ trong hộp là trắng.
+     */
+    const readColumn = index =>
+        page.evaluate(cell => {
+            const section = [...document.querySelectorAll("section.demo")].find(
+                node => node.querySelector("h2")?.textContent === "The price column",
+            )
+            if (!section) return null
+
+            const canvas = section.querySelectorAll("chart-canvas")[cell]
+            if (!canvas) return null
+
+            const context = canvas.getCanvasContexts().axes
+            const { width, height } = context.canvas
+            const pixels = context.getImageData(0, 0, width, height).data
+
+            /**
+             * Kèm cả alpha, vì canvas TRONG SUỐT chứ không trắng.
+             *
+             * Chỗ chưa ai tô đọc ra `(0, 0, 0, 0)` — đen tuyền theo RGB. Đếm mực mà quên
+             * alpha là đếm cả khoảng trống, và hai biểu đồ khác nhau ra cùng một con số.
+             */
+            const at = (x, y) => {
+                const start = (y * width + x) * 4
+                return [pixels[start], pixels[start + 1], pixels[start + 2], pixels[start + 3]]
+            }
+
+            const columnLeft = width - canvas.margin.right
+
+            let ink = 0
+            for (let y = 0; y < height; y++) {
+                for (let x = columnLeft + 2; x < width; x++) {
+                    const [r, g, b, a] = at(x, y)
+                    if (a > 128 && r < 120 && g < 120 && b < 120) ink++
+                }
+            }
+
+            const isBox = ([r, g, b, a]) => a > 128 && b > 200 && r < 120 && g < 170
+            const isText = ([r, g, b, a]) => a > 128 && r > 240 && g > 240 && b > 240
+
+            const rows = []
+            for (let y = 0; y < height; y++) {
+                let count = 0
+                for (let x = 0; x < width; x++) if (isBox(at(x, y))) count++
+                if (count > 20) rows.push(y)
+            }
+            if (rows.length === 0) return { ink, width, box: null }
+
+            const middle = rows[Math.floor(rows.length / 2)]
+            let boxLeft = null
+            let boxRight = null
+            let textLeft = null
+            let textRight = null
+
+            for (let x = 0; x < width; x++) {
+                if (isBox(at(x, middle))) {
+                    if (boxLeft === null) boxLeft = x
+                    boxRight = x
+                }
+            }
+            // Chữ chỉ được tính khi nó nằm trong hộp: nền trang cũng trắng, nên chữ tràn
+            // ra ngoài hộp là chữ trắng trên trắng — vô hình, và đó chính là cái "lẹm".
+            for (let y of rows) {
+                for (let x = boxLeft; x <= boxRight; x++) {
+                    if (!isText(at(x, y))) continue
+                    if (textLeft === null || x < textLeft) textLeft = x
+                    if (textRight === null || x > textRight) textRight = x
+                }
+            }
+
+            return { ink, width, box: { boxLeft, boxRight, textLeft, textRight } }
+        }, index)
+
+    const short = await readColumn(0)
+    const long = await readColumn(1)
+
+    checks.push({
+        label: "viết tắt bớt mực trên trục giá",
+        pass: short !== null && long !== null && short.ink > 0 && short.ink < long.ink * 0.8,
+        expected: "mực(90K) < 0,8 × mực(90,000)",
+        actual: short && long && `${short.ink} vs ${long.ink}`,
+    })
+
+    /**
+     * Rê chuột vào giữa cột giá của biểu đồ bên trái.
+     *
+     * Phải cuộn tới nơi trước: `page.mouse.move` nhận toạ độ trong khung nhìn, mà demo
+     * này nằm quá đáy trang — trỏ vào một điểm ngoài khung nhìn thì không có sự kiện nào
+     * xảy ra cả, và bài kiểm sẽ báo "hover không chạy" trong khi hover vẫn chạy.
+     */
+    const columnPoint = await page.evaluate(async () => {
+        const section = [...document.querySelectorAll("section.demo")].find(
+            node => node.querySelector("h2")?.textContent === "The price column",
+        )
+        section.scrollIntoView({ block: "center" })
+        await new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done)))
+
+        const canvas = section.querySelector("chart-canvas")
+        const box = canvas.getBoundingClientRect()
+        return { x: box.right - canvas.margin.right / 2, y: box.top + box.height / 2 }
+    })
+
+    await page.mouse.move(columnPoint.x, columnPoint.y)
+    await page.waitForTimeout(250)
+    const hovered = await readColumn(0)
+
+    await page.mouse.move(10, 10)
+    await page.waitForTimeout(250)
+    const left = await readColumn(0)
+
+    checks.push({
+        label: "rê chuột lên cột giá là hiện đủ chữ số",
+        pass: hovered !== null && hovered.ink > short.ink * 1.2,
+        expected: "mực khi rê chuột > 1,2 × mực lúc viết tắt",
+        actual: hovered && `${hovered.ink} vs ${short.ink}`,
+    })
+    checks.push({
+        label: "rời chuột thì viết tắt lại",
+        pass: left !== null && left.ink === short.ink,
+        expected: `${short?.ink}`,
+        actual: left?.ink,
+    })
+
+    const box = short?.box
+    checks.push({
+        label: "hộp giá chạm mép phải canvas — không còn dải trắng thừa",
+        pass: box !== null && box !== undefined && box.boxRight >= short.width - 2,
+        expected: `>= ${short && short.width - 2}`,
+        actual: box?.boxRight,
+    })
+    checks.push({
+        label: "chữ trong hộp giá cách cả hai mép hộp",
+        pass:
+            box !== null &&
+            box !== undefined &&
+            box.textLeft !== null &&
+            box.textLeft - box.boxLeft >= 2 &&
+            box.boxRight - box.textRight >= 2,
+        expected: ">= 2px mỗi bên",
+        actual: box && `trái ${box.textLeft - box.boxLeft}, phải ${box.boxRight - box.textRight}`,
+    })
+
+    return { name: "trưng bày: cột giá không lẹm, không thừa", checks }
 }
 
 /**

@@ -1,6 +1,6 @@
 import { range as d3Range, zip } from "d3-array"
 import { forceCollide, forceSimulation, forceX } from "d3-force"
-import { first, last, getStrokeDasharrayCanvas } from "../core/utils/index.js"
+import { abbreviateNumber, first, last, getStrokeDasharrayCanvas } from "../core/utils/index.js"
 
 /**
  * Where each tick sits, and where its label goes.
@@ -32,6 +32,7 @@ export const tickHelper = (props, scale) => {
         tickStrokeStyle,
         tickInterval,
         tickIntervalFunction,
+        abbreviate,
         ...rest
     } = props
 
@@ -49,7 +50,20 @@ export const tickHelper = (props, scale) => {
         tickValues = scale.domain()
     }
 
-    const format = tickFormat === undefined ? scale.tickFormat(tickArguments) : value => tickFormat(value) || ""
+    /**
+     * `abbreviate` only ever touches the axis's OWN formatting.
+     *
+     * A `tickFormat` from the application is a whole label, not a number — it may carry a
+     * currency mark, a unit, a name. Folding `$80,000` into `80K` would silently drop the
+     * `$`. So the two are exclusive: say nothing and the axis may shorten its own
+     * numbers, supply a format and it is yours untouched.
+     */
+    const format = (() => {
+        if (tickFormat !== undefined) return value => tickFormat(value) || ""
+
+        const own = scale.tickFormat(tickArguments)
+        return abbreviate ? value => abbreviateNumber(value, own(value)) : own
+    })()
 
     const sign = orient === "top" || orient === "left" ? -1 : 1
     const tickSpacing = Math.max(innerTickSize, 0) + tickPadding

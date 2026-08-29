@@ -2,13 +2,14 @@ import { format } from "d3-format"
 import { functor, withDefaults } from "../core/utils/index.js"
 import { Series } from "../series/Series.js"
 import { define } from "../core/element.js"
-import { drawEdgeCoordinate } from "./EdgeCoordinate.js"
+import { drawEdgeCoordinate, gutterWidthFor } from "./EdgeCoordinate.js"
 
 export const priceCoordinateDefaults = {
     displayFormat: format(".2f"),
     yAxisPad: 0,
     rectWidth: 50,
     rectHeight: 20,
+    rectPadding: 4,
     orient: "left",
     at: "left",
     price: 0,
@@ -40,12 +41,13 @@ export const drawPriceCoordinate = (context, moreProps, props) => {
     const {
         chartConfig: { yScale },
         width,
+        margin,
     } = moreProps
 
     const [lowerYValue, upperYValue] = yScale.domain()
 
     const { price, stroke, strokeDasharray, strokeOpacity, strokeWidth } = resolved
-    const { orient, at, rectWidth, rectHeight, displayFormat, dx } = resolved
+    const { orient, at, rectWidth, rectHeight, rectPadding, displayFormat, dx } = resolved
     const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke } = resolved
 
     const y = yScale(price)
@@ -56,6 +58,7 @@ export const drawPriceCoordinate = (context, moreProps, props) => {
         type: "horizontal",
         orient,
         edgeAt: at === "right" ? width : 0,
+        gutterWidth: gutterWidthFor(margin, at),
         hideLine: false,
         lineOpacity,
         lineStroke,
@@ -70,6 +73,7 @@ export const drawPriceCoordinate = (context, moreProps, props) => {
         fontSize,
         rectWidth,
         rectHeight,
+        rectPadding,
         arrowWidth,
         dx,
         x1: 0,

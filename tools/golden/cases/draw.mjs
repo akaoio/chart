@@ -20,6 +20,26 @@ import { datasets } from "../data.mjs"
 export const name = "draw"
 
 /**
+ * Chỗ lệch có chủ ý — xem `docs/parity/coordinates.md`.
+ *
+ * Nhãn ghim vào trục giá của bản gốc rộng đúng `rectWidth`, bất kể chữ trong nó dài bao
+ * nhiêu. Chữ được canh GIỮA hộp, mà canvas không cắt chữ theo hộp, nên một giá 8 chữ số
+ * ở cỡ 13px tràn ra cả hai đầu cái nền của chính nó: đè lên đường trục một bên, chạy quá
+ * mép canvas bên kia — và cột giá vẫn còn một dải trắng thừa bên phải cái hộp.
+ *
+ * Bản port đo chữ rồi lấp đúng bề rộng cột trục (`margin` bên ấy), nên nhãn không bao giờ
+ * lẹm và không chừa dải trắng. Chỉ những case ghim vào bên PHẢI mới lệch: `hovering()`
+ * đặt `margin.left` bằng 0, nên bên trái không có cột nào để lấp và hình vẽ giữ nguyên.
+ */
+export const deviations = {
+    mouseCoordinateY: "hộp giá lấp bề rộng cột trục, không còn 50px cứng",
+    mouseCoordinateYFit: "hộp co theo chữ vẫn không được hẹp hơn cột trục",
+    priceCoordinateRight: "hộp giá lấp bề rộng cột trục",
+    edgeIndicator: "hộp giá lấp bề rộng cột trục",
+    edgeIndicatorFull: "hộp giá lấp bề rộng cột trục (có cả mũi tên)",
+}
+
+/**
  * Bốn mươi phiên, cộng ba trường hợp mà dữ liệu ngẫu nhiên gần như không bao giờ sinh ra
  * nhưng thị trường thì có: một phiên mở bằng đóng (doji — thân nến dày 0), một phiên
  * đứng im hoàn toàn, và một phiên biến động rất mạnh.

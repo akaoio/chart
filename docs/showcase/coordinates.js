@@ -104,6 +104,65 @@ demo({
     },
 })
 
+/**
+ * The same sessions priced in the tens of thousands.
+ *
+ * `daily()` peaks near 110, and a label that short never needed shortening — the price
+ * column only becomes a problem at the scale an index or a crypto pair actually trades
+ * at, where every tick is six characters and the last price is eight.
+ */
+const expensive = rows.map(datum => ({
+    ...datum,
+    open: Math.round(datum.open * 800),
+    close: Math.round(datum.close * 800),
+    high: Math.round(datum.high * 800),
+    low: Math.round(datum.low * 800),
+}))
+
+demo({
+    title: "The price column",
+    about:
+        "`chart-y-axis` folds a round number into a `K` or an `M` suffix — but only when the " +
+        "short form is exact AND shorter, so `1,500` becomes `1.5K` and `77,375.89` is left " +
+        "alone rather than growing into `77.37589K`. Hover the price column to read every " +
+        "digit again. Set `abbreviate = false` for the second chart's behaviour, or give the " +
+        "axis a `tickFormat` of your own — a format you supply is never folded, because it is " +
+        "a label rather than a number and the suffix would eat whatever else is in it.\n\n" +
+        "The labels pinned to that column — `chart-edge-indicator` here — fill its width: no " +
+        "leftover strip beside the box, and enough room inside it that the digits never touch " +
+        "the axis line or run off the canvas.",
+    build: stage => {
+        grid(
+            stage,
+            [
+                { title: "abbreviated — the default" },
+                { title: "every digit — abbreviate = false", abbreviate: false },
+            ],
+            (host, entry) => {
+                const { pane } = chartHost(host, expensive, {
+                    height: 260,
+                    series: ["chart-candlestick-series"],
+                })
+
+                // The first chart is left ALONE on purpose — it is showing the default, so
+                // it must not be handed the value it is meant to be demonstrating.
+                if (entry.abbreviate === false) pane.querySelector("chart-y-axis").abbreviate = false
+
+                const last = document.createElement("chart-edge-indicator")
+                Object.assign(last, {
+                    itemType: "last",
+                    orient: "right",
+                    edgeAt: "right",
+                    yAccessor: datum => datum.close,
+                    fill: "#2a6df4",
+                })
+
+                pane.append(last)
+            },
+        )
+    },
+})
+
 demo({
     title: "Tooltips",
     about:
