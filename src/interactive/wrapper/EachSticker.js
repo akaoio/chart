@@ -28,10 +28,18 @@ export const eachStickerDefaults = {
  * One placed sticker: the stamp and its single anchor handle.
  *
  * MỘT tay cầm, và con số ấy là giao ước giữa hai kho: cổng `check:drawn-icons`
- * bên akao đếm `createElement("chart-clickable-circle")` ngay trong wrapper để
- * biết icon phải vẽ mấy vành. Nên lời gọi ấy nằm thẳng ở thân hàm, đúng một
- * lần, không trong nhánh điều kiện nào — `EachImage` có hai vì hộp ảnh co giãn
- * giữa hai góc; con dấu không co giãn nên nó chỉ cần một.
+ * bên akao đếm số lời gọi `createElement` dựng một `chart-clickable-circle`
+ * ngay trong wrapper để biết icon phải vẽ mấy vành. Nên lời gọi ấy nằm thẳng ở
+ * thân hàm, đúng một lần, không trong nhánh điều kiện nào — `EachImage` có hai
+ * vì hộp ảnh co giãn giữa hai góc; con dấu không co giãn nên nó chỉ cần một.
+ *
+ * Và chú thích này cố ý KHÔNG trích nguyên văn cái chuỗi mà cổng ấy đếm. Bộ
+ * quét bên kia chạy một biểu thức chính quy trên văn bản thô và không che chú
+ * thích, nên một câu giải thích trích đúng chuỗi sẽ tự nâng số đếm lên hai và
+ * bảo akao vẽ hai vành cho một công cụ có một tay cầm. Bản đầu của tệp này mắc
+ * đúng lỗi ấy — nó là tệp DUY NHẤT trong 31 wrapper có phép đếm thô lệch phép
+ * đếm thật. Chú thích càng viết đúng thì càng dễ gây lỗi, vì viết đúng nghĩa là
+ * trích nguyên văn; nên `test.js` nay có một cổng canh riêng chuyện đó.
  */
 export class EachSticker extends ElementBase {
     #props

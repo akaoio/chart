@@ -88,6 +88,10 @@ Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition
 
 Với wrapper đếm-theo-điểm, cổng ấy nhận ra kiểu wrapper bằng cách dò **đúng chuỗi** `handles.length < points.length` rồi mới đi đọc bảng biến thể; viết đảo vế (`points.length > handles.length`) làm nó rơi về nhánh đếm `createElement` và ra "1 vành" — đỏ oan cả `chart-pattern` lẫn `chart-curve-tool`, mà không ai đoán ra vì mã vẫn đúng. Nên câu ấy giữ nguyên vế, và ai đổi thì báo kho akao trước.
 
+**Và chú thích không được trích nguyên văn cái chuỗi bị đếm.** Bộ quét ấy chạy trên văn bản THÔ, không che chú thích. `EachSticker.js` lúc đầu giải thích chính giao ước này bằng cách trích đúng chuỗi, và thành tệp **duy nhất trong 31 wrapper** có phép đếm thô (2) khác phép đếm thật (1) — tức nó bảo akao vẽ hai vành cho một công cụ có một tay cầm. Lỗi ấy chỉ nổ ở kho bên kia, sau khi ai đó nâng lock, và triệu chứng là "cổng đòi 2 vành" chứ không phải "chú thích có chuỗi trùng". Nó là mặt NGƯỢC của một lớp lỗi akao đã trả giá: ở đó chuỗi trong chú thích làm bộ quét mù, ở đây làm bộ quét đếm thừa. Và nó khó thấy vì **chú thích càng viết đúng thì càng dễ gây lỗi** — viết đúng nghĩa là trích nguyên văn.
+
+`test.js` nay canh đúng chuyện đó: đếm token hai lần, thô và sau khi che chú thích, rồi bắt hai số bằng nhau. Cổng ấy chỉ vá được phía gói; **che chú thích trước khi đếm ở phía akao mới là chữa gốc**, và nó bảo vệ mọi wrapper tương lai chứ không riêng cái này.
+
 Cùng loại giao ước, chiều ngược lại: `variant: "schiff"` và `variant: "modifiedSchiff"` (`pitchforkAnchor`), `type: "RAY"` và `type: "LINE"` (`generateLine`) là bốn chuỗi akao truyền vào. Cả hai `switch` ấy có nhánh `default:` nuốt mọi giá trị lạ, nên đổi tên chúng làm akao vẽ sai **mà không có gì đỏ** — hỏng im lặng, loại đắt nhất. akaoio/akao#559 nay có cổng canh đúng chuyện đó, nhưng cổng ở kho bên kia: đổi tên thì báo trước.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: các bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và các dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
@@ -120,10 +124,10 @@ Ba component nhớ kết quả đo *trong chính mình* — bề rộng chữ, b
 
 Hình học Fibonacci nằm trong một hàm bản gốc **không xuất khẩu**. Thay vì chép lại công thức, bộ kiểm đi qua cây phần tử React mà bản gốc render rồi đọc các mức ra từ chính props của những đường ấy — con số đem so là con số bản gốc dùng để vẽ.
 
-## chart#34: sửa hỏng có chủ ý, 8 chỗ trong bộ golden
+## chart#34: sửa hỏng có chủ ý, 9 chỗ trong bộ golden
 
 Nhóm #34 không có bản gốc để so, nhưng hình học của nó là số học thuần — nên nó được so
-với số tính TAY trong `test.js`, chạy không cần trình duyệt, và tám chỗ sửa hỏng đều đỏ
+với số tính TAY trong `test.js`, chạy không cần trình duyệt, và chín chỗ sửa hỏng đều đỏ
 với một câu báo đọc được:
 
 | sửa hỏng chỗ nào | bài nào đổ, và nói gì |
@@ -136,6 +140,7 @@ với một câu báo đọc được:
 | ghost feed dùng `Math.random` | `không tất định: 2,-1,4,-1 rồi 4,-1,2,-1` |
 | ghost feed bịa bước giá thay vì xáo bước có thật | `bóng giả dùng bước lạ: -2,4,-2,8` |
 | bỏ một dòng showcase | `1 element công khai vắng mặt showcase: chart-sticker` |
+| chú thích trích nguyên văn token tay cầm (đúng lỗi đã xảy ra thật) | `1 tệp làm cổng đếm icon của akao lệch: EachSticker.js (bộ quét đếm 2, thật 1)` |
 
 **Chỗ suýt lọt.** Mồi đầu — bỏ nhánh cung tròn — lúc đầu đỏ bằng một cú **nổ**, không bằng
 một câu báo: danh sách mẫu ngắn lại, `round(arc[8])` đọc phải `undefined` và ném. Nổ cũng

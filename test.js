@@ -280,6 +280,64 @@ if (committed === current) {
 }
 
 {
+    /**
+     * Không chú thích nào được trích nguyên văn cái chuỗi mà kho akao ĐẾM.
+     *
+     * Cổng `check:drawn-icons` bên akao đọc thẳng `src/interactive` của gói này mỗi lượt
+     * chạy và suy ra icon phải vẽ mấy vành bằng một biểu thức chính quy trên VĂN BẢN THÔ:
+     * nó đếm số lời gọi `createElement` dựng một `chart-clickable-circle` trong wrapper.
+     * Biểu thức ấy không che chú thích. Nên một câu giải thích trích đúng chuỗi làm số đếm
+     * cao hơn số tay cầm thật, và akao vẽ thừa vành — ở kho BÊN KIA, sau khi ai đó nâng
+     * lock, lúc không còn ai nhìn hai tệp cạnh nhau. Triệu chứng sẽ là "cổng đòi 2 vành",
+     * không phải "chú thích có chuỗi trùng".
+     *
+     * Đã xảy ra thật (chart#34): `EachSticker.js` giải thích chính giao ước ấy bằng cách
+     * trích nguyên văn, và thành tệp DUY NHẤT trong 31 wrapper có phép đếm thô (2) khác
+     * phép đếm thật (1). Chú thích càng viết đúng thì càng dễ gây lỗi, vì viết đúng nghĩa
+     * là trích nguyên văn.
+     *
+     * Đây là mặt NGƯỢC của một lớp lỗi kho akao đã trả giá: ở đó một chuỗi nằm trong chú
+     * thích làm mù bộ quét; ở đây một chuỗi nằm trong chú thích làm bộ quét đếm thừa.
+     *
+     * Nên chỗ này đếm hai lần — thô, rồi sau khi che chú thích — và bắt hai số bằng nhau.
+     * Phép che thô sơ (khối bắt đầu bằng dấu sao và dòng bắt đầu bằng hai gạch chéo) là đủ
+     * cho một câu hỏi hẹp: token ấy nằm ở đâu. Nó không phải một bộ phân tích JavaScript và
+     * không cần phải là. Cổng này CHỈ vá được phía gói; phía akao che chú thích trước khi
+     * đếm mới là chữa gốc, và đó là việc của kho bên kia.
+     */
+    const { readFileSync, readdirSync } = await import("node:fs")
+    const walk = (dir, out = []) => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            if (entry.isDirectory()) walk(`${dir}/${entry.name}`, out)
+            else if (entry.name.endsWith(".js")) out.push(`${dir}/${entry.name}`)
+        }
+        return out
+    }
+    const handleToken = /createElement\("chart-clickable-circle"\)/g
+    const withoutComments = text => text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "")
+
+    const files = walk("./src/interactive")
+    const skewed = []
+    let handles = 0
+
+    for (const file of files) {
+        const text = readFileSync(file, "utf8")
+        const scanned = (text.match(handleToken) ?? []).length
+        const real = (withoutComments(text).match(handleToken) ?? []).length
+        handles += real
+        if (scanned !== real) skewed.push(`${file} (bộ quét đếm ${scanned}, thật ${real})`)
+    }
+
+    if (skewed.length === 0) {
+        checked += 1
+        console.log(`✓ token tay cầm chỉ nằm trong mã, không trong chú thích (${handles} lời gọi thật)`)
+    } else {
+        failed++
+        console.error(`✗ ${skewed.length} tệp làm cổng đếm icon của akao lệch: ${skewed.join(", ")}`)
+    }
+}
+
+{
     const { drawSessionProfileSeries, periodLetter } = await import("./src/series/SessionProfileSeries.js")
     // Hai ngày, mỗi ngày hai bar 30 phút; trục tay như bài footprint.
     const xScale = value => value * 10
