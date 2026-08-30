@@ -304,6 +304,13 @@ if (committed === current) {
      * cho một câu hỏi hẹp: token ấy nằm ở đâu. Nó không phải một bộ phân tích JavaScript và
      * không cần phải là. Cổng này CHỈ vá được phía gói; phía akao che chú thích trước khi
      * đếm mới là chữa gốc, và đó là việc của kho bên kia.
+     *
+     * Giới hạn đã biết, ghi ra chứ chưa sửa: phép che cắt từ hai gạch chéo tới hết dòng KỂ
+     * CẢ khi chúng nằm trong một chuỗi — một URL trong tệp có tay cầm sẽ che nhầm phần còn
+     * lại của dòng. Nó hỏng theo chiều AN TOÀN: che quá tay làm số "thật" tụt xuống, hai số
+     * lệch, và cổng ĐỎ chứ không xanh. `src/interactive` hôm nay không có URL nào, nên rủi
+     * ro là tiềm tàng chứ chưa sống. Ngày nào nó sống thì đấy là lúc viết một bộ che tử tế,
+     * không phải hôm nay.
      */
     const { readFileSync, readdirSync } = await import("node:fs")
     const walk = (dir, out = []) => {
