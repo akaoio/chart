@@ -92,6 +92,20 @@ Với wrapper đếm-theo-điểm, cổng ấy nhận ra kiểu wrapper bằng c
 
 `test.js` nay canh đúng chuyện đó: đếm token hai lần, thô và sau khi che chú thích, rồi bắt hai số bằng nhau. Cổng ấy chỉ vá được phía gói; **che chú thích trước khi đếm ở phía akao mới là chữa gốc**, và nó bảo vệ mọi wrapper tương lai chứ không riêng cái này.
 
+Và cổng bên kia đọc mã ở nhiều chỗ hơn chỗ đếm vành — trong đó có một arm hỏng theo chiều **ngược lại và tệ hơn**: nó nhận ra một giá trị prop bằng cách tìm `key === "v"`, `case "v"` hay `key: "v"` trong tệp, nên một chú thích chứa hình dạng ấy làm một từ LẠ trông như từ QUEN. Đỏ oan thì người ta đi tìm; **xanh oan thì không ai biết để đi tìm**. Quét chú thích của `src/interactive` ngày 2026-08-31 cho **8 chỗ mang đúng ba hình dạng ấy, trong 5 tệp**:
+
+| tệp | chỗ trong chú thích |
+|---|---|
+| `DisjointChannel.js` | `variant: "disjoint"` · `variant: "flat"` · và một mảnh câu tiếng Việt lọt vào biểu thức (`ways: "disjoint"`) |
+| `components/InteractiveBarsPattern.js` | `mode: "copy"` · `mode: "ghost"` |
+| `components/InteractivePitchfork.js` | `variant: "fan"` |
+| `components/LinearRegressionChannelWithArea.js` | `type: "SD"` |
+| `wrapper/EachArrowMark.js` | `=== "down"` |
+
+Cả tám **đang nói đúng sự thật**, nên cổng xanh nhờ chúng cũng là xanh đúng kết luận — nhưng xanh vì lý do sai: xoá nhánh `mode === "ghost"` khỏi leaf mà quên xoá câu chú thích thì cổng vẫn bảo "gói biết `ghost`". Tám cái kíp chờ sẵn, không phải một ca giả định. akaoio/akao#559 đã che chú thích ở cả chín chỗ đọc mã, nên chúng đã được tháo.
+
+Kho này **cố ý không** canh ca ấy. Cấm chú thích chứa `=== "v"` là cấm luôn tám câu đang nói đúng, và là lấy cổng của kho A bắt kho B viết văn theo ý mình. Câu hỏi "từ này có được so sánh thật không" chỉ trả lời được ở phía ĐỌC, bằng phép che — đúng chỗ akao đã sửa. Cổng của kho này giữ phạm vi hẹp: một token, một phép đếm, một câu hỏi trả lời được từ phía này.
+
 Cùng loại giao ước, chiều ngược lại: `variant: "schiff"` và `variant: "modifiedSchiff"` (`pitchforkAnchor`), `type: "RAY"` và `type: "LINE"` (`generateLine`) là bốn chuỗi akao truyền vào. Cả hai `switch` ấy có nhánh `default:` nuốt mọi giá trị lạ, nên đổi tên chúng làm akao vẽ sai **mà không có gì đỏ** — hỏng im lặng, loại đắt nhất. akaoio/akao#559 nay có cổng canh đúng chuyện đó, nhưng cổng ở kho bên kia: đổi tên thì báo trước.
 
 **Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: các bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và các dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
