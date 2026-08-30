@@ -2,9 +2,11 @@ import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
-export const arrowMarkDefaults = {
+export const stickerToolDefaults = {
     enabled: true,
-    mode: "up",
+    src: undefined,
+    size: 32,
+    opacity: 1,
     snap: false,
     snapTo: undefined,
     shouldDisableSnap: event => event.button === 2 || event.shiftKey,
@@ -21,25 +23,35 @@ export const arrowMarkDefaults = {
         text: "Click to select object",
         selectedText: "",
     },
-    marks: [],
+    stickers: [],
     appearance: {
-        bgFill: "#FFFFFF",
-        bgStroke: "#000000",
+        strokeStyle: "#2962FF",
         strokeWidth: 1,
-        textFill: "#000000",
-        fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
-        fontSize: 12,
+        edgeStroke: "#2962FF",
+        edgeFill: "#FFFFFF",
+        edgeStrokeWidth: 1,
+        r: 5,
     },
 }
 
 /**
- * Arrow marks: `<chart-arrow-mark>`.
+ * Stickers: `<chart-sticker>`.
  *
- * One click plants a ▲ ▼ ◀ or ▶ at the pointer — `mode` decides which way it
- * points at placement, each mark remembers its own. The four directions are one
- * table in `EachArrowMark`, not four branches.
+ * Một cú bấm đóng một con dấu tại con trỏ: MỘT neo, MỘT tay cầm, cỡ cố định
+ * theo pixel. `src` là dataURL do ứng dụng đưa vào, và mỗi con dấu nhớ lấy của
+ * riêng nó — nên một danh sách trộn nhiều hình vẫn là một phần tử.
+ *
+ * Gói **không** biết emoji là gì (chốt của chủ repo, 2026-08-30). Nó biết "con
+ * dấu một điểm mang một ảnh"; bộ hình và cái picker thuộc về ứng dụng, y như
+ * `chart-image-tool` không mang bức ảnh nào. Nhét vài nghìn tệp Noto vào đây là
+ * gói tự quyết ứng dụng được vẽ cái gì.
+ *
+ * Khác `chart-image-tool` ở chỗ đo được, không phải ở chỗ khai: ảnh căng giữa
+ * HAI neo (hai tay cầm, co giãn theo biểu đồ), con dấu neo MỘT chỗ (một tay
+ * cầm, zoom vào không to ra). Vì thế nó là phần tử riêng chứ không phải một
+ * `mode` của ImageTool.
  */
-export class ArrowMark extends ElementBase {
+export class StickerTool extends ElementBase {
     #props
     #override = null
 
@@ -50,11 +62,11 @@ export class ArrowMark extends ElementBase {
 
     constructor() {
         super()
-        this.#props = defineProperties(this, arrowMarkDefaults)
+        this.#props = defineProperties(this, stickerToolDefaults)
 
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
-        this.getSelectionState = isHoverForInteractiveType("marks").bind(this)
+        this.getSelectionState = isHoverForInteractiveType("stickers").bind(this)
     }
 
     /** Pane nào chứa công cụ này — thứ `chart-drawing-object-selector` cần khi đăng ký. */
@@ -87,16 +99,16 @@ export class ArrowMark extends ElementBase {
     #build() {
         const props = this.#props
 
-        while (this.#wrappers.length > props.marks.length) this.#wrappers.pop().remove()
-        while (this.#wrappers.length < props.marks.length) {
-            const wrapper = document.createElement("chart-each-arrow-mark")
+        while (this.#wrappers.length > props.stickers.length) this.#wrappers.pop().remove()
+        while (this.#wrappers.length < props.stickers.length) {
+            const wrapper = document.createElement("chart-each-sticker")
             this.#wrappers.push(wrapper)
             this.append(wrapper)
         }
 
         this.nodes = [...this.#wrappers]
 
-        props.marks.forEach((each, index) => {
+        props.stickers.forEach((each, index) => {
             const appearance = isDefined(each.appearance) ? { ...props.appearance, ...each.appearance } : props.appearance
 
             Object.assign(this.#wrappers[index], {
@@ -104,11 +116,13 @@ export class ArrowMark extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 at: getValueFromOverride(this.#override, index, "at", each.at),
-                mode: each.mode ?? props.mode,
+                src: each.src ?? props.src,
+                size: each.size ?? props.size,
+                opacity: each.opacity ?? props.opacity,
                 appearance,
-                hoverText: { ...arrowMarkDefaults.hoverText, ...props.hoverText },
-                onDrag: this.#handleDragMark,
-                onDragComplete: this.#handleDragMarkComplete,
+                hoverText: { ...stickerToolDefaults.hoverText, ...props.hoverText },
+                onDrag: this.#handleDragSticker,
+                onDragComplete: this.#handleDragStickerComplete,
             })
 
             this.#wrappers[index].update()
@@ -132,34 +146,41 @@ export class ArrowMark extends ElementBase {
         })
     }
 
-    /** One click, one label — the price is read off the click itself. */
+    /** One click, one stamp — the anchor is read off the click itself. */
     #handlePlace = (event, xyValue, moreProps) => {
         if (!this.#props.enabled) return
 
-        const newMarks = [
-            ...this.#props.marks.map(each => ({ ...each, selected: false })),
-            { at: xyValue, mode: this.#props.mode, selected: true, appearance: this.#props.appearance },
+        const newStickers = [
+            ...this.#props.stickers.map(each => ({ ...each, selected: false })),
+            {
+                at: xyValue,
+                src: this.#props.src,
+                size: this.#props.size,
+                opacity: this.#props.opacity,
+                selected: true,
+                appearance: this.#props.appearance,
+            },
         ]
 
-        this.#props.onComplete?.(event, newMarks, moreProps)
+        this.#props.onComplete?.(event, newStickers, moreProps)
     }
 
-    #handleDragMark = (event, index, newValues) => {
+    #handleDragSticker = (event, index, newValues) => {
         this.setInteractiveState({ override: { index, ...newValues } })
     }
 
-    #handleDragMarkComplete = (event, moreProps) => {
+    #handleDragStickerComplete = (event, moreProps) => {
         if (!isDefined(this.#override)) return
 
         const { index, at } = this.#override
 
-        const newMarks = this.#props.marks.map((each, position) =>
+        const newStickers = this.#props.stickers.map((each, position) =>
             position === index ? { ...each, at, selected: true } : { ...each, selected: false },
         )
 
         this.setInteractiveState({ override: null })
-        this.#props.onComplete?.(event, newMarks, moreProps)
+        this.#props.onComplete?.(event, newStickers, moreProps)
     }
 }
 
-define("chart-arrow-mark", ArrowMark)
+define("chart-sticker", StickerTool)

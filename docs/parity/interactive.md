@@ -52,11 +52,11 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-fib-extension` | Trend-based fib extension | 3 bấm | không leaf mới — mỗi mức một `InteractiveStraightLine` RAY + `chart-interactive-label`, đúng khuôn retracement |
 | `chart-callout` | Callout | 2 bấm | không leaf mới — `InteractiveText` + chân `InteractiveStraightLine` + tay cầm neo |
 | `chart-price-label` | Price label | 1 bấm | không leaf mới — `InteractiveText` mà chữ là chính y của nó, kéo là đổi giá |
-| `chart-pattern` (`variant`) | XABCD · Cypher · ABCD · Triangle · Three drives · H&S · Elliott ×3 | n bấm | `chart-interactive-polyline` (mới): đường gấp khúc + nhãn đỉnh + fill tam giác; máy đặt-n-điểm là MỘT, variant chỉ là bảng |
+| `chart-pattern` (`variant`) | XABCD · Cypher · ABCD · Triangle · Three drives · H&S · Elliott ×5 | n bấm | `chart-interactive-polyline` (mới): đường gấp khúc + nhãn đỉnh + fill tam giác; máy đặt-n-điểm là MỘT, variant chỉ là bảng. Hai combo Elliott (WXY, WXYXZ) của chart#34 vào bằng đúng **hai dòng** `PATTERN_VARIANTS` — không một dòng mã nào khác đổi, và bài kiểm hỏi thẳng bảng ấy rồi hỏi máy có đọc nó không |
 | `chart-path` | Path · Polyline | n bấm + nhấp đúp chốt (hoặc phương thức finish cho màn chạm) | dùng lại nguyên `chart-each-pattern` — path là pattern không bảng |
 | `chart-cyclic-lines` | Cyclic lines | 2 bấm | `chart-interactive-cycles` (mới): vạch dọc lặp theo chu kỳ, chặn 500 vạch |
 | `chart-arrow` | Arrow · Arrow marker | 2 bấm | `chart-interactive-arrow` (mới): thân + đầu đặc |
-| `chart-arrow-mark` (`mode`) | Arrow mark up · Arrow mark down | 1 bấm | không leaf mới — glyph ▲/▼ trên `InteractiveText` |
+| `chart-arrow-mark` (`mode`) | Arrow mark up · down · left · right | 1 bấm | không leaf mới — glyph ▲▼◀▶ trên `InteractiveText`. Bốn hướng là một bảng `MARKS` trong wrapper, không phải bốn nhánh; màu cố ý bất đối xứng — ▲/▼ nói về GIÁ nên mang màu tăng/giảm, ◀/▶ chỉ về THỜI GIAN nên dùng `sideFill` trung tính |
 | `chart-fib-time-zone` | Fib time zone | 2 bấm | không leaf mới — `chart-interactive-cycles` học thêm `offsets`, dãy Fibonacci thay cho lặp đều |
 | `chart-fib-shape` (`variant`) | Fib speed resistance fan · Fib arcs · Fib circles · Fib spiral · Fib wedge | 2–3 bấm | `chart-interactive-fib-shape` (mới): hình học tính một lần trong pixel, vẽ và dò trúng cùng đọc; bán kính pixel từ hai neo dữ liệu |
 | `chart-gann-box` (`variant`) | Gann box · Gann square · Gann square fixed | 2 bấm | `chart-interactive-gann-box` (mới): hộp chia mức hai trục, `square` thêm chéo + quạt góc; một bảng mức dùng chung hai trục (TV cho hai bảng riêng — tập con trung thực); `squareFixed` khoá tỉ lệ giá/nến theo đúng cách TV: ratio chốt lúc đặt, chiều cao suy từ chiều rộng, hiện cạnh neo thứ hai |
@@ -72,12 +72,45 @@ TradingView có ~60 công cụ vẽ; bản gốc có 8. Đợt đầu bù năm h
 | `chart-table` | Table | 1 bấm | cùng leaf anchored-box — bảng neo màn hình, cột rộng theo ô dài nhất; sửa ô là UI ứng dụng |
 | `chart-image-tool` | Image | 2 bấm | `chart-interactive-image` (mới): ảnh căng giữa hai neo dữ liệu, `src` là dataURL do ứng dụng đưa; cache theo src, tải xong tự xin vẽ lại |
 | `chart-info-line` | Info line | 2 bấm | không leaf mới — nhãn giữa đoạn đọc Δgiá/%/số nến, suy từ dữ liệu nên không cũ được |
+| `chart-curve-tool` (`variant`) | Triangle · Polyline · Arc · Curve · Double curve | 3–4 bấm; polyline nhấp đúp chốt | `chart-interactive-curve` (mới): hình được **duỗi thành MỘT danh sách điểm** rồi mới vẽ và mới dò trúng — gọi `arc`/`quadraticCurveTo` của canvas thì nét mượt hơn nhưng phép dò trúng phải dựng lại cùng hình học bằng công thức khác, và hai bản mô tả một hình là hai chỗ để lệch. Cung là đường tròn ĐI QUA ba điểm (thẳng hàng thì hạ về đoạn thẳng — `d → 0`, và canvas nuốt `NaN` trong im lặng); curve là Bézier bậc hai, double curve là bậc ba, nên "double" là hai điểm điều khiển chứ không phải hai đoạn cong ghép. Wrapper `EachCurve` chép nguyên khuôn `EachPattern` — một tay cầm mỗi neo |
+| `chart-sticker` | Sticker (flyout emoji của TV) | 1 bấm | `chart-interactive-sticker` (mới): MỘT neo, MỘT tay cầm, cỡ cố định theo **pixel** — zoom vào con dấu không to ra, và đó là chỗ nó khác `chart-image-tool` một cách ĐO ĐƯỢC (ảnh căng giữa hai neo, hai tay cầm, co giãn cùng biểu đồ). Vì thế nó là phần tử riêng chứ không phải một `mode` của ImageTool. Gói **không** mang tệp emoji nào: `src` do ứng dụng đưa vào, y như `imageToolDefaults.src` (chốt của chủ repo, 2026-08-30). Dùng chung cache ảnh của `InteractiveImage` — một dataURL tải một lần |
+| `chart-fib-time-extension` | Trend-based fib time | 3 bấm | không leaf mới — `chart-interactive-cycles` học thêm `x3Value`, tách GỐC CHIẾU khỏi gốc đo: hai neo đầu đo đơn vị trên xu hướng, neo ba là chỗ chiếu. Vắng `x3Value` thì mọi thứ cũ vẽ y như trước. Bảng mức là **tỉ lệ** (0.382/0.618/1/1.618/2.618/4.236), không phải dãy số Fibonacci của `chart-fib-time-zone` — hai đại lượng khác nhau, không phải quên đồng bộ |
+| `chart-projection` (`variant`) | Forecast · Projection | 3 bấm | `chart-interactive-projection` (mới): chân nền nét đứt (đã xảy ra) + chân dự phóng có hộp tô và hộp số Δgiá/%/số nến. Chỗ khác nhau giữa hai công cụ gói gọn trong hàm thuần `projectionLeg` — `forecast` nối tiếp từ cuối chân nền tới neo ba, `projection` chép nguyên vector nền sang neo ba làm gốc. Đích của `projection` là **suy ra** nên nó KHÔNG có tay cầm: một vành kéo được cho một giá trị dẫn xuất là lời hứa mà kéo xong sẽ bị nuốt |
+| `chart-bars-pattern` (`mode`) | Ghost feed | 3 bấm | leaf có sẵn học `mode: "ghost"`: xáo lại chính những bước giá của dải nguồn (mở→đóng, râu trên, râu dưới so với giá mở) rồi nối đuôi nhau — nến GIẢ mang tính cách của một dải THẬT, không số nào bịa từ hư không. Bộ sinh tất định gieo từ ba cái neo: `Math.random()` làm bóng nhấp nháy mỗi lần chuột đi qua, và một hình đổi dáng khi bạn nhìn nó thì không đọc được |
 
-Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu.
+Riêng "Inside pitchfork" của TradingView cố ý chưa làm: phép neo của nó không có tài liệu nào đủ tin để chép — bịa ra một công thức rồi gọi bằng tên của họ thì tệ hơn là thiếu. chart#34 §4 xác nhận lại quyết định ấy và ghi nó xuống để lần sau không ai đếm nó là "thiếu".
 
-Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape`, `EachGannBox`, `EachWave`, `EachAngleLine`, `EachNote`, `EachSignpost`, `EachFreehand`, `EachAnchoredBox`, `EachPriceNote`, `EachImage` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+**"Price range" và "Date range" KHÔNG phải phần tử thiếu.** chart#34 §2 xếp chúng vào cột phải-làm-thật; chúng đã xong từ #5, trong `chart-measure` (`mode: price | date | both`) — chính dòng `chart-measure` phía trên đã khai đúng ba công cụ TV ấy. Cái thiếu là **cái demo**, và nó vào bằng hai dòng showcase cộng hai dòng chạm. Bằng chứng không phải lời nói: bài `price range và date range đã có sẵn` dựng cùng một hộp ở ba `mode` rồi so **vân tay canvas** — ba hình khác nhau, và bỏ một nhánh `mode !== …` trong `drawInteractiveMeasure` làm hai trong ba trùng nhau. Nên §2 của #34 còn **11** phần tử việc thật, không phải 13.
 
-**Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: năm bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và năm dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
+Wrapper tương ứng: `EachAxisLine`, `EachShape`, `EachMeasure`, `EachPosition`, `EachPitchfork`, `EachFibExtension`, `EachCallout`, `EachPriceLabel`, `EachPattern`, `EachCyclicLines`, `EachArrow`, `EachArrowMark`, `EachInfoLine`, `EachFibShape`, `EachGannBox`, `EachWave`, `EachAngleLine`, `EachNote`, `EachSignpost`, `EachFreehand`, `EachAnchoredBox`, `EachPriceNote`, `EachImage`, `EachCurve`, `EachSticker`, `EachFibTimeExtension`, `EachProjection` — cùng quy tắc với các wrapper port: con tạo một lần rồi sửa tại chỗ, tay cầm chỉ hiện khi hover/chọn, kéo thân đi bằng delta pixel rồi mới đổi về data.
+
+**Số tay cầm là giao ước qua ranh giới gói, không phải chi tiết nội bộ.** Cổng `check:drawn-icons` của akao đọc thẳng `node_modules/@akaoio/chart/src/interactive` mỗi lượt chạy và đếm `createElement("chart-clickable-circle")` trong wrapper để biết icon phải vẽ mấy vành (akaoio/akao#540, #559). Nên số ấy nằm ở thân hàm, không trong nhánh điều kiện: `EachSticker` một, `EachFibTimeExtension` và `EachProjection` ba; `EachCurve` một-vành-mỗi-neo trong một vòng `while` — cùng hình dạng `EachPattern`, và số thật đọc ở `CURVE_VARIANTS`.
+
+Với wrapper đếm-theo-điểm, cổng ấy nhận ra kiểu wrapper bằng cách dò **đúng chuỗi** `handles.length < points.length` rồi mới đi đọc bảng biến thể; viết đảo vế (`points.length > handles.length`) làm nó rơi về nhánh đếm `createElement` và ra "1 vành" — đỏ oan cả `chart-pattern` lẫn `chart-curve-tool`, mà không ai đoán ra vì mã vẫn đúng. Nên câu ấy giữ nguyên vế, và ai đổi thì báo kho akao trước.
+
+**Và chú thích không được trích nguyên văn cái chuỗi bị đếm.** Bộ quét ấy chạy trên văn bản THÔ, không che chú thích. `EachSticker.js` lúc đầu giải thích chính giao ước này bằng cách trích đúng chuỗi, và thành tệp **duy nhất trong 31 wrapper** có phép đếm thô (2) khác phép đếm thật (1) — tức nó bảo akao vẽ hai vành cho một công cụ có một tay cầm. Lỗi ấy chỉ nổ ở kho bên kia, sau khi ai đó nâng lock, và triệu chứng là "cổng đòi 2 vành" chứ không phải "chú thích có chuỗi trùng". Nó là mặt NGƯỢC của một lớp lỗi akao đã trả giá: ở đó chuỗi trong chú thích làm bộ quét mù, ở đây làm bộ quét đếm thừa. Và nó khó thấy vì **chú thích càng viết đúng thì càng dễ gây lỗi** — viết đúng nghĩa là trích nguyên văn.
+
+`test.js` nay canh đúng chuyện đó: đếm token hai lần, thô và sau khi che chú thích, rồi bắt hai số bằng nhau. Cổng ấy chỉ vá được phía gói; **che chú thích trước khi đếm ở phía akao mới là chữa gốc**, và nó bảo vệ mọi wrapper tương lai chứ không riêng cái này.
+
+Và cổng bên kia đọc mã ở nhiều chỗ hơn chỗ đếm vành — trong đó có một arm hỏng theo chiều **ngược lại và tệ hơn**: nó nhận ra một giá trị prop bằng cách tìm `key === "v"`, `case "v"` hay `key: "v"` trong tệp, nên một chú thích chứa hình dạng ấy làm một từ LẠ trông như từ QUEN. Đỏ oan thì người ta đi tìm; **xanh oan thì không ai biết để đi tìm**. Quét chú thích của `src/interactive` ngày 2026-08-31 cho **8 chỗ mang đúng ba hình dạng ấy, trong 5 tệp**:
+
+| tệp | chỗ trong chú thích |
+|---|---|
+| `DisjointChannel.js` | `variant: "disjoint"` · `variant: "flat"` · và một mảnh câu tiếng Việt lọt vào biểu thức (`ways: "disjoint"`) |
+| `components/InteractiveBarsPattern.js` | `mode: "copy"` · `mode: "ghost"` |
+| `components/InteractivePitchfork.js` | `variant: "fan"` |
+| `components/LinearRegressionChannelWithArea.js` | `type: "SD"` |
+| `wrapper/EachArrowMark.js` | `=== "down"` |
+
+Cả tám **đang nói đúng sự thật**, nên cổng xanh nhờ chúng cũng là xanh đúng kết luận — nhưng xanh vì lý do sai: xoá nhánh `mode === "ghost"` khỏi leaf mà quên xoá câu chú thích thì cổng vẫn bảo "gói biết `ghost`". Tám cái kíp chờ sẵn, không phải một ca giả định. akaoio/akao#559 đã che chú thích ở cả chín chỗ đọc mã, nên chúng đã được tháo.
+
+Kho này **cố ý không** canh ca ấy. Cấm chú thích chứa `=== "v"` là cấm luôn tám câu đang nói đúng, và là lấy cổng của kho A bắt kho B viết văn theo ý mình. Câu hỏi "từ này có được so sánh thật không" chỉ trả lời được ở phía ĐỌC, bằng phép che — đúng chỗ akao đã sửa. Cổng của kho này giữ phạm vi hẹp: một token, một phép đếm, một câu hỏi trả lời được từ phía này.
+
+Cùng loại giao ước, chiều ngược lại: `variant: "schiff"` và `variant: "modifiedSchiff"` (`pitchforkAnchor`), `type: "RAY"` và `type: "LINE"` (`generateLine`) là bốn chuỗi akao truyền vào. Cả hai `switch` ấy có nhánh `default:` nuốt mọi giá trị lạ, nên đổi tên chúng làm akao vẽ sai **mà không có gì đỏ** — hỏng im lặng, loại đắt nhất. akaoio/akao#559 nay có cổng canh đúng chuyện đó, nhưng cổng ở kho bên kia: đổi tên thì báo trước.
+
+**Không có giá trị golden nào cho nhóm này** — không có bản gốc để so. Bằng chứng nằm ở trình duyệt: các bài trong `tools/browser/tests.js` (đặt, hình tạm, hoàn tất đúng một đối tượng, kéo giữ dáng, pixel thật trên canvas) và các dòng trong bảng chạm một-ngón của `test.browser.js` (Pixel 7, CDP touch, 5 khẳng định mỗi công cụ).
+
+Nhóm chart#34 thêm một phép đo mà nhóm trước không có: **vân tay canvas** (`mouseLayerSignature`) thay cho phép đếm pixel ở mọi chỗ khẳng định "hình đổi thật sự". Lý do đo được: một tam giác và một cung căng qua CÙNG ba neo rất dễ có cùng số pixel, nên `mouseLayerPixels` một mình để lọt việc bỏ hẳn nhánh `arc` trong `curveOutline`. Vân tay băm cả VỊ TRÍ từng pixel có mực, nên nó bắt. Đúng bài học cũ của #5, chỉ ở một trục khác: phép so phải nhạy với thứ nó tuyên bố đang đo.
 
 Đã sửa hỏng ba chỗ có chủ ý, bắt được **3/3** — nhưng một chỗ chỉ bắt được sau khi làm bài kiểm chặt hơn:
 
@@ -104,6 +137,39 @@ Nhóm này không đồng nhất như các bậc trước:
 Ba component nhớ kết quả đo *trong chính mình* — bề rộng chữ, bề rộng hộp nhãn — nên chúng chỉ trỏ vào được sau khi đã vẽ một lần. Bộ kiểm giữ đúng ràng buộc ấy: vẽ và hỏi hover trên **cùng một thực thể**, cả hai phía. Bản gốc nhớ trong instance React, bản port nhớ trong một `cache` mà phần tử giữ.
 
 Hình học Fibonacci nằm trong một hàm bản gốc **không xuất khẩu**. Thay vì chép lại công thức, bộ kiểm đi qua cây phần tử React mà bản gốc render rồi đọc các mức ra từ chính props của những đường ấy — con số đem so là con số bản gốc dùng để vẽ.
+
+## chart#34: sửa hỏng có chủ ý, 9 chỗ trong bộ golden
+
+Nhóm #34 không có bản gốc để so, nhưng hình học của nó là số học thuần — nên nó được so
+với số tính TAY trong `test.js`, chạy không cần trình duyệt, và chín chỗ sửa hỏng đều đỏ
+với một câu báo đọc được:
+
+| sửa hỏng chỗ nào | bài nào đổ, và nói gì |
+|---|---|
+| bỏ nhánh cung tròn trong `curveOutline` | `cung: số mẫu: 3 ≠ 9` — cung hạ về đường gấp khúc |
+| bỏ nhánh Bézier bậc ba | `Bézier bậc ba giữa đường: [[100,900]] ≠ [[150,925]]` |
+| cung suy biến không hạ về đoạn thẳng | mọi toạ độ thành `null` (chia cho 0 → `NaN`, mà canvas nuốt `NaN` trong im lặng — không nổ, không vẽ) |
+| `projection` quên chép vector nền | `{"to":[40,90]} ≠ {"to":[50,110]}` — đích trùng gốc |
+| bỏ gốc chiếu `x3Value` | `fib time chiếu từ neo ba: [100,140,180] ≠ [500,540,580]` |
+| ghost feed dùng `Math.random` | `không tất định: 2,-1,4,-1 rồi 4,-1,2,-1` |
+| ghost feed bịa bước giá thay vì xáo bước có thật | `bóng giả dùng bước lạ: -2,4,-2,8` |
+| bỏ một dòng showcase | `1 element công khai vắng mặt showcase: chart-sticker` |
+| chú thích trích nguyên văn token tay cầm (đúng lỗi đã xảy ra thật) | `1 tệp làm cổng đếm icon của akao lệch: EachSticker.js (bộ quét đếm 2, thật 1)` |
+
+**Chỗ suýt lọt.** Mồi đầu — bỏ nhánh cung tròn — lúc đầu đỏ bằng một cú **nổ**, không bằng
+một câu báo: danh sách mẫu ngắn lại, `round(arc[8])` đọc phải `undefined` và ném. Nổ cũng
+là đỏ, nhưng nó không nói cho người đọc biết cái gì đã lệch. Phép so giờ trả `null` cho chỗ
+không có điểm, nên nó nói ra.
+
+Bốn chỗ nữa trong bộ trình duyệt — những thứ golden không nhìn thấy — sửa hỏng cùng một
+lượt, và mỗi chỗ đổ đúng bài của mình (một chỗ đổ hai bài):
+
+| sửa hỏng chỗ nào | bài nào đổ, và nói gì |
+|---|---|
+| bảng `MARKS`: `left` trỏ về ▲ | `bốn hướng, bốn glyph: ▲▶▲▼ ≠ ◀▶▲▼` |
+| `EachSticker` dựng HAI vành | `wrapper con dấu dựng đúng một vành: 2 ≠ 1` — đúng con số là giao ước với akao |
+| `polyline` có số neo định trước (`count: 0 → 3`) | `polyline không định trước số neo: 3 ≠ 0`, và `ba cú bấm chưa chốt: 1 ≠ 0` |
+| máy đếm neo chốt bằng hằng số thay vì đọc bảng | `hai cú bấm chưa xong tam giác`, cộng cả dòng chạm `chart-curve-tool` — gõ đúng chỗ mà không chọn được gì |
 
 ## Đã kiểm rằng bộ kiểm biết fail
 

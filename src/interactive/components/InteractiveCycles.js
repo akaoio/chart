@@ -9,6 +9,7 @@ export const interactiveCyclesDefaults = {
     y1Value: undefined,
     x2Value: undefined,
     y2Value: undefined,
+    x3Value: undefined,
     offsets: undefined,
     strokeStyle: "#000000",
     strokeWidth: 1,
@@ -28,7 +29,7 @@ export const interactiveCyclesDefaults = {
  * trên một domain dài không được phép treo tab.
  */
 export const cycleLines = (props, moreProps) => {
-    const { x1Value, x2Value, offsets } = { ...interactiveCyclesDefaults, ...props }
+    const { x1Value, x2Value, x3Value, offsets } = { ...interactiveCyclesDefaults, ...props }
     const {
         xScale,
         chartConfig: { height },
@@ -39,7 +40,15 @@ export const cycleLines = (props, moreProps) => {
 
     // Có `offsets` thì không lặp đều nữa: mỗi bội số một vạch, đúng dãy được giao —
     // Fib time zone giao dãy Fibonacci. Vạch ngoài khung để canvas tự cắt.
-    if (offsets !== undefined) return offsets.map(k => ({ x: xScale(x1Value + k * period), height }))
+    //
+    // `x3Value` tách GỐC CHIẾU khỏi gốc đo: fib time zone đo đơn vị từ neo đầu rồi
+    // chiếu từ chính chỗ ấy, còn trend-based fib time đo đơn vị trên xu hướng
+    // (neo 1→2) rồi chiếu từ một neo thứ BA. Vắng nó thì gốc chiếu là neo đầu, nên
+    // hành vi cũ không đổi một pixel nào.
+    if (offsets !== undefined) {
+        const origin = x3Value ?? x1Value
+        return offsets.map(k => ({ x: xScale(origin + k * period), height }))
+    }
 
     const [, domainRight] = xScale.domain()
     const step = Math.abs(period)

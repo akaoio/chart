@@ -679,6 +679,38 @@ const TOUCH_TOOLS = [
     { label: "Pin", tag: "chart-pin", list: "pins", taps: 1, grab: [0.3, 0.4] },
     { label: "Table", tag: "chart-table", list: "tables", taps: 1, grab: [0.315, 0.43] },
     { label: "Image", tag: "chart-image-tool", list: "images", taps: 2, grab: [0.45, 0.475] },
+    /**
+     * chart#34. Chỗ nắm tính từ chính hình học, không đoán:
+     * · Elliott WXY/WXYXZ: đoạn 0(0.3,0.4) → W(0.6,0.55) đi qua trung điểm (0.45, 0.475).
+     * · Price/Date range: hộp giữa hai chỗ gõ — nắm vào giữa hộp.
+     * · Tam giác: ba đỉnh (0.3,0.4) (0.6,0.55) (0.7,0.3), trọng tâm (0.533, 0.417) — hình
+     *   có fill nên lòng hình chính là bề mặt bấm.
+     * · Cung: đóng bằng dây cung nối đỉnh đầu và đỉnh cuối; trung điểm dây (0.5, 0.35).
+     * · Curve: Bézier bậc hai tại t=0.5 là (p0 + 2c + p2)/4 = (0.55, 0.45).
+     * · Double curve: Bézier bậc ba tại t=0.5 là (p0 + 3c1 + 3c2 + p3)/8 = (0.581, 0.4).
+     * · Fib time ext: vạch tỉ lệ 0 đứng ngay gốc chiếu — chính chỗ gõ thứ ba (0.7).
+     * · Forecast: hộp dự phóng từ (0.6,0.55) tới (0.7,0.3), tâm (0.65, 0.425).
+     * · Projection: gốc là chỗ gõ ba (0.7,0.3), đích = gốc + vector nền (+0.3, +0.15) →
+     *   hộp (0.7…1.0, 0.3…0.45); nắm ở (0.75, 0.375), trong hộp và trong pane.
+     *
+     * Polyline KHÔNG có dòng ở đây, cùng lý do với Path: cử chỉ chốt của nó là nhấp đúp,
+     * mà bảng này gõ cách nhau 450ms để KHÔNG bao giờ thành nhấp đúp.
+     */
+    { label: "Elliott WXY", tag: "chart-pattern", nth: 1, list: "patterns", taps: 4, grab: [0.45, 0.475] },
+    { label: "Elliott WXYXZ", tag: "chart-pattern", nth: 2, list: "patterns", taps: 6, grab: [0.45, 0.475] },
+    { label: "Price range", tag: "chart-measure", nth: 1, list: "measures", taps: 2, grab: [0.45, 0.475] },
+    { label: "Date range", tag: "chart-measure", nth: 2, list: "measures", taps: 2, grab: [0.45, 0.475] },
+    { label: "Arrow left", tag: "chart-arrow-mark", nth: 1, list: "marks", taps: 1, grab: [0.3, 0.4] },
+    { label: "Arrow right", tag: "chart-arrow-mark", nth: 2, list: "marks", taps: 1, grab: [0.3, 0.4] },
+    { label: "Triangle", tag: "chart-curve-tool", nth: 0, list: "curves", taps: 3, grab: [0.533, 0.417] },
+    { label: "Arc", tag: "chart-curve-tool", nth: 2, list: "curves", taps: 3, grab: [0.5, 0.35] },
+    { label: "Curve", tag: "chart-curve-tool", nth: 3, list: "curves", taps: 3, grab: [0.55, 0.45] },
+    { label: "Double curve", tag: "chart-curve-tool", nth: 4, list: "curves", taps: 4, grab: [0.581, 0.4] },
+    { label: "Sticker", tag: "chart-sticker", list: "stickers", taps: 1, grab: [0.3, 0.4] },
+    { label: "Fib time ext", tag: "chart-fib-time-extension", list: "extensions", taps: 3, grab: [0.7, 0.2] },
+    { label: "Forecast", tag: "chart-projection", nth: 0, list: "projections", taps: 3, grab: [0.65, 0.425] },
+    { label: "Projection", tag: "chart-projection", nth: 1, list: "projections", taps: 3, grab: [0.75, 0.375] },
+    { label: "Ghost feed", tag: "chart-bars-pattern", nth: 1, list: "patterns", taps: 3, grab: [0.7, 0.3] },
 ]
 
 const touchToolTests = async (browser, origin) => {
@@ -742,8 +774,8 @@ const touchToolTests = async (browser, origin) => {
         await page.waitForTimeout(200)
         const at = (fx, fy) => ({ x: Math.round(box.left + box.width * fx), y: Math.round(box.top + box.height * fy) })
 
-        // Ba điểm đặt, đủ cho công cụ cần tới ba cú gõ.
-        const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3), at(0.45, 0.25), at(0.55, 0.5)]
+        // Sáu chỗ đặt, đủ cho công cụ cần tới sáu cú gõ (Elliott triple combo).
+        const spots = [at(0.3, 0.4), at(0.6, 0.55), at(0.7, 0.3), at(0.45, 0.25), at(0.55, 0.5), at(0.66, 0.18)]
         for (let index = 0; index < tool.taps; index++) await tap(spots[index])
 
         // Cùng một tag có thể có nhiều node (năm variant fib-shape) — `nth` chọn đúng node
@@ -1080,16 +1112,39 @@ const touchToolTests = async (browser, origin) => {
             }
         })
 
+        /**
+         * Đo theo HAI cửa sổ, không theo một ngưỡng tuyệt đối.
+         *
+         * Bài này từng hỏi "dưới 20 lần redraw trong 2,5s". Con số 20 gắn với SỐ CÔNG CỤ
+         * trên trang trưng bày, vì một cú chạm làm `onSelect` của trang ghi lại danh sách
+         * của MỌI công cụ — thêm demo vào trang là ngưỡng ấy tự cũ đi, và bài đỏ vì trang
+         * có thêm demo chứ không phải vì biểu đồ hỏng. chart#34 đưa trang từ 53 lên 69
+         * công cụ và ngưỡng vỡ đúng như thế: 21.
+         *
+         * Điều bài này THẬT SỰ muốn hỏi là "chạm xong thì có đứng lại không", và câu ấy
+         * hỏi được mà không cần biết trang có bao nhiêu công cụ: đếm ở cửa sổ ĐUÔI. Đo
+         * ngày 2026-08-30 với 69 công cụ: 21 lần redraw dồn hết vào nửa giây đầu, rồi
+         * **0** suốt 2,5 giây sau (đo mỗi 0,5s: 21 → 21 → 21 → 21 → 21 → 21). Vòng tự
+         * nuôi mà `core/element.js` mô tả — ghi → dựng lại → ghi, khoảng mười lần mỗi
+         * giây, mãi mãi — không thể lọt qua một cửa sổ đuôi bằng 0.
+         */
         await tap({ x: Math.round((first.x + second.x) / 2), y: Math.round((first.y + second.y) / 2) })
+        await page.waitForTimeout(1000)
+        const settling = await page.evaluate(() => window.__redraws)
         await page.waitForTimeout(2500)
-
-        const redraws = await page.evaluate(() => window.__redraws)
+        const total = await page.evaluate(() => window.__redraws)
 
         checks.push({
             label: "tay rời ra rồi thì biểu đồ đứng lại, không vẽ lại mãi",
-            pass: redraws < 20,
-            expected: "< 20 lần redraw trong 2,5s",
-            actual: redraws,
+            pass: total - settling === 0,
+            expected: "0 lần redraw trong 2,5s sau khi đã lắng",
+            actual: total - settling,
+        })
+        checks.push({
+            label: "và lần lắng ấy hữu hạn, không phải một cơn bão",
+            pass: settling < 200,
+            expected: "< 200 lần redraw trong 1s đầu",
+            actual: settling,
         })
 
         results.push({ name: "ngón tay thật: chạm xong thì biểu đồ đứng lại", checks })
