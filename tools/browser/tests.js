@@ -1,6 +1,8 @@
 import { ChartCanvas, GenericChartComponent, getAxisCanvas } from "../../src/core/index.js"
 import { batched, defineProperties } from "../../src/core/element.js"
 import { anchoredBoxGeometry } from "../../src/interactive/components/InteractiveAnchoredBox.js"
+import { projectionLeg } from "../../src/interactive/components/InteractiveProjection.js"
+import { CURVE_VARIANTS, PATTERN_VARIANTS } from "../../src/interactive/index.js"
 import { CircleMarker, getVolumeCandleData } from "../../src/series/index.js"
 import "../../src/coordinates/index.js"
 import "../../src/tooltip/index.js"
@@ -1182,6 +1184,24 @@ const mouseLayerPixels = canvas => {
     let total = 0
     for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) total++
     return total
+}
+
+/**
+ * Vân tay của lớp canvas chuột.
+ *
+ * `mouseLayerPixels` đếm số pixel, và hai hình KHÁC NHAU rất dễ có cùng số pixel —
+ * một tam giác và một cung căng qua cùng ba neo chẳng hạn. Nên chỗ nào cần khẳng
+ * định "hình đổi thật sự" thì băm cả VỊ TRÍ của từng pixel có mực, không chỉ đếm.
+ */
+const mouseLayerSignature = canvas => {
+    const context = canvas.getCanvasContexts().mouseCoord
+    const pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data
+    let hash = 2166136261
+    for (let index = 3; index < pixels.length; index += 4) {
+        if (pixels[index] === 0) continue
+        hash = Math.imul(hash ^ index, 16777619) >>> 0
+    }
+    return hash
 }
 
 TESTS["vẽ được quạt Gann bằng hai lần bấm"] = async () => {
@@ -4746,6 +4766,577 @@ TESTS["terminate: nét vẽ dở dang phải chết theo — Clear không để 
     await settle(3)
     // Bóng ma là hàng nghìn pixel; chừa 20 cho cái chấm con trỏ của indicator
     t.gt("sau Clear sạch — nhiều nhất còn chấm con trỏ", 20, mouseLayerPixels(canvas))
+
+    cleanup()
+    return t.checks
+}
+
+// ── chart#34: phần dư của #5 ──────────────────────────────────────────────────────
+
+TESTS["hai dòng Elliott: bảng biến thể vẫn chỉ là một bảng"] = async () => {
+    const t = makeChecker()
+
+    /**
+     * Khẳng định đắt nhất của issue #34 không phải "vẽ được", mà "thêm một mẫu
+     * hình = thêm một DÒNG". Nên bài này hỏi bảng trước, rồi hỏi máy đặt-n-điểm
+     * xem nó có đọc thẳng bảng ấy không — nếu số cú bấm bị chốt bằng hằng số ở
+     * đâu đó thì hai dòng mới sẽ không đủ, và chỗ này đỏ.
+     */
+    t.is("WXY bốn đỉnh", PATTERN_VARIANTS.elliottDoubleCombo.count, 4)
+    t.is("WXY nhãn đúng", PATTERN_VARIANTS.elliottDoubleCombo.labels.join(""), "0WXY")
+    t.is("WXYXZ sáu đỉnh", PATTERN_VARIANTS.elliottTripleCombo.count, 6)
+    t.is("WXYXZ nhãn đúng", PATTERN_VARIANTS.elliottTripleCombo.labels.join(""), "0WXYXZ")
+    t.ok(
+        "combo không tô tam giác harmonic — chúng không phải harmonic",
+        PATTERN_VARIANTS.elliottDoubleCombo.fillTriangles === false &&
+            PATTERN_VARIANTS.elliottTripleCombo.fillTriangles === false,
+    )
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-pattern", {
+        enabled: true,
+        variant: "elliottDoubleCombo",
+        snap: false,
+        patterns: [],
+        onComplete: (event, patterns) => {
+            completed.push(patterns)
+            tool.patterns = patterns
+        },
+    })
+    await settle()
+
+    const spots = [
+        [150, 250],
+        [260, 150],
+        [370, 240],
+        [470, 130],
+        [560, 240],
+        [660, 120],
+    ]
+    const place = async count => {
+        for (let index = 0; index < count; index++) {
+            if (index > 0) await pastDoubleClickWindow()
+            await hoverAt(canvas, spots[index][0], spots[index][1])
+            await clickAt(canvas, spots[index][0], spots[index][1])
+        }
+    }
+
+    await place(3)
+    t.is("ba cú bấm chưa xong WXY", completed.length, 0)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, spots[3][0], spots[3][1])
+    await clickAt(canvas, spots[3][0], spots[3][1])
+
+    t.is("cú bấm thứ tư là xong", completed.length, 1)
+    t.is("và nó có đúng bốn đỉnh", completed[0][0].points.length, PATTERN_VARIANTS.elliottDoubleCombo.count)
+    t.is("đối tượng nhớ variant của nó", completed[0][0].variant, "elliottDoubleCombo")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 150)
+
+    // WXYXZ trên cùng một phần tử: sáu cú bấm, sáu đỉnh — cùng máy, khác dòng
+    tool.patterns = []
+    tool.variant = "elliottTripleCombo"
+    tool.terminate()
+    await settle(3)
+
+    await pastDoubleClickWindow()
+    await place(6)
+
+    t.is("sáu cú bấm là xong WXYXZ", completed.length, 2)
+    t.is("và nó có đúng sáu đỉnh", completed[1][0].points.length, PATTERN_VARIANTS.elliottTripleCombo.count)
+    t.is("nhớ đúng variant thứ hai", completed[1][0].variant, "elliottTripleCombo")
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["price range và date range đã có sẵn: một mode, hai công cụ TradingView"] = async () => {
+    const t = makeChecker()
+
+    /**
+     * Issue #34 đếm "Date range" và "Price range" vào cột phần tử THIẾU. Chúng
+     * không thiếu: `chart-measure` mang `mode` từ #5, và `docs/parity/interactive.md`
+     * đã khai đúng ba công cụ TV ấy. Bài này là bằng chứng, không phải lời nói —
+     * cùng một hộp, ba mode, ba hình khác nhau trên canvas.
+     *
+     * Bỏ nhánh `if (mode !== "date")` hay `if (mode !== "price")` trong
+     * `drawInteractiveMeasure` thì hai trong ba vân tay dưới đây trùng nhau.
+     */
+    const { canvas, tool } = mountWithTool("chart-measure", { enabled: false, mode: "both", measures: [] })
+    await settle()
+
+    const box = { start: [40, 104], end: [70, 96] }
+    const signatureOf = async mode => {
+        tool.measures = [{ ...box, mode, selected: false }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+
+    const both = await signatureOf("both")
+    const price = await signatureOf("price")
+    const date = await signatureOf("date")
+
+    t.gt("mode price vẽ ra pixel thật", mouseLayerPixels(canvas), 200)
+    t.not("price khác both", price, both)
+    t.not("date khác both", date, both)
+    t.not("price khác date", price, date)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["dấu mũi tên bốn hướng: một bảng, không phải bốn nhánh"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-arrow-mark", {
+        enabled: true,
+        mode: "left",
+        marks: [],
+        onComplete: (event, marks) => {
+            completed.push(marks)
+            tool.marks = marks
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 180)
+    t.is("một cú bấm là một dấu", completed.length, 1)
+    t.is("dấu nhớ hướng của nó", completed[0][0].mode, "left")
+
+    await settle(3)
+    t.is("glyph chỉ sang trái", tool.querySelector("chart-interactive-text").text, "◀")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 40)
+
+    /**
+     * Bốn hướng được hỏi ở PROPERTY của glyph, không ở pixel — và đó là một lựa chọn
+     * đã đo, không phải sự dễ dãi.
+     *
+     * Bản đầu của bài này so vân tay canvas giữa bốn mode và đỏ ở hai chỗ: ▲ trùng ▼,
+     * ◀ trùng ▶. Không phải vì font: đo riêng bốn glyph trên một canvas trần cho bốn
+     * dấu vân khác nhau (72 · 72 · 117 · 117 pixel có mực, bốn hash khác nhau). Nguyên
+     * do là ĐỔI `mode` của một dấu ĐÃ ĐẶT không làm lớp chuột vẽ lại: đo bằng một chart
+     * thật, năm lần gán mode liên tiếp cho cùng một dấu, `text` của leaf đổi đúng cả
+     * năm lần mà vân tay canvas y nguyên (hash 2371087236, 875 pixel, không đổi một
+     * lần nào). `InteractiveShape` thì vẽ lại trong đúng cảnh ấy — nên đây là một chỗ
+     * lệch có thật giữa hai leaf, KHÔNG do chart#34 đụng vào và chưa được giải thích.
+     *
+     * Nên bài này đặt bốn dấu bằng bốn cú bấm THẬT, đúng cách người dùng làm, và hỏi
+     * bảng `MARKS` qua thứ nó điều khiển: glyph và màu. Đổi một dòng trong bảng — cho
+     * `left` trỏ về ▲ chẳng hạn — thì chuỗi bốn glyph dưới đây sai ngay.
+     */
+    for (const [mode, x] of [
+        ["right", 380],
+        ["up", 460],
+        ["down", 540],
+    ]) {
+        tool.mode = mode
+        await pastDoubleClickWindow()
+        await clickAt(canvas, x, 180)
+    }
+    await settle(3)
+
+    const glyphs = [...tool.querySelectorAll("chart-interactive-text")]
+    t.is("bốn dấu trên hình", glyphs.length, 4)
+    t.is("bốn hướng, bốn glyph", glyphs.map(each => each.text).join(""), "◀▶▲▼")
+
+    // Màu cố ý bất đối xứng: ◀/▶ chỉ về thời gian nên không có phe, ▲/▼ nói về giá
+    const fills = glyphs.map(each => each.textFill)
+    t.is("◀ và ▶ dùng chung màu trung tính", fills[0], fills[1])
+    t.not("▲ không mang màu trung tính ấy", fills[2], fills[0])
+    t.not("▼ khác ▲", fills[3], fills[2])
+    t.gt("bốn dấu vẽ ra pixel thật", mouseLayerPixels(canvas), 150)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["họ hình khối: năm công cụ TradingView, một bảng và một leaf"] = async () => {
+    const t = makeChecker()
+
+    t.is("bảng có đúng năm dòng", Object.keys(CURVE_VARIANTS).length, 5)
+    t.is("polyline không định trước số neo", CURVE_VARIANTS.polyline.count, 0)
+    t.is("double curve là Bézier bậc ba — bốn neo", CURVE_VARIANTS.doubleCurve.count, 4)
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-curve-tool", {
+        enabled: true,
+        variant: "triangle",
+        snap: false,
+        curves: [],
+        onComplete: (event, curves) => {
+            completed.push(curves)
+            tool.curves = curves
+        },
+    })
+    await settle()
+
+    const spots = [
+        [180, 250],
+        [340, 150],
+        [500, 240],
+        [620, 130],
+    ]
+    const place = async count => {
+        for (let index = 0; index < count; index++) {
+            if (index > 0) await pastDoubleClickWindow()
+            await hoverAt(canvas, spots[index][0], spots[index][1])
+            await clickAt(canvas, spots[index][0], spots[index][1])
+        }
+    }
+
+    await place(2)
+    t.is("hai cú bấm chưa xong tam giác", completed.length, 0)
+    t.ok("có hình tạm bám theo chuột", tool.querySelector("chart-interactive-curve") !== null)
+
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, spots[2][0], spots[2][1])
+    await clickAt(canvas, spots[2][0], spots[2][1])
+
+    t.is("cú bấm thứ ba là xong một tam giác", completed.length, 1)
+    t.is("ba neo", completed[0][0].points.length, 3)
+    t.is("nhớ variant", completed[0][0].variant, "triangle")
+
+    /**
+     * Cùng BA NEO, ba variant — ba hình phải khác nhau.
+     *
+     * Đây là chỗ mutation dễ lọt nhất: bỏ nhánh `arc` hay nhánh `quadratic` trong
+     * `curveOutline` thì cả ba đều hạ về đường gấp khúc và vẫn "vẽ ra pixel thật".
+     * Đo bằng vân tay chứ không đếm pixel, và đo ở trạng thái KHÔNG chọn cho cả ba
+     * lần — bài học của #5: phép so phải chỉ còn đúng một biến.
+     */
+    const points = completed[0][0].points
+    const signatureOf = async variant => {
+        tool.curves = [{ points, variant, selected: false }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+
+    const triangle = await signatureOf("triangle")
+    const arc = await signatureOf("arc")
+    const curve = await signatureOf("curve")
+
+    t.gt("cung vẽ ra pixel thật", mouseLayerPixels(canvas), 200)
+    t.not("cung khác tam giác", arc, triangle)
+    t.not("Bézier khác tam giác", curve, triangle)
+    t.not("cung khác Bézier", arc, curve)
+
+    // Double curve: bốn neo, và neo thứ tư PHẢI đổi hình — nếu leaf bỏ qua nó thì
+    // hai vân tay dưới đây bằng nhau.
+    tool.curves = [{ points: [...points, [points[2][0] + 6, points[2][1] - 40]], variant: "doubleCurve", selected: false }]
+    await settle(3)
+    const cubicA = mouseLayerSignature(canvas)
+    tool.curves = [{ points: [...points, [points[2][0] + 6, points[2][1] + 40]], variant: "doubleCurve", selected: false }]
+    await settle(3)
+    const cubicB = mouseLayerSignature(canvas)
+    t.not("neo thứ tư của double curve thật sự đổi hình", cubicA, cubicB)
+
+    // Kéo thân: mọi neo dời cùng một quãng, dáng giữ nguyên
+    tool.curves = [{ points, variant: "triangle", selected: true }]
+    await settle(3)
+    const spanBefore = points[1][0] - points[0][0]
+    await dragOn(canvas, [340, 215], [390, 245])
+
+    t.gt("kéo thân thì onComplete báo lại", completed.length, 1)
+    const moved = completed[completed.length - 1][0]
+    t.near("bề ngang giữ nguyên khi kéo thân", moved.points[1][0] - moved.points[0][0], spanBefore, 1.5)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["polyline: không định trước số neo, nhấp đúp là chốt"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-curve-tool", {
+        enabled: true,
+        variant: "polyline",
+        snap: false,
+        curves: [],
+        onComplete: (event, curves) => {
+            completed.push(curves)
+            tool.curves = curves
+        },
+    })
+    await settle()
+
+    for (const spot of [
+        [150, 250],
+        [300, 130],
+        [430, 260],
+    ]) {
+        await pastDoubleClickWindow()
+        await hoverAt(canvas, spot[0], spot[1])
+        await clickAt(canvas, spot[0], spot[1])
+    }
+    t.is("ba cú bấm chưa chốt — polyline không có số neo định trước", completed.length, 0)
+
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 540, 160)
+    await clickAt(canvas, 540, 160)
+    await clickAt(canvas, 540, 160)
+    await settle(3)
+
+    t.is("nhấp đúp là xong", completed.length, 1)
+    t.gt("đủ neo đã đóng đinh", completed[0][0].points.length, 3)
+    t.is("nhớ variant", completed[0][0].variant, "polyline")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 150)
+
+    /**
+     * Và nhấp đúp KHÔNG được chốt sớm một variant có số neo định trước: tam giác
+     * đang vẽ dở mà nhấp đúp thì vẫn phải là đang vẽ dở, không phải một hình hai neo.
+     */
+    tool.curves = []
+    tool.variant = "triangle"
+    tool.terminate()
+    await settle(3)
+    const before = completed.length
+
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 200, 200)
+    await clickAt(canvas, 200, 200)
+    await pastDoubleClickWindow()
+    await hoverAt(canvas, 320, 260)
+    await clickAt(canvas, 320, 260)
+    await clickAt(canvas, 320, 260)
+    await settle(3)
+
+    t.is("nhấp đúp không chốt sớm một tam giác dở dang", completed.length, before)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["sticker: một neo, một tay cầm, cỡ cố định theo pixel"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-sticker", {
+        enabled: true,
+        size: 32,
+        stickers: [],
+        onComplete: (event, stickers) => {
+            completed.push(stickers)
+            tool.stickers = stickers
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 300, 180)
+    t.is("một cú bấm là một con dấu", completed.length, 1)
+    t.is("báo về đúng một con dấu", completed[0].length, 1)
+    t.is("gói không ghim nguồn hình — chưa ai đưa src thì không có src", completed[0][0].src, undefined)
+    t.gt("ô chờ vẫn vẽ ra pixel thật", mouseLayerPixels(canvas), 40)
+
+    /**
+     * MỘT tay cầm — và con số ấy là giao ước qua ranh giới gói, không phải thẩm mỹ:
+     * cổng đếm icon bên akao đọc số vành từ wrapper. `chart-image-tool` dựng HAI
+     * (hộp ảnh co giãn hai góc); con dấu dựng MỘT. Hai công cụ khác nhau ở chỗ đo
+     * được ấy, nên chúng là hai phần tử chứ không phải một `mode`.
+     */
+    tool.stickers = [{ ...completed[0][0], selected: true }]
+    await settle(3)
+    t.is("wrapper con dấu dựng đúng một vành", tool.querySelectorAll("chart-clickable-circle").length, 1)
+
+    const image = mountWithTool("chart-image-tool", {
+        enabled: false,
+        images: [{ start: [40, 104], end: [70, 96], selected: true }],
+    })
+    await settle(3)
+    t.is("wrapper ảnh dựng đúng hai vành", image.tool.querySelectorAll("chart-clickable-circle").length, 2)
+
+    // Cỡ theo pixel, không theo miền dữ liệu: đổi `size` là đổi hình, và chỉ `size`
+    tool.stickers = [{ ...completed[0][0], size: 16, selected: false }]
+    await settle(3)
+    const small = mouseLayerPixels(canvas)
+    tool.stickers = [{ ...completed[0][0], size: 64, selected: false }]
+    await settle(3)
+    const large = mouseLayerPixels(canvas)
+    t.gt("dấu to hơn thì tô nhiều pixel hơn", large, small)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["trend-based fib time: đo đơn vị trên xu hướng, chiếu từ neo thứ ba"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-fib-time-extension", {
+        enabled: true,
+        snap: false,
+        extensions: [],
+        onComplete: (event, extensions) => {
+            completed.push(extensions)
+            tool.extensions = extensions
+        },
+    })
+    await settle()
+
+    for (const spot of [
+        [150, 250],
+        [260, 150],
+        [400, 200],
+    ]) {
+        await pastDoubleClickWindow()
+        await hoverAt(canvas, spot[0], spot[1])
+        await clickAt(canvas, spot[0], spot[1])
+    }
+
+    t.is("ba cú bấm là một bộ vạch", completed.length, 1)
+    t.is("ba neo", completed[0][0].points.length, 3)
+    t.gt("vạch vẽ ra pixel thật", mouseLayerPixels(canvas), 200)
+
+    /**
+     * Neo thứ ba là GỐC CHIẾU, và đó là toàn bộ chỗ nó khác `chart-fib-time-zone`.
+     * Giữ nguyên hai neo đơn vị, dời riêng neo ba: hình PHẢI đổi. Bỏ nhánh
+     * `x3Value` trong `cycleLines` thì hai vân tay dưới đây bằng nhau — mà cả hai
+     * vẫn "vẽ ra pixel thật", nên phép đếm pixel một mình sẽ để lọt.
+     */
+    const [first, second, third] = completed[0][0].points
+    const signatureAt = async origin => {
+        tool.extensions = [{ points: [first, second, origin], selected: false }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+
+    const atThird = await signatureAt(third)
+    const atFirst = await signatureAt(first)
+    const shifted = await signatureAt([third[0] + 8, third[1]])
+
+    t.not("gốc chiếu ở neo ba khác gốc chiếu ở neo một", atThird, atFirst)
+    t.not("dời riêng gốc chiếu thì vạch dời theo", shifted, atThird)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["forecast và projection: cùng ba neo, hai cách suy chân dự phóng"] = async () => {
+    const t = makeChecker()
+
+    /**
+     * Chỗ khác nhau giữa hai công cụ là một hàm thuần, nên nó được hỏi bằng số
+     * trước khi hỏi bằng pixel: `forecast` nối tiếp từ cuối chân nền tới neo ba;
+     * `projection` chép vector nền sang neo ba làm gốc.
+     */
+    const anchors = [
+        [10, 100],
+        [20, 120],
+        [40, 90],
+    ]
+    const forecast = projectionLeg("forecast", anchors)
+    const projection = projectionLeg("projection", anchors)
+
+    t.is("forecast bắt đầu ở cuối chân nền", forecast.from.join(), "20,120")
+    t.is("forecast kết ở neo ba", forecast.to.join(), "40,90")
+    t.is("projection bắt đầu ở neo ba", projection.from.join(), "40,90")
+    t.is("projection chép nguyên vector nền", projection.to.join(), "50,110")
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-projection", {
+        enabled: true,
+        variant: "forecast",
+        snap: false,
+        projections: [],
+        onComplete: (event, projections) => {
+            completed.push(projections)
+            tool.projections = projections
+        },
+    })
+    await settle()
+
+    for (const spot of [
+        [150, 250],
+        [300, 180],
+        [450, 120],
+    ]) {
+        await pastDoubleClickWindow()
+        await hoverAt(canvas, spot[0], spot[1])
+        await clickAt(canvas, spot[0], spot[1])
+    }
+
+    t.is("ba cú bấm là một dự phóng", completed.length, 1)
+    t.is("ba neo", completed[0][0].points.length, 3)
+    t.is("nhớ variant", completed[0][0].variant, "forecast")
+    t.gt("vẽ ra pixel thật (chân nền + hộp + mũi tên + hộp số)", mouseLayerPixels(canvas), 400)
+
+    const points = completed[0][0].points
+    const signatureOf = async variant => {
+        tool.projections = [{ points, variant, selected: false }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+    const asForecast = await signatureOf("forecast")
+    const asProjection = await signatureOf("projection")
+    t.not("hai variant vẽ ra hai hình khác nhau", asForecast, asProjection)
+
+    /**
+     * Và đây là điều CHỈ `projection` làm: đổi chân nền là đổi cả chân dự phóng.
+     * Với `forecast` thì neo ba là đích tự đặt, nên dời neo một chỉ dời chân nền.
+     */
+    const nudgedBase = [[points[0][0], points[0][1] - 6], points[1], points[2]]
+    const nudge = async variant => {
+        tool.projections = [{ points: nudgedBase, variant, selected: false }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+    t.not("projection: dời chân nền thì dời cả đích", await nudge("projection"), asProjection)
+    t.not("forecast: dời chân nền thì chân nền đổi", await nudge("forecast"), asForecast)
+
+    cleanup()
+    return t.checks
+}
+
+TESTS["ghost feed: nến giả mang tính cách của dải nguồn, và tất định"] = async () => {
+    const t = makeChecker()
+
+    const completed = []
+    const { canvas, tool } = mountWithTool("chart-bars-pattern", {
+        enabled: true,
+        mode: "ghost",
+        patterns: [],
+        onComplete: (event, patterns) => {
+            completed.push(patterns)
+            tool.patterns = patterns
+        },
+    })
+    await settle()
+
+    await clickAt(canvas, 150, 200)
+    await hoverAt(canvas, 300, 200)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 300, 200)
+    await hoverAt(canvas, 480, 180)
+    await pastDoubleClickWindow()
+    await clickAt(canvas, 480, 180)
+
+    t.is("ba cú bấm là một bóng", completed.length, 1)
+    t.is("bóng nhớ mode của nó", completed[0][0].mode, "ghost")
+    t.gt("vẽ ra pixel thật", mouseLayerPixels(canvas), 200)
+
+    const object = { ...completed[0][0], selected: false }
+    const signatureOf = async mode => {
+        tool.patterns = [{ ...object, mode }]
+        await settle(3)
+        return mouseLayerSignature(canvas)
+    }
+
+    const copy = await signatureOf("copy")
+    const ghost = await signatureOf("ghost")
+    t.not("bóng giả khác bản chép", ghost, copy)
+
+    /**
+     * Tất định: cùng ba neo thì cùng một bóng, mọi lần vẽ. `Math.random()` ở đây
+     * làm bóng nhấp nháy mỗi khi chuột đi qua — hình đổi dáng khi bạn nhìn nó thì
+     * không đọc được, và bài này là chỗ bắt đúng chuyện ấy.
+     */
+    const again = await signatureOf("ghost")
+    t.is("vẽ lại vẫn đúng bóng ấy", again, ghost)
+
+    // Dời neo dán là một bóng KHÁC — hạt giống lấy từ chính mấy cái neo
+    tool.patterns = [{ ...object, mode: "ghost", at: [object.at[0] + 12, object.at[1]] }]
+    await settle(3)
+    t.not("dời neo dán thì bóng khác", mouseLayerSignature(canvas), ghost)
 
     cleanup()
     return t.checks

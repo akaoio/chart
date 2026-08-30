@@ -7,6 +7,7 @@ export const eachBarsPatternDefaults = {
     index: undefined,
     interactive: true,
     selected: false,
+    mode: "copy",
     from: undefined,
     to: undefined,
     at: undefined,
@@ -54,7 +55,7 @@ export class EachBarsPattern extends ElementBase {
 
     #build() {
         const props = this.#props
-        const { from, to, at, appearance, selected, hoverText } = props
+        const { mode, from, to, at, appearance, selected, hoverText } = props
         const { upStyle, downStyle, edgeStroke, edgeFill, edgeStrokeWidth, r } = appearance
         const { enable: hoverTextEnabled, ...restHoverText } = hoverText
 
@@ -73,6 +74,7 @@ export class EachBarsPattern extends ElementBase {
         const { ghost, edge, hoverText: hoverNode } = this.#children
 
         Object.assign(ghost, {
+            mode,
             selected: showHandles,
             from,
             to,

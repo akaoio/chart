@@ -3,27 +3,28 @@ import { ElementBase, define, defineProperties, batched } from "../core/element.
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
 /**
- * Mỗi variant là một mẫu hình TradingView: bao nhiêu đỉnh, đỉnh tên gì, có
- * fill tam giác kiểu harmonic không. Máy trạng thái đặt-n-điểm là MỘT — bảng
- * này là toàn bộ chỗ khác nhau.
+ * Năm công cụ hình khối của TradingView, một bảng phẳng — cùng khuôn với
+ * `PATTERN_VARIANTS`: bao nhiêu neo, hình học nào, có lòng hay không.
+ *
+ * `count: 0` nghĩa là **không định trước số neo** — nhấp đúp mới chốt, đúng
+ * cách `chart-path` làm. Mọi variant còn lại chốt khi đủ neo.
+ *
+ * Thứ tự bấm là thứ tự HÌNH HỌC, không phải thứ tự thao tác của TradingView:
+ * cung là ba điểm nó ĐI QUA (đầu → giữa → cuối), Bézier là đầu → điều khiển →
+ * cuối. Bấm theo thứ tự ấy thì hình tạm luôn là hình sẽ có, không nhảy dáng ở
+ * cú bấm cuối — cái giá phải trả là nó khác thao tác TV, và đó là lựa chọn.
  */
-export const PATTERN_VARIANTS = {
-    xabcd: { count: 5, labels: ["X", "A", "B", "C", "D"], fillTriangles: true },
-    cypher: { count: 5, labels: ["X", "A", "B", "C", "D"], fillTriangles: true },
-    abcd: { count: 4, labels: ["A", "B", "C", "D"], fillTriangles: false },
-    triangle: { count: 4, labels: ["A", "B", "C", "D"], fillTriangles: false },
-    threedrives: { count: 7, labels: ["0", "1", "A", "2", "B", "3", "C"], fillTriangles: false },
-    headshoulders: { count: 7, labels: ["", "L", "", "H", "", "R", ""], fillTriangles: false },
-    elliottImpulse: { count: 6, labels: ["0", "1", "2", "3", "4", "5"], fillTriangles: false },
-    elliottCorrection: { count: 4, labels: ["0", "A", "B", "C"], fillTriangles: false },
-    elliottTriangle: { count: 6, labels: ["0", "A", "B", "C", "D", "E"], fillTriangles: false },
-    elliottDoubleCombo: { count: 4, labels: ["0", "W", "X", "Y"], fillTriangles: false },
-    elliottTripleCombo: { count: 6, labels: ["0", "W", "X", "Y", "X", "Z"], fillTriangles: false },
+export const CURVE_VARIANTS = {
+    triangle: { count: 3, mode: "polygon", closed: true },
+    polyline: { count: 0, mode: "polygon", closed: true },
+    arc: { count: 3, mode: "arc", closed: true },
+    curve: { count: 3, mode: "quadratic", closed: false },
+    doubleCurve: { count: 4, mode: "cubic", closed: false },
 }
 
-export const patternToolDefaults = {
+export const curveToolDefaults = {
     enabled: true,
-    variant: "xabcd",
+    variant: "triangle",
     snap: false,
     snapTo: undefined,
     shouldDisableSnap: event => event.button === 2 || event.shiftKey,
@@ -41,14 +42,11 @@ export const patternToolDefaults = {
         text: "Click to select object",
         selectedText: "",
     },
-    patterns: [],
+    curves: [],
     appearance: {
         strokeStyle: "#000000",
         strokeWidth: 1,
         fillStyle: "rgba(138, 175, 226, 0.2)",
-        fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
-        fontSize: 11,
-        fontFill: "#000000",
         edgeStroke: "#000000",
         edgeFill: "#FFFFFF",
         edgeStrokeWidth: 1,
@@ -57,14 +55,14 @@ export const patternToolDefaults = {
 }
 
 /**
- * Pattern tools: `<chart-pattern>`.
+ * Shapes with a fill: `<chart-curve-tool>`.
  *
- * The n-click placement frame: each click pins a vertex, the polyline follows
- * the pointer in between, and the shape completes when the variant's count is
- * reached. XABCD, Cypher, ABCD, triangle, three drives, head-and-shoulders
- * and the Elliott waves are all this one machine with different tables.
+ * Triangle, Polyline, Arc, Curve and Double curve are one placement machine and
+ * one leaf — `variant` is the only difference between them, and it is a row in
+ * `CURVE_VARIANTS`. Each placed shape remembers its own variant, so one tool
+ * instance can hold a mixed list.
  */
-export class PatternTool extends ElementBase {
+export class CurveTool extends ElementBase {
     #props
     #current = null
     #override = null
@@ -73,16 +71,17 @@ export class PatternTool extends ElementBase {
     #wrappers = []
     #temporary = null
     #indicator = null
+    #listener = null
 
     nodes = []
 
     constructor() {
         super()
-        this.#props = defineProperties(this, patternToolDefaults)
+        this.#props = defineProperties(this, curveToolDefaults)
 
         this.terminate = terminate.bind(this)
         this.saveNodeType = saveNodeType.bind(this)
-        this.getSelectionState = isHoverForInteractiveType("patterns").bind(this)
+        this.getSelectionState = isHoverForInteractiveType("curves").bind(this)
     }
 
     /** Pane nào chứa công cụ này — thứ `chart-drawing-object-selector` cần khi đăng ký. */
@@ -114,22 +113,50 @@ export class PatternTool extends ElementBase {
     }
 
     #variantOf(name) {
-        return PATTERN_VARIANTS[name] ?? PATTERN_VARIANTS.xabcd
+        return CURVE_VARIANTS[name] ?? CURVE_VARIANTS.triangle
+    }
+
+    /**
+     * Chốt hình đang vẽ với những neo đã đóng đinh — chỉ cho variant không định
+     * trước số neo, và cần ít nhất ba neo vì một đa giác hai đỉnh là một đoạn thẳng.
+     * Ứng dụng cũng gọi được để chốt từ một nút Done trên màn chạm.
+     */
+    finish(event, moreProps) {
+        const current = this.#current
+        if (this.#variantOf(this.#props.variant).count !== 0) return
+        if (!isDefined(current) || !isDefined(current.points) || current.points.length < 3) return
+
+        this.#complete(event, current.points, moreProps)
+    }
+
+    #complete(event, points, moreProps) {
+        const newCurves = [
+            ...this.#props.curves.map(each => ({ ...each, selected: false })),
+            {
+                points,
+                variant: this.#props.variant,
+                selected: true,
+                appearance: this.#props.appearance,
+            },
+        ]
+
+        this.setInteractiveState({ current: null, override: null })
+        this.#props.onComplete?.(event, newCurves, moreProps)
     }
 
     #build() {
         const props = this.#props
 
-        while (this.#wrappers.length > props.patterns.length) this.#wrappers.pop().remove()
-        while (this.#wrappers.length < props.patterns.length) {
-            const wrapper = document.createElement("chart-each-pattern")
+        while (this.#wrappers.length > props.curves.length) this.#wrappers.pop().remove()
+        while (this.#wrappers.length < props.curves.length) {
+            const wrapper = document.createElement("chart-each-curve")
             this.#wrappers.push(wrapper)
             this.append(wrapper)
         }
 
         this.nodes = [...this.#wrappers]
 
-        props.patterns.forEach((each, index) => {
+        props.curves.forEach((each, index) => {
             const appearance = isDefined(each.appearance) ? { ...props.appearance, ...each.appearance } : props.appearance
             const variant = this.#variantOf(each.variant)
 
@@ -138,22 +165,22 @@ export class PatternTool extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 points: getValueFromOverride(this.#override, index, "points", each.points),
-                labels: variant.labels,
-                fillTriangles: variant.fillTriangles,
+                mode: variant.mode,
+                closed: variant.closed,
                 appearance,
-                hoverText: { ...patternToolDefaults.hoverText, ...props.hoverText },
-                onDrag: this.#handleDragPattern,
-                onDragComplete: this.#handleDragPatternComplete,
+                hoverText: { ...curveToolDefaults.hoverText, ...props.hoverText },
+                onDrag: this.#handleDragCurve,
+                onDragComplete: this.#handleDragCurveComplete,
             })
 
             this.#wrappers[index].update()
         })
 
-        // Hình tạm: đường gấp khúc qua các đỉnh đã đóng đinh, đỉnh kế bám con trỏ
+        // Hình tạm: các neo đã đóng đinh cộng con trỏ — cùng leaf, cùng hình học
         const drawing = isDefined(this.#current) && isDefined(this.#current.end)
 
         if (drawing && this.#temporary === null) {
-            this.#temporary = document.createElement("chart-interactive-polyline")
+            this.#temporary = document.createElement("chart-interactive-curve")
             this.append(this.#temporary)
         } else if (!drawing && this.#temporary !== null) {
             this.#temporary.remove()
@@ -162,17 +189,13 @@ export class PatternTool extends ElementBase {
 
         if (drawing) {
             const variant = this.#variantOf(props.variant)
-            const points = [...this.#current.points, this.#current.end]
             Object.assign(this.#temporary, {
-                points,
-                labels: variant.labels.slice(0, points.length),
-                fillTriangles: variant.fillTriangles,
+                points: [...this.#current.points, this.#current.end],
+                mode: variant.mode,
+                closed: variant.closed,
                 strokeStyle: props.appearance.strokeStyle,
                 strokeWidth: props.appearance.strokeWidth,
                 fillStyle: props.appearance.fillStyle,
-                fontFamily: props.appearance.fontFamily,
-                fontSize: props.appearance.fontSize,
-                fontFill: props.appearance.fontFill,
             })
         }
 
@@ -194,6 +217,17 @@ export class PatternTool extends ElementBase {
             onClick: this.#handleClick,
             onMouseMove: this.#handleDraw,
         })
+
+        // Nhấp đúp chốt hình — chỉ có nghĩa với variant không định trước số neo;
+        // `finish` tự bỏ qua các variant còn lại, nên nhấp đúp giữa chừng một tam
+        // giác không chốt sớm một hình hai đỉnh.
+        if (this.#listener === null) {
+            this.#listener = document.createElement("chart-click-callback")
+            this.append(this.#listener)
+        }
+        this.#listener.onDoubleClick = (event, moreProps) => {
+            if (this.#props.enabled) this.finish(event, moreProps)
+        }
     }
 
     #handleStart = (event, xyValue, moreProps) => {
@@ -211,48 +245,37 @@ export class PatternTool extends ElementBase {
         }
     }
 
-    /** Mỗi click đóng đinh một đỉnh; đủ số đỉnh của variant thì hoàn thành. */
+    /** Mỗi click đóng đinh một neo; đủ số neo của variant thì hoàn thành. */
     #handleClick = (event, xyValue, moreProps) => {
         const current = this.#current
         if (!this.#mouseMoved || !isDefined(current) || !isDefined(current.points)) return
 
         const variant = this.#variantOf(this.#props.variant)
 
-        if (current.points.length < variant.count - 1) {
+        if (variant.count === 0 || current.points.length < variant.count - 1) {
             this.setInteractiveState({ current: { ...current, points: [...current.points, xyValue] } })
             return
         }
 
-        const newPatterns = [
-            ...this.#props.patterns.map(each => ({ ...each, selected: false })),
-            {
-                points: [...current.points, xyValue],
-                variant: this.#props.variant,
-                selected: true,
-                appearance: this.#props.appearance,
-            },
-        ]
-
-        this.setInteractiveState({ current: null, override: null })
-        this.#props.onComplete?.(event, newPatterns, moreProps)
+        this.#complete(event, [...current.points, xyValue], moreProps)
     }
 
-    #handleDragPattern = (event, index, newValues) => {
+    #handleDragCurve = (event, index, newValues) => {
         this.setInteractiveState({ override: { index, ...newValues } })
     }
 
-    #handleDragPatternComplete = (event, moreProps) => {
+    #handleDragCurveComplete = (event, moreProps) => {
         if (!isDefined(this.#override)) return
 
         const { index, points } = this.#override
 
-        const newPatterns = this.#props.patterns.map((each, position) =>
+        const newCurves = this.#props.curves.map((each, position) =>
             position === index ? { ...each, points, selected: true } : { ...each, selected: false },
         )
 
         this.setInteractiveState({ override: null })
-        this.#props.onComplete?.(event, newPatterns, moreProps)
+        this.#props.onComplete?.(event, newCurves, moreProps)
     }
 }
 
-define("chart-pattern", PatternTool)
+define("chart-curve-tool", CurveTool)

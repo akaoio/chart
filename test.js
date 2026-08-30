@@ -437,6 +437,145 @@ if (committed === current) {
     }
 }
 
+{
+    /**
+     * chart#34: hình học của họ hình khối, dự phóng và gốc chiếu fib-time.
+     *
+     * Ba thứ này không có bản gốc để so, nhưng chúng là số học thuần — nên chúng
+     * được so với số tính TAY, ở đây, chứ không chỉ được nhìn bằng mắt trong
+     * trình duyệt. Trục tay: x nhân 10, y lật quanh 100 rồi nhân 10.
+     */
+    const { curveOutline } = await import("./src/interactive/components/InteractiveCurve.js")
+    const { projectionLeg } = await import("./src/interactive/components/InteractiveProjection.js")
+    const { cycleLines } = await import("./src/interactive/components/InteractiveCycles.js")
+
+    const xScale = value => value * 10
+    const yScale = value => (100 - value) * 10
+    yScale.invert = pixel => 100 - pixel / 10
+    xScale.domain = () => [0, 100]
+    const moreProps = { xScale, chartConfig: { yScale, height: 400 } }
+
+    // `null` cho chỗ không có điểm: khi một nhánh hình học biến mất, danh sách mẫu ngắn
+    // lại và phép so phải NÓI ra điều đó, không được nổ giữa chừng — một cú nổ cũng là
+    // đỏ, nhưng nó không nói cho người đọc biết cái gì đã lệch.
+    const round = points =>
+        points.map(point => (point === undefined ? null : [Math.round(point[0] * 100) / 100, Math.round(point[1] * 100) / 100]))
+    const problems = []
+    const expect = (what, got, want) => {
+        if (JSON.stringify(got) !== JSON.stringify(want)) problems.push(`${what}: ${JSON.stringify(got)} ≠ ${JSON.stringify(want)}`)
+    }
+
+    const three = [
+        [0, 0],
+        [10, 10],
+        [20, 0],
+    ]
+
+    // CUNG qua ba điểm (0,1000) (100,900) (200,1000) trong pixel: tâm nằm trên trục
+    // đối xứng x=100, nên mẫu giữa của tám đoạn phải rơi ĐÚNG vào điểm thứ hai.
+    // Bỏ nhánh arc thì mẫu giữa thành trung điểm dây cung (100, 1000) — lệch 100px.
+    const arc = curveOutline({ points: three, mode: "arc", samples: 8 }, moreProps)
+    expect("cung: số mẫu", arc.length, 9)
+    expect("cung: hai đầu", round([arc[0], arc[8]]), [[0, 1000], [200, 1000]])
+    expect("cung: đi qua điểm giữa", round([arc[4]]), [[100, 900]])
+
+    // Ba điểm THẲNG HÀNG không có đường tròn nào — hạ về đoạn thẳng, không NaN.
+    // Không có nhánh này thì `d → 0`, toạ độ thành NaN, và canvas nuốt NaN trong im lặng.
+    const flat = curveOutline({ points: [[0, 0], [10, 0], [20, 0]], mode: "arc", samples: 8 }, moreProps)
+    expect("cung suy biến thành đoạn thẳng", round(flat), [[0, 1000], [100, 1000], [200, 1000]])
+
+    // Bézier bậc hai tại t=0.5 là (p0 + 2c + p2)/4 → y = (1000 + 1800 + 1000)/4 = 950
+    const quadratic = curveOutline({ points: three, mode: "quadratic", samples: 2 }, moreProps)
+    expect("Bézier bậc hai giữa đường", round([quadratic[1]]), [[100, 950]])
+
+    // Bézier bậc ba tại t=0.5 là (p0 + 3c1 + 3c2 + p3)/8 → y = (1000+2700+2700+1000)/8 = 925
+    const cubic = curveOutline(
+        { points: [[0, 0], [10, 10], [20, 10], [30, 0]], mode: "cubic", samples: 2 },
+        moreProps,
+    )
+    expect("Bézier bậc ba giữa đường", round([cubic[1]]), [[150, 925]])
+
+    // Chưa đủ neo cho mode thì hạ về đường gấp khúc — đó chính là hình tạm lúc đang đặt
+    expect(
+        "cubic mới hai neo là đường gấp khúc",
+        round(curveOutline({ points: [[0, 0], [10, 10]], mode: "cubic", samples: 8 }, moreProps)),
+        [[0, 1000], [100, 900]],
+    )
+
+    // DỰ PHÓNG: forecast nối tiếp chân nền tới neo ba; projection chép vector nền sang neo ba
+    const anchors = [
+        [10, 100],
+        [20, 120],
+        [40, 90],
+    ]
+    expect("forecast", projectionLeg("forecast", anchors), { from: [20, 120], to: [40, 90] })
+    expect("projection", projectionLeg("projection", anchors), { from: [40, 90], to: [50, 110] })
+
+    // GỐC CHIẾU của fib time: đơn vị là x2−x1 = 4, chiếu từ x3 = 50 → 50, 54, 58
+    const ratios = [0, 1, 2]
+    const projected = cycleLines({ x1Value: 10, x2Value: 14, x3Value: 50, offsets: ratios }, moreProps)
+    expect("fib time chiếu từ neo ba", projected.map(line => line.x), [500, 540, 580])
+    // Vắng x3Value thì gốc chiếu là neo đầu — hành vi cũ của fib time zone, không đổi
+    const zoned = cycleLines({ x1Value: 10, x2Value: 14, offsets: ratios }, moreProps)
+    expect("vắng neo ba thì chiếu từ neo đầu", zoned.map(line => line.x), [100, 140, 180])
+
+    if (problems.length === 0) {
+        checked += 11
+        console.log(`✓ chart#34: cung/Bézier/dự phóng/gốc-chiếu — 11 phép so khớp số tính tay`)
+    } else {
+        failed++
+        console.error(`✗ chart#34 hình học lệch: ${problems.join(" · ")}`)
+    }
+}
+
+{
+    /**
+     * chart#34: ghost feed giữ đúng những bước giá của dải nguồn, và TẤT ĐỊNH.
+     *
+     * `Math.random()` ở đây làm bóng nhấp nháy mỗi lần vẽ lại — nên hai điều được
+     * so bằng số: cùng neo thì cùng bóng, và tập các bước mở→đóng của bóng đúng là
+     * tập của dải nguồn, chỉ khác thứ tự. Không có số nào bịa ra từ hư không.
+     */
+    const { barsPatternCandles } = await import("./src/interactive/components/InteractiveBarsPattern.js")
+
+    const xScale = value => value * 10
+    const yScale = value => (100 - value) * 10
+    yScale.invert = pixel => 100 - pixel / 10
+    const fullData = [
+        { x: 0, open: 100, close: 102, high: 103, low: 99 },
+        { x: 1, open: 102, close: 101, high: 104, low: 100 },
+        { x: 2, open: 101, close: 105, high: 106, low: 101 },
+        { x: 3, open: 105, close: 104, high: 105, low: 103 },
+    ]
+    const moreProps = { xScale, chartConfig: { yScale }, xAccessor: row => row.x, fullData }
+    const object = { from: 0, to: 3, at: [10, 100] }
+
+    // Bước mở→đóng đọc ngược từ pixel: yScale lật dấu, nên (yOpen − yClose)/10 là close − open
+    const moves = candles => candles.map(candle => Math.round(((candle.yOpen - candle.yClose) / 10) * 100) / 100)
+    const sorted = list => [...list].sort((a, b) => a - b)
+
+    const copy = barsPatternCandles({ ...object, mode: "copy" }, moreProps)
+    const ghost = barsPatternCandles({ ...object, mode: "ghost" }, moreProps)
+    const again = barsPatternCandles({ ...object, mode: "ghost" }, moreProps)
+    const moved = barsPatternCandles({ ...object, mode: "ghost", at: [17, 100] }, moreProps)
+
+    const problems = []
+    if (copy.length !== 4 || ghost.length !== 4) problems.push(`số nến: copy ${copy.length}, ghost ${ghost.length}`)
+    if (JSON.stringify(moves(copy)) !== JSON.stringify([2, -1, 4, -1])) problems.push(`bản chép lệch: ${moves(copy)}`)
+    if (JSON.stringify(sorted(moves(ghost))) !== JSON.stringify(sorted([2, -1, 4, -1])))
+        problems.push(`bóng giả dùng bước lạ: ${moves(ghost)}`)
+    if (JSON.stringify(moves(ghost)) !== JSON.stringify(moves(again))) problems.push(`không tất định: ${moves(ghost)} rồi ${moves(again)}`)
+    if (JSON.stringify(moves(ghost)) === JSON.stringify(moves(moved))) problems.push(`dời neo mà bóng không đổi: ${moves(moved)}`)
+
+    if (problems.length === 0) {
+        checked += 5
+        console.log(`✓ ghost feed: bước giá là của dải nguồn, xáo thứ tự, tất định theo neo`)
+    } else {
+        failed++
+        console.error(`✗ ghost feed lệch: ${problems.join(" · ")}`)
+    }
+}
+
 /** Và mọi cái tên tài liệu nhắc tới phải có thật — xem tools/docs/check-docs.mjs. */
 const { checkDocs } = await import("./tools/docs/check-docs.mjs")
 const docProblems = await checkDocs()

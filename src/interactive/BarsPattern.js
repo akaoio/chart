@@ -4,6 +4,7 @@ import { isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from 
 
 export const barsPatternDefaults = {
     enabled: true,
+    mode: "copy",
     onStart: undefined,
     onComplete: undefined,
     onSelect: undefined,
@@ -24,12 +25,17 @@ export const barsPatternDefaults = {
 }
 
 /**
- * TradingView's Bars Pattern: `<chart-bars-pattern>`, three clicks.
+ * TradingView's Bars Pattern and Ghost Feed: `<chart-bars-pattern>`, three clicks.
  *
  * Two clicks bracket the SOURCE bars; from then on their ghost rides the pointer —
  * the anchor previews wherever the mouse goes — and the third click sets it down.
  * The completed object is `{ from, to, at }`: range and anchor, never the bars,
  * which the leaf re-reads from the rows on every draw.
+ *
+ * `mode` chọn bóng nào: `copy` chép nguyên dải nguồn (Bars Pattern), `ghost` xáo
+ * lại chính những bước giá ấy thành một dải GIẢ mang cùng tính cách (Ghost Feed).
+ * Cùng một cử chỉ, cùng một đối tượng — khác đúng cách leaf đọc dải nguồn ra, nên
+ * Ghost Feed là một `mode`, không phải một phần tử thứ hai.
  */
 export class BarsPattern extends ElementBase {
     #props
@@ -103,6 +109,7 @@ export class BarsPattern extends ElementBase {
                 index,
                 selected: each.selected,
                 hoverText: props.hoverText,
+                mode: each.mode ?? props.mode,
                 from: live.from,
                 to: live.to,
                 at: live.at,
@@ -127,6 +134,7 @@ export class BarsPattern extends ElementBase {
         if (drawing) {
             Object.assign(this.#temporary, {
                 interactive: false,
+                mode: props.mode,
                 from: this.#current.from,
                 to: this.#current.to,
                 at: this.#current.at,
@@ -189,7 +197,14 @@ export class BarsPattern extends ElementBase {
 
         const newPatterns = [
             ...this.#props.patterns.map(each => ({ ...each, selected: false })),
-            { from: current.from, to: current.to, at: xyValue, selected: true, appearance: this.#props.appearance },
+            {
+                from: current.from,
+                to: current.to,
+                at: xyValue,
+                mode: this.#props.mode,
+                selected: true,
+                appearance: this.#props.appearance,
+            },
         ]
 
         this.setInteractiveState({ current: null })

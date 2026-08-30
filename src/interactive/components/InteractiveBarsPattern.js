@@ -5,6 +5,7 @@ import { getMouseCanvas } from "../../core/GenericComponent.js"
 import { defineProperties, define } from "../../core/element.js"
 
 export const interactiveBarsPatternDefaults = {
+    mode: "copy",
     from: undefined,
     to: undefined,
     at: undefined,
@@ -21,7 +22,64 @@ export const interactiveBarsPatternDefaults = {
 }
 
 /**
- * A ghost copy of a run of bars (chart#5 cụm 4b — TV's Bars Pattern).
+ * Bộ sinh số tất định, gieo từ một số nguyên.
+ *
+ * Ghost feed phải cho **cùng một bóng ở mọi lần vẽ**: `Math.random()` làm bóng
+ * nhấp nháy mỗi lần chuột đi qua, và một hình đổi dáng khi bạn nhìn nó thì không
+ * đọc được. Nên hạt giống lấy từ chính ba cái neo — dời neo là một bóng khác,
+ * đứng yên là bóng cũ. Băm theo kiểu xorshift-multiply của MurmurHash3.
+ */
+const seeded = seed => {
+    let state = Math.imul(seed ^ 0x9e3779b9, 0x85ebca6b) >>> 0
+    return () => {
+        state = (Math.imul(state ^ (state >>> 15), 0x2c1b3c6d) + 0x6d2b79f5) >>> 0
+        return state / 4_294_967_296
+    }
+}
+
+/**
+ * Ghost feed: xáo lại chính những bước giá của dải nguồn, rồi nối đuôi nhau.
+ *
+ * TradingView's Ghost Feed dựng nến GIẢ mang tính cách của một dải thật — nên
+ * cái được giữ là hình dạng từng nến (mở→đóng, râu trên, râu dưới) so với giá mở
+ * của nó, còn thứ tự thì xáo. Bóng vì thế "trông như" dữ liệu nguồn mà không
+ * phải là bản chép của nó, và đó chính là chỗ nó khác `mode: "copy"`.
+ *
+ * Không có số nào bịa ra từ hư không: mọi bước giá đều là bước đã xảy ra thật.
+ */
+const ghostRows = (rows, seed) => {
+    const shapes = rows.map(row => ({
+        move: row.close - row.open,
+        up: row.high - Math.max(row.open, row.close),
+        down: Math.min(row.open, row.close) - row.low,
+    }))
+
+    // Fisher–Yates với bộ sinh tất định — xáo tại chỗ trên bản sao
+    const random = seeded(seed)
+    const order = shapes.map((shape, index) => index)
+    for (let index = order.length - 1; index > 0; index--) {
+        const pick = Math.floor(random() * (index + 1))
+        ;[order[index], order[pick]] = [order[pick], order[index]]
+    }
+
+    let open = rows[0].open
+    return order.map(which => {
+        const shape = shapes[which]
+        const close = open + shape.move
+        const row = {
+            open,
+            close,
+            high: Math.max(open, close) + shape.up,
+            low: Math.min(open, close) - shape.down,
+        }
+        open = close
+        return row
+    })
+}
+
+/**
+ * A ghost copy of a run of bars (chart#5 cụm 4b — TV's Bars Pattern), and its
+ * synthetic sibling (`mode: "ghost"` — TV's Ghost Feed).
  *
  * The object keeps the SOURCE range (`from`, `to`) and one paste anchor (`at`) —
  * never the bars themselves: mini-candles are re-read from the rows on every draw,
@@ -30,7 +88,7 @@ export const interactiveBarsPatternDefaults = {
  * pass; draw and hit test read the same list.
  */
 export const barsPatternCandles = (props, moreProps) => {
-    const { from, to, at } = { ...interactiveBarsPatternDefaults, ...props }
+    const { mode, from, to, at } = { ...interactiveBarsPatternDefaults, ...props }
     const {
         xScale,
         chartConfig: { yScale },
@@ -41,11 +99,14 @@ export const barsPatternCandles = (props, moreProps) => {
     if (isNotDefined(from) || isNotDefined(to) || isNotDefined(at) || !fullData?.length) return []
 
     const [left, right] = from <= to ? [from, to] : [to, from]
-    const rows = fullData.filter(row => {
+    const source = fullData.filter(row => {
         const x = xAccessor(row)
         return x >= left && x <= right
     })
-    if (rows.length === 0) return []
+    if (source.length === 0) return []
+
+    // Hạt giống là ba cái neo: bóng đứng yên khi không ai đụng vào, đổi khi có
+    const rows = mode === "ghost" ? ghostRows(source, Math.round(left * 73_856_093 + right * 19_349_663 + at[0] * 83_492_791)) : source
 
     const yOffset = at[1] - rows[0].open
     const half = rows.length > 1 ? (xScale(at[0] + 1) - xScale(at[0])) * 0.35 : 3

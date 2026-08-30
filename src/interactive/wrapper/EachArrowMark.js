@@ -14,6 +14,7 @@ export const eachArrowMarkDefaults = {
     appearance: {
         upFill: "#26A69A",
         downFill: "#EF5350",
+        sideFill: "#2962FF",
         bgFill: "rgba(0, 0, 0, 0)",
         fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
         fontSize: 18,
@@ -23,7 +24,25 @@ export const eachArrowMarkDefaults = {
     onDragComplete: () => {},
 }
 
-/** One arrow mark: a ▲ or ▼ glyph riding an InteractiveText box — draggable like any label. */
+/**
+ * Bốn hướng, một bảng — không phải bốn nhánh `if`.
+ *
+ * `mode` là toàn bộ chỗ khác nhau giữa bốn dấu mũi tên của TradingView, nên nó
+ * là một bảng phẳng: thêm một hướng = thêm một dòng. Giá trị lạ rơi về `up`,
+ * giống hệt nhánh `mode === "down" ? ▼ : ▲` cũ.
+ *
+ * Màu thì không đối xứng, và đó là cố ý: ▲/▼ nói về GIÁ nên mang màu
+ * tăng/giảm; ◀/▶ chỉ về THỜI GIAN nên không có phe — tô một dấu trỏ trái
+ * bằng xanh-tăng là một câu nói dối rẻ tiền. Chúng dùng `sideFill` trung tính.
+ */
+const MARKS = {
+    up: { glyph: "▲", fill: "upFill" },
+    down: { glyph: "▼", fill: "downFill" },
+    left: { glyph: "◀", fill: "sideFill" },
+    right: { glyph: "▶", fill: "sideFill" },
+}
+
+/** One arrow mark: a ▲ ▼ ◀ or ▶ glyph riding an InteractiveText box — draggable like any label. */
 export class EachArrowMark extends ElementBase {
     #props
     #hover = false
@@ -62,6 +81,7 @@ export class EachArrowMark extends ElementBase {
          * kéo được — mà không thấy gì trên màn hình. Đúng bệnh của Pin.
          */
         const appearance = { ...eachArrowMarkDefaults.appearance, ...props.appearance }
+        const mark = MARKS[mode] ?? MARKS.up
         const { enable: hoverTextEnabled, selectedText, text: unselectedText, ...restHoverText } = hoverText
 
         if (isNotDefined(at)) return
@@ -81,11 +101,11 @@ export class EachArrowMark extends ElementBase {
             selected: showHandles,
             position: at,
             // `glyph`/`fill` cho các dấu khác cưỡi cùng wrapper — cờ, ghim… — không chỉ ▲/▼
-            text: glyph ?? (mode === "down" ? "▼" : "▲"),
+            text: glyph ?? mark.glyph,
             bgFillStyle: appearance.bgFill,
             bgStroke: appearance.bgFill,
             bgStrokeWidth: 0.001,
-            textFill: fill ?? (mode === "down" ? appearance.downFill : appearance.upFill),
+            textFill: fill ?? appearance[mark.fill],
             fontFamily: appearance.fontFamily,
             fontSize: appearance.fontSize,
             interactiveCursorClass: "chart-move-cursor",

@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **160** of them.
+Every custom element the library defines: **171** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -1170,7 +1170,7 @@ Axis-anchored lines.
 
 ### `<chart-bars-pattern>`
 
-TradingView's Bars Pattern, three clicks.
+TradingView's Bars Pattern and Ghost Feed, three clicks.
 
 `BarsPattern` — [`src/interactive/BarsPattern.js`](../../src/interactive/BarsPattern.js)
 
@@ -1183,6 +1183,7 @@ TradingView's Bars Pattern, three clicks.
 | `currentPositionStrokeWidth` | `3` |
 | `enabled` | `true` |
 | `hoverText` | `{…}` |
+| `mode` | `"copy"` |
 | `onComplete` | — |
 | `onSelect` | — |
 | `onStart` | — |
@@ -1315,6 +1316,30 @@ The ✕ that deletes an alert line.
 | `text` | — |
 | `textBox` | — |
 | `yValue` | — |
+
+### `<chart-curve-tool>`
+
+Shapes with a fill.
+
+`CurveTool` — [`src/interactive/CurveTool.js`](../../src/interactive/CurveTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `curves` | `[]` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"triangle"` |
 
 ### `<chart-cyclic-lines>`
 
@@ -1449,7 +1474,7 @@ One arrow: the shaft, a handle at the tail, a handle at the head.
 
 ### `<chart-each-arrow-mark>`
 
-One arrow mark: a ▲ or ▼ glyph riding an InteractiveText box — draggable like any label.
+One arrow mark: a ▲ ▼ ◀ or ▶ glyph riding an InteractiveText box — draggable like any label.
 
 `EachArrowMark` — [`src/interactive/wrapper/EachArrowMark.js`](../../src/interactive/wrapper/EachArrowMark.js)
 
@@ -1507,6 +1532,7 @@ One bars-pattern ghost, with one grab point — the paste anchor.
 | `hoverText` | `{"enable":false}` |
 | `index` | — |
 | `interactive` | `true` |
+| `mode` | `"copy"` |
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
@@ -1530,6 +1556,25 @@ One callout: a text box, a leg from the box to the anchor, and a handle on the a
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
 | `text` | `"Callout"` |
+
+### `<chart-each-curve>`
+
+One drawn curve: the body and one handle per anchor.
+
+`EachCurve` — [`src/interactive/wrapper/EachCurve.js`](../../src/interactive/wrapper/EachCurve.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `closed` | `false` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `mode` | `"polygon"` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `selected` | `false` |
 
 ### `<chart-each-cyclic-lines>`
 
@@ -1651,6 +1696,24 @@ One drawn Fibonacci construction: the shape body and one handle per anchor.
 | `points` | — |
 | `selected` | `false` |
 | `variant` | `"arcs"` |
+
+### `<chart-each-fib-time-extension>`
+
+One trend-based fib time extension: the vertical lines and its THREE anchors.
+
+`EachFibTimeExtension` — [`src/interactive/wrapper/EachFibTimeExtension.js`](../../src/interactive/wrapper/EachFibTimeExtension.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `ratios` | — |
+| `selected` | `false` |
 
 ### `<chart-each-freehand>`
 
@@ -1971,6 +2034,24 @@ One price note: neo đầu ghim GIÁ, neo thứ hai đặt nhãn — đường k
 | `text` | — |
 | `yDisplayFormat` | ƒ |
 
+### `<chart-each-projection>`
+
+One projection: the two legs and its THREE anchors.
+
+`EachProjection` — [`src/interactive/wrapper/EachProjection.js`](../../src/interactive/wrapper/EachProjection.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `points` | — |
+| `selected` | `false` |
+| `variant` | `"forecast"` |
+
 ### `<chart-each-rotated-rect>`
 
 One rotated rectangle, with three grab points — its three data anchors.
@@ -2036,6 +2117,26 @@ One signpost: kéo là dời cả cột lẫn hộp chữ — chân cắm đổi
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
 | `text` | `"Signpost"` |
+
+### `<chart-each-sticker>`
+
+One placed sticker: the stamp and its single anchor handle.
+
+`EachSticker` — [`src/interactive/wrapper/EachSticker.js`](../../src/interactive/wrapper/EachSticker.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `at` | — |
+| `hoverText` | `{"enable":false}` |
+| `index` | — |
+| `interactive` | `true` |
+| `onDrag` | ƒ |
+| `onDragComplete` | ƒ |
+| `opacity` | `1` |
+| `selected` | `false` |
+| `size` | `32` |
+| `src` | — |
 
 ### `<chart-each-text>`
 
@@ -2194,6 +2295,30 @@ Fibonacci shapes.
 | `snap` | `false` |
 | `snapTo` | — |
 | `variant` | `"arcs"` |
+
+### `<chart-fib-time-extension>`
+
+Trend-based fib time.
+
+`FibTimeExtension` — [`src/interactive/FibTimeExtension.js`](../../src/interactive/FibTimeExtension.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `extensions` | `[]` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `ratios` | `[0,0.382,0.618,1,1.618,2.618,4.236]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
 
 ### `<chart-fib-time-zone>`
 
@@ -2533,6 +2658,7 @@ A ghost of a bar run: source range + paste anchor, candles re-read from rows on 
 | `downStyle` | `"rgba(224, 122, 122, 0.6)"` |
 | `from` | — |
 | `interactiveCursorClass` | — |
+| `mode` | `"copy"` |
 | `onDrag` | — |
 | `onDragComplete` | — |
 | `onDragStart` | — |
@@ -2542,6 +2668,30 @@ A ghost of a bar run: source range + paste anchor, candles re-read from rows on 
 | `to` | — |
 | `tolerance` | `7` |
 | `upStyle` | `"rgba(106, 185, 117, 0.6)"` |
+
+### `<chart-interactive-curve>`
+
+Một hình đa giác hoặc cung do người dùng vẽ: đa giác đóng, cung tròn qua ba điểm, Bézier bậc hai và bậc ba — `mode` chọn hình, `closed` chọn có lòng hay không.
+
+`InteractiveCurve` — [`src/interactive/components/InteractiveCurve.js`](../../src/interactive/components/InteractiveCurve.js)
+
+| property | default |
+|---|---|
+| `closed` | `false` |
+| `fillStyle` | `"rgba(138, 175, 226, 0.2)"` |
+| `interactiveCursorClass` | — |
+| `mode` | `"polygon"` |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `points` | `[]` |
+| `samples` | `64` |
+| `selected` | `false` |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
 
 ### `<chart-interactive-cycles>`
 
@@ -2564,6 +2714,7 @@ Cyclic lines: two points set the period, vertical lines repeat rightward to the 
 | `tolerance` | `4` |
 | `x1Value` | — |
 | `x2Value` | — |
+| `x3Value` | — |
 | `y1Value` | — |
 | `y2Value` | — |
 
@@ -2800,6 +2951,37 @@ A position plan drawn on the chart: entry, target and stop levels over a bar spa
 | `x1Value` | — |
 | `x2Value` | — |
 
+### `<chart-interactive-projection>`
+
+Một dự phóng người dùng vẽ: một chân nền đã xảy ra và một chân được chiếu về phía trước, với hộp tô và số Δgiá/%/số nến đọc ra từ chính ba cái neo.
+
+`InteractiveProjection` — [`src/interactive/components/InteractiveProjection.js`](../../src/interactive/components/InteractiveProjection.js)
+
+| property | default |
+|---|---|
+| `baseStrokeDasharray` | `"ShortDash2"` |
+| `downFill` | `"rgba(239, 83, 80, 0.2)"` |
+| `downLabelFill` | `"#EF5350"` |
+| `fontFamily` | `"-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif"` |
+| `fontSize` | `11` |
+| `formatPercent` | ƒ |
+| `formatPrice` | ƒ |
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `points` | `[]` |
+| `selected` | `false` |
+| `strokeStyle` | `"#787B86"` |
+| `strokeWidth` | `1` |
+| `textFill` | `"#FFFFFF"` |
+| `tolerance` | `4` |
+| `upFill` | `"rgba(38, 166, 154, 0.2)"` |
+| `upLabelFill` | `"#26A69A"` |
+| `variant` | `"forecast"` |
+
 ### `<chart-interactive-rotated-rect>`
 
 A rectangle whose edges need not follow the axes: three data anchors, corners derived in pixels.
@@ -2874,6 +3056,30 @@ One signpost: a pole planted at a data point, a text box riding the top.
 | `strokeWidth` | `1` |
 | `text` | `"Signpost"` |
 | `tolerance` | `4` |
+
+### `<chart-interactive-sticker>`
+
+Một con dấu người dùng đóng xuống: một neo dữ liệu, cỡ cố định theo pixel, ảnh do ứng dụng đưa vào qua `src`.
+
+`InteractiveSticker` — [`src/interactive/components/InteractiveSticker.js`](../../src/interactive/components/InteractiveSticker.js)
+
+| property | default |
+|---|---|
+| `interactiveCursorClass` | — |
+| `onDrag` | — |
+| `onDragComplete` | — |
+| `onDragStart` | — |
+| `onHover` | — |
+| `onUnHover` | — |
+| `opacity` | `1` |
+| `selected` | `false` |
+| `size` | `32` |
+| `src` | — |
+| `strokeStyle` | `"#000000"` |
+| `strokeWidth` | `1` |
+| `tolerance` | `4` |
+| `xValue` | — |
+| `yValue` | — |
 
 ### `<chart-interactive-straight-line>`
 
@@ -3306,6 +3512,30 @@ Price notes.
 | `text` | — |
 | `yDisplayFormat` | ƒ |
 
+### `<chart-projection>`
+
+Forecast and Projection, three clicks.
+
+`Projection` — [`src/interactive/Projection.js`](../../src/interactive/Projection.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `onStart` | — |
+| `projections` | `[]` |
+| `shouldDisableSnap` | ƒ |
+| `snap` | `false` |
+| `snapTo` | — |
+| `variant` | `"forecast"` |
+
 ### `<chart-rotated-rect>`
 
 TradingView's Rotated Rectangle, three clicks.
@@ -3392,6 +3622,31 @@ Regression channel over a chosen range.
 | `onComplete` | — |
 | `onStart` | — |
 | `snapTo` | ƒ |
+
+### `<chart-sticker>`
+
+Stickers.
+
+`StickerTool` — [`src/interactive/StickerTool.js`](../../src/interactive/StickerTool.js)
+
+| property | default |
+|---|---|
+| `appearance` | `{…}` |
+| `currentPositionRadius` | `0` |
+| `currentPositionStroke` | `"#000000"` |
+| `currentPositionstrokeOpacity` | `1` |
+| `currentPositionStrokeWidth` | `3` |
+| `enabled` | `true` |
+| `hoverText` | `{…}` |
+| `onComplete` | — |
+| `onSelect` | — |
+| `opacity` | `1` |
+| `shouldDisableSnap` | ƒ |
+| `size` | `32` |
+| `snap` | `false` |
+| `snapTo` | — |
+| `src` | — |
+| `stickers` | `[]` |
 
 ### `<chart-table>`
 

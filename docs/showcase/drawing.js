@@ -14,11 +14,29 @@ const price = datum => [datum.high, datum.low]
 const chart = (host, options) =>
     chartHost(host, daily(160), { height: 420, series: ["chart-candlestick-series"], ...options })
 
+/**
+ * The sticker's picture, built here — in the page, not in the library.
+ *
+ * `chart-sticker` carries the behaviour (one anchor, one handle, a fixed pixel
+ * size); the picture is `src`, and it comes from the application, exactly like
+ * `chart-image-tool`. Emoji, logos, flags and signatures all arrive this way, so
+ * the library never decides what you are allowed to stamp on a chart.
+ */
+const stickerImage =
+    "data:image/svg+xml;utf8," +
+    encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
+            '<circle cx="16" cy="16" r="15" fill="#FFD54F" stroke="#F9A825" stroke-width="2"/>' +
+            '<circle cx="11" cy="13" r="2" fill="#5D4037"/><circle cx="21" cy="13" r="2" fill="#5D4037"/>' +
+            '<path d="M9 19a7 7 0 0 0 14 0" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/>' +
+            "</svg>",
+    )
+
 demo({
-    title: "Forty-five tools, one at a time",
+    title: "Sixty-nine tools, one at a time",
     about:
         "Choose a tool and click on the chart — most take two clicks, the equidistant channel, " +
-        "the pitchfork and the fib extension take three, the pattern takes five, the path finishes on a double-click, and text, alert, H-line, position and price label take one. Click a " +
+        "the pitchfork, the fib extension, the projection and the fib time extension take three, the pattern takes four to seven, the path and the polyline finish on a double-click, and text, alert, H-line, position, price label and sticker take one. Click a " +
         "drawn object to select it, then press Delete. Everything drawn is listed under the " +
         "chart, exactly as the tools report it.",
     build: (stage, api) => {
@@ -80,6 +98,28 @@ demo({
             { label: "Anchored VWAP", tag: "chart-anchored-vwap", list: "vwaps" },
             { label: "Volume profile", tag: "chart-volume-profile-tool", list: "profiles" },
             { label: "Bars pattern", tag: "chart-bars-pattern", list: "patterns" },
+            // chart#34 — phần dư của #5. Hai dòng Elliott đầu tiên là bằng chứng của
+            // kiến trúc: thêm một mẫu hình = thêm một dòng trong PATTERN_VARIANTS.
+            { label: "Elliott WXY", tag: "chart-pattern", list: "patterns", props: { variant: "elliottDoubleCombo" } },
+            { label: "Elliott WXYXZ", tag: "chart-pattern", list: "patterns", props: { variant: "elliottTripleCombo" } },
+            // Price/Date range KHÔNG phải phần tử mới — `chart-measure` đã có mode từ #5,
+            // thiếu đúng cái demo. Hai dòng này là toàn bộ việc phải làm cho chúng.
+            { label: "Price range", tag: "chart-measure", list: "measures", props: { mode: "price" } },
+            { label: "Date range", tag: "chart-measure", list: "measures", props: { mode: "date" } },
+            { label: "Arrow left", tag: "chart-arrow-mark", list: "marks", props: { mode: "left" } },
+            { label: "Arrow right", tag: "chart-arrow-mark", list: "marks", props: { mode: "right" } },
+            { label: "Triangle", tag: "chart-curve-tool", list: "curves", props: { variant: "triangle" } },
+            { label: "Polyline", tag: "chart-curve-tool", list: "curves", props: { variant: "polyline" } },
+            { label: "Arc", tag: "chart-curve-tool", list: "curves", props: { variant: "arc" } },
+            { label: "Curve", tag: "chart-curve-tool", list: "curves", props: { variant: "curve" } },
+            { label: "Double curve", tag: "chart-curve-tool", list: "curves", props: { variant: "doubleCurve" } },
+            // Con dấu: gói không mang bức hình nào, ứng dụng đưa `src` vào — chính trang
+            // này là "ứng dụng", và hình của nó dựng ngay dưới đây bằng vài dòng SVG.
+            { label: "Sticker", tag: "chart-sticker", list: "stickers", props: { src: stickerImage } },
+            { label: "Fib time ext", tag: "chart-fib-time-extension", list: "extensions" },
+            { label: "Forecast", tag: "chart-projection", list: "projections", props: { variant: "forecast" } },
+            { label: "Projection", tag: "chart-projection", list: "projections", props: { variant: "projection" } },
+            { label: "Ghost feed", tag: "chart-bars-pattern", list: "patterns", props: { mode: "ghost" } },
         ]
 
         let active = null

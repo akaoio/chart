@@ -3,13 +3,13 @@ import { isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
 import { defineProperties, define } from "../../core/element.js"
+import { imageOf } from "./InteractiveImage.js"
 
-export const interactiveImageDefaults = {
-    x1Value: undefined,
-    y1Value: undefined,
-    x2Value: undefined,
-    y2Value: undefined,
+export const interactiveStickerDefaults = {
+    xValue: undefined,
+    yValue: undefined,
     src: undefined,
+    size: 32,
     opacity: 1,
     strokeStyle: "#000000",
     strokeWidth: 1,
@@ -24,44 +24,35 @@ export const interactiveImageDefaults = {
 }
 
 /**
- * Ảnh tải xong mới vẽ được — cache theo `src`, và lần tải xong đầu tiên gọi
- * `onReady` để phần tử xin vẽ lại; không có nó thì ảnh chỉ hiện sau lần
- * chuột đi qua kế tiếp.
+ * Ô vuông của con dấu, trong pixel: MỘT neo dữ liệu ở giữa, cạnh là `size` pixel.
  *
- * Xuất khẩu vì `chart-interactive-sticker` cũng vẽ ảnh: MỘT cache cho cả gói.
- * Hai cache thì cùng một dataURL tải hai lần và hai phần tử xin vẽ lại lệch nhau.
+ * Đây là chỗ nó khác `chart-interactive-image` một cách đo được: ảnh căng giữa
+ * HAI neo nên nó co giãn cùng biểu đồ; con dấu neo MỘT chỗ nên zoom vào không
+ * làm nó to ra. Một con dấu phóng to theo zoom thì hết là dấu.
  */
-const loaded = new Map()
-export const imageOf = (src, onReady) => {
-    if (loaded.has(src)) return loaded.get(src)
-    const image = new Image()
-    image.onload = onReady
-    image.src = src
-    loaded.set(src, image)
-    return image
-}
-
-export const imageFrame = (props, moreProps) => {
-    const resolved = { ...interactiveImageDefaults, ...props }
+export const stickerFrame = (props, moreProps) => {
+    const resolved = { ...interactiveStickerDefaults, ...props }
     const {
         xScale,
         chartConfig: { yScale },
     } = moreProps
 
-    const x1 = xScale(resolved.x1Value)
-    const y1 = yScale(resolved.y1Value)
-    const x2 = xScale(resolved.x2Value)
-    const y2 = yScale(resolved.y2Value)
-    return { x: Math.min(x1, x2), y: Math.min(y1, y2), width: Math.abs(x2 - x1), height: Math.abs(y2 - y1) }
+    const size = resolved.size
+    return {
+        x: xScale(resolved.xValue) - size / 2,
+        y: yScale(resolved.yValue) - size / 2,
+        width: size,
+        height: size,
+    }
 }
 
-export const isImageHover = (moreProps, props) => {
-    const resolved = { ...interactiveImageDefaults, ...props }
+export const isStickerHover = (moreProps, props) => {
+    const resolved = { ...interactiveStickerDefaults, ...props }
     const {
         mouseXY: [mouseX, mouseY],
     } = moreProps
     const reach = resolved.tolerance + hitSlop(moreProps)
-    const frame = imageFrame(resolved, moreProps)
+    const frame = stickerFrame(resolved, moreProps)
 
     return (
         mouseX >= frame.x - reach &&
@@ -72,16 +63,20 @@ export const isImageHover = (moreProps, props) => {
 }
 
 /**
- * One image the user placed: two data anchors pin opposite corners, so the
- * picture stretches with the chart like every other drawing — TradingView's
- * image tool behaves the same. No `src` yet draws a labelled placeholder.
+ * Một con dấu người dùng đóng xuống: một neo dữ liệu, cỡ cố định theo pixel,
+ * ảnh do ứng dụng đưa vào qua `src`.
+ *
+ * Gói không mang bức tranh nào — kể cả emoji. `imageToolDefaults.src` đã là bằng
+ * chứng của luật ấy từ trước; chỗ này chỉ tiếp tục nó. Ai cần dán emoji, logo,
+ * cờ hay chữ ký đều dùng đúng phần tử này, và bộ hình là việc của ứng dụng.
+ * Chưa có ảnh thì vẽ ô chờ có nhãn.
  */
-export class InteractiveImage extends GenericChartComponent {
+export class InteractiveSticker extends GenericChartComponent {
     #props
 
     constructor() {
         super()
-        this.#props = defineProperties(this, interactiveImageDefaults)
+        this.#props = defineProperties(this, interactiveStickerDefaults)
     }
 
     get drawOn() {
@@ -102,8 +97,8 @@ export class InteractiveImage extends GenericChartComponent {
 
     isHoverTest(moreProps) {
         if (this.#props.onHover === undefined) return false
-        if (isNotDefined(this.#props.x1Value) || isNotDefined(this.#props.x2Value)) return false
-        return isImageHover(moreProps, this.#props)
+        if (isNotDefined(this.#props.xValue) || isNotDefined(this.#props.yValue)) return false
+        return isStickerHover(moreProps, this.#props)
     }
 
     onHover(event, moreProps) {
@@ -123,8 +118,9 @@ export class InteractiveImage extends GenericChartComponent {
     }
 
     canvasDraw(context, moreProps) {
-        const resolved = { ...interactiveImageDefaults, ...this.#props }
-        const frame = imageFrame(resolved, moreProps)
+        const resolved = { ...interactiveStickerDefaults, ...this.#props }
+        if (isNotDefined(resolved.xValue) || isNotDefined(resolved.yValue)) return
+        const frame = stickerFrame(resolved, moreProps)
 
         if (resolved.src !== undefined) {
             const image = imageOf(resolved.src, () => this.draw({ force: true }))
@@ -142,15 +138,16 @@ export class InteractiveImage extends GenericChartComponent {
             }
         }
 
-        // Chưa có ảnh: khung chờ có nhãn — người dùng thấy chỗ mình vừa đặt
+        // Chưa có ảnh: ô chờ có nhãn — người dùng thấy chỗ mình vừa đóng dấu
         context.strokeStyle = resolved.strokeStyle
         context.lineWidth = resolved.strokeWidth
         context.strokeRect(frame.x, frame.y, frame.width, frame.height)
-        context.font = "11px system-ui, sans-serif"
+        context.font = "10px system-ui, sans-serif"
         context.fillStyle = resolved.strokeStyle
         context.textAlign = "center"
-        context.fillText("Image", frame.x + frame.width / 2, frame.y + frame.height / 2 + 4)
+        context.fillText("★", frame.x + frame.width / 2, frame.y + frame.height / 2 + 4)
+        context.textAlign = "start"
     }
 }
 
-define("chart-interactive-image", InteractiveImage)
+define("chart-interactive-sticker", InteractiveSticker)
