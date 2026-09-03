@@ -862,6 +862,78 @@ const touchToolTests = async (browser, origin) => {
             expected: domainBefore,
             actual: domainAfter,
         })
+        /**
+         * Và kéo bằng TAY CẦM, không phải bằng thân — đường mã khác hẳn.
+         *
+         * Thân đi qua `onDrag` của leaf; tay cầm đi qua `onDragStart`/`onDrag` của chính
+         * `chart-clickable-circle`. Trước bài này chỉ một công cụ trong bảng (kênh hồi quy)
+         * từng chạm vào đường thứ hai ấy, và chỉ vì thân nó không kéo được.
+         *
+         * Chỗ nắm KHÔNG khai ra đây: mỗi tay cầm tự nói nó đang ở đâu (`cx`/`cy` trong toạ
+         * độ dữ liệu) và mang theo thang của pane mình, nên vị trí trên màn hình suy ra
+         * được — và suy lại SAU cú kéo thân, chứ không dùng lại số cũ.
+         */
+        const handleBox = await page.evaluate(() => {
+            const canvas = document.querySelector("chart-canvas")
+            const { left, top, width, height } = canvas.shadowRoot.querySelector("[data-event-capture]").getBoundingClientRect()
+            return { left, top, width, height }
+        })
+        const handles = await page.evaluate(
+            ([tag, nth, area]) =>
+                [...[...document.querySelectorAll(tag)][nth ?? 0].querySelectorAll("chart-clickable-circle")]
+                    .filter(circle => circle.show === true && circle.cx !== undefined && circle.moreProps?.chartConfig?.yScale !== undefined)
+                    .map(circle => {
+                        const { origin, yScale } = circle.moreProps.chartConfig
+                        return {
+                            x: Math.round(area.left + origin[0] + circle.moreProps.xScale(circle.cx)),
+                            y: Math.round(area.top + origin[1] + yScale(circle.cy)),
+                        }
+                    }),
+            [tool.tag, tool.nth, handleBox],
+        )
+
+        /**
+         * Chỉ kéo cái ngón tay với tới được: một tay cầm bị đẩy ra ngoài khung thì cú vuốt
+         * lên nó là cú vuốt vào trang, không vào chart.
+         */
+        const reachable = handles.filter(
+            point =>
+                point.x > handleBox.left + 12 &&
+                point.x < handleBox.left + handleBox.width - 12 &&
+                point.y > handleBox.top + 12 &&
+                point.y < handleBox.top + handleBox.height - 12,
+        )
+
+        if (reachable.length > 0) {
+            const beforeHandle = await page.evaluate(
+                ([tag, list, nth]) => JSON.stringify([...document.querySelectorAll(tag)][nth ?? 0][list]),
+                [tool.tag, tool.list, tool.nth],
+            )
+            const domainBeforeHandle = await page.evaluate(() =>
+                document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+            )
+            await swipe(reachable[0], { x: reachable[0].x - 45, y: reachable[0].y + 40 })
+            const [afterHandle, domainAfterHandle] = await page.evaluate(
+                ([tag, list, nth]) => [
+                    JSON.stringify([...document.querySelectorAll(tag)][nth ?? 0][list]),
+                    document.querySelector("chart-canvas").getState().xScale.domain().map(Number).join(),
+                ],
+                [tool.tag, tool.list, tool.nth],
+            )
+            checks.push({
+                label: `kéo TAY CẦM bằng ngón tay thì hình đổi (${reachable.length}/${handles.length} tay cầm với tới được)`,
+                pass: afterHandle !== beforeHandle,
+                expected: "khác lúc trước khi kéo",
+                actual: afterHandle === beforeHandle ? "y nguyên" : "đã đổi",
+            })
+            checks.push({
+                label: "và khung nhìn vẫn đứng im khi kéo tay cầm",
+                pass: domainAfterHandle === domainBeforeHandle,
+                expected: domainBeforeHandle,
+                actual: domainAfterHandle,
+            })
+        }
+
         checks.push({
             label: "không có lỗi nào trong trang",
             pass: problems.length === 0,
@@ -872,6 +944,7 @@ const touchToolTests = async (browser, origin) => {
         page.off("pageerror", onError)
         results.push({ name: `ngón tay thật: ${tool.tag}`, checks })
     }
+
 
     /**
      * Brush: cử chỉ CHÍNH là cú kéo, không phải "đặt rồi kéo".
