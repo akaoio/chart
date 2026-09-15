@@ -137,6 +137,36 @@ bằng đúng `wick.x` — nên vạch 1px ấy nằm giữa wick thay vì lệc
 thứ bộ dữ liệu golden có sẵn một cây. Giữ lại thì lần sau sẽ có người đi "sửa" cái `- 0.5`
 trong đó.
 
+**Thân thanh cũng vậy, lệch theo đường chéo.** `BarSeries` và `StackedBarSeries` mang cùng
+một vòng vẽ, và cùng một lỗi:
+
+```ts
+ctx.fillRect(d.x + 0.5, d.y + 0.5, d.width, d.height);
+if (stroke) ctx.strokeRect(d.x, d.y, d.width, d.height);
+```
+
+`d.x` ở cả hai nhà đều là **mép trái** — `BarSeries.getBars` trả `xScale(…) - offset`,
+`StackedBarSeries` trả `Math.round(xScale(…) - width / 2)`. Thân vì thế trượt xuống-phải
+nửa pixel so với chính viền của nó, mà vẫn giữ nguyên `width`/`height`.
+
+Đo trên canvas, một thanh toạ độ nguyên, thân đáng lẽ chiếm `[80, 120] × [120, 220]`:
+
+| pixel | bản gốc | ở đây |
+|---|---|---|
+| x = 79 (ngoài, trái) | `rgb(127,127,127)` | `rgb(127,127,127)` |
+| x = 80 (mép trái) | `rgb(127,63,63)` — **trắng lọt vào** | `rgb(127,0,0)` |
+| x = 119 (mép phải) | `rgb(128,0,0)` | `rgb(128,0,0)` |
+| x = 120 (ngoài, phải) | `rgb(127,63,63)` — thân **thò ra** | `rgb(127,127,127)` |
+
+Trục dọc y hệt: `y = 120` ra `rgb(127,63,63)` còn `y = 220` cũng `rgb(127,63,63)`. Sau bản
+sửa, hai mép của mỗi trục giống hệt nhau. Golden khai 11 case lệch có chủ ý — mọi thứ dựng
+trên vòng vẽ ấy, kể cả histogram của MACD và Elder ray (chart#42).
+
+`GroupedBarSeries` viết lại `x` và `width` trước khi vẽ (`x + offset - groupOffset`,
+`width: groupWidth`), nên `x + width / 2` vẫn là tâm của đúng hình được vẽ — một bản sửa
+đúng cho cả ba.
+
+
 **Phần vẽ tách khỏi phần tử.** Mỗi series xuất ra hai thứ: một hàm `drawXSeries(context, moreProps, props)` không đụng DOM, và một phần tử mỏng gọi hàm đó. Bản gốc gộp cả hai trong một class React.
 
 Lý do là để chứng minh được: hàm vẽ chạy trong Node và so được với bản gốc từng lệnh, còn một lớp `extends HTMLElement` thì không tồn tại ngoài trình duyệt. Tách ra cũng đúng về mặt thiết kế — cách vẽ một cây nến không liên quan gì tới việc nó có phải một phần tử DOM hay không.

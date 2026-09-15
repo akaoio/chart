@@ -39,6 +39,17 @@ export const deviations = {
     edgeIndicatorFull: "hộp giá lấp bề rộng cột trục (có cả mũi tên)",
     candlestick: "thân nến vẽ đúng mép của nó, không lùi nửa pixel như bản gốc (chart#38)",
     candlestickStroked: "thân và viền dùng chung một hình chữ nhật, hết vệt hở bên phải (chart#38)",
+    bar: "thân thanh vẽ đúng mép của nó, không trượt xuống-phải nửa pixel (chart#42)",
+    barStyled: "thân và viền dùng chung một hình chữ nhật (chart#42)",
+    barSwapScales: "cùng bản sửa, trục hoán đổi (chart#42)",
+    stackedBar: "cùng bản sửa, ở nhà thứ hai của vòng vẽ (chart#42)",
+    stackedBarStroked: "thân và viền dùng chung một hình chữ nhật (chart#42)",
+    stackedBarDense: "vạch 1px nằm giữa thân thay vì lệch trái nửa pixel (chart#42)",
+    groupedBar: "cùng bản sửa, qua drawOnCanvas2 (chart#42)",
+    groupedBarDense: "vạch 1px nằm giữa thân (chart#42)",
+    overlayBar: "cùng bản sửa, qua drawOnCanvas2 (chart#42)",
+    macd: "histogram dựng trên vòng vẽ thanh (chart#42)",
+    elderRay: "histogram dựng trên vòng vẽ thanh (chart#42)",
 }
 
 /**
