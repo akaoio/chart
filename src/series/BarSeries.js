@@ -86,9 +86,24 @@ export const drawBarSeries = (context, moreProps, props) => {
 
         values.forEach(bar => {
             if (bar.width <= 1) {
-                context.fillRect(bar.x - 0.5, bar.y, 1, bar.height)
+                // Thân hẹp hơn một pixel thành một vạch 1px, và vạch ấy phải nằm
+                // giữa thân — tâm là `bar.x + width / 2`, nên vạch bắt đầu ở tâm
+                // trừ nửa pixel. Bản gốc viết `bar.x - 0.5`, tức áp phép căn giữa
+                // lên một toạ độ vốn là MÉP.
+                context.fillRect(bar.x + bar.width / 2 - 0.5, bar.y, 1, bar.height)
             } else {
-                context.fillRect(bar.x + 0.5, bar.y + 0.5, bar.width, bar.height)
+                // Fill và stroke dùng chung đúng một hình chữ nhật. `bar.x` đã là
+                // mép trái (`getBars` trả `xScale(…) - offset`), nên không có gì để
+                // dịch đi nửa pixel.
+                //
+                // Bản gốc viết `fillRect(d.x + 0.5, d.y + 0.5, …)` cạnh
+                // `strokeRect(d.x, d.y, …)` — thân trượt xuống-phải nửa pixel so với
+                // chính viền của nó, mà vẫn giữ nguyên width/height. Đo trên canvas
+                // với thân đáng lẽ chiếm [80,120]x[120,220]: x=79 ra rgb(127,127,127)
+                // viền trần, x=80 ra rgb(127,63,63) tức có trắng lọt vào, còn x=119
+                // ra rgb(128,0,0) và x=120 lại rgb(127,63,63) — trên-trái hở, dưới-phải
+                // thò ra. Trục dọc y hệt (chart#42).
+                context.fillRect(bar.x, bar.y, bar.width, bar.height)
                 if (strokeStyle !== undefined) context.strokeRect(bar.x, bar.y, bar.width, bar.height)
             }
         })

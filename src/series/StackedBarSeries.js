@@ -63,9 +63,17 @@ export const drawOnCanvas2 = (props, context, bars) => {
 
         values.forEach(bar => {
             if (bar.width <= 1) {
-                context.fillRect(bar.x - 0.5, bar.y, 1, bar.height)
+                // Vạch 1px nằm giữa thân — xem `BarSeries`, cùng phép và cùng lý do.
+                context.fillRect(bar.x + bar.width / 2 - 0.5, bar.y, 1, bar.height)
             } else {
-                context.fillRect(bar.x + 0.5, bar.y + 0.5, bar.width, bar.height)
+                // Vòng vẽ này là bản chép của `BarSeries`, nên nó chép cả chỗ lệch
+                // nửa pixel theo đường chéo của bản gốc. Hai tệp không tham chiếu
+                // nhau, nên chart#42 sửa cả hai cùng lúc.
+                //
+                // `bar.x` ở đây cũng là mép trái: `Math.round(xScale(…) - width / 2)`.
+                // `GroupedBarSeries` viết lại `x` và `width` trước khi vẽ, nên
+                // `x + width / 2` vẫn là tâm của đúng hình được vẽ.
+                context.fillRect(bar.x, bar.y, bar.width, bar.height)
                 if (stroke) context.strokeRect(bar.x, bar.y, bar.width, bar.height)
             }
         })
