@@ -20,12 +20,15 @@ demo({
     about:
         "Drag the chart to pan and use the wheel to zoom. Drag the price axis or the time " +
         "axis to stretch that scale on its own — both ends move apart while the middle stays " +
-        "put. The buttons do the same thing in fixed steps.",
+        "put. The buttons below do the same thing in fixed steps — they are the page's own " +
+        "<button> elements calling canvas.zoomIn() / zoomOut() / reset(); the chart ships none.",
     build: (stage, api) => {
         const { canvas } = chart(stage, daily(260))
 
-        const zoom = document.createElement("chart-zoom-buttons")
-        canvas.querySelector("chart-pane").append(zoom)
+        // No buttons ship with the chart: zoom is an API and the page dresses it.
+        api.button("Zoom out", () => canvas.zoomOut())
+        api.button("Zoom in", () => canvas.zoomIn())
+        api.button("Reset", () => canvas.reset())
 
         const show = () => {
             // The chart works out its state after it is in the document, so there is

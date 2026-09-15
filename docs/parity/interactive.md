@@ -17,7 +17,7 @@ Ký hiệu: ☐ chưa làm · ☑ đã port, có bằng chứng · ⊘ cố ý b
 | `terminate` | `utils.ts` | ☑ | |
 | `ClickCallback` | `ClickCallback.tsx` | ☑ | 6 khẳng định: báo đúng cây nến dưới con trỏ, không phải pixel |
 | `DrawingObjectSelector` | `DrawingObjectSelector.tsx` | ☑ | 6 khẳng định: bấm đúng đường nào thì chọn đường ấy, bấm chỗ trống thì bỏ chọn |
-| `ZoomButtons` | `ZoomButtons.tsx` | ☑ | cây SVG khớp từng node, 6 bước nội suy, và 6 khẳng định bấm thật |
+| `ZoomButtons` | `ZoomButtons.tsx` | ⊘ | **UI là việc của ứng dụng.** Phép zoom sáu bước giữ nguyên và thành `canvas.zoomIn()` / `zoomOut()`; ba cái nút thì không ship — xem mục dưới (chart#39) |
 | `TrendLine` | `TrendLine.tsx` | ☑ | 22 khẳng định trong trình duyệt: vẽ, cửa chặn, kéo cả đường |
 | `Brush` | `Brush.tsx` | ☑ | 6 khẳng định: kéo ra khoảng chọn, bấm suông thì không |
 | `EquidistantChannel` | `EquidistantChannel.tsx` | ☑ | 18 lệnh canvas × 3 dáng, cộng 4 khẳng định ba-lần-bấm |
@@ -207,13 +207,29 @@ Bản port bỏ lần nhân thang thừa. Hai phía vì thế không thể khớ
 
 Ba chỗ khác vẫn giữ nguyên hành vi bản gốc vì chúng có lý: cửa chặn `onHover === undefined`, hộp bao của tia quạt Gann, và việc nhãn cảnh báo trôi khỏi khung thì không vẽ gì cả thay vì dán vào mép.
 
-## Một chỗ CỐ Ý khác bản gốc: nút reset có việc để làm
+## Một chỗ CỐ Ý khác bản gốc: kho này không ship nút bấm nào
 
-`<ZoomButtons>` của bản gốc vẽ ba nút, và nút thứ ba chỉ gọi `onReset`. Không ai truyền gì vào thì nó không làm gì — kể cả câu chuyện mẫu `StockChart` của chính bản gốc cũng để trống, nên ở đó nút reset vẽ ra rồi nằm im.
+`<ZoomButtons>` của bản gốc vẽ ba nút tròn — `−` `+` `↺` — và mang theo cả một ngôn ngữ thiết kế: `r: 16`, nền `#ffffff` mờ `0.75`, viền `#e0e3eb`, glyph Material. Đây là thứ **duy nhất** trong cả thư viện vẽ ra giao diện của **ứng dụng** thay vì vẽ nội dung **biểu đồ**.
 
-Một cái nút bấm không ăn thì không phải là "trung thành", là hỏng. Ở đây không đặt `onReset` thì nút đưa chart về **đúng hình lúc mở**: khung nhìn x quay lại `xExtents`, và mọi pane bỏ khung giá người dùng tự kéo. Ứng dụng vẫn đặt `onReset` của riêng mình được, và khi ấy phép mặc định không chạy.
+Cấy chart vào một dự án có hệ thiết kế riêng thì cụm nút ấy xung đột: nó không đọc token của host, không theo theme của host, không theo hình dạng nút của host. Mọi tính năng khác đều để ứng dụng tự dựng UI; chỉ mỗi cái này làm thay.
 
-Phép ấy là `canvas.reset()`, một phương thức mới của `<chart-canvas>` — xem [`core.md`](core.md).
+Và nó còn kéo theo một lỗi. `renderZoomButtons` đọc `moreProps.chartConfig.height` — chiều cao của **pane nó ngồi trong**, không phải của canvas — nên bật indicator là pane giá co lại và cụm nút bay lên giữa chart. Đo với canvas cao 600px:
+
+| pane giá cao | `cy` nút | cách **đáy canvas** |
+|---|---|---|
+| 600 (không indicator) | 576 | 24px |
+| 450 (1 indicator) | 426 | **174px** |
+| 300 (3 indicator) | 276 | **324px** |
+
+Cái giá hiện ra ở phía người dùng thư viện: cả showcase của kho này lẫn akao đều phải bù tay một con số (`heightFromBase = 108` và `oscillators + 42`) để kéo nút về đáy. Khi một prop tồn tại chủ yếu để người ta bù lỗi của nó, chỗ sai nằm ở tầng dưới.
+
+Nên ba cái nút bị gỡ, và thứ có giá trị được giữ nguyên:
+
+- **Sáu bước nội suy** — `zoomSteps`, vẫn so từng giá trị với bản gốc — dọn về `src/core/zoom/zoomSteps.js`, cạnh `zoomBehavior.js`. Hai file trả lời hai câu khác nhau: cái kia nói *cái gì đứng yên*, cái này nói *đi mấy bước*.
+- **`canvas.zoomIn()` / `canvas.zoomOut()`** chạy chuỗi bước ấy. Mặc định nhân 1.5 — cố ý khác `zoomMultiplier` 1.1 của con lăn, vì một nấc con lăn không phải một lần bấm.
+- **`canvas.reset()`** vẫn là phép mới của kho này. Bản gốc để `onReset` trống nên nút thứ ba của nó vẽ ra rồi nằm im — kể cả trong câu chuyện mẫu `StockChart` của chính bản gốc. Xem [`core.md`](core.md).
+
+Golden vẫn giữ `zoomButtons` trong fixture, khai là lệch có chủ ý: fixture là chỗ duy nhất còn nói được bản gốc vẽ ra cây SVG gì.
 
 ## Một chỗ CỐ Ý khác bản gốc: công cụ vẽ tự biết pane của nó
 

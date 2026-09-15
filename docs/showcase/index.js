@@ -19,7 +19,7 @@ demo({
     about:
         "Candles and volume in one pane, two moving averages over them, a crosshair with " +
         "readouts on both axes, and the last price pinned to the right edge.",
-    build: stage => {
+    build: (stage, api) => {
         // Indicators are functions over the data. Each one merges its result back into the
         // bar it was computed from, and hands you an accessor to read it out again.
         const fast = sma()
@@ -125,15 +125,17 @@ demo({
         Object.assign(xCoordinate, {
             displayFormat: date => date.toISOString().slice(0, 10),
         })
-        const zoom = document.createElement("chart-zoom-buttons")
-        // clear of the volume bars along the bottom
-        zoom.heightFromBase = 108
-
         volume.append(cursor, xCoordinate)
-        price.append(zoom)
 
         canvas.append(price, volume)
         stage.append(canvas)
+
+        // The chart ships no buttons. Zoom is an API, so the page builds the controls
+        // it wants — here the showcase's own plain <button>, which is exactly what an
+        // application does with its own design system.
+        api.button("Zoom out", () => canvas.zoomOut())
+        api.button("Zoom in", () => canvas.zoomIn())
+        api.button("Reset", () => canvas.reset())
     },
 })
 

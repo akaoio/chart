@@ -98,7 +98,6 @@ export { Brush } from "./Brush.js"
 export { InteractiveText } from "./InteractiveText.js"
 export { InteractiveYCoordinate } from "./InteractiveYCoordinate.js"
 export { DrawingObjectSelector } from "./DrawingObjectSelector.js"
-export { ZoomButtons } from "./ZoomButtons.js"
 
 // Vượt ra ngoài bản gốc (chart#5): các primitive TradingView có mà bản gốc không có.
 export { AxisLine } from "./AxisLine.js"

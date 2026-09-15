@@ -72,7 +72,7 @@ const everySuite = [
                 ...(await import("./src/interactive/components/ChannelWithArea.js")),
                 ...(await import("./src/interactive/components/LinearRegressionChannelWithArea.js")),
                 ...(await import("./src/interactive/components/GannFan.js")),
-                ...(await import("./src/interactive/ZoomButtons.js")),
+                ...(await import("./src/core/zoom/zoomSteps.js")),
 
                 fibRetracementLines: (await import("./src/interactive/wrapper/EachFibRetracement.js")).fibLines,
 
