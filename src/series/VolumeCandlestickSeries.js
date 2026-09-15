@@ -93,11 +93,18 @@ export const drawVolumeCandlestickSeries = (context, moreProps, props) => {
 
             values.forEach(candle => {
                 if (candle.width <= 1) {
-                    context.fillRect(candle.x - 0.5, candle.y, 1, candle.height)
-                } else if (candle.height === 0) {
-                    context.fillRect(candle.x - 0.5, candle.y, candle.width, 1)
+                    // Vạch 1px phải nằm giữa wick — xem `CandlestickSeries`, cùng một
+                    // phép và cùng một lý do.
+                    context.fillRect(candle.x + candle.width / 2 - 0.5, candle.y, 1, candle.height)
                 } else {
-                    context.fillRect(candle.x - 0.5, candle.y, candle.width, candle.height)
+                    // Thân và viền dùng chung đúng một hình chữ nhật. `candle.x` đã là
+                    // MÉP TRÁI (`getVolumeCandleData` trả `x - offset`), nên không có gì
+                    // để lùi nửa pixel.
+                    //
+                    // Vòng vẽ này là bản chép của `CandlestickSeries`, nên nó chép cả lỗi
+                    // lệch nửa pixel của bản gốc. Hai tệp không tham chiếu nhau: sửa một
+                    // bên không bao giờ với tới bên kia, nên chart#38 sửa cả hai cùng lúc.
+                    context.fillRect(candle.x, candle.y, candle.width, candle.height)
                     if (strokeKey !== "none") context.strokeRect(candle.x, candle.y, candle.width, candle.height)
                 }
             })
