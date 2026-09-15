@@ -3,7 +3,7 @@
 **Generated from the source — do not edit.** `npm run docs:reference` rebuilds it, and
 `npm test` fails if the committed file no longer matches the code.
 
-Every custom element the library defines: **171** of them.
+Every custom element the library defines: **170** of them.
 
 Properties are set in JavaScript, not as HTML attributes — most of them are functions,
 scales or objects, which an attribute cannot carry:
@@ -3761,22 +3761,4 @@ TradingView's Fixed Range Volume Profile, two clicks.
 | `onSelect` | — |
 | `onStart` | — |
 | `profiles` | `[]` |
-
-### `<chart-zoom-buttons>`
-
-Zoom in, zoom out, reset — as real SVG buttons.
-
-`ZoomButtons` — [`src/interactive/ZoomButtons.js`](../../src/interactive/ZoomButtons.js)
-
-| property | default |
-|---|---|
-| `fill` | `"#ffffff"` |
-| `fillOpacity` | `0.75` |
-| `heightFromBase` | `32` |
-| `onReset` | — |
-| `r` | `16` |
-| `stroke` | `"#e0e3eb"` |
-| `strokeWidth` | `1` |
-| `textFill` | `"#000000"` |
-| `zoomMultiplier` | `1.5` |
 

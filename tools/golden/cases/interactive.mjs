@@ -12,9 +12,17 @@
 
 import { scaleLinear } from "d3-scale"
 import { createRecorder } from "../recorder.mjs"
-import { normalizeSvg, stripPrefix } from "../svgtree.mjs"
 
 import { datasets } from "../data.mjs"
+
+/**
+ * `zoomButtons` ở lại trong fixture vì fixture là chỗ DUY NHẤT còn nói được bản gốc
+ * vẽ ra cây SVG gì. Kho này thôi vẽ nó: `<chart-zoom-buttons>` đã gỡ, và phép zoom
+ * sáu bước thành `canvas.zoomIn()` / `zoomOut()` để ứng dụng tự dựng nút (chart#39).
+ */
+export const deviations = {
+    zoomButtons: "kho này không ship nút bấm — phép zoom là API, UI là việc của ứng dụng (chart#39)",
+}
 
 export const name = "interactive"
 
@@ -444,18 +452,6 @@ export function run(api) {
         { type: "Fib", objects: [{ selected: false, id: 3 }] },
         { type: "Channel", objects: [{ selected: true, id: 4 }] },
     ])
-
-    // ── ZoomButtons: SVG, nên so cây chứ không so lệnh ────────────────────────────
-
-    out.zoomButtons = stripPrefix(normalizeSvg(api.renderZoomButtons(moreProps(), {
-        fill: "#ffffff",
-        fillOpacity: 0.75,
-        heightFromBase: 32,
-        r: 16,
-        stroke: "#e0e3eb",
-        strokeWidth: 1,
-        textFill: "#000000",
-    })))
 
     // Sáu bước nội suy: chart không nhảy một phát mà đi từ từ, để mắt không mất chỗ
     out.zoomSteps = {

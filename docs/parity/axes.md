@@ -84,7 +84,7 @@ Bản port nối vào, mỗi trục một phép mặc định:
 | nhấp đúp cột giá | về tự-vừa-khung (`resetYDomain`), và kéo dọc tắt trở lại |
 | nhấp đúp trục thời gian | về mức zoom mặc định (`resetXDomain`), giữ nguyên chỗ đang xem |
 
-`resetXDomain` là phép mới: nó lấy lại **bề rộng khung nhìn** mà `xExtents` yêu cầu — bao nhiêu phiên trên màn hình lúc chart mới mở — và giữ nguyên tâm khung nhìn. Chỉ kích cỡ nến trở lại như cũ, còn đang xem quãng nào thì vẫn ở quãng ấy. Muốn về hẳn hình lúc mở, cả zoom lẫn chỗ xem, thì đó là `reset()` — thứ nút reset của `ZoomButtons` gọi.
+`resetXDomain` là phép mới: nó lấy lại **bề rộng khung nhìn** mà `xExtents` yêu cầu — bao nhiêu phiên trên màn hình lúc chart mới mở — và giữ nguyên tâm khung nhìn. Chỉ kích cỡ nến trở lại như cũ, còn đang xem quãng nào thì vẫn ở quãng ấy. Muốn về hẳn hình lúc mở, cả zoom lẫn chỗ xem, thì đó là `reset()`, một phép công khai của `<chart-canvas>`. (Bản gốc chôn nó sau nút reset của `<ZoomButtons>`; kho này đã gỡ cụm nút ấy — chart#39.)
 
 Đặt `onDoubleClick` của riêng mình lên trục thì phép mặc định không chạy.
 

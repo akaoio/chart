@@ -2,6 +2,7 @@ import { extent as d3Extent, max, min } from "d3-array"
 import { functor, head, identity, isDefined, isNotDefined, last, shallowEqual } from "./utils/index.js"
 import { clearCanvas } from "./utils/dom.js"
 import { mouseBasedZoomAnchor } from "./zoom/zoomBehavior.js"
+import { zoomSteps } from "./zoom/zoomSteps.js"
 import {
     getChartConfigWithUpdatedYScales,
     getCurrentCharts,
@@ -207,6 +208,44 @@ export class ChartCanvas extends ElementBase {
         this.#eventCapture.disconnect()
         this.#resizeObserver?.disconnect()
         this.#resizeObserver = null
+        window.clearInterval(this.#zoomInterval)
+        this.#zoomInterval = undefined
+    }
+
+    #zoomInterval
+
+    /**
+     * Phóng to / thu nhỏ một NẤC, đi sáu bước thay vì nhảy một phát.
+     *
+     * Kho này không ship nút bấm nào — ứng dụng dựng nút của nó bằng ngôn ngữ thiết
+     * kế của nó rồi gọi vào đây (chart#39). Trước kia phép này nằm trong
+     * `<chart-zoom-buttons>`, và vì cụm nút ấy đo theo chiều cao PANE nên mỗi người
+     * dùng lại phải bù tay một con số để kéo nó về đáy.
+     *
+     * `multiplier` mặc định 1.5, KHÁC `zoomMultiplier` 1.1 ở trên và cố ý khác: cái
+     * kia là một nấc con lăn, cái này là một lần bấm. Gộp hai con số làm một là ép
+     * hai câu hỏi khác nhau trả lời chung, nên đừng.
+     *
+     * Neo là cây nến mới nhất đang hiện. Gọi lại khi hoạt ảnh đang chạy thì bị bỏ
+     * qua, để hai lần bấm nhanh không chồng hai chuỗi bước lên nhau.
+     */
+    zoomIn = (multiplier = 1.5) => this.#stepZoom(-1, multiplier)
+
+    zoomOut = (multiplier = 1.5) => this.#stepZoom(1, multiplier)
+
+    #stepZoom(direction, multiplier) {
+        if (this.#zoomInterval) return
+
+        const { xScale, plotData, xAccessor } = this.contextValues
+        const steps = zoomSteps(xScale, plotData, xAccessor, direction, multiplier)
+
+        this.#zoomInterval = window.setInterval(() => {
+            this.xAxisZoom(steps.shift())
+            if (steps.length === 0) {
+                window.clearInterval(this.#zoomInterval)
+                this.#zoomInterval = undefined
+            }
+        }, 10)
     }
 
     #resizeObserver = null

@@ -2063,17 +2063,22 @@ const SVG_CAMEL_CASE_OK = new Set(["viewBox", "preserveAspectRatio", "textLength
 TESTS["SVG dựng ra dùng đúng tên thuộc tính của SVG"] = async () => {
     const t = makeChecker()
 
-    const { canvas, pane } = mountWithTool("chart-zoom-buttons", {})
+    const { canvas, pane } = mountWithTool("chart-trend-line", {})
     await settle()
 
-    // đủ thứ vẽ bằng SVG: tooltip, annotation, nút zoom
+    // đủ thứ vẽ bằng SVG: tooltip, annotation
     const tooltip = document.createElement("chart-ohlc-tooltip")
     Object.assign(tooltip, { origin: [8, 12], fontSize: 13, fontFamily: "monospace" })
 
     const average = document.createElement("chart-single-value-tooltip")
     Object.assign(average, { origin: [8, 40], yLabel: "Đóng", yAccessor: datum => datum.close })
 
-    pane.append(tooltip, average)
+    // Trục kéo được là thứ còn lại vẽ `chart-enable-interaction` ra SVG, sau khi
+    // `<chart-zoom-buttons>` bị gỡ (chart#39). Class ấy vẫn phải tới nơi: nó là
+    // cách DUY NHẤT một node SVG nhận lại con trỏ bên trong lớp bắt sự kiện.
+    const yAxis = document.createElement("chart-y-axis")
+
+    pane.append(tooltip, average, yAxis)
     await settle(4)
 
     const nodes = [...canvas.shadowRoot.querySelectorAll("svg *")]
@@ -2094,8 +2099,8 @@ TESTS["SVG dựng ra dùng đúng tên thuộc tính của SVG"] = async () => {
     t.ok("chữ trong tooltip có font-family", text?.getAttribute("font-family") !== null)
     t.ok("chữ trong tooltip có font-size", text?.getAttribute("font-size") !== null)
 
-    const hit = canvas.shadowRoot.querySelector("svg circle.chart-enable-interaction")
-    t.ok("nút zoom có class, nên mới nhận được con trỏ", hit !== null)
+    const hit = canvas.shadowRoot.querySelector("svg .chart-enable-interaction")
+    t.ok("trục kéo được mang class, nên mới nhận lại được con trỏ", hit !== null)
     t.is(
         "và class ấy bật pointer-events",
         hit === null ? "" : getComputedStyle(hit).pointerEvents,
@@ -2106,39 +2111,51 @@ TESTS["SVG dựng ra dùng đúng tên thuộc tính của SVG"] = async () => {
     return t.checks
 }
 
-TESTS["bấm nút zoom thì chart phóng to thật"] = async () => {
+TESTS["canvas.zoomIn/zoomOut/reset đổi khung nhìn thật"] = async () => {
     const t = makeChecker()
 
-    const { canvas } = mountWithTool("chart-zoom-buttons", {})
+    const { canvas } = mountWithTool("chart-trend-line", {})
     await settle(4)
 
     const before = canvas.getState().xScale.domain()
     const span = ([from, to]) => to - from
 
-    const button = kind => canvas.shadowRoot.querySelector(`svg circle.chart-enable-interaction.${kind}`)
+    // Sáu bước nội suy, mỗi bước 10ms — chờ dài hơn cả chuỗi rồi mới đọc.
+    const settled = () => new Promise(resolve => setTimeout(resolve, 200))
 
-    t.ok("có ba nút", ["in", "out", "reset"].every(kind => button(kind) !== null))
+    t.ok(
+        "ba phép là API công khai, không phải nút",
+        ["zoomIn", "zoomOut", "reset"].every(name => typeof canvas[name] === "function"),
+    )
 
-    // Bấm đúng lên vòng tròn bắt sự kiện — nếu class không tới nơi thì nó không tồn tại
-    // để mà bấm, và bài này đổ ngay ở dòng trên.
-    button("in").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
-    await new Promise(resolve => setTimeout(resolve, 200))
+    canvas.zoomIn()
+    await settled()
 
     const zoomedIn = canvas.getState().xScale.domain()
-    t.ok("bấm + thì nhìn được ít phiên hơn", span(zoomedIn) < span(before))
+    t.ok("zoomIn thì nhìn được ít phiên hơn", span(zoomedIn) < span(before))
 
-    button("out").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
-    await new Promise(resolve => setTimeout(resolve, 200))
+    canvas.zoomOut()
+    await settled()
 
-    t.gt("bấm − thì nhìn được nhiều hơn lúc vừa phóng", span(canvas.getState().xScale.domain()), span(zoomedIn))
+    t.gt("zoomOut thì nhìn được nhiều hơn lúc vừa phóng", span(canvas.getState().xScale.domain()), span(zoomedIn))
 
-    // ── nút reset ─────────────────────────────────────────────────────────────────
+    // Gọi chồng khi hoạt ảnh đang chạy thì bị bỏ qua — nếu không, hai chuỗi bước
+    // xen nhau và khung nhìn nhảy loạn.
+    const mid = span(canvas.getState().xScale.domain())
+    canvas.zoomIn()
+    canvas.zoomIn()
+    await settled()
+    const once = span(canvas.getState().xScale.domain())
+    canvas.zoomIn()
+    await settled()
+    const twice = span(canvas.getState().xScale.domain())
+    t.ok("một lần gọi chỉ đi một nấc", once < mid && twice < once)
+
+    // ── reset ─────────────────────────────────────────────────────────────────────
     //
-    // Bản gốc để `onReset` trống, nên nút này vẽ ra rồi nằm đó. Ở đây không đặt gì thì
-    // nó đưa chart về đúng hình lúc mở — cả khung nhìn x lẫn khung giá người dùng đã kéo.
+    // Bản gốc để `onReset` trống nên nút reset của nó vẽ ra rồi nằm im. Ở đây reset là
+    // phép của canvas: về đúng hình lúc mở, cả khung nhìn x lẫn khung giá đã bị kéo.
 
-    button("in").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
-    await new Promise(resolve => setTimeout(resolve, 200))
     canvas.yAxisZoom(0, [50, 60])
     await settle(2)
 
@@ -2148,10 +2165,10 @@ TESTS["bấm nút zoom thì chart phóng to thật"] = async () => {
     }
     t.not("đã làm cho chart khác hẳn lúc mở", String(disturbed.x), String(span(before)))
 
-    button("reset").dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }))
+    canvas.reset()
     await settle(4)
 
-    t.near("bấm reset thì khung nhìn x về như cũ", span(canvas.getState().xScale.domain()), span(before), 0.001)
+    t.near("reset thì khung nhìn x về như cũ", span(canvas.getState().xScale.domain()), span(before), 0.001)
     t.not(
         "và khung giá cũng thôi bị ghim",
         canvas.getState().chartConfigs[0].yScale.domain().join(),

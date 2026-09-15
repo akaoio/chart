@@ -88,6 +88,7 @@ Ràng buộc này đến từ tính năng khoá học TTS nêu trong #1, và đ�
 | lớp CSS con trỏ | `react-financial-charts-*` | `chart-*` | tên cũ nhắc tới React trong một bản không có React |
 | — | không có | `setCrosshair(xy)` | lưới nhiều chart cần đồng bộ crosshair từ ngoài (akao#156); đi đúng đường handleMouseMove thật nên tooltip/coordinate sống y như chuột |
 | — | không có | `reset()` | bản gốc không có phép đưa chart về hình lúc mở, nên nút reset của `ZoomButtons` không có gì để gọi |
+| — | không có | `zoomIn()` · `zoomOut()` | phóng/thu một nấc qua sáu bước nội suy. Bản gốc chôn phép này trong `<ZoomButtons>`; kho này không ship nút nào nên nó phải là API (chart#39). Mặc định nhân **1.5**, cố ý khác `zoomMultiplier` 1.1 của con lăn |
 | `strokeDashTypes` | một **kiểu** TypeScript | mảng các tên | kiểu không tồn tại lúc chạy; cái mảng chính là thứ kiểu ấy mô tả |
 
 ## Chỗ bản gốc kỳ lạ, cố ý giữ nguyên
