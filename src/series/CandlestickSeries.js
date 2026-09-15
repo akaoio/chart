@@ -89,11 +89,24 @@ export const drawCandlestickSeries = (context, moreProps, props) => {
 
             values.forEach(candle => {
                 if (candle.width <= 1) {
-                    context.fillRect(candle.x - 0.5, candle.y, 1, candle.height)
-                } else if (candle.height === 0) {
-                    context.fillRect(candle.x - 0.5, candle.y, candle.width, 1)
+                    // Thân hẹp hơn một pixel: vẽ thành một vạch 1px, và vạch ấy phải
+                    // nằm giữa wick. Tâm thân là `candle.x + width / 2`, bằng đúng
+                    // `wick.x`, nên một vạch rộng 1px có tâm ở đó thì bắt đầu ở tâm
+                    // trừ nửa pixel — cùng phép mà wick đang dùng, và lần này `- 0.5`
+                    // có lý do.
+                    context.fillRect(candle.x + candle.width / 2 - 0.5, candle.y, 1, candle.height)
                 } else {
-                    context.fillRect(candle.x - 0.5, candle.y, candle.width, candle.height)
+                    // `candle.x` ĐÃ là mép trái: getCandleData trả `x - offset`. Nên
+                    // fill và stroke dùng chung đúng một hình chữ nhật, không cái nào
+                    // dịch đi đâu cả.
+                    //
+                    // Bản gốc viết `fillRect(d.x - 0.5, …)` cạnh `strokeRect(d.x, …)`,
+                    // chép nguyên phép căn giữa của wick sang thân — nơi toạ độ là MÉP
+                    // chứ không phải TÂM. Đo trên canvas với thân đáng lẽ chiếm [80,120]:
+                    // mép trái ra rgb(191,0,0) đỏ đặc còn mép phải ra rgb(192,95,95) rồi
+                    // rgb(191,191,191) — tức có trắng lọt vào giữa thân và viền ở đúng
+                    // một bên. Zoom lên là thấy vệt hở (chart#38).
+                    context.fillRect(candle.x, candle.y, candle.width, candle.height)
                     if (strokeKey !== "none") context.strokeRect(candle.x, candle.y, candle.width, candle.height)
                 }
             })

@@ -104,6 +104,39 @@ Cả hai đều không giữ, cùng một lý lẽ: phần tử này tồn tại
 
 ## Lệch có chủ ý so với bản gốc
 
+**Thân nến vẽ đúng mép của nó.** Bản gốc đặt thân và viền ở hai toạ độ x khác nhau:
+
+```ts
+ctx.fillRect(d.x - 0.5, d.y, d.width, d.height);
+if (…) ctx.strokeRect(d.x, d.y, d.width, d.height);
+```
+
+`d.x` **đã là mép trái** — `getCandleData` trả `x - offset`. Cái `- 0.5` là phép căn giữa
+của **wick** bị chép sang thân: wick vẽ `fillRect(wick.x - 0.5, …, 1, …)` vì `wick.x` là
+**tâm**, và một vạch rộng 1px muốn nằm giữa tâm thì phải bắt đầu ở tâm − 0.5. Thân không
+có lý do ấy, nên nó bị đẩy lệch nửa pixel so với chính cái viền của mình.
+
+Đo trên canvas, một cây nến với mọi toạ độ nguyên, thân đáng lẽ chiếm `[80, 120]`:
+
+| pixel | bản gốc | ở đây |
+|---|---|---|
+| x = 79 (ngoài, trái) | `rgb(191,95,95)` — thân tràn ra ngoài viền | `rgb(191,191,191)` — chỉ có viền |
+| x = 80 (mép trái) | `rgb(191,0,0)` | `rgb(191,0,0)` |
+| x = 119 (mép phải) | `rgb(192,95,95)` — **trắng lọt vào** giữa thân và viền | `rgb(192,0,0)` |
+| x = 120 (ngoài, phải) | `rgb(191,191,191)` | `rgb(191,191,191)` |
+
+Bản gốc **không đối xứng**: bên trái thân tràn qua viền, bên phải hở ra một vệt sáng. Ở
+đây fill và stroke dùng chung đúng một hình chữ nhật, nên hai mép giống hệt nhau. Golden
+khai hai case `candlestick` và `candlestickStroked` là lệch có chủ ý (chart#38).
+
+Nhánh `width <= 1` giữ `- 0.5` nhưng tính từ **tâm thân** (`candle.x + width / 2`), vốn
+bằng đúng `wick.x` — nên vạch 1px ấy nằm giữa wick thay vì lệch trái nửa pixel.
+
+**Nhánh `height === 0` bị bỏ, vì nó chết trong chính bản gốc.** `getCandleData` trả
+`height = Math.max(1, …)`, nên `candle.height` không bao giờ bằng 0 — kể cả với nến doji,
+thứ bộ dữ liệu golden có sẵn một cây. Giữ lại thì lần sau sẽ có người đi "sửa" cái `- 0.5`
+trong đó.
+
 **Phần vẽ tách khỏi phần tử.** Mỗi series xuất ra hai thứ: một hàm `drawXSeries(context, moreProps, props)` không đụng DOM, và một phần tử mỏng gọi hàm đó. Bản gốc gộp cả hai trong một class React.
 
 Lý do là để chứng minh được: hàm vẽ chạy trong Node và so được với bản gốc từng lệnh, còn một lớp `extends HTMLElement` thì không tồn tại ngoài trình duyệt. Tách ra cũng đúng về mặt thiết kế — cách vẽ một cây nến không liên quan gì tới việc nó có phải một phần tử DOM hay không.
@@ -130,7 +163,7 @@ Giữ nguyên vì port trung thành là mặc định, nhưng ghi ra đây để
 
 ## Vượt ra ngoài bản gốc (chart#5)
 
-`chart-volume-candlestick-series` — nến có bề ngang theo volume (TradingView "Volume candles"): mỗi thân co giãn theo volume của chính nó so với volume lớn nhất đang hiện trên khung; `minWidthRatio` giữ nến mỏng nhất còn nhìn thấy, đặt nó bằng 1 là mọi nến bằng nhau. Không có golden (không có gì để so) — được chứng minh bằng khẳng định trình duyệt trên hình học `getVolumeCandleData`.
+`chart-volume-candlestick-series` — nến có bề ngang theo volume (TradingView "Volume candles"): mỗi thân co giãn theo volume của chính nó so với volume lớn nhất đang hiện trên khung; `minWidthRatio` giữ nến mỏng nhất còn nhìn thấy, đặt nó bằng 1 là mọi nến bằng nhau. Không có golden (không có gì để so) — được chứng minh bằng khẳng định trình duyệt trên hình học `getVolumeCandleData`. Vòng vẽ của nó là bản chép của `CandlestickSeries`, nên nó chép cả chỗ lệch nửa pixel kể trên — và chart#38 sửa **cả hai** cùng lúc. Ở đây bản sửa không phải lệch parity: series này vốn không có gì để so.
 
 
 ## Series vượt ra ngoài bản gốc (chart#5 · akao#276)

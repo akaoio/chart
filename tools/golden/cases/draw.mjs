@@ -37,6 +37,8 @@ export const deviations = {
     priceCoordinateRight: "hộp giá lấp bề rộng cột trục",
     edgeIndicator: "hộp giá lấp bề rộng cột trục",
     edgeIndicatorFull: "hộp giá lấp bề rộng cột trục (có cả mũi tên)",
+    candlestick: "thân nến vẽ đúng mép của nó, không lùi nửa pixel như bản gốc (chart#38)",
+    candlestickStroked: "thân và viền dùng chung một hình chữ nhật, hết vệt hở bên phải (chart#38)",
 }
 
 /**
