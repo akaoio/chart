@@ -138,7 +138,7 @@ export class EachFibRetracement extends ElementBase {
                 fontFamily,
                 fontSize,
                 fillStyle: fontFill,
-                text: `${own(yDisplayFormat, eachFibRetracementDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(line.percent.toFixed(2), localeOf(this))}%)`,
+                text: `${own(yDisplayFormat, eachFibRetracementDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(`${line.percent.toFixed(2)}%`, localeOf(this))})`,
                 xyProvider: ({ xScale, chartConfig }) => {
                     const { yScale } = chartConfig
                     const generated = generateLine({

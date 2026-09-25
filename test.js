@@ -714,6 +714,12 @@ if (!only) {
     expect(localize("1,234,567.89", "hi"), "12,34,567.89", "hi lakh grouping")
     expect(localize("79.05", "de"), "79,05", "an ungrouped d3 '.2f' stays ungrouped")
     expect(localize("1,234.5", undefined), "1,234.5", "no locale passes through")
+    // Dấu % theo khuôn của locale, không ghép cứng sau số: de có dấu cách không ngắt,
+    // tr đặt dấu % TRƯỚC số — cả hai đọc từ Intl, không bảng nào.
+    expect(localize("+1.28%", "de"), "+1,28\u00a0%", "de percent keeps its no-break space")
+    expect(localize("+1.28%", "tr"), "+%1,28", "tr percent puts the mark first")
+    expect(localize("61.8%", "de"), "61,8\u00a0%", "an unsigned percent leaves the sign slot empty")
+    expect(localize("+1.28%", undefined), "+1.28%", "no locale, no change")
 
     // 3. Ngày: tên tháng của locale, cho từng biểu đồ, không đụng mặc định toàn cục của d3.
     const march = new Date(Date.UTC(2023, 2, 15))
@@ -732,6 +738,7 @@ if (!only) {
     const moreProps = { chartConfig: { width: 400, height: 200 }, fullData: [{ open: 1234.5, high: 1300, low: 1200, close: 1250.25 }] }
     const ohlc = texts(renderOHLCTooltip(moreProps, { locale: "de", dictionary: de })).join("")
     if (!ohlc.startsWith("E: 1234,50")) problems.push(`OHLC tooltip in de: ${ohlc}`)
+    if (!ohlc.includes("\u00a0%")) problems.push(`OHLC change in de should place % by the locale: ${ohlc}`)
     const ohlcPlain = texts(renderOHLCTooltip(moreProps, {})).join("")
     if (!ohlcPlain.startsWith("O: 1234.50")) problems.push(`OHLC tooltip with no locale: ${ohlcPlain}`)
     const macd = texts(
