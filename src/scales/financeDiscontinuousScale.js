@@ -1,3 +1,4 @@
+import { timeFormatFor } from "../core/i18n.js"
 import { ascending } from "d3-array"
 import { scaleLinear } from "d3-scale"
 import { levelDefinition } from "./levels.js"
@@ -131,11 +132,17 @@ export default function financeDiscontinuousScale(index, backingLinearScale = sc
         return ticks
     }
 
-    scale.tickFormat = () => value => {
+    /**
+     * Nhãn một vạch: theo `locale` nếu được đưa, bằng chính mẫu (`spec`) mà mốc ấy mang —
+     * "%b", "%Y"… — để mẫu vẫn do provider chọn còn tên tháng do ngôn ngữ của biểu đồ nói.
+     * Không có locale (hay mốc không mang mẫu) thì dùng hàm đã dựng sẵn, như trước.
+     */
+    scale.tickFormat = (ticks, locale) => value => {
         const offset = Math.abs(index[0].index)
-        const { format, date } = index[Math.floor(value + offset)]
-        return format(date)
+        const { format, date, spec } = index[Math.floor(value + offset)]
+        return locale && spec !== undefined ? timeFormatFor(locale)(spec)(date) : format(date)
     }
+    scale.localizes = true
 
     /** The date sitting at a position, or undefined past either end of the data. */
     scale.value = value => {

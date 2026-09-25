@@ -680,6 +680,100 @@ if (only === undefined) {
     }
 }
 
+// Chỉ ở tiến trình chính: một bộ ISOLATED (locale) chạy lại tệp này sau khi đã đổi locale
+// TOÀN CỤC của d3 — đúng thứ khối này kiểm là KHÔNG bị đụng.
+if (!only) {
+    /**
+     * Ngôn ngữ do ỨNG DỤNG quyết, biểu đồ chỉ khai và nói (src/core/i18n.js).
+     *
+     * Golden ở trên chứng minh một nửa: không truyền `locale`/`dictionary` thì mọi giá trị
+     * còn khớp bản gốc. Nửa còn lại ở đây — truyền vào thì chữ, số và ngày đổi theo, đi qua
+     * đúng các hàm vẽ thật (tooltip, trục) chứ không chỉ các hàm tiện ích. Và hàm định dạng
+     * ỨNG DỤNG tự đưa thì không bị viết lại, vì `localize` đọc đầu vào như số kiểu en-US.
+     */
+    const { dictionary, say, localize, timeFormatFor, durationIn, speakProps } = await import("./src/core/i18n.js")
+    const { renderOHLCTooltip } = await import("./src/tooltip/OHLCTooltip.js")
+    const { renderMACDTooltip } = await import("./src/tooltip/MACDTooltip.js")
+    const { tickHelper } = await import("./src/axes/Axis.js")
+    const { scaleLinear } = await import("d3-scale")
+    const problems = []
+    const expect = (actual, wanted, what) => {
+        if (actual !== wanted) problems.push(`${what}: ${JSON.stringify(actual)} ≠ ${JSON.stringify(wanted)}`)
+    }
+    const texts = node => (typeof node === "string" ? [node] : (node?.children ?? []).flatMap(texts))
+
+    // 1. Từ điển: hàm hoặc object; thiếu khoá — kể cả khi cửa từ điển trả chính cái khoá — là tiếng Anh.
+    const de = { selectObject: "Objekt auswählen", notAvailable: "k. A.", open: "E", signal: "Signal", bars: "{count} Balken" }
+    expect(say(de, "selectObject"), "Objekt auswählen", "object dictionary")
+    expect(say(key => de[key] ?? key, "comment"), dictionary.comment, "a function answering its own key falls back to English")
+    expect(say(undefined, "notAvailable"), "n/a", "no dictionary at all")
+    expect(say(de, "bars", { count: "3" }), "3 Balken", "holes are filled")
+
+    // 2. Số theo quy ước của locale, suy từ Intl — không bảng nào.
+    expect(localize("1,234,567.89", "de"), "1.234.567,89", "de number")
+    expect(localize("1,234,567.89", "hi"), "12,34,567.89", "hi lakh grouping")
+    expect(localize("79.05", "de"), "79,05", "an ungrouped d3 '.2f' stays ungrouped")
+    expect(localize("1,234.5", undefined), "1,234.5", "no locale passes through")
+
+    // 3. Ngày: tên tháng của locale, cho từng biểu đồ, không đụng mặc định toàn cục của d3.
+    const march = new Date(Date.UTC(2023, 2, 15))
+    expect(timeFormatFor("de")("%b")(march), "Mär", "de month")
+    expect(timeFormatFor("ja")("%B")(march), "3月", "ja month")
+    const { timeFormat: d3Global } = await import("d3-time-format")
+    expect(d3Global("%b")(march), "Mar", "d3's global locale was left alone")
+
+    // 4. Chỉ hàm MẶC ĐỊNH được nói theo locale; hàm ứng dụng giữ nguyên.
+    const defaults = { displayFormat: value => value.toFixed(2) }
+    const mine = value => `€${value}`
+    expect(speakProps({ ...defaults, locale: "de" }, defaults).displayFormat(1234.5), "1234,50", "the chart's own formatter speaks de")
+    expect(speakProps({ displayFormat: mine, locale: "de" }, defaults).displayFormat(1234.5), "€1234.5", "an application's formatter is untouched")
+
+    // 5. Qua hàm vẽ thật: tooltip OHLC và MACD.
+    const moreProps = { chartConfig: { width: 400, height: 200 }, fullData: [{ open: 1234.5, high: 1300, low: 1200, close: 1250.25 }] }
+    const ohlc = texts(renderOHLCTooltip(moreProps, { locale: "de", dictionary: de })).join("")
+    if (!ohlc.startsWith("E: 1234,50")) problems.push(`OHLC tooltip in de: ${ohlc}`)
+    const ohlcPlain = texts(renderOHLCTooltip(moreProps, {})).join("")
+    if (!ohlcPlain.startsWith("O: 1234.50")) problems.push(`OHLC tooltip with no locale: ${ohlcPlain}`)
+    const macd = texts(
+        renderMACDTooltip(
+            { chartConfig: { width: 400, height: 200 }, currentItem: {} },
+            {
+                dictionary: de,
+                options: { fast: 12, slow: 26, signal: 9 },
+                yAccessor: () => undefined,
+                appearance: { strokeStyle: { macd: "#000", signal: "#000" }, fillStyle: { divergence: "#000" } },
+            },
+        ),
+    ).join("")
+    if (!macd.includes("k. A.")) problems.push(`MACD tooltip should say the dictionary's n/a: ${macd}`)
+
+    // 6. Qua trục: số của chính trục theo locale, và bản rút gọn là dạng gọn của locale.
+    const labels = locale => {
+        const { ticks, format } = tickHelper(
+            { orient: "left", ticks: 5, locale },
+            scaleLinear().domain([0, 2_000_000]).range([0, 100]),
+        )
+        return ticks.map(tick => format(tick.value))
+    }
+    if (!labels("de").some(label => label.includes("."))) problems.push(`de axis labels should group with ".": ${labels("de").join(" ")}`)
+    const short = tickHelper(
+        { orient: "left", ticks: 5, locale: "ja", abbreviate: true },
+        scaleLinear().domain([0, 2_000_000]).range([0, 100]),
+    )
+    if (!short.ticks.some(tick => short.format(tick.value).includes("万"))) problems.push("ja abbreviated axis should use 万")
+
+    // 7. Khoảng thời gian: tiếng Anh như bản gốc, ngôn ngữ khác bằng đơn vị của nó.
+    expect(durationIn("en", 3 * 86_400_000), "3d", "en duration keeps the original's shape")
+    expect(durationIn("vi", 3 * 86_400_000), "3 ngày", "vi duration is in its own unit")
+
+    if (problems.length) {
+        console.error(`✗ i18n: ${problems.length} điều sai\n  ${problems.join("\n  ")}`)
+        failed++
+    } else {
+        console.log(`✓ i18n: chữ, số, ngày, trục và tooltip nói theo locale/dictionary của ứng dụng (${Object.keys(dictionary).length} khoá)`)
+    }
+}
+
 if (failed > 0) {
     console.error(`\n${failed} bộ lệch so với bản gốc.`)
     process.exit(1)

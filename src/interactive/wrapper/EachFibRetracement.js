@@ -1,3 +1,4 @@
+import { own, localeOf, localize } from "../../core/i18n.js"
 import { head, last } from "../../core/utils/index.js"
 import { getXValue } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
@@ -137,7 +138,7 @@ export class EachFibRetracement extends ElementBase {
                 fontFamily,
                 fontSize,
                 fillStyle: fontFill,
-                text: `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`,
+                text: `${own(yDisplayFormat, eachFibRetracementDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(line.percent.toFixed(2), localeOf(this))}%)`,
                 xyProvider: ({ xScale, chartConfig }) => {
                     const { yScale } = chartConfig
                     const generated = generateLine({

@@ -1,10 +1,11 @@
+import { word, spoken, dictionaryOf } from "../core/i18n.js"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
 export const signpostDefaults = {
     enabled: true,
-    text: "Signpost",
+    text: word("signpost"),
     snap: false,
     snapTo: undefined,
     shouldDisableSnap: event => event.button === 2 || event.shiftKey,
@@ -18,7 +19,7 @@ export const signpostDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     signposts: [],
@@ -105,7 +106,7 @@ export class Signpost extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 at: getValueFromOverride(this.#override, index, "at", each.at),
-                text: each.text ?? props.text,
+                text: each.text ?? spoken(props.text, dictionaryOf(this)),
                 appearance,
                 hoverText: { ...signpostDefaults.hoverText, ...props.hoverText },
                 onDrag: this.#handleDragSignpost,
@@ -139,7 +140,7 @@ export class Signpost extends ElementBase {
 
         const newSignposts = [
             ...this.#props.signposts.map(each => ({ ...each, selected: false })),
-            { at: xyValue, text: this.#props.text, selected: true, appearance: this.#props.appearance },
+            { at: xyValue, text: spoken(this.#props.text, dictionaryOf(this)), selected: true, appearance: this.#props.appearance },
         ]
 
         this.#props.onComplete?.(event, newSignposts, moreProps)

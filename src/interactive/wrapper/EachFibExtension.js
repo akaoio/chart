@@ -1,3 +1,4 @@
+import { own, localeOf, localize } from "../../core/i18n.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { getXValue } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
@@ -132,7 +133,7 @@ export class EachFibExtension extends ElementBase {
                 fontFamily,
                 fontSize,
                 fillStyle: fontFill,
-                text: `${yDisplayFormat(line.y)} (${line.percent.toFixed(1)}%)`,
+                text: `${own(yDisplayFormat, eachFibExtensionDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(line.percent.toFixed(1), localeOf(this))}%)`,
                 xyProvider: ({ xScale, chartConfig }) => {
                     const { yScale } = chartConfig
                     const generated = generateLine({ type: "RAY", start: [line.x, line.y], end: [line.x + 1, line.y], xScale, yScale })

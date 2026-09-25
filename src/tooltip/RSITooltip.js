@@ -1,3 +1,4 @@
+import { speakProps, word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, isDefined, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -6,7 +7,7 @@ import { ToolTipText, ToolTipTSpanLabel } from "./ToolTipText.js"
 
 export const rsiTooltipDefaults = {
     displayFormat: format(".2f"),
-    displayInit: "n/a",
+    displayInit: word("notAvailable"),
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
     origin: [0, 0],
     className: "chart-tooltip",
@@ -23,7 +24,7 @@ export const rsiTooltipDefaults = {
 
 /** The RSI reading, with its window size in the label. */
 export const renderRSITooltip = (moreProps, props) => {
-    const resolved = withDefaults(rsiTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(rsiTooltipDefaults, props), rsiTooltipDefaults)
     const {
         onClick,
         displayInit,
@@ -76,7 +77,7 @@ export class RSITooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderRSITooltip(moreProps, this.#props)
+        return renderRSITooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

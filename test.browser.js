@@ -1238,6 +1238,51 @@ const touchToolTests = async (browser, origin) => {
  * là `rgb(…)`, `#…`, hay `light-dark(…)` chưa phân giải — mà chính "chưa phân giải" là cái bẫy
  * đầu tiên tôi rơi vào, vì `getPropertyValue` trả về nguyên văn và canvas không hiểu.
  */
+/**
+ * Ngôn ngữ đi từ `<chart-canvas>` xuống tới chữ vẽ ra — qua đúng con đường thật:
+ * thuộc tính của canvas → contextValues → tooltip → SVG trên trang. Bài ở test.js gọi hàm
+ * vẽ trực tiếp; bài này hỏi xem một ứng dụng chỉ đặt HAI thuộc tính có đủ không, và bỏ chúng
+ * đi thì biểu đồ có về đúng như cũ không.
+ */
+const languageTests = async (browser, origin) => {
+    const checks = []
+    const page = await (await browser.newContext({ viewport: { width: 1000, height: 800 } })).newPage()
+    await page.goto(`${origin}/docs/showcase/index.html`)
+    await page.waitForFunction(() => document.querySelector("chart-ohlc-tooltip")?.closest("chart-canvas"))
+    await page.waitForTimeout(900)
+
+    const header = () =>
+        page.evaluate(() => {
+            const canvas = document.querySelector("chart-ohlc-tooltip").closest("chart-canvas")
+            const text = canvas.shadowRoot.querySelector("svg").textContent
+            return text.match(/[A-ZÄÖÜa-z. ]{1,6}: [^A-Za-z]*/)?.[0]?.trim() ?? text.slice(0, 40)
+        })
+    const speak = (locale, dictionary) =>
+        page.evaluate(
+            ([locale, dictionary]) => {
+                const canvas = document.querySelector("chart-ohlc-tooltip").closest("chart-canvas")
+                canvas.locale = locale ?? undefined
+                canvas.dictionary = dictionary ?? undefined
+            },
+            [locale, dictionary],
+        )
+
+    const before = await header()
+    checks.push({ label: "không đặt gì: tooltip nói như bản gốc", pass: /^O: \d+\.\d{2}/.test(before), expected: "O: 12.34…", actual: before })
+
+    await speak("de", { open: "E" })
+    await page.waitForTimeout(400)
+    const german = await header()
+    checks.push({ label: "canvas.dictionary đổi nhãn, canvas.locale đổi dấu thập phân", pass: /^E: \d+,\d{2}/.test(german), expected: "E: 12,34…", actual: german })
+
+    await speak(undefined, undefined)
+    await page.waitForTimeout(400)
+    const back = await header()
+    checks.push({ label: "bỏ hai thuộc tính thì về đúng như cũ", pass: back === before, expected: before, actual: back })
+
+    return { name: "ngôn ngữ: locale + dictionary trên chart-canvas tới tận chữ vẽ ra", checks }
+}
+
 const themeTests = async (browser, origin) => {
     const checks = []
 
@@ -1315,6 +1360,7 @@ const results = await page.evaluate(() => window.runChartTests())
 results.push(...(await runShowcaseTests(page, origin)))
 results.push(...(await touchToolTests(browser, origin)))
 results.push(await themeTests(browser, origin))
+results.push(await languageTests(browser, origin))
 
 await browser.close()
 server.close()

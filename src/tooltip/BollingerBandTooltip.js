@@ -1,3 +1,4 @@
+import { speakProps, word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, last, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -8,7 +9,7 @@ export const bollingerBandTooltipDefaults = {
     className: "chart-tooltip chart-bollingerband-tooltip",
     displayFormat: format(".2f"),
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
-    displayInit: "n/a",
+    displayInit: word("notAvailable"),
     origin: [8, 8],
     yAccessor: datum => datum.bb,
     options: undefined,
@@ -23,7 +24,7 @@ export const bollingerBandTooltipDefaults = {
 
 /** The three band values, with the settings that produced them spelled out. */
 export const renderBollingerBandTooltip = (moreProps, props) => {
-    const resolved = withDefaults(bollingerBandTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(bollingerBandTooltipDefaults, props), bollingerBandTooltipDefaults)
     const {
         onClick,
         displayFormat,
@@ -91,7 +92,7 @@ export class BollingerBandTooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderBollingerBandTooltip(moreProps, this.#props)
+        return renderBollingerBandTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

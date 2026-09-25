@@ -1,3 +1,5 @@
+import { localized } from "../core/i18n.js"
+import { timeFormatIn } from "../scales/timeFormat.js"
 import { range as d3Range, zip } from "d3-array"
 import { forceCollide, forceSimulation, forceX } from "d3-force"
 import { abbreviateNumber, first, last, getStrokeDasharrayCanvas } from "../core/utils/index.js"
@@ -13,6 +15,28 @@ import { abbreviateNumber, first, last, getStrokeDasharrayCanvas } from "../core
  * aside instead, and only the label moves: `x1` stays on the real value, so the tick
  * mark still points at the right place even when its text has shifted.
  */
+/**
+ * The axis's own label for a tick, in `locale`. The discontinuous time scale speaks it
+ * itself (its ticks carry the pattern they were labelled with); a plain time scale uses the
+ * same resolution ladder as `timeFormat`, in that locale; anything numeric is d3's label
+ * with its digits rewritten. No locale — every chart until an application asks — is d3's
+ * own label, exactly as before.
+ */
+const ownTickFormat = (scale, tickArguments, locale) => {
+    if (!locale) return scale.tickFormat(tickArguments)
+    if (scale.localizes) return scale.tickFormat(tickArguments, locale)
+    if (scale.domain?.()[0] instanceof Date) return timeFormatIn(locale)
+    return localized(scale.tickFormat(tickArguments), locale)
+}
+
+/** `abbreviateNumber`, and in a locale the locale's own compact form instead of K and M. */
+const abbreviateIn = (locale, value, full) => {
+    if (!locale) return abbreviateNumber(value, full)
+    if (!Number.isFinite(value) || Math.abs(value) < 1000) return full
+    const short = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 20 }).format(value)
+    return short.length < full.length ? short : full
+}
+
 export const tickHelper = (props, scale) => {
     const {
         orient,
@@ -33,6 +57,7 @@ export const tickHelper = (props, scale) => {
         tickInterval,
         tickIntervalFunction,
         abbreviate,
+        locale,
         ...rest
     } = props
 
@@ -61,8 +86,10 @@ export const tickHelper = (props, scale) => {
     const format = (() => {
         if (tickFormat !== undefined) return value => tickFormat(value) || ""
 
-        const own = scale.tickFormat(tickArguments)
-        return abbreviate ? value => abbreviateNumber(value, own(value)) : own
+        // The axis's OWN labels speak the canvas's locale — the same boundary as
+        // `abbreviate`: an application's `tickFormat` is its own words, untouched.
+        const own = ownTickFormat(scale, tickArguments, locale)
+        return abbreviate ? value => abbreviateIn(locale, value, own(value)) : own
     })()
 
     const sign = orient === "top" || orient === "left" ? -1 : 1

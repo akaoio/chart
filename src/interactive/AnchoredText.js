@@ -1,3 +1,4 @@
+import { word, say, dictionaryOf } from "../core/i18n.js"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -19,7 +20,7 @@ export const anchoredTextDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     anchoredTexts: [],
@@ -107,7 +108,7 @@ export class AnchoredText extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 at: getValueFromOverride(this.#override, index, "at", each.at),
-                lines: [each.text ?? props.text ?? (kind === "note" ? "Anchored note" : "Anchored text")],
+                lines: [each.text ?? props.text ?? say(dictionaryOf(this), kind === "note" ? "anchoredNote" : "anchoredText")],
                 cells: undefined,
                 appearance: kind === "note" ? { ...appearance, bgFill: "#FFF3B0" } : appearance,
                 hoverText: { ...anchoredTextDefaults.hoverText, ...props.hoverText },

@@ -1,3 +1,4 @@
+import { speakProps } from "../core/i18n.js"
 import { format } from "d3-format"
 import { last, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -42,7 +43,7 @@ const getPosition = (position, moreProps) => {
 
 /** Several labelled values as one block; the layout decides how they are arranged. */
 export const renderGroupTooltip = (moreProps, props) => {
-    const resolved = withDefaults(groupTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(groupTooltipDefaults, props), groupTooltipDefaults)
     const { chartId, fullData } = moreProps
 
     const {
@@ -117,7 +118,7 @@ export class GroupTooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderGroupTooltip(moreProps, this.#props)
+        return renderGroupTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

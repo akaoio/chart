@@ -1,3 +1,4 @@
+import { word } from "../core/i18n.js"
 import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -12,7 +13,7 @@ export const barsPatternDefaults = {
     currentPositionOpacity: 1,
     currentPositionStrokeWidth: 3,
     currentPositionRadius: 4,
-    hoverText: { enable: true, bgHeight: 18, bgWidth: 120, text: "Click to select object" },
+    hoverText: { enable: true, bgHeight: 18, bgWidth: 120, text: word("selectObject") },
     patterns: [],
     appearance: {
         upStyle: "rgba(106, 185, 117, 0.6)",

@@ -215,6 +215,29 @@ demo({
 })
 
 demo({
+    title: "Languages",
+    about:
+        "The chart ships no translations — it declares what it says (`dictionary`, exported in " +
+        "English) and the application decides. Two properties on `chart-canvas` do it: `locale`, " +
+        "a BCP 47 tag, for every number and date the chart formats itself (derived from `Intl`, so " +
+        "any locale the browser knows works), and `dictionary`, a function `(key, values)` or an " +
+        "object `{ key: text }`, for every word. A missing key falls back to English. Formatters " +
+        "the application passes are its own and are never rewritten.",
+    build: stage => {
+        const languages = [
+            { title: "en — nothing set", locale: undefined, dictionary: undefined },
+            { title: "de", locale: "de", dictionary: { open: "E", high: "H", low: "T", close: "S", notAvailable: "k. A." } },
+            { title: "ja", locale: "ja", dictionary: { open: "始", high: "高", low: "安", close: "終", notAvailable: "なし" } },
+            { title: "hi — lakh grouping", locale: "hi", dictionary: key => ({ open: "खु", high: "उ", low: "नि", close: "बं" })[key] },
+        ]
+        grid(stage, languages, (host, { locale, dictionary }) => {
+            const { pane } = chart(host, { height: 220, locale, dictionary })
+            pane.append(Object.assign(document.createElement("chart-ohlc-tooltip"), { origin: [8, 12] }))
+        })
+    },
+})
+
+demo({
     title: "Annotations",
     about:
         "`chart-annotate` runs a test over every bar on screen and draws something on the ones " +

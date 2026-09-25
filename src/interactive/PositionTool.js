@@ -1,3 +1,4 @@
+import { word } from "../core/i18n.js"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -22,7 +23,7 @@ export const positionToolDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     positions: [],

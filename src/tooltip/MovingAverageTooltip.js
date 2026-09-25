@@ -1,3 +1,4 @@
+import { speakProps, word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, last, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -38,7 +39,7 @@ export const renderSingleMAToolTip = props => {
 export const movingAverageTooltipDefaults = {
     className: "chart-tooltip chart-moving-average-tooltip",
     displayFormat: format(".2f"),
-    displayInit: "n/a",
+    displayInit: word("notAvailable"),
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
     origin: [0, 10],
     width: 65,
@@ -53,7 +54,7 @@ export const movingAverageTooltipDefaults = {
 
 /** The legend of moving averages, laid out left to right. */
 export const renderMovingAverageTooltip = (moreProps, props) => {
-    const resolved = withDefaults(movingAverageTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(movingAverageTooltipDefaults, props), movingAverageTooltipDefaults)
     const { chartId, chartConfig, fullData } = moreProps
     const height = chartConfig?.height ?? 0
 
@@ -115,7 +116,7 @@ export class MovingAverageTooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderMovingAverageTooltip(moreProps, this.#props)
+        return renderMovingAverageTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

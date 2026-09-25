@@ -34,7 +34,8 @@ built with.
 
 - [Getting started](docs/guide/getting-started.md) — install, the import map, a first chart
 - [Concepts](docs/guide/concepts.md), [data and scales](docs/guide/data.md),
-  [indicators](docs/guide/indicators.md), [drawing tools](docs/guide/drawing-tools.md)
+  [indicators](docs/guide/indicators.md), [drawing tools](docs/guide/drawing-tools.md),
+  [languages](docs/guide/i18n.md) — `locale` and `dictionary` on `chart-canvas`
 - [Element reference](docs/reference/elements.md) — all 77 elements, generated from the source
 - [Showcase](https://akaoio.github.io/chart/) — every feature running, each chart shown with the
   code that built it

@@ -1,3 +1,4 @@
+import { speakProps, word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, identity, last, noop, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -12,10 +13,10 @@ export const singleValueTooltipDefaults = {
     valueFill: "#000000",
     xAccessor: noop,
     xDisplayFormat: identity,
-    xInitDisplay: "n/a",
+    xInitDisplay: word("notAvailable"),
     yAccessor: identity,
     yDisplayFormat: format(".2f"),
-    yInitDisplay: "n/a",
+    yInitDisplay: word("notAvailable"),
     xLabel: undefined,
     yLabel: undefined,
     fontFamily: undefined,
@@ -33,7 +34,7 @@ export const singleValueTooltipDefaults = {
  * latest value.
  */
 export const renderSingleValueTooltip = (moreProps, props) => {
-    const resolved = withDefaults(singleValueTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(singleValueTooltipDefaults, props), singleValueTooltipDefaults)
     const {
         onClick,
         fontFamily,
@@ -106,7 +107,7 @@ export class SingleValueTooltip extends GenericChartComponent {
     }
 
     svgDraw(moreProps) {
-        return renderSingleValueTooltip(moreProps, this.#props)
+        return renderSingleValueTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

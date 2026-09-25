@@ -28,12 +28,14 @@ The chart host.
 |---|---|
 | `clamp` | `false` |
 | `data` | — |
+| `dictionary` | — |
 | `disableInteraction` | `false` |
 | `disablePan` | `false` |
 | `disableZoom` | `false` |
 | `displayXAccessor` | — |
 | `flipXScale` | `false` |
 | `height` | — |
+| `locale` | — |
 | `maintainPointsPerPixelOnResize` | `true` |
 | `margin` | `{"top":0,"right":40,"bottom":40,"left":0}` |
 | `minPointsPerPxThreshold` | `0.01` |
@@ -812,7 +814,7 @@ The three band values, with the settings that produced them spelled out.
 |---|---|
 | `className` | `"chart-tooltip chart-bollingerband-tooltip"` |
 | `displayFormat` | ƒ |
-| `displayInit` | `"n/a"` |
+| `displayInit` | `{"key":"notAvailable"}` |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | — |
 | `fontSize` | — |
@@ -882,7 +884,7 @@ Each number is coloured to match the line it came from, so the legend is the too
 | `appearance` | — |
 | `className` | `"chart-tooltip"` |
 | `displayFormat` | ƒ |
-| `displayInit` | `"n/a"` |
+| `displayInit` | `{"key":"notAvailable"}` |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | — |
 | `fontSize` | — |
@@ -904,7 +906,7 @@ One moving average in the legend: a colour swatch, its name, and its value.
 |---|---|
 | `className` | `"chart-tooltip chart-moving-average-tooltip"` |
 | `displayFormat` | ƒ |
-| `displayInit` | `"n/a"` |
+| `displayInit` | `{"key":"notAvailable"}` |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | — |
 | `fontSize` | — |
@@ -927,7 +929,7 @@ Open, high, low, close and the change — the header line of nearly every price 
 | `accessor` | ƒ |
 | `changeFormat` | ƒ |
 | `className` | `"chart-tooltip-hover"` |
-| `displayTexts` | `{"o":"O: ","h":" H: ","l":" L: ","c":" C: ","na":"n/a"}` |
+| `displayTexts` | — |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | `"-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif"` |
 | `fontSize` | — |
@@ -950,7 +952,7 @@ The RSI reading, with its window size in the label.
 |---|---|
 | `className` | `"chart-tooltip"` |
 | `displayFormat` | ƒ |
-| `displayInit` | `"n/a"` |
+| `displayInit` | `{"key":"notAvailable"}` |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | — |
 | `fontSize` | — |
@@ -983,11 +985,11 @@ One labelled value, following the cursor.
 | `valueFill` | `"#000000"` |
 | `xAccessor` | ƒ |
 | `xDisplayFormat` | ƒ |
-| `xInitDisplay` | `"n/a"` |
+| `xInitDisplay` | `{"key":"notAvailable"}` |
 | `xLabel` | — |
 | `yAccessor` | ƒ |
 | `yDisplayFormat` | ƒ |
-| `yInitDisplay` | `"n/a"` |
+| `yInitDisplay` | `{"key":"notAvailable"}` |
 | `yLabel` | — |
 
 ### `<chart-stochastic-tooltip>`
@@ -1001,7 +1003,7 @@ One labelled value, following the cursor.
 | `appearance` | — |
 | `className` | `"chart-tooltip"` |
 | `displayFormat` | ƒ |
-| `displayInit` | `"n/a"` |
+| `displayInit` | `{"key":"notAvailable"}` |
 | `displayValuesFor` | ƒ |
 | `fontFamily` | — |
 | `fontSize` | — |
@@ -1218,7 +1220,7 @@ Callouts.
 | `currentPositionStroke` | `"#000000"` |
 | `currentPositionstrokeOpacity` | `1` |
 | `currentPositionStrokeWidth` | `3` |
-| `defaultText` | `"Callout"` |
+| `defaultText` | `{"key":"callout"}` |
 | `enabled` | `true` |
 | `hoverText` | `{…}` |
 | `onComplete` | — |
@@ -1555,7 +1557,7 @@ One callout: a text box, a leg from the box to the anchor, and a handle on the a
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
-| `text` | `"Callout"` |
+| `text` | `{"key":"callout"}` |
 
 ### `<chart-each-curve>`
 
@@ -2116,7 +2118,7 @@ One signpost: kéo là dời cả cột lẫn hộp chữ — chân cắm đổi
 | `onDrag` | ƒ |
 | `onDragComplete` | ƒ |
 | `selected` | `false` |
-| `text` | `"Signpost"` |
+| `text` | `{"key":"signpost"}` |
 
 ### `<chart-each-sticker>`
 
@@ -3054,7 +3056,7 @@ One signpost: a pole planted at a data point, a text box riding the top.
 | `selected` | `false` |
 | `strokeStyle` | `"#000000"` |
 | `strokeWidth` | `1` |
-| `text` | `"Signpost"` |
+| `text` | `{"key":"signpost"}` |
 | `tolerance` | `4` |
 
 ### `<chart-interactive-sticker>`
@@ -3601,7 +3603,7 @@ Signposts.
 | `signposts` | `[]` |
 | `snap` | `false` |
 | `snapTo` | — |
-| `text` | `"Signpost"` |
+| `text` | `{"key":"signpost"}` |
 
 ### `<chart-standard-deviation-channel>`
 

@@ -1,3 +1,4 @@
+import { word, spoken, dictionaryOf } from "../core/i18n.js"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -17,13 +18,13 @@ export const interactiveTextToolDefaults = {
         fontSize: 12,
         fontStyle: "normal",
         fontWeight: "normal",
-        text: "Lorem ipsum...",
+        text: word("sampleText"),
     },
     hoverText: {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
 }
@@ -94,6 +95,7 @@ export class InteractiveText extends ElementBase {
             Object.assign(this.#wrappers[index], {
                 ...props.defaultText,
                 ...each,
+                text: spoken(each.text ?? props.defaultText?.text, dictionaryOf(this)),
                 index,
                 selected: each.selected,
                 position: getValueFromOverride(this.#override, index, "position", each.position),
@@ -129,7 +131,7 @@ export class InteractiveText extends ElementBase {
 
         this.#props.onChoosePosition?.(
             event,
-            { ...this.#props.defaultText, position: [xAccessor(currentItem), yScale.invert(mouseY)] },
+            { ...this.#props.defaultText, text: spoken(this.#props.defaultText?.text, dictionaryOf(this)), position: [xAccessor(currentItem), yScale.invert(mouseY)] },
             moreProps,
         )
     }

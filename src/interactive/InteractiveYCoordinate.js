@@ -1,3 +1,4 @@
+import { word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
@@ -22,7 +23,7 @@ export const interactiveYCoordinateToolDefaults = {
         fontSize: 12,
         fontStyle: "normal",
         fontWeight: "normal",
-        text: "Alert",
+        text: word("alert"),
         textBox: {
             height: 24,
             left: 20,
@@ -48,7 +49,7 @@ export const interactiveYCoordinateToolDefaults = {
         enable: true,
         bgHeight: 18,
         bgWidth: 175,
-        text: "Click and drag the edge circles",
+        text: word("dragEdgeCircles"),
     },
 }
 

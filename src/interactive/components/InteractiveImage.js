@@ -1,3 +1,4 @@
+import { say } from "../../core/i18n.js"
 import { hitSlop } from "../../core/utils/dom.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
@@ -149,7 +150,7 @@ export class InteractiveImage extends GenericChartComponent {
         context.font = "11px system-ui, sans-serif"
         context.fillStyle = resolved.strokeStyle
         context.textAlign = "center"
-        context.fillText("Image", frame.x + frame.width / 2, frame.y + frame.height / 2 + 4)
+        context.fillText(say(this.context?.dictionary, "image"), frame.x + frame.width / 2, frame.y + frame.height / 2 + 4)
     }
 }
 

@@ -208,6 +208,7 @@ export class YAxis extends Series {
 
         return {
             ...this.seriesProps,
+            locale: this.context?.locale,
             // Rê chuột lên cột là hỏi con số thật: viết tắt tắt đi trong lúc chuột còn ở đó.
             abbreviate: abbreviate && !this.#hovering,
             transform: [axisLocation, 0],
