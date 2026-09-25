@@ -106,12 +106,12 @@ export const drawInteractivePosition = (context, moreProps, props) => {
 
     const sign = value => (value >= 0 ? "+" : "")
     label(
-        `${resolved.formatPrice(resolved.target)} (${sign(geometry.targetPercent)}${number(geometry.targetPercent.toFixed(2))}%)`,
+        `${resolved.formatPrice(resolved.target)} (${number(`${sign(geometry.targetPercent)}${geometry.targetPercent.toFixed(2)}%`)})`,
         resolved.profitLabelFill,
         targetY,
     )
     label(
-        `${resolved.formatPrice(resolved.stop)} (${sign(geometry.stopPercent)}${number(geometry.stopPercent.toFixed(2))}%)`,
+        `${resolved.formatPrice(resolved.stop)} (${number(`${sign(geometry.stopPercent)}${geometry.stopPercent.toFixed(2)}%`)})`,
         resolved.lossLabelFill,
         stopY,
     )

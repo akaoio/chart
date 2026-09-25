@@ -106,7 +106,7 @@ export class EachInfoLine extends ElementBase {
             fontFamily: appearance.fontFamily,
             fontSize: appearance.fontSize,
             fillStyle: appearance.fontFill,
-            text: `${own(yDisplayFormat, eachInfoLineDefaults.yDisplayFormat, localeOf(this))(change)} (${percent >= 0 ? "+" : ""}${localize(percent.toFixed(2), localeOf(this))}%) · ${say(dictionaryOf(this), "bars", { count: localize(String(bars), localeOf(this)) })}`,
+            text: `${own(yDisplayFormat, eachInfoLineDefaults.yDisplayFormat, localeOf(this))(change)} (${localize(`${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`, localeOf(this))}) · ${say(dictionaryOf(this), "bars", { count: localize(String(bars), localeOf(this)) })}`,
             xyProvider: ({ xScale, chartConfig }) => [xScale(middle[0]), chartConfig.yScale(middle[1]) - 10],
         })
 

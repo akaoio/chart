@@ -133,7 +133,7 @@ export class EachFibExtension extends ElementBase {
                 fontFamily,
                 fontSize,
                 fillStyle: fontFill,
-                text: `${own(yDisplayFormat, eachFibExtensionDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(line.percent.toFixed(1), localeOf(this))}%)`,
+                text: `${own(yDisplayFormat, eachFibExtensionDefaults.yDisplayFormat, localeOf(this))(line.y)} (${localize(`${line.percent.toFixed(1)}%`, localeOf(this))})`,
                 xyProvider: ({ xScale, chartConfig }) => {
                     const { yScale } = chartConfig
                     const generated = generateLine({ type: "RAY", start: [line.x, line.y], end: [line.x + 1, line.y], xScale, yScale })

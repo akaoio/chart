@@ -105,6 +105,28 @@ function conventionOf(locale) {
     return convention
 }
 
+/**
+ * Where a locale puts the sign and the percent mark around a number, as a template:
+ * `±` for the sign, `#` for the number — read off `Intl`'s own parts for one value, so
+ * "+1,28 %" (de, with its no-break space), "+%1,28" (tr, the mark in front) and the bidi
+ * marks Arabic wraps it in all come from the locale and none from a table here.
+ */
+const percentTemplates = new Map()
+function percentTemplateOf(locale) {
+    if (percentTemplates.has(locale)) return percentTemplates.get(locale)
+    let template = ""
+    let placed = false
+    for (const part of new Intl.NumberFormat(locale, { style: "percent", signDisplay: "always" }).formatToParts(0.5)) {
+        if (["integer", "group", "decimal", "fraction"].includes(part.type)) {
+            if (!placed) template += "#"
+            placed = true
+        } else if (part.type === "plusSign" || part.type === "minusSign") template += "±"
+        else template += part.value
+    }
+    percentTemplates.set(locale, template)
+    return template
+}
+
 function regroup(integer, { group, first, rest }) {
     if (integer.length <= first) return integer
     const tail = integer.slice(-first)
@@ -118,9 +140,10 @@ function regroup(integer, { group, first, rest }) {
     return [...groups, tail].join(group)
 }
 
-// Một con số viết theo mặc định của d3 và của toFixed: dấu trừ (d3 dùng U+2212), phần
-// nguyên có thể nhóm bằng dấu phẩy, phần thập phân sau dấu chấm.
-const NUMBER = /([-−]?)(\d{1,3}(?:,\d{3})+|\d+)(\.\d+)?/g
+// Một con số viết theo mặc định của d3 và của toFixed: dấu (d3 dùng U+2212 cho dấu trừ),
+// phần nguyên có thể nhóm bằng dấu phẩy, phần thập phân sau dấu chấm, và có thể một dấu
+// phần trăm ngay sau — d3 ("+.2%") và mọi `${…toFixed(2)}%` của biểu đồ đều viết thế.
+const NUMBER = /([-−+]?)(\d{1,3}(?:,\d{3})+|\d+)(\.\d+)?(%?)/g
 
 /**
  * Viết lại mọi con số trong một chuỗi theo quy ước của `locale`.
@@ -138,10 +161,14 @@ export function localize(text, locale) {
     if (!locale || typeof text !== "string") return text
     const convention = conventionOf(locale)
     const digits = value => value.replace(/\d/g, digit => convention.digits[digit])
-    return text.replace(NUMBER, (whole, sign, integer, fraction = "") => {
+    return text.replace(NUMBER, (whole, sign, integer, fraction = "", percent = "") => {
         const grouped = integer.includes(",") ? regroup(integer.replaceAll(",", ""), convention) : integer
         const decimals = fraction ? convention.decimal + fraction.slice(1) : ""
-        return (sign ? convention.minus : "") + digits(grouped) + digits(decimals)
+        const number = digits(grouped) + digits(decimals)
+        const signed = sign === "+" ? "+" : sign ? convention.minus : ""
+        // A percentage is placed by the locale's own template, sign and mark included;
+        // with no sign the template's sign slot is simply empty.
+        return percent ? percentTemplateOf(locale).replace("±", signed).replace("#", number) : signed + number
     })
 }
 
