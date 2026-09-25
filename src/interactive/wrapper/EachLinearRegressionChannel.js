@@ -1,3 +1,4 @@
+import { word } from "../../core/i18n.js"
 import { getCurrentItem } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
@@ -28,7 +29,7 @@ export const eachLinearRegressionChannelDefaults = {
         edgeFill: "#FFFFFF",
         r: 5,
     },
-    hoverText: { enable: true, bgHeight: 18, bgWidth: 175, text: "Click and drag the edge circles" },
+    hoverText: { enable: true, bgHeight: 18, bgWidth: 175, text: word("dragEdgeCircles") },
     onDrag: () => {},
     onDragComplete: () => {},
 }

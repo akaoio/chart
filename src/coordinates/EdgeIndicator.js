@@ -1,3 +1,4 @@
+import { speakProps } from "../core/i18n.js"
 import { format } from "d3-format"
 import { first, functor, last, noop, withDefaults } from "../core/utils/index.js"
 import { Series } from "../series/Series.js"
@@ -40,7 +41,7 @@ export const edgeIndicatorDefaults = {
  * the data, not the pointer, so it stays put while the crosshair moves.
  */
 export const drawEdgeIndicator = (context, moreProps, props) => {
-    const resolved = withDefaults(edgeIndicatorDefaults, props)
+    const resolved = speakProps(withDefaults(edgeIndicatorDefaults, props), edgeIndicatorDefaults)
     const { itemType, yAccessor } = resolved
     const { plotData } = moreProps
 
@@ -115,7 +116,7 @@ export class EdgeIndicator extends Series {
     }
 
     canvasDraw(context, moreProps) {
-        drawEdgeIndicator(context, moreProps, this.seriesProps)
+        drawEdgeIndicator(context, moreProps, { ...this.seriesProps, locale: this.context?.locale })
     }
 }
 

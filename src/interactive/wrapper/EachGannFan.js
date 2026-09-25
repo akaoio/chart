@@ -1,3 +1,4 @@
+import { word } from "../../core/i18n.js"
 import { isDefined } from "../../core/utils/index.js"
 import { getXValue } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
@@ -30,7 +31,7 @@ export const eachGannFanDefaults = {
         fontSize: 10,
         fontFill: "#000000",
     },
-    hoverText: { enable: true, bgHeight: 18, bgWidth: 120, text: "Click to select object" },
+    hoverText: { enable: true, bgHeight: 18, bgWidth: 120, text: word("selectObject") },
     onDrag: () => {},
     onDragComplete: () => {},
 }

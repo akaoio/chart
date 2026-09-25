@@ -1,14 +1,17 @@
+import { timeFormatFor } from "../core/i18n.js"
 import { timeSecond, timeMinute, timeHour, timeDay, timeWeek, timeMonth, timeYear } from "d3-time"
 import { timeFormat as d3TimeFormat } from "d3-time-format"
 
-const formatMillisecond = d3TimeFormat(".%L")
-const formatSecond = d3TimeFormat(":%S")
-const formatMinute = d3TimeFormat("%H:%M")
-const formatHour = d3TimeFormat("%H:%M")
-const formatDay = d3TimeFormat("%e")
-const formatWeek = d3TimeFormat("%e")
-const formatMonth = d3TimeFormat("%b")
-const formatYear = d3TimeFormat("%Y")
+const labels = format => ({
+    millisecond: format(".%L"),
+    second: format(":%S"),
+    minute: format("%H:%M"),
+    hour: format("%H:%M"),
+    day: format("%e"),
+    week: format("%e"),
+    month: format("%b"),
+    year: format("%Y"),
+})
 
 /**
  * Label a date at the coarsest resolution that still identifies it: a date on a year
@@ -17,19 +20,32 @@ const formatYear = d3TimeFormat("%Y")
  * Each test asks whether truncating to a unit moves the date — if it does, the date
  * carries detail below that unit and needs the finer format.
  */
-export const timeFormat = date =>
-    (timeSecond(date) < date
-        ? formatMillisecond
-        : timeMinute(date) < date
-          ? formatSecond
-          : timeHour(date) < date
-            ? formatMinute
-            : timeDay(date) < date
-              ? formatHour
-              : timeMonth(date) < date
-                ? timeWeek(date) < date
-                    ? formatDay
-                    : formatWeek
-                : timeYear(date) < date
-                  ? formatMonth
-                  : formatYear)(date)
+const labelling =
+    ({ millisecond, second, minute, hour, day, week, month, year }) =>
+    date =>
+        (timeSecond(date) < date
+            ? millisecond
+            : timeMinute(date) < date
+              ? second
+              : timeHour(date) < date
+                ? minute
+                : timeDay(date) < date
+                  ? hour
+                  : timeMonth(date) < date
+                    ? timeWeek(date) < date
+                        ? day
+                        : week
+                    : timeYear(date) < date
+                      ? month
+                      : year)(date)
+
+export const timeFormat = labelling(labels(d3TimeFormat))
+
+const byLocale = new Map()
+
+/** Cùng bậc thang ấy, nói theo `locale` — tên tháng của ngôn ngữ biểu đồ, không của d3 toàn cục. */
+export const timeFormatIn = locale => {
+    if (!locale) return timeFormat
+    if (!byLocale.has(locale)) byLocale.set(locale, labelling(labels(timeFormatFor(locale))))
+    return byLocale.get(locale)
+}

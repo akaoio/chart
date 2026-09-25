@@ -1,3 +1,4 @@
+import { speakProps } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, withDefaults } from "../core/utils/index.js"
 import { Series } from "../series/Series.js"
@@ -36,7 +37,7 @@ export const priceCoordinateDefaults = {
  * the level is.
  */
 export const drawPriceCoordinate = (context, moreProps, props) => {
-    const resolved = withDefaults(priceCoordinateDefaults, props)
+    const resolved = speakProps(withDefaults(priceCoordinateDefaults, props), priceCoordinateDefaults)
 
     const {
         chartConfig: { yScale },
@@ -91,7 +92,7 @@ export class PriceCoordinate extends Series {
     }
 
     canvasDraw(context, moreProps) {
-        drawPriceCoordinate(context, moreProps, this.seriesProps)
+        drawPriceCoordinate(context, moreProps, { ...this.seriesProps, locale: this.context?.locale })
     }
 }
 

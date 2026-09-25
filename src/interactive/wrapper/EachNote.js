@@ -1,3 +1,4 @@
+import { say, dictionaryOf } from "../../core/i18n.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
@@ -72,7 +73,7 @@ export class EachNote extends ElementBase {
         Object.assign(this.#children.box, {
             selected: showHandles,
             position: at,
-            text: text ?? (kind === "comment" ? "Comment" : "Note"),
+            text: text ?? say(dictionaryOf(this), kind === "comment" ? "comment" : "note"),
             bgFillStyle: kind === "comment" ? appearance.commentFill : appearance.noteFill,
             bgStroke: appearance.bgStroke,
             bgStrokeWidth: showHandles ? appearance.strokeWidth + 1 : appearance.strokeWidth,

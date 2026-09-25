@@ -1,3 +1,4 @@
+import { measuring, say, localize } from "../../core/i18n.js"
 import { hitSlop } from "../../core/utils/dom.js"
 import { getStrokeDasharrayCanvas, isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
@@ -83,7 +84,7 @@ export const projectionGeometry = (props, moreProps) => {
 }
 
 export const drawInteractiveProjection = (context, moreProps, props) => {
-    const resolved = { ...interactiveProjectionDefaults, ...props }
+    const resolved = measuring({ ...interactiveProjectionDefaults, ...props }, interactiveProjectionDefaults)
     if (isNotDefined(resolved.points) || resolved.points.length < 3) return
 
     const geometry = projectionGeometry(resolved, moreProps)
@@ -118,7 +119,7 @@ export const drawInteractiveProjection = (context, moreProps, props) => {
     context.closePath()
     context.fill()
 
-    const text = `${resolved.formatPrice(geometry.change)} (${resolved.formatPercent(geometry.percent)})  ${geometry.bars} bars`
+    const text = `${resolved.formatPrice(geometry.change)} (${resolved.formatPercent(geometry.percent)})  ${say(resolved.dictionary, "bars", { count: localize(String(geometry.bars), resolved.locale) })}`
     context.font = `${resolved.fontSize}px ${resolved.fontFamily}`
     const width = context.measureText(text).width + 16
     const height = resolved.fontSize + 10
@@ -204,7 +205,7 @@ export class InteractiveProjection extends GenericChartComponent {
     }
 
     canvasDraw(context, moreProps) {
-        drawInteractiveProjection(context, moreProps, this.#props)
+        drawInteractiveProjection(context, moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

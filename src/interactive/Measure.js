@@ -1,3 +1,4 @@
+import { word } from "../core/i18n.js"
 import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -19,7 +20,7 @@ export const measureDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     measures: [],

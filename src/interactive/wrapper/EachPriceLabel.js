@@ -1,3 +1,4 @@
+import { own, localeOf } from "../../core/i18n.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
@@ -71,7 +72,7 @@ export class EachPriceLabel extends ElementBase {
         Object.assign(this.#children.box, {
             selected: showHandles,
             position: at,
-            text: yDisplayFormat(at[1]),
+            text: own(yDisplayFormat, eachPriceLabelDefaults.yDisplayFormat, localeOf(this))(at[1]),
             bgFillStyle: appearance.bgFill,
             bgStroke: appearance.bgStroke,
             bgStrokeWidth: appearance.strokeWidth,

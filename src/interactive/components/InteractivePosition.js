@@ -1,3 +1,4 @@
+import { measuring, say, localize } from "../../core/i18n.js"
 import { hitSlop } from "../../core/utils/dom.js"
 import { getStrokeDasharrayCanvas } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
@@ -66,7 +67,8 @@ export const positionGeometry = (props, moreProps) => {
 }
 
 export const drawInteractivePosition = (context, moreProps, props) => {
-    const resolved = { ...interactivePositionDefaults, ...props }
+    const resolved = measuring({ ...interactivePositionDefaults, ...props }, interactivePositionDefaults)
+    const number = text => localize(text, resolved.locale)
     const geometry = positionGeometry(resolved, moreProps)
     const { left, width, entryY, targetY, stopY } = geometry
 
@@ -104,16 +106,16 @@ export const drawInteractivePosition = (context, moreProps, props) => {
 
     const sign = value => (value >= 0 ? "+" : "")
     label(
-        `${resolved.formatPrice(resolved.target)} (${sign(geometry.targetPercent)}${geometry.targetPercent.toFixed(2)}%)`,
+        `${resolved.formatPrice(resolved.target)} (${sign(geometry.targetPercent)}${number(geometry.targetPercent.toFixed(2))}%)`,
         resolved.profitLabelFill,
         targetY,
     )
     label(
-        `${resolved.formatPrice(resolved.stop)} (${sign(geometry.stopPercent)}${geometry.stopPercent.toFixed(2)}%)`,
+        `${resolved.formatPrice(resolved.stop)} (${sign(geometry.stopPercent)}${number(geometry.stopPercent.toFixed(2))}%)`,
         resolved.lossLabelFill,
         stopY,
     )
-    if (geometry.ratio !== undefined) label(`R/R: ${geometry.ratio.toFixed(2)}`, resolved.strokeStyle, entryY)
+    if (geometry.ratio !== undefined) label(`${say(resolved.dictionary, "riskReward")}: ${number(geometry.ratio.toFixed(2))}`, resolved.strokeStyle, entryY)
 }
 
 export const isPositionHover = (moreProps, props) => {
@@ -186,7 +188,7 @@ export class InteractivePosition extends GenericChartComponent {
     }
 
     canvasDraw(context, moreProps) {
-        drawInteractivePosition(context, moreProps, this.#props)
+        drawInteractivePosition(context, moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

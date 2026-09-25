@@ -1,3 +1,4 @@
+import { speakProps, word, say } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, last, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -7,7 +8,7 @@ import { ToolTipText, ToolTipTSpanLabel } from "./ToolTipText.js"
 export const macdTooltipDefaults = {
     className: "chart-tooltip",
     displayFormat: format(".2f"),
-    displayInit: "n/a",
+    displayInit: word("notAvailable"),
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
     origin: [0, 0],
     yAccessor: undefined,
@@ -23,7 +24,7 @@ export const macdTooltipDefaults = {
 
 /** Each number is coloured to match the line it came from, so the legend is the tooltip. */
 export const renderMACDTooltip = (moreProps, props) => {
-    const resolved = withDefaults(macdTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(macdTooltipDefaults, props), macdTooltipDefaults)
     const {
         onClick,
         displayInit,
@@ -70,11 +71,11 @@ export const renderMACDTooltip = (moreProps, props) => {
                 { tag: "tspan", attrs: { fill: appearance.strokeStyle.macd }, children: [options.fast] },
                 label("):", " "),
                 { tag: "tspan", attrs: { fill: appearance.strokeStyle.macd }, children: [macd] },
-                label(" ", "Signal ("),
+                label(" ", `${say(resolved.dictionary, "signal")} (`),
                 { tag: "tspan", attrs: { fill: appearance.strokeStyle.signal }, children: [options.signal] },
                 label("):", " "),
                 { tag: "tspan", attrs: { fill: appearance.strokeStyle.signal }, children: [signal] },
-                label(" ", "Divergence:", " "),
+                label(" ", `${say(resolved.dictionary, "divergence")}:`, " "),
                 { tag: "tspan", attrs: { fill: appearance.fillStyle.divergence }, children: [divergence] },
             ]),
         ],
@@ -94,7 +95,7 @@ export class MACDTooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderMACDTooltip(moreProps, this.#props)
+        return renderMACDTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

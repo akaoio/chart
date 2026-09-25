@@ -1,3 +1,4 @@
+import { word, spoken, dictionaryOf } from "../../core/i18n.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
@@ -8,7 +9,7 @@ export const eachSignpostDefaults = {
     interactive: true,
     selected: false,
     at: undefined,
-    text: "Signpost",
+    text: word("signpost"),
     appearance: {
         strokeStyle: "#000000",
         strokeWidth: 1,
@@ -68,7 +69,7 @@ export class EachSignpost extends ElementBase {
         Object.assign(this.#children.body, {
             selected: showHandles,
             position: at,
-            text,
+            text: spoken(text, dictionaryOf(this)),
             poleHeight: appearance.poleHeight,
             strokeStyle: appearance.strokeStyle,
             strokeWidth: showHandles ? appearance.strokeWidth + 1 : appearance.strokeWidth,

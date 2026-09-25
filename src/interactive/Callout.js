@@ -1,10 +1,11 @@
+import { word, spoken, dictionaryOf } from "../core/i18n.js"
 import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
 
 export const calloutDefaults = {
     enabled: true,
-    defaultText: "Callout",
+    defaultText: word("callout"),
     snap: false,
     snapTo: undefined,
     shouldDisableSnap: event => event.button === 2 || event.shiftKey,
@@ -19,7 +20,7 @@ export const calloutDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     callouts: [],
@@ -116,7 +117,7 @@ export class Callout extends ElementBase {
                 selected: each.selected,
                 anchor: getValueFromOverride(this.#override, index, "anchor", each.anchor),
                 at: getValueFromOverride(this.#override, index, "at", each.at),
-                text: each.text ?? props.defaultText,
+                text: each.text ?? spoken(props.defaultText, dictionaryOf(this)),
                 appearance,
                 hoverText: { ...calloutDefaults.hoverText, ...props.hoverText },
                 onDrag: this.#handleDragCallout,
@@ -192,7 +193,7 @@ export class Callout extends ElementBase {
             {
                 anchor: this.#current.anchor,
                 at: xyValue,
-                text: this.#props.defaultText,
+                text: spoken(this.#props.defaultText, dictionaryOf(this)),
                 selected: true,
                 appearance: this.#props.appearance,
             },

@@ -108,6 +108,7 @@ export class XAxis extends Series {
 
         return {
             ...this.seriesProps,
+            locale: this.context?.locale,
             transform: [0, axisLocation],
             range: [0, width],
             bg: { x: 0, y: orient === "top" ? -xZoomHeight : 0, h: xZoomHeight, w: width },

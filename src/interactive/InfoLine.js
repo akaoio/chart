@@ -1,3 +1,4 @@
+import { word, own, localeOf } from "../core/i18n.js"
 import { isDefined, isNotDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -18,7 +19,7 @@ export const infoLineDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     infoLines: [],
@@ -112,7 +113,7 @@ export class InfoLine extends ElementBase {
                 selected: each.selected,
                 start: getValueFromOverride(this.#override, index, "start", each.start),
                 end: getValueFromOverride(this.#override, index, "end", each.end),
-                yDisplayFormat: props.yDisplayFormat,
+                yDisplayFormat: own(props.yDisplayFormat, infoLineDefaults.yDisplayFormat, localeOf(this)),
                 appearance,
                 hoverText: { ...infoLineDefaults.hoverText, ...props.hoverText },
                 onDrag: this.#handleDragInfoLine,

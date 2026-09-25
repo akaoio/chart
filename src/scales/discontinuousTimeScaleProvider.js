@@ -108,6 +108,7 @@ const createIndex = (realDateAccessor, inputDateAccessor, initialIndex, formatte
         level: each.level,
         date: new Date(each.date),
         format: timeFormat(each.format),
+        spec: each.format,
     }))
 
     return { index }

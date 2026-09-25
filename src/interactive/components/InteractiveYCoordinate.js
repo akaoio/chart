@@ -1,3 +1,7 @@
+import { spoken, own } from "../../core/i18n.js"
+import { interactiveYCoordinateToolDefaults } from "../InteractiveYCoordinate.js"
+
+const TEMPLATE_EDGE_FORMAT = interactiveYCoordinateToolDefaults.defaultPriceCoordinate.edge.displayFormat
 import { hitSlop } from "../../core/utils/dom.js"
 import { getStrokeDasharrayCanvas } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
@@ -187,7 +191,12 @@ export class InteractiveYCoordinate extends GenericChartComponent {
     }
 
     canvasDraw(context, moreProps) {
-        drawInteractiveYCoordinate(context, moreProps, this.#props, this.#cache)
+        const { edge } = this.#props
+        // The price at the edge speaks the canvas's locale when it is the TEMPLATE's own
+        // formatter (an application spreading `defaultPriceCoordinate` into its alert);
+        // a formatter the application wrote is its own words.
+        const spokenEdge = edge && { ...edge, displayFormat: own(edge.displayFormat, TEMPLATE_EDGE_FORMAT, this.context?.locale) }
+        drawInteractiveYCoordinate(context, moreProps, { ...this.#props, edge: spokenEdge, text: spoken(this.#props.text, this.context?.dictionary) }, this.#cache)
     }
 }
 

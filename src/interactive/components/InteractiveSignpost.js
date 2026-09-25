@@ -1,3 +1,4 @@
+import { word, spoken } from "../../core/i18n.js"
 import { hitSlop } from "../../core/utils/dom.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
@@ -6,7 +7,7 @@ import { defineProperties, define } from "../../core/element.js"
 
 export const interactiveSignpostDefaults = {
     position: undefined,
-    text: "Signpost",
+    text: word("signpost"),
     poleHeight: 44,
     strokeStyle: "#000000",
     strokeWidth: 1,
@@ -44,7 +45,7 @@ export const signpostGeometry = (props, moreProps) => {
     const y = yScale(resolved.position[1])
     if (measuring === null) measuring = document.createElement("canvas").getContext("2d")
     measuring.font = `${resolved.fontSize}px ${resolved.fontFamily}`
-    const width = measuring.measureText(resolved.text).width + 16
+    const width = measuring.measureText(spoken(resolved.text)).width + 16
     const height = resolved.fontSize + 10
     const top = y - resolved.poleHeight - height
 
@@ -69,7 +70,7 @@ export const drawSignpost = (context, moreProps, props) => {
     context.font = `${resolved.fontSize}px ${resolved.fontFamily}`
     context.fillStyle = resolved.fontFill
     context.textAlign = "center"
-    context.fillText(resolved.text, x, box.y + box.height - 7)
+    context.fillText(spoken(resolved.text), x, box.y + box.height - 7)
 }
 
 export const isSignpostHover = (moreProps, props) => {

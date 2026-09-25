@@ -1,3 +1,4 @@
+import { speakProps, word } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
@@ -7,7 +8,7 @@ import { ToolTipText, ToolTipTSpanLabel } from "./ToolTipText.js"
 export const stochasticTooltipDefaults = {
     className: "chart-tooltip",
     displayFormat: format(".2f"),
-    displayInit: "n/a",
+    displayInit: word("notAvailable"),
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
     label: "STO",
     origin: [0, 0],
@@ -23,7 +24,7 @@ export const stochasticTooltipDefaults = {
 
 /** %K and %D, each in its own line colour. */
 export const renderStochasticTooltip = (moreProps, props) => {
-    const resolved = withDefaults(stochasticTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(stochasticTooltipDefaults, props), stochasticTooltipDefaults)
     const {
         onClick,
         fontFamily,
@@ -90,7 +91,7 @@ export class StochasticTooltip extends GenericChartComponent {
         return ["mousemove"]
     }
     svgDraw(moreProps) {
-        return renderStochasticTooltip(moreProps, this.#props)
+        return renderStochasticTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

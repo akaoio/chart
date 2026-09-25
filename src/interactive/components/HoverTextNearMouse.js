@@ -1,3 +1,4 @@
+import { spoken } from "../../core/i18n.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { defineProperties, define } from "../../core/element.js"
 
@@ -95,14 +96,24 @@ export class HoverTextNearMouse extends GenericChartComponent {
 
     /** Chữ nào, cỡ nào, font nào — đổi một trong ba thì phải đo lại, còn không thì không. */
     #shapeKey() {
-        const { text, fontSize, fontFamily, fontWeight } = this.#props
-        return `${fontWeight}|${fontSize}|${fontFamily}|${text}`
+        const { fontSize, fontFamily, fontWeight } = this.#props
+        return `${fontWeight}|${fontSize}|${fontFamily}|${this.#text()}`
+    }
+
+    /**
+     * Chữ, NÓI RA theo từ điển của canvas: mặc định của công cụ là `word("selectObject")`,
+     * không phải câu tiếng Anh, nên đổi ngôn ngữ là đổi chữ ở lần vẽ kế — và vì chữ nằm
+     * trong `#shapeKey`, đổi chữ cũng là đo lại khung.
+     */
+    #text() {
+        return spoken(this.#props.text, this.context?.dictionary)
     }
 
     svgDraw(moreProps) {
-        if (!this.#props.text) return null
+        const text = this.#text()
+        if (!text) return null
 
-        const result = renderHoverTextNearMouse(moreProps, { ...this.#props, ...this.#measured })
+        const result = renderHoverTextNearMouse(moreProps, { ...this.#props, ...this.#measured, text })
 
         /**
          * Đo một lần cho mỗi chữ, không đo lại theo từng bước con trỏ.

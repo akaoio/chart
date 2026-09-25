@@ -153,6 +153,12 @@ export class ChartCanvas extends ElementBase {
         "seriesName",
         "onLoadBefore",
         "onLoadAfter",
+        // Ngôn ngữ của biểu đồ, do ứng dụng quyết (xem src/core/i18n.js): `locale` là một
+        // thẻ BCP 47 cho mọi con số và ngày tháng; `dictionary` là hàm `(key, values)` hoặc
+        // object `{ key: câu }` cho mọi chữ. Cả hai đi xuống con qua contextValues, nên một
+        // biểu đồ lồng trong biểu đồ khác nói ngôn ngữ của canvas gần nhất.
+        "locale",
+        "dictionary",
     ]
 
     constructor() {
@@ -617,6 +623,8 @@ export class ChartCanvas extends ElementBase {
                 height: dimensions.height,
                 margin: this.#props.margin,
                 ratio: this.#props.ratio,
+                locale: this.#props.locale,
+                dictionary: this.#props.dictionary,
                 fullData: [],
                 plotData: [],
                 chartConfigs: [],
@@ -632,6 +640,8 @@ export class ChartCanvas extends ElementBase {
             height: dimensions.height,
             margin: this.#props.margin,
             ratio: this.#props.ratio,
+            locale: this.#props.locale,
+            dictionary: this.#props.dictionary,
             fullData: this.#state.fullData,
             plotData: this.#state.plotData,
             chartConfigs: this.#state.chartConfigs,

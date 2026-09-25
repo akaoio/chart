@@ -1,3 +1,4 @@
+import { measuring, say, localize } from "../../core/i18n.js"
 import { hitSlop } from "../../core/utils/dom.js"
 import { GenericChartComponent } from "../../core/GenericChartComponent.js"
 import { getMouseCanvas } from "../../core/GenericComponent.js"
@@ -92,7 +93,7 @@ const arrow = (context, fromX, fromY, toX, toY) => {
 }
 
 export const drawInteractiveMeasure = (context, moreProps, props) => {
-    const resolved = { ...interactiveMeasureDefaults, ...props }
+    const resolved = measuring({ ...interactiveMeasureDefaults, ...props }, interactiveMeasureDefaults)
     const { mode, strokeStyle, strokeWidth, fillStyle, textFill, labelFill, fontFamily, fontSize } = resolved
     const geometry = measureGeometry(resolved, moreProps)
     const { x, y, width, height } = geometry
@@ -119,7 +120,8 @@ export const drawInteractiveMeasure = (context, moreProps, props) => {
     const lines = []
     if (mode !== "date") lines.push(`${resolved.formatPrice(geometry.change)} (${resolved.formatPercent(geometry.percent)})`)
     if (mode !== "price") {
-        const span = geometry.elapsed === undefined ? `${geometry.bars} bars` : `${geometry.bars} bars, ${resolved.formatDuration(geometry.elapsed)}`
+        const bars = say(resolved.dictionary, "bars", { count: localize(String(geometry.bars), resolved.locale) })
+        const span = geometry.elapsed === undefined ? bars : `${bars}, ${resolved.formatDuration(geometry.elapsed)}`
         lines.push(span)
     }
 
@@ -202,7 +204,7 @@ export class InteractiveMeasure extends GenericChartComponent {
     }
 
     canvasDraw(context, moreProps) {
-        drawInteractiveMeasure(context, moreProps, this.#props)
+        drawInteractiveMeasure(context, moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

@@ -1,16 +1,25 @@
+import { speakProps, say } from "../core/i18n.js"
 import { format } from "d3-format"
 import { functor, last, withDefaults } from "../core/utils/index.js"
 import { GenericChartComponent } from "../core/GenericChartComponent.js"
 import { defineProperties, define } from "../core/element.js"
 import { ToolTipText, ToolTipTSpanLabel } from "./ToolTipText.js"
 
-const displayTextsDefault = { o: "O: ", h: " H: ", l: " L: ", c: " C: ", na: "n/a" }
+// The labels are WORDS of the dictionary, with the punctuation around them; the default
+// is built per draw from the canvas's dictionary unless the application passes its own.
+const displayTextsOf = host => ({
+    o: `${say(host, "open")}: `,
+    h: ` ${say(host, "high")}: `,
+    l: ` ${say(host, "low")}: `,
+    c: ` ${say(host, "close")}: `,
+    na: say(host, "notAvailable"),
+})
 
 export const ohlcTooltipDefaults = {
     accessor: datum => datum,
     changeFormat: format("+.2f"),
     className: "chart-tooltip-hover",
-    displayTexts: displayTextsDefault,
+    displayTexts: undefined,
     displayValuesFor: (props, moreProps) => moreProps.currentItem,
     fontFamily: "-apple-system, system-ui, 'Helvetica Neue', Ubuntu, sans-serif",
     ohlcFormat: format(".2f"),
@@ -26,12 +35,12 @@ export const ohlcTooltipDefaults = {
 
 /** Open, high, low, close and the change — the header line of nearly every price chart. */
 export const renderOHLCTooltip = (moreProps, props) => {
-    const resolved = withDefaults(ohlcTooltipDefaults, props)
+    const resolved = speakProps(withDefaults(ohlcTooltipDefaults, props), ohlcTooltipDefaults)
+    const displayTexts = resolved.displayTexts ?? displayTextsOf(resolved.dictionary)
     const {
         accessor,
         changeFormat,
         className,
-        displayTexts,
         displayValuesFor,
         fontFamily,
         fontSize,
@@ -111,7 +120,7 @@ export class OHLCTooltip extends GenericChartComponent {
     }
 
     svgDraw(moreProps) {
-        return renderOHLCTooltip(moreProps, this.#props)
+        return renderOHLCTooltip(moreProps, { ...this.#props, locale: this.context?.locale, dictionary: this.context?.dictionary })
     }
 }
 

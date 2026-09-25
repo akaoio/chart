@@ -1,3 +1,4 @@
+import { word, own, localeOf } from "../core/i18n.js"
 import { isDefined } from "../core/utils/index.js"
 import { ElementBase, define, defineProperties, batched } from "../core/element.js"
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate, toolChartId } from "./utils.js"
@@ -18,7 +19,7 @@ export const priceLabelDefaults = {
         enable: true,
         bgHeight: "auto",
         bgWidth: "auto",
-        text: "Click to select object",
+        text: word("selectObject"),
         selectedText: "",
     },
     labels: [],
@@ -104,7 +105,7 @@ export class PriceLabel extends ElementBase {
                 interactive: true,
                 selected: each.selected,
                 at: getValueFromOverride(this.#override, index, "at", each.at),
-                yDisplayFormat: props.yDisplayFormat,
+                yDisplayFormat: own(props.yDisplayFormat, priceLabelDefaults.yDisplayFormat, localeOf(this)),
                 appearance,
                 hoverText: { ...priceLabelDefaults.hoverText, ...props.hoverText },
                 onDrag: this.#handleDragLabel,

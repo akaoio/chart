@@ -1,3 +1,4 @@
+import { own, localeOf } from "../../core/i18n.js"
 import { isNotDefined } from "../../core/utils/index.js"
 import { getXValue } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
@@ -97,7 +98,7 @@ export class EachPriceNote extends ElementBase {
         })
 
         // Nhãn đọc giá của neo đầu — suy mỗi lần build nên không bao giờ cũ
-        const price = yDisplayFormat(at[1])
+        const price = own(yDisplayFormat, eachPriceNoteDefaults.yDisplayFormat, localeOf(this))(at[1])
         Object.assign(this.#children.box, {
             selected: showHandles,
             position: label,

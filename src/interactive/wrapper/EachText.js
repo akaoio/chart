@@ -1,3 +1,4 @@
+import { word } from "../../core/i18n.js"
 import { getXValue } from "../../core/utils/ChartDataUtil.js"
 import { ElementBase, define, defineProperties } from "../../core/element.js"
 import { isHover, saveNodeType } from "../utils.js"
@@ -15,7 +16,7 @@ export const eachTextDefaults = {
     fontSize: undefined,
     text: undefined,
     selected: false,
-    hoverText: { enable: true, bgHeight: "auto", bgWidth: "auto", text: "Click to select object" },
+    hoverText: { enable: true, bgHeight: "auto", bgWidth: "auto", text: word("selectObject") },
     onDrag: () => {},
     onDragComplete: () => {},
 }
